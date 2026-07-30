@@ -7,7 +7,9 @@ function runNativeStylisticLint(sourceText, config) {
     throw new TypeError('sourceText must be a string.');
   }
 
-  return native.runNativeStylisticLint(sourceText, normalizeRunConfig(config));
+  return native
+    .runNativeStylisticLint(sourceText, normalizeRunConfig(config))
+    .map(normalizeDiagnosticData);
 }
 
 function nativeStylisticRuleMetas() {
@@ -27,6 +29,20 @@ function normalizeRunConfig(config) {
         name: rule.name,
         options: Array.isArray(rule.options) ? rule.options : (rule.options ?? []),
       })),
+  };
+}
+
+function normalizeDiagnosticData(diagnostic) {
+  if (diagnostic.ruleName !== 'jsx-indent-props' || !diagnostic.data) {
+    return diagnostic;
+  }
+  return {
+    ...diagnostic,
+    data: {
+      ...diagnostic.data,
+      needed: Number(diagnostic.data.needed),
+      gotten: Number(diagnostic.data.gotten),
+    },
   };
 }
 

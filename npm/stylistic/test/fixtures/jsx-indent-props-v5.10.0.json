@@ -1,0 +1,2003 @@
+{
+  "__generated": {
+    "source": "@stylistic/eslint-plugin",
+    "version": "5.10.0",
+    "sourceCommit": "efbb1bc0e5aaedc4695c44a03f46f4fcbbe58712",
+    "sourceFile": "packages/eslint-plugin/rules/jsx-indent-props/jsx-indent-props.test.ts",
+    "license": "MIT",
+    "eslintVersion": "10.0.0",
+    "parserVersions": {
+      "espree": "10.4.0",
+      "typescriptEslint": "8.56.0",
+      "typescript": "5.9.3"
+    },
+    "parserMatrix": "ESLint 10 parsers-jsx expansion; Babel disabled by the stable runner",
+    "tool": "tools/tasks/sync-stylistic-jsx-indent-props-tests.ts",
+    "inventory": {
+      "logicalValid": 23,
+      "logicalInvalid": 17,
+      "valid": 46,
+      "invalid": 34,
+      "diagnostics": 42,
+      "unfixableInvalid": 0,
+      "total": 80,
+      "fixableInvalid": 34
+    }
+  },
+  "valid": [
+    {
+      "code": "\n        <App foo\n        />\n      \n// features: [], parser: default, , , ",
+      "options": [],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <App foo\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <App\n          foo\n        />\n      \n// features: [], parser: default, , options: [2], ",
+      "options": [2],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <App\n          foo\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [2], ",
+      "options": [2],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        const Test = () => ([\n          (x\n            ? <div key=\"1\" />\n            : <div key=\"2\" />),\n          <div\n            key=\"3\"\n            align=\"left\"\n          />,\n          <div\n            key=\"4\"\n            align=\"left\"\n          />,\n        ]);\n      \n// features: [], parser: default, , options: [2], ",
+      "options": [2],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        const Test = () => ([\n          (x\n            ? <div key=\"1\" />\n            : <div key=\"2\" />),\n          <div\n            key=\"3\"\n            align=\"left\"\n          />,\n          <div\n            key=\"4\"\n            align=\"left\"\n          />,\n        ]);\n      \n// features: [], parser: @typescript-eslint/parser, , options: [2], ",
+      "options": [2],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <App\n        foo\n        />\n      \n// features: [], parser: default, , options: [0], ",
+      "options": [0],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <App\n        foo\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [0], ",
+      "options": [0],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n          <App\n        foo\n          />\n      \n// features: [], parser: default, , options: [-2], ",
+      "options": [-2],
+      "parser": "espree"
+    },
+    {
+      "code": "\n          <App\n        foo\n          />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [-2], ",
+      "options": [-2],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n\t\t\t\t<App\n\t\t\t\t\tfoo\n\t\t\t\t/>\n\t\t\t\n// features: [], parser: default, , options: [\"tab\"], ",
+      "options": ["tab"],
+      "parser": "espree"
+    },
+    {
+      "code": "\n\t\t\t\t<App\n\t\t\t\t\tfoo\n\t\t\t\t/>\n\t\t\t\n// features: [], parser: @typescript-eslint/parser, , options: [\"tab\"], ",
+      "options": ["tab"],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <App/>\n      \n// features: [], parser: default, , options: [\"first\"], ",
+      "options": ["first"],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <App/>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"first\"], ",
+      "options": ["first"],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <App aaa\n             b\n             cc\n        />\n      \n// features: [], parser: default, , options: [\"first\"], ",
+      "options": ["first"],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <App aaa\n             b\n             cc\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"first\"], ",
+      "options": ["first"],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <App   aaa\n               b\n               cc\n        />\n      \n// features: [], parser: default, , options: [\"first\"], ",
+      "options": ["first"],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <App   aaa\n               b\n               cc\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"first\"], ",
+      "options": ["first"],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        const test = <App aaa\n                          b\n                          cc\n                     />\n      \n// features: [], parser: default, , options: [\"first\"], ",
+      "options": ["first"],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        const test = <App aaa\n                          b\n                          cc\n                     />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"first\"], ",
+      "options": ["first"],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <App aaa x\n             b y\n             cc\n        />\n      \n// features: [], parser: default, , options: [\"first\"], ",
+      "options": ["first"],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <App aaa x\n             b y\n             cc\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"first\"], ",
+      "options": ["first"],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        const test = <App aaa x\n                          b y\n                          cc\n                     />\n      \n// features: [], parser: default, , options: [\"first\"], ",
+      "options": ["first"],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        const test = <App aaa x\n                          b y\n                          cc\n                     />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"first\"], ",
+      "options": ["first"],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <App aaa\n             b\n        >\n            <Child c\n                   d/>\n        </App>\n      \n// features: [], parser: default, , options: [\"first\"], ",
+      "options": ["first"],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <App aaa\n             b\n        >\n            <Child c\n                   d/>\n        </App>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"first\"], ",
+      "options": ["first"],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <Fragment>\n          <App aaa\n               b\n               cc\n          />\n          <OtherApp a\n                    bbb\n                    c\n          />\n        </Fragment>\n      \n// features: [], parser: default, , options: [\"first\"], ",
+      "options": ["first"],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <Fragment>\n          <App aaa\n               b\n               cc\n          />\n          <OtherApp a\n                    bbb\n                    c\n          />\n        </Fragment>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"first\"], ",
+      "options": ["first"],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <App\n          a\n          b\n        />\n      \n// features: [], parser: default, , options: [\"first\"], ",
+      "options": ["first"],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <App\n          a\n          b\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"first\"], ",
+      "options": ["first"],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        {this.props.ignoreTernaryOperatorFalse\n          ? <span\n              className=\"value\"\n              some={{aaa}}\n            />\n          : null}\n      \n// features: [], parser: default, , options: [{\"indentMode\":2,\"ignoreTernaryOperator\":false}], ",
+      "options": [
+        {
+          "indentMode": 2,
+          "ignoreTernaryOperator": false
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        {this.props.ignoreTernaryOperatorFalse\n          ? <span\n              className=\"value\"\n              some={{aaa}}\n            />\n          : null}\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"indentMode\":2,\"ignoreTernaryOperator\":false}], ",
+      "options": [
+        {
+          "indentMode": 2,
+          "ignoreTernaryOperator": false
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        const F = () => {\n          const foo = true\n            ? <div id=\"id\">test</div>\n            : false;\n\n          return <div\n            id=\"id\"\n          >\n            test\n          </div>\n        }\n      \n// features: [], parser: default, , options: [{\"indentMode\":2,\"ignoreTernaryOperator\":false}], ",
+      "options": [
+        {
+          "indentMode": 2,
+          "ignoreTernaryOperator": false
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        const F = () => {\n          const foo = true\n            ? <div id=\"id\">test</div>\n            : false;\n\n          return <div\n            id=\"id\"\n          >\n            test\n          </div>\n        }\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"indentMode\":2,\"ignoreTernaryOperator\":false}], ",
+      "options": [
+        {
+          "indentMode": 2,
+          "ignoreTernaryOperator": false
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        const F = () => {\n          const foo = true\n            ? <div id=\"id\">test</div>\n            : false;\n\n          return <div\n            id=\"id\"\n          >\n            test\n          </div>\n        }\n      \n// features: [], parser: default, , options: [{\"indentMode\":2,\"ignoreTernaryOperator\":true}], ",
+      "options": [
+        {
+          "indentMode": 2,
+          "ignoreTernaryOperator": true
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        const F = () => {\n          const foo = true\n            ? <div id=\"id\">test</div>\n            : false;\n\n          return <div\n            id=\"id\"\n          >\n            test\n          </div>\n        }\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"indentMode\":2,\"ignoreTernaryOperator\":true}], ",
+      "options": [
+        {
+          "indentMode": 2,
+          "ignoreTernaryOperator": true
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n\t\t\t\tconst F = () => {\n\t\t\t\t\tconst foo = true\n\t\t\t\t\t\t? <div id=\"id\">test</div>\n\t\t\t\t\t\t: false;\n\n\t\t\t\t\treturn <div\n\t\t\t\t\t\tid=\"id\"\n\t\t\t\t\t>\n\t\t\t\t\t\ttest\n\t\t\t\t\t</div>\n\t\t\t\t}\n\n// features: [], parser: default, , options: [{\"indentMode\":\"tab\",\"ignoreTernaryOperator\":false}], ",
+      "options": [
+        {
+          "indentMode": "tab",
+          "ignoreTernaryOperator": false
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "\n\t\t\t\tconst F = () => {\n\t\t\t\t\tconst foo = true\n\t\t\t\t\t\t? <div id=\"id\">test</div>\n\t\t\t\t\t\t: false;\n\n\t\t\t\t\treturn <div\n\t\t\t\t\t\tid=\"id\"\n\t\t\t\t\t>\n\t\t\t\t\t\ttest\n\t\t\t\t\t</div>\n\t\t\t\t}\n\n// features: [], parser: @typescript-eslint/parser, , options: [{\"indentMode\":\"tab\",\"ignoreTernaryOperator\":false}], ",
+      "options": [
+        {
+          "indentMode": "tab",
+          "ignoreTernaryOperator": false
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n\t\t\t\tconst F = () => {\n\t\t\t\t\tconst foo = true\n\t\t\t\t\t\t? <div id=\"id\">test</div>\n\t\t\t\t\t\t: false;\n\n\t\t\t\t\treturn <div\n\t\t\t\t\t\tid=\"id\"\n\t\t\t\t\t>\n\t\t\t\t\t\ttest\n\t\t\t\t\t</div>\n\t\t\t\t}\n\n// features: [], parser: default, , options: [{\"indentMode\":\"tab\",\"ignoreTernaryOperator\":true}], ",
+      "options": [
+        {
+          "indentMode": "tab",
+          "ignoreTernaryOperator": true
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "\n\t\t\t\tconst F = () => {\n\t\t\t\t\tconst foo = true\n\t\t\t\t\t\t? <div id=\"id\">test</div>\n\t\t\t\t\t\t: false;\n\n\t\t\t\t\treturn <div\n\t\t\t\t\t\tid=\"id\"\n\t\t\t\t\t>\n\t\t\t\t\t\ttest\n\t\t\t\t\t</div>\n\t\t\t\t}\n\n// features: [], parser: @typescript-eslint/parser, , options: [{\"indentMode\":\"tab\",\"ignoreTernaryOperator\":true}], ",
+      "options": [
+        {
+          "indentMode": "tab",
+          "ignoreTernaryOperator": true
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        {this.props.ignoreTernaryOperatorTrue\n          ? <span\n            className=\"value\"\n            some={{aaa}}\n            />\n          : null}\n      \n// features: [], parser: default, , options: [{\"indentMode\":2,\"ignoreTernaryOperator\":true}], ",
+      "options": [
+        {
+          "indentMode": 2,
+          "ignoreTernaryOperator": true
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        {this.props.ignoreTernaryOperatorTrue\n          ? <span\n            className=\"value\"\n            some={{aaa}}\n            />\n          : null}\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"indentMode\":2,\"ignoreTernaryOperator\":true}], ",
+      "options": [
+        {
+          "indentMode": 2,
+          "ignoreTernaryOperator": true
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <a\n          role={'button'}\n          className={`navbar-burger ${open ? 'is-active' : ''}`}\n          href={'#'}\n          aria-label={'menu'}\n          aria-expanded={false}\n          onClick={openMenu}>\n          <span aria-hidden={'true'}/>\n          <span aria-hidden={'true'}/>\n          <span aria-hidden={'true'}/>\n        </a>\n      \n// features: [], parser: default, , options: [{\"indentMode\":2}], ",
+      "options": [
+        {
+          "indentMode": 2
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <a\n          role={'button'}\n          className={`navbar-burger ${open ? 'is-active' : ''}`}\n          href={'#'}\n          aria-label={'menu'}\n          aria-expanded={false}\n          onClick={openMenu}>\n          <span aria-hidden={'true'}/>\n          <span aria-hidden={'true'}/>\n          <span aria-hidden={'true'}/>\n        </a>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"indentMode\":2}], ",
+      "options": [
+        {
+          "indentMode": 2
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <a role={'button'}\n           className={`navbar-burger ${open ? 'is-active' : ''}`}\n           href={'#'}\n           aria-label={'menu'}\n           aria-expanded={false}\n           onClick={openMenu}>\n          <span aria-hidden={'true'}/>\n          <span aria-hidden={'true'}/>\n          <span aria-hidden={'true'}/>\n        </a>\n      \n// features: [], parser: default, , options: [\"first\"], ",
+      "options": ["first"],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <a role={'button'}\n           className={`navbar-burger ${open ? 'is-active' : ''}`}\n           href={'#'}\n           aria-label={'menu'}\n           aria-expanded={false}\n           onClick={openMenu}>\n          <span aria-hidden={'true'}/>\n          <span aria-hidden={'true'}/>\n          <span aria-hidden={'true'}/>\n        </a>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"first\"], ",
+      "options": ["first"],
+      "parser": "typescript"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "\n        <App\n          foo\n        />\n      \n// features: [], parser: default, , , ",
+      "options": [],
+      "parser": "espree",
+      "output": "\n        <App\n            foo\n        />\n      \n// features: [], parser: default, , , ",
+      "recursiveOutput": "\n        <App\n            foo\n        />\n      \n// features: [], parser: default, , , ",
+      "upstreamErrors": [
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 12,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 10
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 12 space characters but found 10.",
+          "data": {
+            "needed": 12,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 10
+          },
+          "range": [24, 27],
+          "loc": {
+            "line": 3,
+            "column": 11,
+            "endLine": 3,
+            "endColumn": 14
+          },
+          "fix": {
+            "range": [14, 24],
+            "text": "            "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n          foo\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript",
+      "output": "\n        <App\n            foo\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "recursiveOutput": "\n        <App\n            foo\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "upstreamErrors": [
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 12,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 10
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 12 space characters but found 10.",
+          "data": {
+            "needed": 12,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 10
+          },
+          "range": [24, 27],
+          "loc": {
+            "line": 3,
+            "column": 11,
+            "endLine": 3,
+            "endColumn": 14
+          },
+          "fix": {
+            "range": [14, 24],
+            "text": "            "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n            foo\n        />\n      \n// features: [], parser: default, , options: [2], ",
+      "options": [2],
+      "parser": "espree",
+      "output": "\n        <App\n          foo\n        />\n      \n// features: [], parser: default, , options: [2], ",
+      "recursiveOutput": "\n        <App\n          foo\n        />\n      \n// features: [], parser: default, , options: [2], ",
+      "upstreamErrors": [
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 10,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 12
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 10 space characters but found 12.",
+          "data": {
+            "needed": 10,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 12
+          },
+          "range": [26, 29],
+          "loc": {
+            "line": 3,
+            "column": 13,
+            "endLine": 3,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [14, 26],
+            "text": "          "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n            foo\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [2], ",
+      "options": [2],
+      "parser": "typescript",
+      "output": "\n        <App\n          foo\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [2], ",
+      "recursiveOutput": "\n        <App\n          foo\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [2], ",
+      "upstreamErrors": [
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 10,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 12
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 10 space characters but found 12.",
+          "data": {
+            "needed": 10,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 12
+          },
+          "range": [26, 29],
+          "loc": {
+            "line": 3,
+            "column": 13,
+            "endLine": 3,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [14, 26],
+            "text": "          "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        const test = true\n          ? <span\n            attr=\"value\"\n            />\n          : <span\n            attr=\"otherValue\"\n            />\n      \n// features: [], parser: default, , options: [2], ",
+      "options": [2],
+      "parser": "espree",
+      "output": "\n        const test = true\n          ? <span\n              attr=\"value\"\n            />\n          : <span\n              attr=\"otherValue\"\n            />\n      \n// features: [], parser: default, , options: [2], ",
+      "recursiveOutput": "\n        const test = true\n          ? <span\n              attr=\"value\"\n            />\n          : <span\n              attr=\"otherValue\"\n            />\n      \n// features: [], parser: default, , options: [2], ",
+      "upstreamErrors": [
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 14,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 12
+          }
+        },
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 14,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 12
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 14 space characters but found 12.",
+          "data": {
+            "needed": 14,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 12
+          },
+          "range": [57, 69],
+          "loc": {
+            "line": 4,
+            "column": 13,
+            "endLine": 4,
+            "endColumn": 25
+          },
+          "fix": {
+            "range": [45, 57],
+            "text": "              "
+          }
+        },
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 14 space characters but found 12.",
+          "data": {
+            "needed": 14,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 12
+          },
+          "range": [115, 132],
+          "loc": {
+            "line": 7,
+            "column": 13,
+            "endLine": 7,
+            "endColumn": 30
+          },
+          "fix": {
+            "range": [103, 115],
+            "text": "              "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        const test = true\n          ? <span\n            attr=\"value\"\n            />\n          : <span\n            attr=\"otherValue\"\n            />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [2], ",
+      "options": [2],
+      "parser": "typescript",
+      "output": "\n        const test = true\n          ? <span\n              attr=\"value\"\n            />\n          : <span\n              attr=\"otherValue\"\n            />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [2], ",
+      "recursiveOutput": "\n        const test = true\n          ? <span\n              attr=\"value\"\n            />\n          : <span\n              attr=\"otherValue\"\n            />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [2], ",
+      "upstreamErrors": [
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 14,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 12
+          }
+        },
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 14,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 12
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 14 space characters but found 12.",
+          "data": {
+            "needed": 14,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 12
+          },
+          "range": [57, 69],
+          "loc": {
+            "line": 4,
+            "column": 13,
+            "endLine": 4,
+            "endColumn": 25
+          },
+          "fix": {
+            "range": [45, 57],
+            "text": "              "
+          }
+        },
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 14 space characters but found 12.",
+          "data": {
+            "needed": 14,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 12
+          },
+          "range": [115, 132],
+          "loc": {
+            "line": 7,
+            "column": 13,
+            "endLine": 7,
+            "endColumn": 30
+          },
+          "fix": {
+            "range": [103, 115],
+            "text": "              "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        const test = true\n          ? <span attr=\"value\" />\n          : (\n            <span\n                attr=\"otherValue\"\n            />\n          )\n      \n// features: [], parser: default, , options: [2], ",
+      "options": [2],
+      "parser": "espree",
+      "output": "\n        const test = true\n          ? <span attr=\"value\" />\n          : (\n            <span\n              attr=\"otherValue\"\n            />\n          )\n      \n// features: [], parser: default, , options: [2], ",
+      "recursiveOutput": "\n        const test = true\n          ? <span attr=\"value\" />\n          : (\n            <span\n              attr=\"otherValue\"\n            />\n          )\n      \n// features: [], parser: default, , options: [2], ",
+      "upstreamErrors": [
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 14,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 16
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 14 space characters but found 16.",
+          "data": {
+            "needed": 14,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 16
+          },
+          "range": [109, 126],
+          "loc": {
+            "line": 6,
+            "column": 17,
+            "endLine": 6,
+            "endColumn": 34
+          },
+          "fix": {
+            "range": [93, 109],
+            "text": "              "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        const test = true\n          ? <span attr=\"value\" />\n          : (\n            <span\n                attr=\"otherValue\"\n            />\n          )\n      \n// features: [], parser: @typescript-eslint/parser, , options: [2], ",
+      "options": [2],
+      "parser": "typescript",
+      "output": "\n        const test = true\n          ? <span attr=\"value\" />\n          : (\n            <span\n              attr=\"otherValue\"\n            />\n          )\n      \n// features: [], parser: @typescript-eslint/parser, , options: [2], ",
+      "recursiveOutput": "\n        const test = true\n          ? <span attr=\"value\" />\n          : (\n            <span\n              attr=\"otherValue\"\n            />\n          )\n      \n// features: [], parser: @typescript-eslint/parser, , options: [2], ",
+      "upstreamErrors": [
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 14,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 16
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 14 space characters but found 16.",
+          "data": {
+            "needed": 14,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 16
+          },
+          "range": [109, 126],
+          "loc": {
+            "line": 6,
+            "column": 17,
+            "endLine": 6,
+            "endColumn": 34
+          },
+          "fix": {
+            "range": [93, 109],
+            "text": "              "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        {test.isLoading\n          ? <Value/>\n          : <OtherValue\n            some={aaa}/>\n        }\n      \n// features: [], parser: default, , options: [2], ",
+      "options": [2],
+      "parser": "espree",
+      "output": "\n        {test.isLoading\n          ? <Value/>\n          : <OtherValue\n              some={aaa}/>\n        }\n      \n// features: [], parser: default, , options: [2], ",
+      "recursiveOutput": "\n        {test.isLoading\n          ? <Value/>\n          : <OtherValue\n              some={aaa}/>\n        }\n      \n// features: [], parser: default, , options: [2], ",
+      "upstreamErrors": [
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 14,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 12
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 14 space characters but found 12.",
+          "data": {
+            "needed": 14,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 12
+          },
+          "range": [82, 92],
+          "loc": {
+            "line": 5,
+            "column": 13,
+            "endLine": 5,
+            "endColumn": 23
+          },
+          "fix": {
+            "range": [70, 82],
+            "text": "              "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        {test.isLoading\n          ? <Value/>\n          : <OtherValue\n            some={aaa}/>\n        }\n      \n// features: [], parser: @typescript-eslint/parser, , options: [2], ",
+      "options": [2],
+      "parser": "typescript",
+      "output": "\n        {test.isLoading\n          ? <Value/>\n          : <OtherValue\n              some={aaa}/>\n        }\n      \n// features: [], parser: @typescript-eslint/parser, , options: [2], ",
+      "recursiveOutput": "\n        {test.isLoading\n          ? <Value/>\n          : <OtherValue\n              some={aaa}/>\n        }\n      \n// features: [], parser: @typescript-eslint/parser, , options: [2], ",
+      "upstreamErrors": [
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 14,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 12
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 14 space characters but found 12.",
+          "data": {
+            "needed": 14,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 12
+          },
+          "range": [82, 92],
+          "loc": {
+            "line": 5,
+            "column": 13,
+            "endLine": 5,
+            "endColumn": 23
+          },
+          "fix": {
+            "range": [70, 82],
+            "text": "              "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        {test.isLoading\n          ? <Value/>\n          : <OtherValue\n            some={aaa}\n            other={bbb}/>\n        }\n      \n// features: [], parser: default, , options: [2], ",
+      "options": [2],
+      "parser": "espree",
+      "output": "\n        {test.isLoading\n          ? <Value/>\n          : <OtherValue\n              some={aaa}\n              other={bbb}/>\n        }\n      \n// features: [], parser: default, , options: [2], ",
+      "recursiveOutput": "\n        {test.isLoading\n          ? <Value/>\n          : <OtherValue\n              some={aaa}\n              other={bbb}/>\n        }\n      \n// features: [], parser: default, , options: [2], ",
+      "upstreamErrors": [
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 14,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 12
+          }
+        },
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 14,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 12
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 14 space characters but found 12.",
+          "data": {
+            "needed": 14,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 12
+          },
+          "range": [82, 92],
+          "loc": {
+            "line": 5,
+            "column": 13,
+            "endLine": 5,
+            "endColumn": 23
+          },
+          "fix": {
+            "range": [70, 82],
+            "text": "              "
+          }
+        },
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 14 space characters but found 12.",
+          "data": {
+            "needed": 14,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 12
+          },
+          "range": [105, 116],
+          "loc": {
+            "line": 6,
+            "column": 13,
+            "endLine": 6,
+            "endColumn": 24
+          },
+          "fix": {
+            "range": [93, 105],
+            "text": "              "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        {test.isLoading\n          ? <Value/>\n          : <OtherValue\n            some={aaa}\n            other={bbb}/>\n        }\n      \n// features: [], parser: @typescript-eslint/parser, , options: [2], ",
+      "options": [2],
+      "parser": "typescript",
+      "output": "\n        {test.isLoading\n          ? <Value/>\n          : <OtherValue\n              some={aaa}\n              other={bbb}/>\n        }\n      \n// features: [], parser: @typescript-eslint/parser, , options: [2], ",
+      "recursiveOutput": "\n        {test.isLoading\n          ? <Value/>\n          : <OtherValue\n              some={aaa}\n              other={bbb}/>\n        }\n      \n// features: [], parser: @typescript-eslint/parser, , options: [2], ",
+      "upstreamErrors": [
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 14,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 12
+          }
+        },
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 14,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 12
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 14 space characters but found 12.",
+          "data": {
+            "needed": 14,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 12
+          },
+          "range": [82, 92],
+          "loc": {
+            "line": 5,
+            "column": 13,
+            "endLine": 5,
+            "endColumn": 23
+          },
+          "fix": {
+            "range": [70, 82],
+            "text": "              "
+          }
+        },
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 14 space characters but found 12.",
+          "data": {
+            "needed": 14,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 12
+          },
+          "range": [105, 116],
+          "loc": {
+            "line": 6,
+            "column": 13,
+            "endLine": 6,
+            "endColumn": 24
+          },
+          "fix": {
+            "range": [93, 105],
+            "text": "              "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        {this.props.test\n          ? <span\n            className=\"value\"\n            some={{aaa}}\n            />\n          : null}\n      \n// features: [], parser: default, , options: [2], ",
+      "options": [2],
+      "parser": "espree",
+      "output": "\n        {this.props.test\n          ? <span\n              className=\"value\"\n              some={{aaa}}\n            />\n          : null}\n      \n// features: [], parser: default, , options: [2], ",
+      "recursiveOutput": "\n        {this.props.test\n          ? <span\n              className=\"value\"\n              some={{aaa}}\n            />\n          : null}\n      \n// features: [], parser: default, , options: [2], ",
+      "upstreamErrors": [
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 14,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 12
+          }
+        },
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 14,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 12
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 14 space characters but found 12.",
+          "data": {
+            "needed": 14,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 12
+          },
+          "range": [56, 73],
+          "loc": {
+            "line": 4,
+            "column": 13,
+            "endLine": 4,
+            "endColumn": 30
+          },
+          "fix": {
+            "range": [44, 56],
+            "text": "              "
+          }
+        },
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 14 space characters but found 12.",
+          "data": {
+            "needed": 14,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 12
+          },
+          "range": [86, 98],
+          "loc": {
+            "line": 5,
+            "column": 13,
+            "endLine": 5,
+            "endColumn": 25
+          },
+          "fix": {
+            "range": [74, 86],
+            "text": "              "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        {this.props.test\n          ? <span\n            className=\"value\"\n            some={{aaa}}\n            />\n          : null}\n      \n// features: [], parser: @typescript-eslint/parser, , options: [2], ",
+      "options": [2],
+      "parser": "typescript",
+      "output": "\n        {this.props.test\n          ? <span\n              className=\"value\"\n              some={{aaa}}\n            />\n          : null}\n      \n// features: [], parser: @typescript-eslint/parser, , options: [2], ",
+      "recursiveOutput": "\n        {this.props.test\n          ? <span\n              className=\"value\"\n              some={{aaa}}\n            />\n          : null}\n      \n// features: [], parser: @typescript-eslint/parser, , options: [2], ",
+      "upstreamErrors": [
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 14,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 12
+          }
+        },
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 14,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 12
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 14 space characters but found 12.",
+          "data": {
+            "needed": 14,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 12
+          },
+          "range": [56, 73],
+          "loc": {
+            "line": 4,
+            "column": 13,
+            "endLine": 4,
+            "endColumn": 30
+          },
+          "fix": {
+            "range": [44, 56],
+            "text": "              "
+          }
+        },
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 14 space characters but found 12.",
+          "data": {
+            "needed": 14,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 12
+          },
+          "range": [86, 98],
+          "loc": {
+            "line": 5,
+            "column": 13,
+            "endLine": 5,
+            "endColumn": 25
+          },
+          "fix": {
+            "range": [74, 86],
+            "text": "              "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App1\n            foo\n        />\n      \n// features: [], parser: default, , options: [\"tab\"], ",
+      "options": ["tab"],
+      "parser": "espree",
+      "output": "\n        <App1\n\tfoo\n        />\n      \n// features: [], parser: default, , options: [\"tab\"], ",
+      "recursiveOutput": "\n        <App1\n\tfoo\n        />\n      \n// features: [], parser: default, , options: [\"tab\"], ",
+      "upstreamErrors": [
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 1,
+            "type": "tab",
+            "characters": "character",
+            "gotten": 0
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 1 tab character but found 0.",
+          "data": {
+            "needed": 1,
+            "type": "tab",
+            "characters": "character",
+            "gotten": 0
+          },
+          "range": [27, 30],
+          "loc": {
+            "line": 3,
+            "column": 13,
+            "endLine": 3,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [15, 27],
+            "text": "\t"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App1\n            foo\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"tab\"], ",
+      "options": ["tab"],
+      "parser": "typescript",
+      "output": "\n        <App1\n\tfoo\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"tab\"], ",
+      "recursiveOutput": "\n        <App1\n\tfoo\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"tab\"], ",
+      "upstreamErrors": [
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 1,
+            "type": "tab",
+            "characters": "character",
+            "gotten": 0
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 1 tab character but found 0.",
+          "data": {
+            "needed": 1,
+            "type": "tab",
+            "characters": "character",
+            "gotten": 0
+          },
+          "range": [27, 30],
+          "loc": {
+            "line": 3,
+            "column": 13,
+            "endLine": 3,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [15, 27],
+            "text": "\t"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t\t<App\n\t\t\t\t\t\t\tfoo\n\t\t\t\t/>\n\t\t\t\n// features: [], parser: default, , options: [\"tab\"], ",
+      "options": ["tab"],
+      "parser": "espree",
+      "output": "\n\t\t\t\t<App\n\t\t\t\t\tfoo\n\t\t\t\t/>\n\t\t\t\n// features: [], parser: default, , options: [\"tab\"], ",
+      "recursiveOutput": "\n\t\t\t\t<App\n\t\t\t\t\tfoo\n\t\t\t\t/>\n\t\t\t\n// features: [], parser: default, , options: [\"tab\"], ",
+      "upstreamErrors": [
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 5,
+            "type": "tab",
+            "characters": "characters",
+            "gotten": 7
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 5 tab characters but found 7.",
+          "data": {
+            "needed": 5,
+            "type": "tab",
+            "characters": "characters",
+            "gotten": 7
+          },
+          "range": [17, 20],
+          "loc": {
+            "line": 3,
+            "column": 8,
+            "endLine": 3,
+            "endColumn": 11
+          },
+          "fix": {
+            "range": [10, 17],
+            "text": "\t\t\t\t\t"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t\t<App\n\t\t\t\t\t\t\tfoo\n\t\t\t\t/>\n\t\t\t\n// features: [], parser: @typescript-eslint/parser, , options: [\"tab\"], ",
+      "options": ["tab"],
+      "parser": "typescript",
+      "output": "\n\t\t\t\t<App\n\t\t\t\t\tfoo\n\t\t\t\t/>\n\t\t\t\n// features: [], parser: @typescript-eslint/parser, , options: [\"tab\"], ",
+      "recursiveOutput": "\n\t\t\t\t<App\n\t\t\t\t\tfoo\n\t\t\t\t/>\n\t\t\t\n// features: [], parser: @typescript-eslint/parser, , options: [\"tab\"], ",
+      "upstreamErrors": [
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 5,
+            "type": "tab",
+            "characters": "characters",
+            "gotten": 7
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 5 tab characters but found 7.",
+          "data": {
+            "needed": 5,
+            "type": "tab",
+            "characters": "characters",
+            "gotten": 7
+          },
+          "range": [17, 20],
+          "loc": {
+            "line": 3,
+            "column": 8,
+            "endLine": 3,
+            "endColumn": 11
+          },
+          "fix": {
+            "range": [10, 17],
+            "text": "\t\t\t\t\t"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App a\n          b\n        />\n      \n// features: [], parser: default, , options: [\"first\"], ",
+      "options": ["first"],
+      "parser": "espree",
+      "output": "\n        <App a\n             b\n        />\n      \n// features: [], parser: default, , options: [\"first\"], ",
+      "recursiveOutput": "\n        <App a\n             b\n        />\n      \n// features: [], parser: default, , options: [\"first\"], ",
+      "upstreamErrors": [
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 13,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 10
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 13 space characters but found 10.",
+          "data": {
+            "needed": 13,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 10
+          },
+          "range": [26, 27],
+          "loc": {
+            "line": 3,
+            "column": 11,
+            "endLine": 3,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [16, 26],
+            "text": "             "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App a\n          b\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"first\"], ",
+      "options": ["first"],
+      "parser": "typescript",
+      "output": "\n        <App a\n             b\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"first\"], ",
+      "recursiveOutput": "\n        <App a\n             b\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"first\"], ",
+      "upstreamErrors": [
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 13,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 10
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 13 space characters but found 10.",
+          "data": {
+            "needed": 13,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 10
+          },
+          "range": [26, 27],
+          "loc": {
+            "line": 3,
+            "column": 11,
+            "endLine": 3,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [16, 26],
+            "text": "             "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App  a\n           b\n        />\n      \n// features: [], parser: default, , options: [\"first\"], ",
+      "options": ["first"],
+      "parser": "espree",
+      "output": "\n        <App  a\n              b\n        />\n      \n// features: [], parser: default, , options: [\"first\"], ",
+      "recursiveOutput": "\n        <App  a\n              b\n        />\n      \n// features: [], parser: default, , options: [\"first\"], ",
+      "upstreamErrors": [
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 14,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 11
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 14 space characters but found 11.",
+          "data": {
+            "needed": 14,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 11
+          },
+          "range": [28, 29],
+          "loc": {
+            "line": 3,
+            "column": 12,
+            "endLine": 3,
+            "endColumn": 13
+          },
+          "fix": {
+            "range": [17, 28],
+            "text": "              "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App  a\n           b\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"first\"], ",
+      "options": ["first"],
+      "parser": "typescript",
+      "output": "\n        <App  a\n              b\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"first\"], ",
+      "recursiveOutput": "\n        <App  a\n              b\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"first\"], ",
+      "upstreamErrors": [
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 14,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 11
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 14 space characters but found 11.",
+          "data": {
+            "needed": 14,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 11
+          },
+          "range": [28, 29],
+          "loc": {
+            "line": 3,
+            "column": 12,
+            "endLine": 3,
+            "endColumn": 13
+          },
+          "fix": {
+            "range": [17, 28],
+            "text": "              "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n              a\n           b\n        />\n      \n// features: [], parser: default, , options: [\"first\"], ",
+      "options": ["first"],
+      "parser": "espree",
+      "output": "\n        <App\n              a\n              b\n        />\n      \n// features: [], parser: default, , options: [\"first\"], ",
+      "recursiveOutput": "\n        <App\n              a\n              b\n        />\n      \n// features: [], parser: default, , options: [\"first\"], ",
+      "upstreamErrors": [
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 14,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 11
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 14 space characters but found 11.",
+          "data": {
+            "needed": 14,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 11
+          },
+          "range": [41, 42],
+          "loc": {
+            "line": 4,
+            "column": 12,
+            "endLine": 4,
+            "endColumn": 13
+          },
+          "fix": {
+            "range": [30, 41],
+            "text": "              "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n              a\n           b\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"first\"], ",
+      "options": ["first"],
+      "parser": "typescript",
+      "output": "\n        <App\n              a\n              b\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"first\"], ",
+      "recursiveOutput": "\n        <App\n              a\n              b\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"first\"], ",
+      "upstreamErrors": [
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 14,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 11
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 14 space characters but found 11.",
+          "data": {
+            "needed": 14,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 11
+          },
+          "range": [41, 42],
+          "loc": {
+            "line": 4,
+            "column": 12,
+            "endLine": 4,
+            "endColumn": 13
+          },
+          "fix": {
+            "range": [30, 41],
+            "text": "              "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n          a\n         b\n           c\n        />\n      \n// features: [], parser: default, , options: [\"first\"], ",
+      "options": ["first"],
+      "parser": "espree",
+      "output": "\n        <App\n          a\n          b\n          c\n        />\n      \n// features: [], parser: default, , options: [\"first\"], ",
+      "recursiveOutput": "\n        <App\n          a\n          b\n          c\n        />\n      \n// features: [], parser: default, , options: [\"first\"], ",
+      "upstreamErrors": [
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 10,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 9
+          }
+        },
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 10,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 11
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 10 space characters but found 9.",
+          "data": {
+            "needed": 10,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 9
+          },
+          "range": [35, 36],
+          "loc": {
+            "line": 4,
+            "column": 10,
+            "endLine": 4,
+            "endColumn": 11
+          },
+          "fix": {
+            "range": [26, 35],
+            "text": "          "
+          }
+        },
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 10 space characters but found 11.",
+          "data": {
+            "needed": 10,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 11
+          },
+          "range": [48, 49],
+          "loc": {
+            "line": 5,
+            "column": 12,
+            "endLine": 5,
+            "endColumn": 13
+          },
+          "fix": {
+            "range": [37, 48],
+            "text": "          "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n          a\n         b\n           c\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"first\"], ",
+      "options": ["first"],
+      "parser": "typescript",
+      "output": "\n        <App\n          a\n          b\n          c\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"first\"], ",
+      "recursiveOutput": "\n        <App\n          a\n          b\n          c\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"first\"], ",
+      "upstreamErrors": [
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 10,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 9
+          }
+        },
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 10,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 11
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 10 space characters but found 9.",
+          "data": {
+            "needed": 10,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 9
+          },
+          "range": [35, 36],
+          "loc": {
+            "line": 4,
+            "column": 10,
+            "endLine": 4,
+            "endColumn": 11
+          },
+          "fix": {
+            "range": [26, 35],
+            "text": "          "
+          }
+        },
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 10 space characters but found 11.",
+          "data": {
+            "needed": 10,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 11
+          },
+          "range": [48, 49],
+          "loc": {
+            "line": 5,
+            "column": 12,
+            "endLine": 5,
+            "endColumn": 13
+          },
+          "fix": {
+            "range": [37, 48],
+            "text": "          "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        const F = () => {\n          const foo = true\n            ? <div id=\"id\">test</div>\n            : false;\n\n          return <div\n              id=\"id\"\n          >\n            test\n          </div>\n        }\n      \n// features: [], parser: default, , options: [{\"indentMode\":2,\"ignoreTernaryOperator\":false}], ",
+      "options": [
+        {
+          "indentMode": 2,
+          "ignoreTernaryOperator": false
+        }
+      ],
+      "parser": "espree",
+      "output": "\n        const F = () => {\n          const foo = true\n            ? <div id=\"id\">test</div>\n            : false;\n\n          return <div\n            id=\"id\"\n          >\n            test\n          </div>\n        }\n      \n// features: [], parser: default, , options: [{\"indentMode\":2,\"ignoreTernaryOperator\":false}], ",
+      "recursiveOutput": "\n        const F = () => {\n          const foo = true\n            ? <div id=\"id\">test</div>\n            : false;\n\n          return <div\n            id=\"id\"\n          >\n            test\n          </div>\n        }\n      \n// features: [], parser: default, , options: [{\"indentMode\":2,\"ignoreTernaryOperator\":false}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 12,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 14
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 12 space characters but found 14.",
+          "data": {
+            "needed": 12,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 14
+          },
+          "range": [150, 157],
+          "loc": {
+            "line": 8,
+            "column": 15,
+            "endLine": 8,
+            "endColumn": 22
+          },
+          "fix": {
+            "range": [136, 150],
+            "text": "            "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        const F = () => {\n          const foo = true\n            ? <div id=\"id\">test</div>\n            : false;\n\n          return <div\n              id=\"id\"\n          >\n            test\n          </div>\n        }\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"indentMode\":2,\"ignoreTernaryOperator\":false}], ",
+      "options": [
+        {
+          "indentMode": 2,
+          "ignoreTernaryOperator": false
+        }
+      ],
+      "parser": "typescript",
+      "output": "\n        const F = () => {\n          const foo = true\n            ? <div id=\"id\">test</div>\n            : false;\n\n          return <div\n            id=\"id\"\n          >\n            test\n          </div>\n        }\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"indentMode\":2,\"ignoreTernaryOperator\":false}], ",
+      "recursiveOutput": "\n        const F = () => {\n          const foo = true\n            ? <div id=\"id\">test</div>\n            : false;\n\n          return <div\n            id=\"id\"\n          >\n            test\n          </div>\n        }\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"indentMode\":2,\"ignoreTernaryOperator\":false}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 12,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 14
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 12 space characters but found 14.",
+          "data": {
+            "needed": 12,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 14
+          },
+          "range": [150, 157],
+          "loc": {
+            "line": 8,
+            "column": 15,
+            "endLine": 8,
+            "endColumn": 22
+          },
+          "fix": {
+            "range": [136, 150],
+            "text": "            "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        const F = () => {\n          const foo = true\n            ? <div id=\"id\">test</div>\n            : false;\n\n          return <div\n              id=\"id\"\n          >\n            test\n          </div>\n        }\n      \n// features: [], parser: default, , options: [{\"indentMode\":2,\"ignoreTernaryOperator\":true}], ",
+      "options": [
+        {
+          "indentMode": 2,
+          "ignoreTernaryOperator": true
+        }
+      ],
+      "parser": "espree",
+      "output": "\n        const F = () => {\n          const foo = true\n            ? <div id=\"id\">test</div>\n            : false;\n\n          return <div\n            id=\"id\"\n          >\n            test\n          </div>\n        }\n      \n// features: [], parser: default, , options: [{\"indentMode\":2,\"ignoreTernaryOperator\":true}], ",
+      "recursiveOutput": "\n        const F = () => {\n          const foo = true\n            ? <div id=\"id\">test</div>\n            : false;\n\n          return <div\n            id=\"id\"\n          >\n            test\n          </div>\n        }\n      \n// features: [], parser: default, , options: [{\"indentMode\":2,\"ignoreTernaryOperator\":true}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 12,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 14
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 12 space characters but found 14.",
+          "data": {
+            "needed": 12,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 14
+          },
+          "range": [150, 157],
+          "loc": {
+            "line": 8,
+            "column": 15,
+            "endLine": 8,
+            "endColumn": 22
+          },
+          "fix": {
+            "range": [136, 150],
+            "text": "            "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        const F = () => {\n          const foo = true\n            ? <div id=\"id\">test</div>\n            : false;\n\n          return <div\n              id=\"id\"\n          >\n            test\n          </div>\n        }\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"indentMode\":2,\"ignoreTernaryOperator\":true}], ",
+      "options": [
+        {
+          "indentMode": 2,
+          "ignoreTernaryOperator": true
+        }
+      ],
+      "parser": "typescript",
+      "output": "\n        const F = () => {\n          const foo = true\n            ? <div id=\"id\">test</div>\n            : false;\n\n          return <div\n            id=\"id\"\n          >\n            test\n          </div>\n        }\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"indentMode\":2,\"ignoreTernaryOperator\":true}], ",
+      "recursiveOutput": "\n        const F = () => {\n          const foo = true\n            ? <div id=\"id\">test</div>\n            : false;\n\n          return <div\n            id=\"id\"\n          >\n            test\n          </div>\n        }\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"indentMode\":2,\"ignoreTernaryOperator\":true}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 12,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 14
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 12 space characters but found 14.",
+          "data": {
+            "needed": 12,
+            "type": "space",
+            "characters": "characters",
+            "gotten": 14
+          },
+          "range": [150, 157],
+          "loc": {
+            "line": 8,
+            "column": 15,
+            "endLine": 8,
+            "endColumn": 22
+          },
+          "fix": {
+            "range": [136, 150],
+            "text": "            "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t\tconst F = () => {\n\t\t\t\t\tconst foo = true\n\t\t\t\t\t\t? <div id=\"id\">test</div>\n\t\t\t\t\t\t: false;\n\n\t\t\t\t\treturn <div\n\t\t\t\t\t\t\tid=\"id\"\n\t\t\t\t\t>\n\t\t\t\t\t\ttest\n\t\t\t\t\t</div>\n\t\t\t\t}\n\n// features: [], parser: default, , options: [{\"indentMode\":\"tab\",\"ignoreTernaryOperator\":false}], ",
+      "options": [
+        {
+          "indentMode": "tab",
+          "ignoreTernaryOperator": false
+        }
+      ],
+      "parser": "espree",
+      "output": "\n\t\t\t\tconst F = () => {\n\t\t\t\t\tconst foo = true\n\t\t\t\t\t\t? <div id=\"id\">test</div>\n\t\t\t\t\t\t: false;\n\n\t\t\t\t\treturn <div\n\t\t\t\t\t\tid=\"id\"\n\t\t\t\t\t>\n\t\t\t\t\t\ttest\n\t\t\t\t\t</div>\n\t\t\t\t}\n\n// features: [], parser: default, , options: [{\"indentMode\":\"tab\",\"ignoreTernaryOperator\":false}], ",
+      "recursiveOutput": "\n\t\t\t\tconst F = () => {\n\t\t\t\t\tconst foo = true\n\t\t\t\t\t\t? <div id=\"id\">test</div>\n\t\t\t\t\t\t: false;\n\n\t\t\t\t\treturn <div\n\t\t\t\t\t\tid=\"id\"\n\t\t\t\t\t>\n\t\t\t\t\t\ttest\n\t\t\t\t\t</div>\n\t\t\t\t}\n\n// features: [], parser: default, , options: [{\"indentMode\":\"tab\",\"ignoreTernaryOperator\":false}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 6,
+            "type": "tab",
+            "characters": "characters",
+            "gotten": 7
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 6 tab characters but found 7.",
+          "data": {
+            "needed": 6,
+            "type": "tab",
+            "characters": "characters",
+            "gotten": 7
+          },
+          "range": [117, 124],
+          "loc": {
+            "line": 8,
+            "column": 8,
+            "endLine": 8,
+            "endColumn": 15
+          },
+          "fix": {
+            "range": [110, 117],
+            "text": "\t\t\t\t\t\t"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t\tconst F = () => {\n\t\t\t\t\tconst foo = true\n\t\t\t\t\t\t? <div id=\"id\">test</div>\n\t\t\t\t\t\t: false;\n\n\t\t\t\t\treturn <div\n\t\t\t\t\t\t\tid=\"id\"\n\t\t\t\t\t>\n\t\t\t\t\t\ttest\n\t\t\t\t\t</div>\n\t\t\t\t}\n\n// features: [], parser: @typescript-eslint/parser, , options: [{\"indentMode\":\"tab\",\"ignoreTernaryOperator\":false}], ",
+      "options": [
+        {
+          "indentMode": "tab",
+          "ignoreTernaryOperator": false
+        }
+      ],
+      "parser": "typescript",
+      "output": "\n\t\t\t\tconst F = () => {\n\t\t\t\t\tconst foo = true\n\t\t\t\t\t\t? <div id=\"id\">test</div>\n\t\t\t\t\t\t: false;\n\n\t\t\t\t\treturn <div\n\t\t\t\t\t\tid=\"id\"\n\t\t\t\t\t>\n\t\t\t\t\t\ttest\n\t\t\t\t\t</div>\n\t\t\t\t}\n\n// features: [], parser: @typescript-eslint/parser, , options: [{\"indentMode\":\"tab\",\"ignoreTernaryOperator\":false}], ",
+      "recursiveOutput": "\n\t\t\t\tconst F = () => {\n\t\t\t\t\tconst foo = true\n\t\t\t\t\t\t? <div id=\"id\">test</div>\n\t\t\t\t\t\t: false;\n\n\t\t\t\t\treturn <div\n\t\t\t\t\t\tid=\"id\"\n\t\t\t\t\t>\n\t\t\t\t\t\ttest\n\t\t\t\t\t</div>\n\t\t\t\t}\n\n// features: [], parser: @typescript-eslint/parser, , options: [{\"indentMode\":\"tab\",\"ignoreTernaryOperator\":false}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 6,
+            "type": "tab",
+            "characters": "characters",
+            "gotten": 7
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 6 tab characters but found 7.",
+          "data": {
+            "needed": 6,
+            "type": "tab",
+            "characters": "characters",
+            "gotten": 7
+          },
+          "range": [117, 124],
+          "loc": {
+            "line": 8,
+            "column": 8,
+            "endLine": 8,
+            "endColumn": 15
+          },
+          "fix": {
+            "range": [110, 117],
+            "text": "\t\t\t\t\t\t"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t\tconst F = () => {\n\t\t\t\t\tconst foo = true\n\t\t\t\t\t\t? <div id=\"id\">test</div>\n\t\t\t\t\t\t: false;\n\n\t\t\t\t\treturn <div\n\t\t\t\t\t\t\tid=\"id\"\n\t\t\t\t\t>\n\t\t\t\t\t\ttest\n\t\t\t\t\t</div>\n\t\t\t\t}\n\n// features: [], parser: default, , options: [{\"indentMode\":\"tab\",\"ignoreTernaryOperator\":true}], ",
+      "options": [
+        {
+          "indentMode": "tab",
+          "ignoreTernaryOperator": true
+        }
+      ],
+      "parser": "espree",
+      "output": "\n\t\t\t\tconst F = () => {\n\t\t\t\t\tconst foo = true\n\t\t\t\t\t\t? <div id=\"id\">test</div>\n\t\t\t\t\t\t: false;\n\n\t\t\t\t\treturn <div\n\t\t\t\t\t\tid=\"id\"\n\t\t\t\t\t>\n\t\t\t\t\t\ttest\n\t\t\t\t\t</div>\n\t\t\t\t}\n\n// features: [], parser: default, , options: [{\"indentMode\":\"tab\",\"ignoreTernaryOperator\":true}], ",
+      "recursiveOutput": "\n\t\t\t\tconst F = () => {\n\t\t\t\t\tconst foo = true\n\t\t\t\t\t\t? <div id=\"id\">test</div>\n\t\t\t\t\t\t: false;\n\n\t\t\t\t\treturn <div\n\t\t\t\t\t\tid=\"id\"\n\t\t\t\t\t>\n\t\t\t\t\t\ttest\n\t\t\t\t\t</div>\n\t\t\t\t}\n\n// features: [], parser: default, , options: [{\"indentMode\":\"tab\",\"ignoreTernaryOperator\":true}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 6,
+            "type": "tab",
+            "characters": "characters",
+            "gotten": 7
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 6 tab characters but found 7.",
+          "data": {
+            "needed": 6,
+            "type": "tab",
+            "characters": "characters",
+            "gotten": 7
+          },
+          "range": [117, 124],
+          "loc": {
+            "line": 8,
+            "column": 8,
+            "endLine": 8,
+            "endColumn": 15
+          },
+          "fix": {
+            "range": [110, 117],
+            "text": "\t\t\t\t\t\t"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n\t\t\t\tconst F = () => {\n\t\t\t\t\tconst foo = true\n\t\t\t\t\t\t? <div id=\"id\">test</div>\n\t\t\t\t\t\t: false;\n\n\t\t\t\t\treturn <div\n\t\t\t\t\t\t\tid=\"id\"\n\t\t\t\t\t>\n\t\t\t\t\t\ttest\n\t\t\t\t\t</div>\n\t\t\t\t}\n\n// features: [], parser: @typescript-eslint/parser, , options: [{\"indentMode\":\"tab\",\"ignoreTernaryOperator\":true}], ",
+      "options": [
+        {
+          "indentMode": "tab",
+          "ignoreTernaryOperator": true
+        }
+      ],
+      "parser": "typescript",
+      "output": "\n\t\t\t\tconst F = () => {\n\t\t\t\t\tconst foo = true\n\t\t\t\t\t\t? <div id=\"id\">test</div>\n\t\t\t\t\t\t: false;\n\n\t\t\t\t\treturn <div\n\t\t\t\t\t\tid=\"id\"\n\t\t\t\t\t>\n\t\t\t\t\t\ttest\n\t\t\t\t\t</div>\n\t\t\t\t}\n\n// features: [], parser: @typescript-eslint/parser, , options: [{\"indentMode\":\"tab\",\"ignoreTernaryOperator\":true}], ",
+      "recursiveOutput": "\n\t\t\t\tconst F = () => {\n\t\t\t\t\tconst foo = true\n\t\t\t\t\t\t? <div id=\"id\">test</div>\n\t\t\t\t\t\t: false;\n\n\t\t\t\t\treturn <div\n\t\t\t\t\t\tid=\"id\"\n\t\t\t\t\t>\n\t\t\t\t\t\ttest\n\t\t\t\t\t</div>\n\t\t\t\t}\n\n// features: [], parser: @typescript-eslint/parser, , options: [{\"indentMode\":\"tab\",\"ignoreTernaryOperator\":true}], ",
+      "upstreamErrors": [
+        {
+          "messageId": "wrongIndent",
+          "data": {
+            "needed": 6,
+            "type": "tab",
+            "characters": "characters",
+            "gotten": 7
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "wrongIndent",
+          "message": "Expected indentation of 6 tab characters but found 7.",
+          "data": {
+            "needed": 6,
+            "type": "tab",
+            "characters": "characters",
+            "gotten": 7
+          },
+          "range": [117, 124],
+          "loc": {
+            "line": 8,
+            "column": 8,
+            "endLine": 8,
+            "endColumn": 15
+          },
+          "fix": {
+            "range": [110, 117],
+            "text": "\t\t\t\t\t\t"
+          }
+        }
+      ]
+    }
+  ]
+}

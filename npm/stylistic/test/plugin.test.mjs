@@ -146,6 +146,7 @@ const stylisticRuleFixtures = [
   ],
   ['jsx-first-prop-new-line', '<App first={{\n  value: 1\n}} second />;\n', [], ['propOnNewLine']],
   ['jsx-function-call-newline', 'render(<App\n  prop />);\n', [], ['missingLineBreak']],
+  ['jsx-indent-props', '<App\nprop />;\n', [2], ['wrongIndent']],
   ['jsx-pascal-case', '<Bad_name />;\n', [], ['usePascalCase']],
   ['jsx-props-no-multi-spaces', '<App  foo />;\n', [], ['onlyOneSpace']],
   ['jsx-quotes', "<App title='value' />;\n", [], ['unexpected']],
@@ -393,6 +394,7 @@ describe('stylistic plugin', () => {
     expect(plugin.rules['no-confusing-arrow'].meta.fixable).toBe('code');
     expect(plugin.rules['jsx-first-prop-new-line'].meta.fixable).toBe('code');
     expect(plugin.rules['jsx-curly-brace-presence'].meta.fixable).toBe('code');
+    expect(plugin.rules['jsx-indent-props'].meta.fixable).toBe('code');
     expect(plugin.rules['jsx-quotes'].meta.fixable).toBe('code');
     expect(plugin.rules['no-extra-parens'].meta.fixable).toBe('code');
     expect(plugin.rules['arrow-spacing'].meta.fixable).toBe('whitespace');
@@ -4481,6 +4483,56 @@ const parenthesized = (a + b) * c;
       );
       expect(readFileSync(tsxPath, 'utf8')).toBe(
         'export const view = <div>{(function (): JSX.Element { return <span /> })()}</div>;\n',
+      );
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('runs jsx-indent-props through real oxlint TSX lint and suggestions', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-jsx-indent-props-'));
+
+    try {
+      const sourcePath = join(temp, 'sample.tsx');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+      const source =
+        'export const emoji = "😀";\nexport const view = <Panel<型>\nprop="日本語"\n{...props} />;\n';
+      writeFileSync(sourcePath, source);
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [{ name: 'stylistic', specifier: join(packageRoot, 'index.js') }],
+          rules: {
+            'stylistic/jsx-indent-props': ['error', 2],
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', sourcePath],
+        { encoding: 'utf8' },
+      );
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      const diagnostics = JSON.parse(result.stdout).diagnostics;
+      expect(diagnostics.map((diagnostic) => diagnostic.code)).toEqual([
+        'stylistic(jsx-indent-props)',
+        'stylistic(jsx-indent-props)',
+      ]);
+      expect(diagnostics.map((diagnostic) => diagnostic.message)).toEqual([
+        'Expected indentation of 2 space characters but found 0.',
+        'Expected indentation of 2 space characters but found 0.',
+      ]);
+
+      const fixed = spawnSync(oxlint, ['-c', configPath, '--fix-suggestions', sourcePath], {
+        encoding: 'utf8',
+      });
+      expect(fixed.status).toBe(0);
+      expect(fixed.stderr).toBe('');
+      expect(readFileSync(sourcePath, 'utf8')).toBe(
+        'export const emoji = "😀";\nexport const view = <Panel<型>\n  prop="日本語"\n  {...props} />;\n',
       );
     } finally {
       rmSync(temp, { recursive: true, force: true });
