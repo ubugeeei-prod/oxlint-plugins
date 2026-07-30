@@ -56,7 +56,8 @@ const expectedRuleNames = [
 const representativeSource = `
 @Component({ selector: "BadSelector", template: \`a
 b
-c\` }) class App {}
+c
+d\` }) class App {}
 const total = computed(() => { totalSignal(); });
 @Component({ styleUrls: ["./x.css"] }) class StyleComponent {}
 @Input() class WrongContext {}
@@ -321,6 +322,77 @@ describe('angular-eslint native API', () => {
       }),
     ).toMatchObject(expected);
   });
+
+  it.each([
+    [
+      '@Component({ template: `one\ntwo\nthree\nfour` }) class Test {}',
+      [],
+      [
+        {
+          messageId: 'componentMaxInlineDeclarations',
+          data: [
+            { key: 'propertyType', value: 'template' },
+            { key: 'lineCount', value: '4' },
+            { key: 'max', value: '3' },
+          ],
+        },
+      ],
+    ],
+    ['@Component({ template: `one\ntwo\nthree` }) class Test {}', [], []],
+    [
+      '@Component({ styles: ["one"] }) class Test {}',
+      [{ styles: 0 }],
+      [
+        {
+          messageId: 'componentMaxInlineDeclarations',
+          data: [
+            { key: 'propertyType', value: 'styles' },
+            { key: 'lineCount', value: '1' },
+            { key: 'max', value: '0' },
+          ],
+        },
+      ],
+    ],
+    [
+      '@Component({ animations: [one()] }) class Test {}',
+      [{ animations: 0 }],
+      [
+        {
+          messageId: 'componentMaxInlineDeclarations',
+          data: [
+            { key: 'propertyType', value: 'animations' },
+            { key: 'lineCount', value: '1' },
+            { key: 'max', value: '0' },
+          ],
+        },
+      ],
+    ],
+    [
+      '@Component({ styles: [`one\ntwo`, `three\nfour`] }) class Test {}',
+      [{ template: 0 }],
+      [
+        {
+          messageId: 'componentMaxInlineDeclarations',
+          data: [
+            { key: 'propertyType', value: 'styles' },
+            { key: 'lineCount', value: '4' },
+            { key: 'max', value: '3' },
+          ],
+        },
+      ],
+    ],
+    ['@Component({ styles, animations: [], template }) class Test {}', [{ styles: 0 }], []],
+  ])(
+    'honors component inline declaration limits through the native API',
+    (source, options, expected) => {
+      expect(
+        scanAngularEslint(source, 'fixture.ts', {
+          ruleNames: ['component-max-inline-declarations'],
+          options,
+        }),
+      ).toMatchObject(expected);
+    },
+  );
 
   it('returns LSP-shaped locations', () => {
     const [diagnostic] = scanAngularEslint(
