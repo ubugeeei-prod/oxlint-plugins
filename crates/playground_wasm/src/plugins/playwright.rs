@@ -183,4 +183,33 @@ mod tests {
             (1, 6, 1, 10)
         );
     }
+
+    #[test]
+    fn preserves_prefer_lowercase_title_message_data_location_and_rule_selection() {
+        let filter = EnabledFilter::parse(r#"{"playwright":["prefer-lowercase-title"]}"#);
+        let mut diagnostics = Vec::new();
+        scan(
+            "test(\"Works!\", () => {});\n",
+            "fixture.spec.ts",
+            &filter,
+            &mut diagnostics,
+        );
+
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].rule, "prefer-lowercase-title");
+        assert_eq!(diagnostics[0].message_id, "unexpectedLowercase");
+        assert_eq!(
+            diagnostics[0].data.get("method").map(String::as_str),
+            Some("test")
+        );
+        assert_eq!(
+            (
+                diagnostics[0].start_line,
+                diagnostics[0].start_column,
+                diagnostics[0].end_line,
+                diagnostics[0].end_column,
+            ),
+            (1, 5, 1, 13)
+        );
+    }
 }

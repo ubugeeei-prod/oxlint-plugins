@@ -159,6 +159,9 @@ const expectedThresholdMessages = {
     'Maximum describe call depth exceeded ({{ depth }}). Maximum allowed is {{ max }}.',
   'require-top-level-describe': 'All test cases must be wrapped in a describe block.',
 };
+const expectedSpecializedMessages = {
+  'prefer-lowercase-title': '`{{method}}`s should begin with lowercase',
+};
 
 function runRule(ruleName, sourceText, options = [], filename = 'fixture.spec.ts') {
   const reports = [];
@@ -214,6 +217,7 @@ describe('playwright plugin adapter', () => {
     expect(plugin.rules[ruleName].meta.messages[reports[0].messageId]).toBe(
       expectedRestrictedMessages[ruleName] ??
         expectedThresholdMessages[ruleName] ??
+        expectedSpecializedMessages[ruleName] ??
         'Unexpected Playwright pattern.',
     );
   });

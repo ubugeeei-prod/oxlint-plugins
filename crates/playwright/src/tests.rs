@@ -725,6 +725,289 @@ fn expect_expect_uses_utf16_locations_and_malformed_sources_fail_closed() {
     );
 }
 
+#[test]
+fn prefer_lowercase_title_reports_exact_methods_locations_and_fixes() {
+    let source = concat!(
+        "test('Foo', () => {});\n",
+        "test.skip(`Bar baz`, () => {});\n",
+        "test[`describe`][\"only\"](\"Suite\", () => {});\n",
+        "describe('Group', () => {});\n",
+    );
+    let diagnostics = prefer_lowercase_title_diagnostics(source, &PlaywrightOptions::default());
+
+    assert_eq!(diagnostics.len(), 4);
+    assert_eq!(
+        diagnostics
+            .iter()
+            .map(|diagnostic| (
+                diagnostic.message_id,
+                diagnostic.data.method.as_deref(),
+                diagnostic.loc.start_line,
+                diagnostic.loc.start_column,
+                diagnostic.loc.end_column,
+            ))
+            .collect::<SmallVec<[_; 4]>>()
+            .as_slice(),
+        &[
+            ("unexpectedLowercase", Some("test"), 1, 5, 10),
+            ("unexpectedLowercase", Some("test"), 2, 10, 19),
+            ("unexpectedLowercase", Some("test.describe"), 3, 25, 32),
+            ("unexpectedLowercase", Some("test.describe"), 4, 9, 16),
+        ]
+    );
+    assert_eq!(
+        diagnostics
+            .iter()
+            .map(|diagnostic| diagnostic
+                .fix
+                .as_ref()
+                .expect("uppercase titles are fixable")
+                .replacement
+                .as_str())
+            .collect::<SmallVec<[_; 4]>>()
+            .as_slice(),
+        &["foo", "bar baz", "suite", "group"]
+    );
+
+    let fixed = apply_diagnostic_fixes(source, &diagnostics);
+    assert_eq!(
+        fixed,
+        concat!(
+            "test('foo', () => {});\n",
+            "test.skip(`bar baz`, () => {});\n",
+            "test[`describe`][\"only\"](\"suite\", () => {});\n",
+            "describe('group', () => {});\n",
+        )
+    );
+}
+
+#[test]
+fn prefer_lowercase_title_honors_every_option_and_nested_describe_depth() {
+    let source = concat!(
+        "test.describe('Top', () => {\n",
+        "  test.describe('Nested', () => {\n",
+        "    test('Case', () => {});\n",
+        "  });\n",
+        "});\n",
+        "test.describe('Sibling', () => {});\n",
+        "test('GET /health', () => {});\n",
+        "test('POST /health', () => {});\n",
+    );
+    let options = PlaywrightOptions {
+        allowed_title_prefixes: [CompactString::from("GET")].into_iter().collect(),
+        ignore_top_level_describe: true,
+        ..PlaywrightOptions::default()
+    };
+    let diagnostics = prefer_lowercase_title_diagnostics(source, &options);
+
+    assert_eq!(diagnostics.len(), 3);
+    assert_eq!(
+        diagnostics
+            .iter()
+            .map(|diagnostic| (diagnostic.data.method.as_deref(), diagnostic.loc.start_line))
+            .collect::<SmallVec<[_; 4]>>()
+            .as_slice(),
+        &[
+            (Some("test.describe"), 2),
+            (Some("test"), 3),
+            (Some("test"), 8),
+        ]
+    );
+    assert_eq!(
+        diagnostics[2]
+            .fix
+            .as_ref()
+            .expect("POST title is fixable")
+            .replacement,
+        "pOST /health"
+    );
+
+    let ignore_tests = PlaywrightOptions {
+        lowercase_title_ignored_methods: [CompactString::from("test")].into_iter().collect(),
+        ..options.clone()
+    };
+    let diagnostics = prefer_lowercase_title_diagnostics(source, &ignore_tests);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].data.method.as_deref(), Some("test.describe"));
+
+    let ignore_describes = PlaywrightOptions {
+        lowercase_title_ignored_methods: [CompactString::from("test.describe")]
+            .into_iter()
+            .collect(),
+        ..options
+    };
+    let diagnostics = prefer_lowercase_title_diagnostics(source, &ignore_describes);
+    assert_eq!(
+        diagnostics
+            .iter()
+            .map(|diagnostic| diagnostic.loc.start_line)
+            .collect::<SmallVec<[_; 4]>>()
+            .as_slice(),
+        &[3, 8]
+    );
+}
+
+#[test]
+fn prefer_lowercase_title_supports_global_import_and_transitive_extend_aliases() {
+    let source = concat!(
+        "import { test as scenario } from \"another-runner\";\n",
+        "const later = custom.extend({});\n",
+        "const custom = scenario.extend({}).extend({});\n",
+        "scenario('Imported', () => {});\n",
+        "custom.describe('Extended suite', () => {});\n",
+        "later.only('Forward alias', () => {});\n",
+        "it('Global alias', () => {});\n",
+    );
+    let options = PlaywrightOptions {
+        test_aliases: [CompactString::from("it")].into_iter().collect(),
+        ..PlaywrightOptions::default()
+    };
+    let diagnostics = prefer_lowercase_title_diagnostics(source, &options);
+
+    assert_eq!(diagnostics.len(), 4);
+    assert_eq!(
+        diagnostics
+            .iter()
+            .map(|diagnostic| (diagnostic.data.method.as_deref(), diagnostic.loc.start_line))
+            .collect::<SmallVec<[_; 4]>>()
+            .as_slice(),
+        &[
+            (Some("test"), 4),
+            (Some("test.describe"), 5),
+            (Some("test"), 6),
+            (Some("test"), 7),
+        ]
+    );
+    assert_eq!(
+        apply_diagnostic_fixes(source, &diagnostics),
+        source
+            .replace("'Imported'", "'imported'")
+            .replace("'Extended suite'", "'extended suite'")
+            .replace("'Forward alias'", "'forward alias'")
+            .replace("'Global alias'", "'global alias'")
+    );
+}
+
+#[test]
+fn prefer_lowercase_title_matches_static_string_and_template_semantics() {
+    let source = concat!(
+        "test(\"\\u0046oo\", () => {});\n",
+        "test(`\\u0046oo`, () => {});\n",
+        "test(`Dynamic ${name}`, () => {});\n",
+        "test(variable, () => {});\n",
+        "test(\"\", () => {});\n",
+        "test(\"<Component/>\", () => {});\n",
+        "test.describe.configure({ mode: \"parallel\" });\n",
+        "test.describe(\"No callback\");\n",
+    );
+    let diagnostics = prefer_lowercase_title_diagnostics(source, &PlaywrightOptions::default());
+
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+    assert_eq!(
+        diagnostics[0]
+            .fix
+            .as_ref()
+            .expect("decoded string title is fixable")
+            .replacement,
+        "foo"
+    );
+    assert_eq!(
+        apply_diagnostic_fixes(source, &diagnostics),
+        source.replace("\"\\u0046oo\"", "\"foo\"")
+    );
+}
+
+#[test]
+fn prefer_lowercase_title_preserves_javascript_utf16_case_behavior() {
+    let source = concat!(
+        "const marker = \"🧪\"; test(\"İstanbul\", () => {});\n",
+        "test(\"𐐀eseret\", () => {});\n",
+        "test(\"Éclair\", () => {});\n",
+    );
+    let diagnostics = prefer_lowercase_title_diagnostics(source, &PlaywrightOptions::default());
+
+    assert_eq!(diagnostics.len(), 2);
+    assert_eq!(
+        diagnostics
+            .iter()
+            .map(|diagnostic| (
+                diagnostic.loc.start_line,
+                diagnostic.loc.start_column,
+                diagnostic.loc.end_column,
+            ))
+            .collect::<SmallVec<[_; 2]>>()
+            .as_slice(),
+        &[(1, 26, 36), (3, 5, 13)]
+    );
+    assert_eq!(
+        diagnostics[0]
+            .fix
+            .as_ref()
+            .expect("BMP uppercase title is fixable")
+            .replacement,
+        "i\u{307}stanbul"
+    );
+    assert_eq!(
+        diagnostics[1]
+            .fix
+            .as_ref()
+            .expect("accented uppercase title is fixable")
+            .replacement,
+        "éclair"
+    );
+    assert_eq!(
+        apply_diagnostic_fixes(source, &diagnostics),
+        concat!(
+            "const marker = \"🧪\"; test(\"i\u{307}stanbul\", () => {});\n",
+            "test(\"𐐀eseret\", () => {});\n",
+            "test(\"éclair\", () => {});\n",
+        )
+    );
+}
+
+#[test]
+fn prefer_lowercase_title_is_inert_for_unrelated_calls_and_parse_errors() {
+    let source = concat!(
+        "random('Title', () => {});\n",
+        "foo.test('Title', () => {});\n",
+        "test.step('Title', () => {});\n",
+        "test('lowercase', () => {});\n",
+        "test('123 Number', () => {});\n",
+        "test('<Markup/>', () => {});\n",
+    );
+    assert!(prefer_lowercase_title_diagnostics(source, &PlaywrightOptions::default()).is_empty());
+    assert!(
+        prefer_lowercase_title_diagnostics("test(\"Broken", &PlaywrightOptions::default())
+            .is_empty()
+    );
+}
+
+fn prefer_lowercase_title_diagnostics(
+    source: &str,
+    options: &PlaywrightOptions,
+) -> SmallVec<[crate::Diagnostic; 8]> {
+    scan_playwright_with_options(source, "fixture.spec.ts", options)
+        .into_iter()
+        .filter(|diagnostic| diagnostic.rule_name == "prefer-lowercase-title")
+        .collect()
+}
+
+fn apply_diagnostic_fixes(source: &str, diagnostics: &[crate::Diagnostic]) -> CompactString {
+    let mut fixed = CompactString::from(source);
+    for diagnostic in diagnostics.iter().rev() {
+        let fix = diagnostic
+            .fix
+            .as_ref()
+            .expect("prefer-lowercase-title diagnostics are fixable");
+        fixed.replace_range(
+            fix.start as usize..fix.end as usize,
+            fix.replacement.as_str(),
+        );
+    }
+    fixed
+}
+
 fn expect_expect_diagnostics(
     source: &str,
     options: &PlaywrightOptions,
