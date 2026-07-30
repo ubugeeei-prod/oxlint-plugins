@@ -1,0 +1,1344 @@
+{
+  "__generated": {
+    "source": "@stylistic/eslint-plugin",
+    "version": "5.10.0",
+    "sourceCommit": "efbb1bc0e5aaedc4695c44a03f46f4fcbbe58712",
+    "sourceFile": "packages/eslint-plugin/rules/jsx-pascal-case/jsx-pascal-case.test.ts",
+    "license": "MIT",
+    "eslintVersion": "10.0.0",
+    "parserVersions": {
+      "espree": "10.4.0",
+      "typescriptEslint": "8.56.0",
+      "typescript": "5.9.3"
+    },
+    "parserMatrix": "ESLint 10 parsers-jsx expansion; Babel disabled by the stable runner",
+    "tool": "tools/tasks/sync-stylistic-jsx-pascal-case-tests.ts",
+    "inventory": {
+      "logicalValid": 29,
+      "logicalInvalid": 14,
+      "valid": 57,
+      "invalid": 28,
+      "diagnostics": 28,
+      "fixableInvalid": 0,
+      "unfixableInvalid": 28,
+      "total": 85
+    }
+  },
+  "valid": [
+    {
+      "code": "<testcomponent />\n// features: [], parser: default, , , ",
+      "options": [],
+      "parser": "espree"
+    },
+    {
+      "code": "<testcomponent />\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript"
+    },
+    {
+      "code": "<testComponent />\n// features: [], parser: default, , , ",
+      "options": [],
+      "parser": "espree"
+    },
+    {
+      "code": "<testComponent />\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript"
+    },
+    {
+      "code": "<test_component />\n// features: [], parser: default, , , ",
+      "options": [],
+      "parser": "espree"
+    },
+    {
+      "code": "<test_component />\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript"
+    },
+    {
+      "code": "<TestComponent />\n// features: [], parser: default, , , ",
+      "options": [],
+      "parser": "espree"
+    },
+    {
+      "code": "<TestComponent />\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript"
+    },
+    {
+      "code": "<CSSTransitionGroup />\n// features: [], parser: default, , , ",
+      "options": [],
+      "parser": "espree"
+    },
+    {
+      "code": "<CSSTransitionGroup />\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript"
+    },
+    {
+      "code": "<BetterThanCSS />\n// features: [], parser: default, , , ",
+      "options": [],
+      "parser": "espree"
+    },
+    {
+      "code": "<BetterThanCSS />\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript"
+    },
+    {
+      "code": "<TestComponent><div /></TestComponent>\n// features: [], parser: default, , , ",
+      "options": [],
+      "parser": "espree"
+    },
+    {
+      "code": "<TestComponent><div /></TestComponent>\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript"
+    },
+    {
+      "code": "<Test1Component />\n// features: [], parser: default, , , ",
+      "options": [],
+      "parser": "espree"
+    },
+    {
+      "code": "<Test1Component />\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript"
+    },
+    {
+      "code": "<TestComponent1 />\n// features: [], parser: default, , , ",
+      "options": [],
+      "parser": "espree"
+    },
+    {
+      "code": "<TestComponent1 />\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript"
+    },
+    {
+      "code": "<T3StComp0Nent />\n// features: [], parser: default, , , ",
+      "options": [],
+      "parser": "espree"
+    },
+    {
+      "code": "<T3StComp0Nent />\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript"
+    },
+    {
+      "code": "<Éurströmming />\n// features: [], parser: default, , , ",
+      "options": [],
+      "parser": "espree"
+    },
+    {
+      "code": "<Éurströmming />\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript"
+    },
+    {
+      "code": "<Año />\n// features: [], parser: default, , , ",
+      "options": [],
+      "parser": "espree"
+    },
+    {
+      "code": "<Año />\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript"
+    },
+    {
+      "code": "<Søknad />\n// features: [], parser: default, , , ",
+      "options": [],
+      "parser": "espree"
+    },
+    {
+      "code": "<Søknad />\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript"
+    },
+    {
+      "code": "<T />\n// features: [], parser: default, , , ",
+      "options": [],
+      "parser": "espree"
+    },
+    {
+      "code": "<T />\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript"
+    },
+    {
+      "code": "<YMCA />\n// features: [], parser: default, , options: [{\"allowAllCaps\":true}], ",
+      "options": [
+        {
+          "allowAllCaps": true
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "<YMCA />\n// features: [], parser: @typescript-eslint/parser, , options: [{\"allowAllCaps\":true}], ",
+      "options": [
+        {
+          "allowAllCaps": true
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "<TEST_COMPONENT />\n// features: [], parser: default, , options: [{\"allowAllCaps\":true}], ",
+      "options": [
+        {
+          "allowAllCaps": true
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "<TEST_COMPONENT />\n// features: [], parser: @typescript-eslint/parser, , options: [{\"allowAllCaps\":true}], ",
+      "options": [
+        {
+          "allowAllCaps": true
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "<Modal.Header />\n// features: [], parser: default, , , ",
+      "options": [],
+      "parser": "espree"
+    },
+    {
+      "code": "<Modal.Header />\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript"
+    },
+    {
+      "code": "<qualification.T3StComp0Nent />\n// features: [], parser: default, , , ",
+      "options": [],
+      "parser": "espree"
+    },
+    {
+      "code": "<qualification.T3StComp0Nent />\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript"
+    },
+    {
+      "code": "<Modal:Header />\n// features: [jsx namespace], parser: default, , , ",
+      "options": [],
+      "parser": "espree"
+    },
+    {
+      "code": "<IGNORED />\n// features: [], parser: default, , options: [{\"ignore\":[\"IGNORED\"]}], ",
+      "options": [
+        {
+          "ignore": ["IGNORED"]
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "<IGNORED />\n// features: [], parser: @typescript-eslint/parser, , options: [{\"ignore\":[\"IGNORED\"]}], ",
+      "options": [
+        {
+          "ignore": ["IGNORED"]
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "<Foo_DEPRECATED />\n// features: [], parser: default, , options: [{\"ignore\":[\"*_D*D\"]}], ",
+      "options": [
+        {
+          "ignore": ["*_D*D"]
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "<Foo_DEPRECATED />\n// features: [], parser: @typescript-eslint/parser, , options: [{\"ignore\":[\"*_D*D\"]}], ",
+      "options": [
+        {
+          "ignore": ["*_D*D"]
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "<Foo_DEPRECATED />\n// features: [], parser: default, , options: [{\"ignore\":[\"*_+(DEPRECATED|IGNORED)\"]}], ",
+      "options": [
+        {
+          "ignore": ["*_+(DEPRECATED|IGNORED)"]
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "<Foo_DEPRECATED />\n// features: [], parser: @typescript-eslint/parser, , options: [{\"ignore\":[\"*_+(DEPRECATED|IGNORED)\"]}], ",
+      "options": [
+        {
+          "ignore": ["*_+(DEPRECATED|IGNORED)"]
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "<$ />\n// features: [], parser: default, , , ",
+      "options": [],
+      "parser": "espree"
+    },
+    {
+      "code": "<$ />\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript"
+    },
+    {
+      "code": "<_ />\n// features: [], parser: default, , , ",
+      "options": [],
+      "parser": "espree"
+    },
+    {
+      "code": "<_ />\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript"
+    },
+    {
+      "code": "<H1>Hello!</H1>\n// features: [], parser: default, , , ",
+      "options": [],
+      "parser": "espree"
+    },
+    {
+      "code": "<H1>Hello!</H1>\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript"
+    },
+    {
+      "code": "<Typography.P />\n// features: [], parser: default, , , ",
+      "options": [],
+      "parser": "espree"
+    },
+    {
+      "code": "<Typography.P />\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript"
+    },
+    {
+      "code": "<Styled.h1 />\n// features: [], parser: default, , options: [{\"allowNamespace\":true}], ",
+      "options": [
+        {
+          "allowNamespace": true
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "<Styled.h1 />\n// features: [], parser: @typescript-eslint/parser, , options: [{\"allowNamespace\":true}], ",
+      "options": [
+        {
+          "allowNamespace": true
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "<_TEST_COMPONENT />\n// features: [], parser: default, , options: [{\"allowAllCaps\":true,\"allowLeadingUnderscore\":true}], ",
+      "options": [
+        {
+          "allowAllCaps": true,
+          "allowLeadingUnderscore": true
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "<_TEST_COMPONENT />\n// features: [], parser: @typescript-eslint/parser, , options: [{\"allowAllCaps\":true,\"allowLeadingUnderscore\":true}], ",
+      "options": [
+        {
+          "allowAllCaps": true,
+          "allowLeadingUnderscore": true
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "<_TestComponent />\n// features: [], parser: default, , options: [{\"allowLeadingUnderscore\":true}], ",
+      "options": [
+        {
+          "allowLeadingUnderscore": true
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "<_TestComponent />\n// features: [], parser: @typescript-eslint/parser, , options: [{\"allowLeadingUnderscore\":true}], ",
+      "options": [
+        {
+          "allowLeadingUnderscore": true
+        }
+      ],
+      "parser": "typescript"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "<Test_component />\n// features: [], parser: default, , , ",
+      "options": [],
+      "parser": "espree",
+      "output": null,
+      "recursiveOutput": null,
+      "upstreamErrors": [
+        {
+          "messageId": "usePascalCase",
+          "data": {
+            "name": "Test_component"
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "usePascalCase",
+          "message": "Imported JSX component Test_component must be in PascalCase",
+          "data": {
+            "name": "Test_component"
+          },
+          "range": [0, 18],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 19
+          },
+          "fix": null
+        }
+      ]
+    },
+    {
+      "code": "<Test_component />\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript",
+      "output": null,
+      "recursiveOutput": null,
+      "upstreamErrors": [
+        {
+          "messageId": "usePascalCase",
+          "data": {
+            "name": "Test_component"
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "usePascalCase",
+          "message": "Imported JSX component Test_component must be in PascalCase",
+          "data": {
+            "name": "Test_component"
+          },
+          "range": [0, 18],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 19
+          },
+          "fix": null
+        }
+      ]
+    },
+    {
+      "code": "<TEST_COMPONENT />\n// features: [], parser: default, , , ",
+      "options": [],
+      "parser": "espree",
+      "output": null,
+      "recursiveOutput": null,
+      "upstreamErrors": [
+        {
+          "messageId": "usePascalCase",
+          "data": {
+            "name": "TEST_COMPONENT"
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "usePascalCase",
+          "message": "Imported JSX component TEST_COMPONENT must be in PascalCase",
+          "data": {
+            "name": "TEST_COMPONENT"
+          },
+          "range": [0, 18],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 19
+          },
+          "fix": null
+        }
+      ]
+    },
+    {
+      "code": "<TEST_COMPONENT />\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript",
+      "output": null,
+      "recursiveOutput": null,
+      "upstreamErrors": [
+        {
+          "messageId": "usePascalCase",
+          "data": {
+            "name": "TEST_COMPONENT"
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "usePascalCase",
+          "message": "Imported JSX component TEST_COMPONENT must be in PascalCase",
+          "data": {
+            "name": "TEST_COMPONENT"
+          },
+          "range": [0, 18],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 19
+          },
+          "fix": null
+        }
+      ]
+    },
+    {
+      "code": "<YMCA />\n// features: [], parser: default, , , ",
+      "options": [],
+      "parser": "espree",
+      "output": null,
+      "recursiveOutput": null,
+      "upstreamErrors": [
+        {
+          "messageId": "usePascalCase",
+          "data": {
+            "name": "YMCA"
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "usePascalCase",
+          "message": "Imported JSX component YMCA must be in PascalCase",
+          "data": {
+            "name": "YMCA"
+          },
+          "range": [0, 8],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 9
+          },
+          "fix": null
+        }
+      ]
+    },
+    {
+      "code": "<YMCA />\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript",
+      "output": null,
+      "recursiveOutput": null,
+      "upstreamErrors": [
+        {
+          "messageId": "usePascalCase",
+          "data": {
+            "name": "YMCA"
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "usePascalCase",
+          "message": "Imported JSX component YMCA must be in PascalCase",
+          "data": {
+            "name": "YMCA"
+          },
+          "range": [0, 8],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 9
+          },
+          "fix": null
+        }
+      ]
+    },
+    {
+      "code": "<_TEST_COMPONENT />\n// features: [], parser: default, , options: [{\"allowAllCaps\":true}], ",
+      "options": [
+        {
+          "allowAllCaps": true
+        }
+      ],
+      "parser": "espree",
+      "output": null,
+      "recursiveOutput": null,
+      "upstreamErrors": [
+        {
+          "messageId": "usePascalOrSnakeCase",
+          "data": {
+            "name": "_TEST_COMPONENT"
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "usePascalOrSnakeCase",
+          "message": "Imported JSX component _TEST_COMPONENT must be in PascalCase or SCREAMING_SNAKE_CASE",
+          "data": {
+            "name": "_TEST_COMPONENT"
+          },
+          "range": [0, 19],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 20
+          },
+          "fix": null
+        }
+      ]
+    },
+    {
+      "code": "<_TEST_COMPONENT />\n// features: [], parser: @typescript-eslint/parser, , options: [{\"allowAllCaps\":true}], ",
+      "options": [
+        {
+          "allowAllCaps": true
+        }
+      ],
+      "parser": "typescript",
+      "output": null,
+      "recursiveOutput": null,
+      "upstreamErrors": [
+        {
+          "messageId": "usePascalOrSnakeCase",
+          "data": {
+            "name": "_TEST_COMPONENT"
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "usePascalOrSnakeCase",
+          "message": "Imported JSX component _TEST_COMPONENT must be in PascalCase or SCREAMING_SNAKE_CASE",
+          "data": {
+            "name": "_TEST_COMPONENT"
+          },
+          "range": [0, 19],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 20
+          },
+          "fix": null
+        }
+      ]
+    },
+    {
+      "code": "<TEST_COMPONENT_ />\n// features: [], parser: default, , options: [{\"allowAllCaps\":true}], ",
+      "options": [
+        {
+          "allowAllCaps": true
+        }
+      ],
+      "parser": "espree",
+      "output": null,
+      "recursiveOutput": null,
+      "upstreamErrors": [
+        {
+          "messageId": "usePascalOrSnakeCase",
+          "data": {
+            "name": "TEST_COMPONENT_"
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "usePascalOrSnakeCase",
+          "message": "Imported JSX component TEST_COMPONENT_ must be in PascalCase or SCREAMING_SNAKE_CASE",
+          "data": {
+            "name": "TEST_COMPONENT_"
+          },
+          "range": [0, 19],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 20
+          },
+          "fix": null
+        }
+      ]
+    },
+    {
+      "code": "<TEST_COMPONENT_ />\n// features: [], parser: @typescript-eslint/parser, , options: [{\"allowAllCaps\":true}], ",
+      "options": [
+        {
+          "allowAllCaps": true
+        }
+      ],
+      "parser": "typescript",
+      "output": null,
+      "recursiveOutput": null,
+      "upstreamErrors": [
+        {
+          "messageId": "usePascalOrSnakeCase",
+          "data": {
+            "name": "TEST_COMPONENT_"
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "usePascalOrSnakeCase",
+          "message": "Imported JSX component TEST_COMPONENT_ must be in PascalCase or SCREAMING_SNAKE_CASE",
+          "data": {
+            "name": "TEST_COMPONENT_"
+          },
+          "range": [0, 19],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 20
+          },
+          "fix": null
+        }
+      ]
+    },
+    {
+      "code": "<TEST-COMPONENT />\n// features: [], parser: default, , options: [{\"allowAllCaps\":true}], ",
+      "options": [
+        {
+          "allowAllCaps": true
+        }
+      ],
+      "parser": "espree",
+      "output": null,
+      "recursiveOutput": null,
+      "upstreamErrors": [
+        {
+          "messageId": "usePascalOrSnakeCase",
+          "data": {
+            "name": "TEST-COMPONENT"
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "usePascalOrSnakeCase",
+          "message": "Imported JSX component TEST-COMPONENT must be in PascalCase or SCREAMING_SNAKE_CASE",
+          "data": {
+            "name": "TEST-COMPONENT"
+          },
+          "range": [0, 18],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 19
+          },
+          "fix": null
+        }
+      ]
+    },
+    {
+      "code": "<TEST-COMPONENT />\n// features: [], parser: @typescript-eslint/parser, , options: [{\"allowAllCaps\":true}], ",
+      "options": [
+        {
+          "allowAllCaps": true
+        }
+      ],
+      "parser": "typescript",
+      "output": null,
+      "recursiveOutput": null,
+      "upstreamErrors": [
+        {
+          "messageId": "usePascalOrSnakeCase",
+          "data": {
+            "name": "TEST-COMPONENT"
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "usePascalOrSnakeCase",
+          "message": "Imported JSX component TEST-COMPONENT must be in PascalCase or SCREAMING_SNAKE_CASE",
+          "data": {
+            "name": "TEST-COMPONENT"
+          },
+          "range": [0, 18],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 19
+          },
+          "fix": null
+        }
+      ]
+    },
+    {
+      "code": "<__ />\n// features: [], parser: default, , options: [{\"allowAllCaps\":true}], ",
+      "options": [
+        {
+          "allowAllCaps": true
+        }
+      ],
+      "parser": "espree",
+      "output": null,
+      "recursiveOutput": null,
+      "upstreamErrors": [
+        {
+          "messageId": "usePascalOrSnakeCase",
+          "data": {
+            "name": "__"
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "usePascalOrSnakeCase",
+          "message": "Imported JSX component __ must be in PascalCase or SCREAMING_SNAKE_CASE",
+          "data": {
+            "name": "__"
+          },
+          "range": [0, 6],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 7
+          },
+          "fix": null
+        }
+      ]
+    },
+    {
+      "code": "<__ />\n// features: [], parser: @typescript-eslint/parser, , options: [{\"allowAllCaps\":true}], ",
+      "options": [
+        {
+          "allowAllCaps": true
+        }
+      ],
+      "parser": "typescript",
+      "output": null,
+      "recursiveOutput": null,
+      "upstreamErrors": [
+        {
+          "messageId": "usePascalOrSnakeCase",
+          "data": {
+            "name": "__"
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "usePascalOrSnakeCase",
+          "message": "Imported JSX component __ must be in PascalCase or SCREAMING_SNAKE_CASE",
+          "data": {
+            "name": "__"
+          },
+          "range": [0, 6],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 7
+          },
+          "fix": null
+        }
+      ]
+    },
+    {
+      "code": "<_div />\n// features: [], parser: default, , options: [{\"allowLeadingUnderscore\":true}], ",
+      "options": [
+        {
+          "allowLeadingUnderscore": true
+        }
+      ],
+      "parser": "espree",
+      "output": null,
+      "recursiveOutput": null,
+      "upstreamErrors": [
+        {
+          "messageId": "usePascalCase",
+          "data": {
+            "name": "_div"
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "usePascalCase",
+          "message": "Imported JSX component _div must be in PascalCase",
+          "data": {
+            "name": "_div"
+          },
+          "range": [0, 8],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 9
+          },
+          "fix": null
+        }
+      ]
+    },
+    {
+      "code": "<_div />\n// features: [], parser: @typescript-eslint/parser, , options: [{\"allowLeadingUnderscore\":true}], ",
+      "options": [
+        {
+          "allowLeadingUnderscore": true
+        }
+      ],
+      "parser": "typescript",
+      "output": null,
+      "recursiveOutput": null,
+      "upstreamErrors": [
+        {
+          "messageId": "usePascalCase",
+          "data": {
+            "name": "_div"
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "usePascalCase",
+          "message": "Imported JSX component _div must be in PascalCase",
+          "data": {
+            "name": "_div"
+          },
+          "range": [0, 8],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 9
+          },
+          "fix": null
+        }
+      ]
+    },
+    {
+      "code": "<__ />\n// features: [], parser: default, , options: [{\"allowAllCaps\":true,\"allowLeadingUnderscore\":true}], ",
+      "options": [
+        {
+          "allowAllCaps": true,
+          "allowLeadingUnderscore": true
+        }
+      ],
+      "parser": "espree",
+      "output": null,
+      "recursiveOutput": null,
+      "upstreamErrors": [
+        {
+          "messageId": "usePascalOrSnakeCase",
+          "data": {
+            "name": "__"
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "usePascalOrSnakeCase",
+          "message": "Imported JSX component __ must be in PascalCase or SCREAMING_SNAKE_CASE",
+          "data": {
+            "name": "__"
+          },
+          "range": [0, 6],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 7
+          },
+          "fix": null
+        }
+      ]
+    },
+    {
+      "code": "<__ />\n// features: [], parser: @typescript-eslint/parser, , options: [{\"allowAllCaps\":true,\"allowLeadingUnderscore\":true}], ",
+      "options": [
+        {
+          "allowAllCaps": true,
+          "allowLeadingUnderscore": true
+        }
+      ],
+      "parser": "typescript",
+      "output": null,
+      "recursiveOutput": null,
+      "upstreamErrors": [
+        {
+          "messageId": "usePascalOrSnakeCase",
+          "data": {
+            "name": "__"
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "usePascalOrSnakeCase",
+          "message": "Imported JSX component __ must be in PascalCase or SCREAMING_SNAKE_CASE",
+          "data": {
+            "name": "__"
+          },
+          "range": [0, 6],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 7
+          },
+          "fix": null
+        }
+      ]
+    },
+    {
+      "code": "<$a />\n// features: [], parser: default, , , ",
+      "options": [],
+      "parser": "espree",
+      "output": null,
+      "recursiveOutput": null,
+      "upstreamErrors": [
+        {
+          "messageId": "usePascalCase",
+          "data": {
+            "name": "$a"
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "usePascalCase",
+          "message": "Imported JSX component $a must be in PascalCase",
+          "data": {
+            "name": "$a"
+          },
+          "range": [0, 6],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 7
+          },
+          "fix": null
+        }
+      ]
+    },
+    {
+      "code": "<$a />\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript",
+      "output": null,
+      "recursiveOutput": null,
+      "upstreamErrors": [
+        {
+          "messageId": "usePascalCase",
+          "data": {
+            "name": "$a"
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "usePascalCase",
+          "message": "Imported JSX component $a must be in PascalCase",
+          "data": {
+            "name": "$a"
+          },
+          "range": [0, 6],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 7
+          },
+          "fix": null
+        }
+      ]
+    },
+    {
+      "code": "<Foo_DEPRECATED />\n// features: [], parser: default, , options: [{\"ignore\":[\"*_FOO\"]}], ",
+      "options": [
+        {
+          "ignore": ["*_FOO"]
+        }
+      ],
+      "parser": "espree",
+      "output": null,
+      "recursiveOutput": null,
+      "upstreamErrors": [
+        {
+          "messageId": "usePascalCase",
+          "data": {
+            "name": "Foo_DEPRECATED"
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "usePascalCase",
+          "message": "Imported JSX component Foo_DEPRECATED must be in PascalCase",
+          "data": {
+            "name": "Foo_DEPRECATED"
+          },
+          "range": [0, 18],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 19
+          },
+          "fix": null
+        }
+      ]
+    },
+    {
+      "code": "<Foo_DEPRECATED />\n// features: [], parser: @typescript-eslint/parser, , options: [{\"ignore\":[\"*_FOO\"]}], ",
+      "options": [
+        {
+          "ignore": ["*_FOO"]
+        }
+      ],
+      "parser": "typescript",
+      "output": null,
+      "recursiveOutput": null,
+      "upstreamErrors": [
+        {
+          "messageId": "usePascalCase",
+          "data": {
+            "name": "Foo_DEPRECATED"
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "usePascalCase",
+          "message": "Imported JSX component Foo_DEPRECATED must be in PascalCase",
+          "data": {
+            "name": "Foo_DEPRECATED"
+          },
+          "range": [0, 18],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 19
+          },
+          "fix": null
+        }
+      ]
+    },
+    {
+      "code": "<Styled.h1 />\n// features: [], parser: default, , , ",
+      "options": [],
+      "parser": "espree",
+      "output": null,
+      "recursiveOutput": null,
+      "upstreamErrors": [
+        {
+          "messageId": "usePascalCase",
+          "data": {
+            "name": "h1"
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "usePascalCase",
+          "message": "Imported JSX component h1 must be in PascalCase",
+          "data": {
+            "name": "h1"
+          },
+          "range": [0, 13],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 14
+          },
+          "fix": null
+        }
+      ]
+    },
+    {
+      "code": "<Styled.h1 />\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript",
+      "output": null,
+      "recursiveOutput": null,
+      "upstreamErrors": [
+        {
+          "messageId": "usePascalCase",
+          "data": {
+            "name": "h1"
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "usePascalCase",
+          "message": "Imported JSX component h1 must be in PascalCase",
+          "data": {
+            "name": "h1"
+          },
+          "range": [0, 13],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 14
+          },
+          "fix": null
+        }
+      ]
+    },
+    {
+      "code": "<$Typography.P />\n// features: [], parser: default, , , ",
+      "options": [],
+      "parser": "espree",
+      "output": null,
+      "recursiveOutput": null,
+      "upstreamErrors": [
+        {
+          "messageId": "usePascalCase",
+          "data": {
+            "name": "$Typography"
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "usePascalCase",
+          "message": "Imported JSX component $Typography must be in PascalCase",
+          "data": {
+            "name": "$Typography"
+          },
+          "range": [0, 17],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 18
+          },
+          "fix": null
+        }
+      ]
+    },
+    {
+      "code": "<$Typography.P />\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "options": [],
+      "parser": "typescript",
+      "output": null,
+      "recursiveOutput": null,
+      "upstreamErrors": [
+        {
+          "messageId": "usePascalCase",
+          "data": {
+            "name": "$Typography"
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "usePascalCase",
+          "message": "Imported JSX component $Typography must be in PascalCase",
+          "data": {
+            "name": "$Typography"
+          },
+          "range": [0, 17],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 18
+          },
+          "fix": null
+        }
+      ]
+    },
+    {
+      "code": "<STYLED.h1 />\n// features: [], parser: default, , options: [{\"allowNamespace\":true}], ",
+      "options": [
+        {
+          "allowNamespace": true
+        }
+      ],
+      "parser": "espree",
+      "output": null,
+      "recursiveOutput": null,
+      "upstreamErrors": [
+        {
+          "messageId": "usePascalCase",
+          "data": {
+            "name": "STYLED"
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "usePascalCase",
+          "message": "Imported JSX component STYLED must be in PascalCase",
+          "data": {
+            "name": "STYLED"
+          },
+          "range": [0, 13],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 14
+          },
+          "fix": null
+        }
+      ]
+    },
+    {
+      "code": "<STYLED.h1 />\n// features: [], parser: @typescript-eslint/parser, , options: [{\"allowNamespace\":true}], ",
+      "options": [
+        {
+          "allowNamespace": true
+        }
+      ],
+      "parser": "typescript",
+      "output": null,
+      "recursiveOutput": null,
+      "upstreamErrors": [
+        {
+          "messageId": "usePascalCase",
+          "data": {
+            "name": "STYLED"
+          }
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "usePascalCase",
+          "message": "Imported JSX component STYLED must be in PascalCase",
+          "data": {
+            "name": "STYLED"
+          },
+          "range": [0, 13],
+          "loc": {
+            "line": 1,
+            "column": 1,
+            "endLine": 1,
+            "endColumn": 14
+          },
+          "fix": null
+        }
+      ]
+    }
+  ]
+}

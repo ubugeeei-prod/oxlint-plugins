@@ -1953,4 +1953,24 @@ describe('stylistic native API', () => {
       },
     ]);
   });
+
+  it('runs jsx-pascal-case with exact UTF-8 ranges, data, and no fixes', () => {
+    const source = 'const emoji = "😀"; const view = <É_bad title="日本語" />;';
+    const start = Buffer.byteLength(source.slice(0, source.indexOf('<É_bad')));
+    const end = Buffer.byteLength(source.slice(0, source.indexOf('/>') + 2));
+    const diagnostics = runNativeStylisticLint(source, {
+      filename: 'fixture.tsx',
+      rules: [{ name: 'jsx-pascal-case', options: [] }],
+    });
+
+    expect(diagnostics).toEqual([
+      {
+        ruleName: 'jsx-pascal-case',
+        messageId: 'usePascalCase',
+        message: 'Imported JSX component É_bad must be in PascalCase',
+        data: { name: 'É_bad' },
+        range: { start, end },
+      },
+    ]);
+  });
 });

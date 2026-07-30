@@ -140,6 +140,7 @@ const stylisticRuleFixtures = [
   ],
   ['jsx-first-prop-new-line', '<App first={{\n  value: 1\n}} second />;\n', [], ['propOnNewLine']],
   ['jsx-function-call-newline', 'render(<App\n  prop />);\n', [], ['missingLineBreak']],
+  ['jsx-pascal-case', '<Bad_name />;\n', [], ['usePascalCase']],
   ['jsx-props-no-multi-spaces', '<App  foo />;\n', [], ['onlyOneSpace']],
   ['jsx-quotes', "<App title='value' />;\n", [], ['unexpected']],
   ['jsx-self-closing-comp', '<App></App>;\n', [], ['notSelfClosing']],
