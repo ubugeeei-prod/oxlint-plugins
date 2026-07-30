@@ -76,6 +76,7 @@
     "port:tests:stylistic:jsx-curly-spacing": "node tools/tasks/sync-stylistic-jsx-curly-spacing-tests.ts",
     "port:tests:stylistic:jsx-first-prop-new-line": "node tools/tasks/sync-stylistic-jsx-first-prop-new-line-tests.ts",
     "port:tests:stylistic:jsx-function-call-newline": "node tools/tasks/sync-stylistic-jsx-function-call-newline-tests.ts",
+    "port:tests:stylistic:jsx-indent": "node tools/tasks/sync-stylistic-jsx-indent-tests.ts",
     "port:tests:stylistic:jsx-indent-props": "node tools/tasks/sync-stylistic-jsx-indent-props-tests.ts",
     "port:tests:stylistic:jsx-sort-props": "node tools/tasks/sync-stylistic-jsx-sort-props-tests.ts",
     "port:tests:stylistic:jsx-max-props-per-line": "node tools/tasks/sync-stylistic-jsx-max-props-per-line-tests.ts",

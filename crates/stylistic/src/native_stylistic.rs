@@ -25,6 +25,7 @@ mod jsx_curly_newline;
 mod jsx_curly_spacing;
 mod jsx_first_prop_new_line;
 mod jsx_function_call_newline;
+mod jsx_indent;
 mod jsx_indent_props;
 mod jsx_max_props_per_line;
 mod jsx_newline;
@@ -700,6 +701,10 @@ const JSX_CHILD_ELEMENT_SPACING_MESSAGES: &[(&str, &str)] = &[
 ];
 const JSX_FUNCTION_CALL_NEWLINE_MESSAGES: &[(&str, &str)] =
     &[("missingLineBreak", "Missing line break around JSX")];
+const JSX_INDENT_MESSAGES: &[(&str, &str)] = &[(
+    "wrongIndent",
+    "Expected indentation of {{needed}} {{type}} {{characters}} but found {{gotten}}.",
+)];
 const JSX_SORT_PROPS_MESSAGES: &[(&str, &str)] = &[
     (
         "listIsEmpty",
@@ -1368,6 +1373,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         messages: JSX_FUNCTION_CALL_NEWLINE_MESSAGES,
     },
     StylisticRuleDefinition {
+        name: "jsx-indent",
+        docs_description: "Enforce JSX indentation. Deprecated, use `indent` rule instead.",
+        messages: JSX_INDENT_MESSAGES,
+    },
+    StylisticRuleDefinition {
         name: "jsx-indent-props",
         docs_description: "Enforce props indentation in JSX",
         messages: JSX_INDENT_PROPS_MESSAGES,
@@ -1658,6 +1668,12 @@ pub fn run_stylistic_lint(
                     &mut diagnostics,
                 )
             }
+            "jsx-indent" => jsx_indent::check_jsx_indent(
+                source_text,
+                config.filename.as_deref(),
+                &rule.options,
+                &mut diagnostics,
+            ),
             "jsx-indent-props" => jsx_indent_props::check_jsx_indent_props(
                 source_text,
                 config.filename.as_deref(),
