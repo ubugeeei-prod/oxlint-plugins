@@ -1,0 +1,187 @@
+{
+  "__generated": {
+    "source": "@stylistic/eslint-plugin",
+    "version": "v5.10.0",
+    "commit": "efbb1bc0e5aaedc4695c44a03f46f4fcbbe58712",
+    "sourceFile": "packages/eslint-plugin/rules/jsx-function-call-newline/jsx-function-call-newline.test.ts",
+    "license": "MIT",
+    "parserMatrix": "authored semantic cases; replayed with Oxc JSX and TSX",
+    "tool": "tools/tasks/sync-stylistic-jsx-function-call-newline-tests.ts",
+    "inventory": {
+      "valid": 19,
+      "invalid": 8,
+      "diagnostics": 13,
+      "fixableInvalid": 8,
+      "unfixableInvalid": 0,
+      "total": 27
+    }
+  },
+  "valid": [
+    {
+      "code": "fn(<div />)"
+    },
+    {
+      "code": "fn(<div />, <div />)"
+    },
+    {
+      "code": "fn(<div />,\n<div />)"
+    },
+    {
+      "code": "fn(\n<div />, <div />)"
+    },
+    {
+      "code": "fn(\n<div />, <div />\n)"
+    },
+    {
+      "code": "fn(\n<div />\n)",
+      "options": ["always"]
+    },
+    {
+      "code": "fn(<div />, \n<div \n style={{ color: 'red' }}\n />\n)"
+    },
+    {
+      "code": "fn(<div />, <div />, <div />)"
+    },
+    {
+      "code": "fn(<div />, <div />\n, <div />)"
+    },
+    {
+      "code": "fn(\n<div />\n,\n<div />\n,\n<div />\n)"
+    },
+    {
+      "code": "fn(\n<div />\n,\n<div />\n,\n<div />\n)",
+      "options": ["always"]
+    },
+    {
+      "code": "fn(\n<div />\n,\n<div ></div>)"
+    },
+    {
+      "code": "fn((<div style={{}} />), <div />, <div />)"
+    },
+    {
+      "code": "new OBJ((<div style={{}} />), <div />, <div />)"
+    },
+    {
+      "code": "new OBJ(<div />, <div />, <div />)"
+    },
+    {
+      "code": "new OBJ(<div />, <div />\n, <div />)"
+    },
+    {
+      "code": "new OBJ(\n<div />\n,\n<div />\n,\n<div />\n)"
+    },
+    {
+      "code": "new OBJ(\n<div />\n,\n<div />\n,\n<div />\n)",
+      "options": ["always"]
+    },
+    {
+      "code": "new OBJ(\n<div />\n,\n<div ></div>)"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "fn(<div\n        />)",
+      "output": "fn(\n<div\n        />\n)",
+      "errors": [
+        {
+          "messageId": "missingLineBreak",
+          "message": "Missing line break around JSX"
+        }
+      ]
+    },
+    {
+      "code": "new OBJ(<div\n        />)",
+      "output": "new OBJ(\n<div\n        />\n)",
+      "errors": [
+        {
+          "messageId": "missingLineBreak",
+          "message": "Missing line break around JSX"
+        }
+      ]
+    },
+    {
+      "code": "fn(<div />)",
+      "output": "fn(\n<div />\n)",
+      "errors": [
+        {
+          "messageId": "missingLineBreak",
+          "message": "Missing line break around JSX"
+        }
+      ],
+      "options": ["always"]
+    },
+    {
+      "code": "fn(\n<div />,<div />,\n<div />)",
+      "output": "fn(\n<div />,\n<div />,\n<div />\n)",
+      "errors": [
+        {
+          "messageId": "missingLineBreak",
+          "message": "Missing line break around JSX"
+        },
+        {
+          "messageId": "missingLineBreak",
+          "message": "Missing line break around JSX"
+        }
+      ],
+      "options": ["always"]
+    },
+    {
+      "code": "new OBJ(\n<div />,<div />,\n<div />)",
+      "output": "new OBJ(\n<div />,\n<div />,\n<div />\n)",
+      "errors": [
+        {
+          "messageId": "missingLineBreak",
+          "message": "Missing line break around JSX"
+        },
+        {
+          "messageId": "missingLineBreak",
+          "message": "Missing line break around JSX"
+        }
+      ],
+      "options": ["always"]
+    },
+    {
+      "code": "fn((\n<div />),<div />,\n<div />)",
+      "output": "fn((\n<div />\n),\n<div />,\n<div />\n)",
+      "errors": [
+        {
+          "messageId": "missingLineBreak",
+          "message": "Missing line break around JSX"
+        },
+        {
+          "messageId": "missingLineBreak",
+          "message": "Missing line break around JSX"
+        },
+        {
+          "messageId": "missingLineBreak",
+          "message": "Missing line break around JSX"
+        }
+      ],
+      "options": ["always"]
+    },
+    {
+      "code": "fn(<div />, <span>\n</span>)",
+      "output": "fn(<div />, \n<span>\n</span>\n)",
+      "errors": [
+        {
+          "messageId": "missingLineBreak",
+          "message": "Missing line break around JSX"
+        }
+      ]
+    },
+    {
+      "code": "fn(<div \n />, <span>\n</span>)",
+      "output": "fn(\n<div \n />, \n<span>\n</span>\n)",
+      "errors": [
+        {
+          "messageId": "missingLineBreak",
+          "message": "Missing line break around JSX"
+        },
+        {
+          "messageId": "missingLineBreak",
+          "message": "Missing line break around JSX"
+        }
+      ]
+    }
+  ]
+}
