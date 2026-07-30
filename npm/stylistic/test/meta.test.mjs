@@ -46,6 +46,7 @@ describe('stylistic plugin meta contract', () => {
       expect(rule.meta.fixable).toBe(
         [
           'jsx-closing-bracket-location',
+          'jsx-curly-brace-presence',
           'jsx-curly-spacing',
           'jsx-first-prop-new-line',
           'jsx-max-props-per-line',
@@ -150,6 +151,25 @@ describe('stylistic plugin meta contract', () => {
         expectedAfter: "Expected newline after '{'.",
         unexpectedBefore: "Unexpected newline before '}'.",
         unexpectedAfter: "Unexpected newline after '{'.",
+      },
+      schema: { type: 'array' },
+    });
+  });
+
+  it('preserves the complete upstream jsx-curly-brace-presence metadata contract', () => {
+    expect(plugin.rules['jsx-curly-brace-presence'].meta).toMatchObject({
+      type: 'layout',
+      docs: {
+        description:
+          'Disallow unnecessary JSX expressions when literals alone are sufficient or enforce JSX expressions on literals in JSX children or attributes',
+        recommended: false,
+        requiresTypeChecking: false,
+      },
+      fixable: 'code',
+      hasSuggestions: true,
+      messages: {
+        unnecessaryCurly: 'Curly braces are unnecessary here.',
+        missingCurly: 'Need to wrap this literal in a JSX expression.',
       },
       schema: { type: 'array' },
     });

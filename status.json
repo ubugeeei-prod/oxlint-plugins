@@ -14751,19 +14751,19 @@
       },
       {
         "name": "jsx-curly-brace-presence",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule jsx-curly-brace-presence."
+        "notes": "Native Oxc JSX/TSX AST port of stable @stylistic/eslint-plugin v5.10.0 jsx-curly-brace-presence. The deterministic pinned fixture captures all 89 valid and 46 invalid authored cases from the main and Babel suites, with 64 exact published diagnostics across 263 Oxc-compatible parser-expanded cases, exact messages, UTF-16 ranges, first-pass fixes, and recursive/circular output. Focused Rust and Vitest coverage exercises props/children/propElementValues modes, strings/templates/elements/fragments, comments, adjacency, HTML entities, escapes, Unicode, all ECMAScript line terminators, malformed input, shared API/meta/plugin surfaces, and real Oxlint TSX lint/fix integration."
       },
       {
         "name": "jsx-curly-newline",

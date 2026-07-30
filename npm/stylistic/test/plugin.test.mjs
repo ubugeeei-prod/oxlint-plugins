@@ -133,6 +133,12 @@ const stylisticRuleFixtures = [
   ],
   ['jsx-closing-tag-location', '<App>\n  content</App>;\n', [], ['onOwnLine']],
   [
+    'jsx-curly-brace-presence',
+    "<App title={'plain'}>text</App>;\n",
+    [{ props: 'never', children: 'always' }],
+    ['unnecessaryCurly', 'missingCurly'],
+  ],
+  [
     'jsx-curly-newline',
     '<App value={\nfoo\n} />;\n',
     ['never'],
@@ -386,6 +392,7 @@ describe('stylistic plugin', () => {
   it('preserves upstream code-fix metadata', () => {
     expect(plugin.rules['no-confusing-arrow'].meta.fixable).toBe('code');
     expect(plugin.rules['jsx-first-prop-new-line'].meta.fixable).toBe('code');
+    expect(plugin.rules['jsx-curly-brace-presence'].meta.fixable).toBe('code');
     expect(plugin.rules['jsx-quotes'].meta.fixable).toBe('code');
     expect(plugin.rules['no-extra-parens'].meta.fixable).toBe('code');
     expect(plugin.rules['arrow-spacing'].meta.fixable).toBe('whitespace');
@@ -3131,6 +3138,81 @@ const parenthesized = (a + b) * c;
       expect(fixed.stderr).toBe('');
       expect(readFileSync(sourcePath, 'utf8')).toBe(
         `export const view = <Panel\n  title="日本語"\n${' '.repeat(20)}/>;\n`,
+      );
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('supports jsx-curly-brace-presence shared settings, UTF-16 ranges, and exact fixes', () => {
+    const source =
+      'type Row = {}; const marker = "😀日本語"; const view = <App<Row> title={\'plain\'}>text</App>;\n';
+    const reports = runRule('jsx-curly-brace-presence', source, [], {
+      corsaStylistic: {
+        rules: {
+          'jsx-curly-brace-presence': [{ props: 'never', children: 'always' }],
+        },
+      },
+    });
+    const expressionStart = source.indexOf("{'plain'}");
+    const textStart = source.indexOf('text');
+
+    expect(messageIds(reports)).toEqual(['unnecessaryCurly', 'missingCurly']);
+    expect(reports.map((report) => report.node.range)).toEqual([
+      [expressionStart, expressionStart + "{'plain'}".length],
+      [textStart, textStart + 'text'.length],
+    ]);
+    expect(applyReportFixes(source, reports)).toBe(
+      'type Row = {}; const marker = "😀日本語"; const view = <App<Row> title="plain">{"text"}</App>;\n',
+    );
+  });
+
+  it('runs jsx-curly-brace-presence through real oxlint TSX lint and fixes', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-jsx-curly-brace-presence-'));
+
+    try {
+      const sourcePath = join(temp, 'sample.tsx');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+      writeFileSync(
+        sourcePath,
+        'export const marker = "😀日本語";\nexport const view = <App title={\'plain\'}>text</App>;\n',
+      );
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [{ name: 'stylistic', specifier: join(packageRoot, 'index.js') }],
+          rules: {
+            'stylistic/jsx-curly-brace-presence': ['error', { props: 'never', children: 'always' }],
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', sourcePath],
+        { encoding: 'utf8' },
+      );
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      expect(JSON.parse(result.stdout).diagnostics).toMatchObject([
+        {
+          code: 'stylistic(jsx-curly-brace-presence)',
+          message: 'Curly braces are unnecessary here.',
+        },
+        {
+          code: 'stylistic(jsx-curly-brace-presence)',
+          message: 'Need to wrap this literal in a JSX expression.',
+        },
+      ]);
+
+      const fixed = spawnSync(oxlint, ['-c', configPath, '--fix-suggestions', sourcePath], {
+        encoding: 'utf8',
+      });
+      expect(fixed.status).toBe(0);
+      expect(fixed.stderr).toBe('');
+      expect(readFileSync(sourcePath, 'utf8')).toBe(
+        'export const marker = "😀日本語";\nexport const view = <App title="plain">{"text"}</App>;\n',
       );
     } finally {
       rmSync(temp, { recursive: true, force: true });

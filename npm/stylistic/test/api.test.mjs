@@ -181,6 +181,60 @@ describe('stylistic native API', () => {
     ]);
   });
 
+  it('runs jsx-curly-brace-presence with exact native UTF-8 ranges and fixes', () => {
+    const source = 'const marker = "😀日本語"; const view = <App title={\'plain\'}>text</App>;';
+    const unnecessaryStart = Buffer.byteLength(source.slice(0, source.indexOf("{'plain'}")));
+    const missingStart = Buffer.byteLength(source.slice(0, source.indexOf('text')));
+    const diagnostics = runNativeStylisticLint(source, {
+      filename: 'fixture.tsx',
+      rules: [
+        {
+          name: 'jsx-curly-brace-presence',
+          options: [{ props: 'never', children: 'always' }],
+        },
+      ],
+    });
+
+    expect(diagnostics).toEqual([
+      {
+        ruleName: 'jsx-curly-brace-presence',
+        messageId: 'unnecessaryCurly',
+        message: 'Curly braces are unnecessary here.',
+        range: { start: unnecessaryStart, end: unnecessaryStart + "{'plain'}".length },
+        suggestions: [
+          {
+            messageId: 'unnecessaryCurly',
+            message: 'Curly braces are unnecessary here.',
+            fixes: [
+              {
+                range: { start: unnecessaryStart, end: unnecessaryStart + "{'plain'}".length },
+                replacementText: '"plain"',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        ruleName: 'jsx-curly-brace-presence',
+        messageId: 'missingCurly',
+        message: 'Need to wrap this literal in a JSX expression.',
+        range: { start: missingStart, end: missingStart + 'text'.length },
+        suggestions: [
+          {
+            messageId: 'missingCurly',
+            message: 'Need to wrap this literal in a JSX expression.',
+            fixes: [
+              {
+                range: { start: missingStart, end: missingStart + 'text'.length },
+                replacementText: '{"text"}',
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+  });
+
   it('runs array-element-newline with exact native messages, ranges, and fixes', () => {
     const source = 'const list = [1, 2, 3];';
     const diagnostics = runNativeStylisticLint(source, {
