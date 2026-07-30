@@ -247,6 +247,23 @@ describe('stylistic plugin meta contract', () => {
     expect(plugin.rules['jsx-child-element-spacing'].meta.fixable).toBeUndefined();
   });
 
+  it('preserves the stable jsx-one-expression-per-line metadata contract', () => {
+    expect(plugin.rules['jsx-one-expression-per-line'].meta).toMatchObject({
+      type: 'layout',
+      docs: {
+        description: 'Require one JSX element per line',
+        recommended: false,
+        requiresTypeChecking: false,
+      },
+      fixable: 'whitespace',
+      hasSuggestions: true,
+      messages: {
+        moveToNewLine: '`{{descriptor}}` must be placed on a new line',
+      },
+      schema: { type: 'array' },
+    });
+  });
+
   it('preserves the stable lines-around-comment message catalog', () => {
     expect(plugin.rules['lines-around-comment'].meta.messages).toMatchObject({
       before: 'Expected line before comment.',

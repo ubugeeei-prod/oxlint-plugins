@@ -35,6 +35,9 @@ describe('stylistic native API', () => {
       'jsx-child-element-spacing',
     );
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('jsx-max-props-per-line');
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
+      'jsx-one-expression-per-line',
+    );
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('no-confusing-arrow');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'type-annotation-spacing',
@@ -397,6 +400,80 @@ describe('stylistic native API', () => {
         message: 'Ambiguous spacing after previous element a',
         data: { element: 'a' },
         range: { start: elementEnd, end: elementEnd },
+      },
+    ]);
+  });
+
+  it('runs jsx-one-expression-per-line with exact UTF-8 ranges, data, and fixes', () => {
+    const source = "const marker = '😀'; const view = <App>日本語<Foo />後</App>;";
+    const textStart = Buffer.byteLength(source.slice(0, source.indexOf('日本語')));
+    const elementStart = Buffer.byteLength(source.slice(0, source.indexOf('<Foo />')));
+    const tailStart = Buffer.byteLength(source.slice(0, source.indexOf('後')));
+    const diagnostics = runNativeStylisticLint(source, {
+      filename: 'fixture.tsx',
+      rules: [{ name: 'jsx-one-expression-per-line', options: [] }],
+    });
+
+    expect(
+      diagnostics.map(({ ruleName, messageId, message, data, range, suggestions }) => ({
+        ruleName,
+        messageId,
+        message,
+        data,
+        range,
+        suggestion: suggestions?.[0]
+          ? {
+              messageId: suggestions[0].messageId,
+              message: suggestions[0].message,
+              fix: suggestions[0].fixes[0],
+            }
+          : null,
+      })),
+    ).toEqual([
+      {
+        ruleName: 'jsx-one-expression-per-line',
+        messageId: 'moveToNewLine',
+        message: '`日本語` must be placed on a new line',
+        data: { descriptor: '日本語' },
+        range: { start: textStart, end: elementStart },
+        suggestion: {
+          messageId: 'moveToNewLine',
+          message: '`日本語` must be placed on a new line',
+          fix: {
+            range: { start: textStart, end: elementStart },
+            replacementText: '\n日本語',
+          },
+        },
+      },
+      {
+        ruleName: 'jsx-one-expression-per-line',
+        messageId: 'moveToNewLine',
+        message: '`Foo` must be placed on a new line',
+        data: { descriptor: 'Foo' },
+        range: { start: elementStart, end: elementStart + '<Foo />'.length },
+        suggestion: {
+          messageId: 'moveToNewLine',
+          message: '`Foo` must be placed on a new line',
+          fix: {
+            range: { start: elementStart, end: elementStart + '<Foo />'.length },
+            replacementText: '\n<Foo />',
+          },
+        },
+      },
+      {
+        ruleName: 'jsx-one-expression-per-line',
+        messageId: 'moveToNewLine',
+        message: '`後` must be placed on a new line',
+        data: { descriptor: '後' },
+        range: { start: tailStart, end: tailStart + Buffer.byteLength('後') },
+        suggestion: {
+          messageId: 'moveToNewLine',
+          message: '`後` must be placed on a new line',
+          fix: {
+            range: { start: tailStart, end: tailStart + Buffer.byteLength('後') },
+            replacementText: '\n後\n',
+          },
+        },
       },
     ]);
   });

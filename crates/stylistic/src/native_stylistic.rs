@@ -26,6 +26,7 @@ mod jsx_first_prop_new_line;
 mod jsx_function_call_newline;
 mod jsx_max_props_per_line;
 mod jsx_newline;
+mod jsx_one_expression_per_line;
 mod jsx_quotes;
 mod jsx_rules;
 mod lexer;
@@ -694,6 +695,10 @@ const JSX_NEWLINE_MESSAGES: &[(&str, &str)] = &[
         "Multiline JSX elements should start in a new line",
     ),
 ];
+const JSX_ONE_EXPRESSION_PER_LINE_MESSAGES: &[(&str, &str)] = &[(
+    "moveToNewLine",
+    "`{{descriptor}}` must be placed on a new line",
+)];
 const MULTILINE_COMMENT_STYLE_MESSAGES: &[(&str, &str)] = &[
     (
         "expectedBlock",
@@ -1235,6 +1240,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         messages: JSX_NEWLINE_MESSAGES,
     },
     StylisticRuleDefinition {
+        name: "jsx-one-expression-per-line",
+        docs_description: "Require one JSX element per line",
+        messages: JSX_ONE_EXPRESSION_PER_LINE_MESSAGES,
+    },
+    StylisticRuleDefinition {
         name: "one-var-declaration-per-line",
         docs_description: "Require or disallow newlines around variable declarations.",
         messages: ONE_VAR_DECLARATION_PER_LINE_MESSAGES,
@@ -1481,6 +1491,14 @@ pub fn run_stylistic_lint(
                 &rule.options,
                 &mut diagnostics,
             ),
+            "jsx-one-expression-per-line" => {
+                jsx_one_expression_per_line::check_jsx_one_expression_per_line(
+                    source_text,
+                    config.filename.as_deref(),
+                    &rule.options,
+                    &mut diagnostics,
+                )
+            }
             "unicode-bom" => {
                 unicode_bom::check_unicode_bom(source_text, &rule.options, &mut diagnostics)
             }
