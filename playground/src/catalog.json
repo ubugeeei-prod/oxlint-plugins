@@ -40,10 +40,13 @@
         },
         {
           "name": "consistent-component-styles",
-          "description": "enforce angular eslint consistent component styles",
+          "description": "Ensures consistent usage of `styles`/`styleUrls`/`styleUrl` within Component metadata",
           "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/consistent-component-styles.md",
           "messages": {
-            "unexpected": "Unexpected Angular pattern."
+            "useStyleUrl": "Use `styleUrl` instead of `styleUrls` for a single stylesheet",
+            "useStyleUrls": "Use `styleUrls` instead of `styleUrl`",
+            "useStylesArray": "Use a `string[]` instead of a `string` for the `styles` property",
+            "useStylesString": "Use a `string` instead of a `string[]` for the `styles` property"
           }
         },
         {

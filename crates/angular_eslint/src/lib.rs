@@ -1,6 +1,7 @@
 #![doc = "Rust implementation of @angular-eslint/eslint-plugin rule logic."]
 
 mod class_suffix;
+mod consistent_component_styles;
 mod inline_declarations;
 mod input_rename;
 mod prefix;

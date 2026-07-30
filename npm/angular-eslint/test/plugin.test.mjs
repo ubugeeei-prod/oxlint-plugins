@@ -10,8 +10,17 @@ import plugin from '../index.js';
 
 const packageRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 const workspaceRoot = resolve(packageRoot, '../..');
+const consistentComponentStylesFixture = JSON.parse(
+  readFileSync(
+    new URL('./fixtures/consistent-component-styles-v22.0.0.json', import.meta.url),
+    'utf8',
+  ),
+);
 const noInputRenameFixture = JSON.parse(
   readFileSync(new URL('./fixtures/no-input-rename-v22.0.0.json', import.meta.url), 'utf8'),
+);
+const playgroundCatalog = JSON.parse(
+  readFileSync(resolve(workspaceRoot, 'playground/src/catalog.json'), 'utf8'),
 );
 
 const expectedRuleNames = [
@@ -186,6 +195,8 @@ describe('angular-eslint plugin adapter', () => {
         'Component class names should end with one of these suffixes: {{suffixes}}',
       'component-max-inline-declarations':
         '`{{propertyType}}` has too many lines ({{lineCount}}). Maximum allowed is {{max}}',
+      'consistent-component-styles':
+        'Use `styleUrl` instead of `styleUrls` for a single stylesheet',
       'directive-class-suffix':
         'Directive class names should end with one of these suffixes: {{suffixes}}',
       'no-input-rename':
@@ -235,6 +246,36 @@ describe('angular-eslint plugin adapter', () => {
     expect(plugin.rules['no-input-prefix'].meta.schema[0].properties.prefixes.uniqueItems).toBe(
       undefined,
     );
+  });
+
+  it('exposes the exact upstream consistent-component-styles contract', () => {
+    const { meta } = plugin.rules['consistent-component-styles'];
+    expect(meta.type).toBe('suggestion');
+    expect(meta.docs.description).toBe(
+      'Ensures consistent usage of `styles`/`styleUrls`/`styleUrl` within Component metadata',
+    );
+    expect(meta.schema).toEqual([
+      {
+        type: 'string',
+        enum: ['array', 'string'],
+      },
+    ]);
+    expect(meta.messages).toEqual({
+      useStyleUrl: 'Use `styleUrl` instead of `styleUrls` for a single stylesheet',
+      useStyleUrls: 'Use `styleUrls` instead of `styleUrl`',
+      useStylesArray: 'Use a `string[]` instead of a `string` for the `styles` property',
+      useStylesString: 'Use a `string` instead of a `string[]` for the `styles` property',
+    });
+    expect(meta.fixable).toBe('code');
+    expect(meta.hasSuggestions).toBeUndefined();
+
+    const playgroundRule = playgroundCatalog.plugins
+      .find(({ plugin: pluginName }) => pluginName === '@angular-eslint')
+      .rules.find(({ name }) => name === 'consistent-component-styles');
+    expect(playgroundRule).toMatchObject({
+      description: meta.docs.description,
+      messages: meta.messages,
+    });
   });
 
   it('exposes the exact upstream no-input-rename contract', () => {
@@ -377,6 +418,63 @@ describe('angular-eslint plugin adapter', () => {
     ['pipe-prefix', '@Pipe({ name: "ngTitle" }) class Test {}', [{ prefixes: ['ng'] }], []],
   ])('honors configured %s prefixes through createOnce', (ruleName, code, options, expected) => {
     expect(runRule(ruleName, code, options)).toMatchObject(expected);
+  });
+
+  it.each(consistentComponentStylesFixture.valid)(
+    'accepts upstream consistent-component-styles valid case through createOnce: $name',
+    ({ code, options }) => {
+      expect(runRule('consistent-component-styles', code, options)).toEqual([]);
+    },
+  );
+
+  it.each(consistentComponentStylesFixture.invalid)(
+    'matches upstream consistent-component-styles invalid location through createOnce: $name',
+    ({ code, errors, options }) => {
+      expect(runRule('consistent-component-styles', code, options)).toEqual(
+        errors.map((error) => ({
+          messageId: error.messageId,
+          data: {},
+          loc: {
+            start: {
+              line: error.line,
+              column: error.column - 1,
+            },
+            end: {
+              line: error.endLine,
+              column: error.endColumn - 1,
+            },
+          },
+        })),
+      );
+    },
+  );
+
+  it('forwards consistent-component-styles modes independently through createOnce', () => {
+    const code = `
+@Component({
+  styles: 'inline',
+  styleUrl: 'one.css',
+  styleUrls: ['two.css'],
+})
+class Test {}
+`;
+    expect(runRule('consistent-component-styles', code)).toMatchObject([
+      { messageId: 'useStyleUrl' },
+    ]);
+    expect(runRule('consistent-component-styles', code, ['array'])).toMatchObject([
+      { messageId: 'useStylesArray' },
+      { messageId: 'useStyleUrls' },
+    ]);
+  });
+
+  it('does not invent consistent-component-styles fixes outside the diagnostic ABI', () => {
+    const reports = runRule(
+      'consistent-component-styles',
+      `@Component({ styles: ['inline'] }) class Test {}`,
+    );
+    expect(reports).toHaveLength(1);
+    expect(reports[0]).not.toHaveProperty('fix');
+    expect(reports[0]).not.toHaveProperty('suggest');
   });
 
   it.each(noInputRenameFixture.valid)(
@@ -790,6 +888,59 @@ class Test {
           '@Pipes should be prefixed with "app"',
         ]),
       );
+    } finally {
+      rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('honors consistent-component-styles mode through real oxlint jsPlugins', () => {
+    const tempDir = mkdtempSync(join(tmpdir(), 'oxlint-angular-consistent-styles-'));
+    try {
+      writeFileSync(
+        join(tempDir, 'fixture.ts'),
+        '@Component({\n' +
+          '  styles: "inline",\n' +
+          '  styleUrl: `one.css`,\n' +
+          '  styleUrls: ["already-array.css"],\n' +
+          '}) class Test {}\n',
+      );
+      writeFileSync(
+        join(tempDir, 'oxlint.config.jsonc'),
+        JSON.stringify({
+          jsPlugins: [
+            {
+              name: '@angular-eslint',
+              specifier: join(packageRoot, 'index.js'),
+            },
+          ],
+          rules: {
+            '@angular-eslint/consistent-component-styles': ['error', 'array'],
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        findOxlintCli(),
+        ['--config', 'oxlint.config.jsonc', '--quiet', '--format', 'json', 'fixture.ts'],
+        {
+          cwd: tempDir,
+          encoding: 'utf8',
+        },
+      );
+      const payload = JSON.parse(result.stdout);
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      expect(payload.diagnostics).toHaveLength(2);
+      expect(payload.diagnostics.map(({ code }) => code)).toEqual([
+        '@angular-eslint(consistent-component-styles)',
+        '@angular-eslint(consistent-component-styles)',
+      ]);
+      expect(payload.diagnostics.map(({ message }) => message)).toEqual([
+        'Use a `string[]` instead of a `string` for the `styles` property',
+        'Use `styleUrls` instead of `styleUrl`',
+      ]);
+      expect(payload.diagnostics.map(({ labels }) => labels[0].span.line)).toEqual([2, 3]);
     } finally {
       rmSync(tempDir, { recursive: true, force: true });
     }

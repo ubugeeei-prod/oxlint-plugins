@@ -16,14 +16,30 @@ const selectorRuleNames = new Set(['component-selector', 'directive-selector']);
 const classSuffixRuleNames = new Set(['component-class-suffix', 'directive-class-suffix']);
 const prefixRuleNames = new Set(['no-input-prefix', 'pipe-prefix']);
 const inlineDeclarationRuleName = 'component-max-inline-declarations';
+const consistentComponentStylesRuleName = 'consistent-component-styles';
 const inputRenameRuleName = 'no-input-rename';
 const optionAwareRuleNames = new Set([
   ...selectorRuleNames,
   ...classSuffixRuleNames,
   ...prefixRuleNames,
   inlineDeclarationRuleName,
+  consistentComponentStylesRuleName,
   inputRenameRuleName,
 ]);
+
+const consistentComponentStylesSchema = [
+  {
+    type: 'string',
+    enum: ['array', 'string'],
+  },
+];
+
+const consistentComponentStylesMessages = {
+  useStyleUrl: 'Use `styleUrl` instead of `styleUrls` for a single stylesheet',
+  useStyleUrls: 'Use `styleUrls` instead of `styleUrl`',
+  useStylesArray: 'Use a `string[]` instead of a `string` for the `styles` property',
+  useStylesString: 'Use a `string` instead of a `string[]` for the `styles` property',
+};
 
 const inlineDeclarationSchema = [
   {
@@ -240,12 +256,15 @@ function createAngularEslintRule(ruleName) {
   const isClassSuffixRule = classSuffixRuleNames.has(ruleName);
   const isPrefixRule = prefixRuleNames.has(ruleName);
   const isInlineDeclarationRule = ruleName === inlineDeclarationRuleName;
+  const isConsistentComponentStylesRule = ruleName === consistentComponentStylesRuleName;
   const isInputRenameRule = ruleName === inputRenameRuleName;
   return {
     meta: {
       type: problemRules.has(ruleName) ? 'problem' : 'suggestion',
       docs: {
-        description: `enforce angular eslint ${ruleName.replaceAll('-', ' ')}`,
+        description: isConsistentComponentStylesRule
+          ? 'Ensures consistent usage of `styles`/`styleUrls`/`styleUrl` within Component metadata'
+          : `enforce angular eslint ${ruleName.replaceAll('-', ' ')}`,
         category: 'Best Practices',
         recommended: false,
         url: `${DOCS_BASE}/${ruleName}.md`,
@@ -258,11 +277,13 @@ function createAngularEslintRule(ruleName) {
             ? prefixMessages[ruleName]
             : isInlineDeclarationRule
               ? inlineDeclarationMessages
-              : isInputRenameRule
-                ? inputRenameMessages
-                : {
-                    unexpected: 'Unexpected Angular pattern.',
-                  },
+              : isConsistentComponentStylesRule
+                ? consistentComponentStylesMessages
+                : isInputRenameRule
+                  ? inputRenameMessages
+                  : {
+                      unexpected: 'Unexpected Angular pattern.',
+                    },
       schema: isSelectorRule
         ? selectorSchema
         : isClassSuffixRule
@@ -271,9 +292,12 @@ function createAngularEslintRule(ruleName) {
             ? prefixSchemas[ruleName]
             : isInlineDeclarationRule
               ? inlineDeclarationSchema
-              : isInputRenameRule
-                ? inputRenameSchema
-                : [],
+              : isConsistentComponentStylesRule
+                ? consistentComponentStylesSchema
+                : isInputRenameRule
+                  ? inputRenameSchema
+                  : [],
+      ...(isConsistentComponentStylesRule ? { fixable: 'code' } : {}),
       ...(isInputRenameRule ? { fixable: 'code', hasSuggestions: true } : {}),
     },
     createOnce(context) {

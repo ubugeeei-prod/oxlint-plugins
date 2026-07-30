@@ -1,0 +1,424 @@
+{
+  "metadata": {
+    "package": "@angular-eslint/eslint-plugin",
+    "version": "22.0.0",
+    "sourceCommit": "7ee4556badebf8c140ffdefdd0b07b02820d5e96",
+    "sourcePath": "packages/eslint-plugin/tests/rules/consistent-component-styles/cases.ts",
+    "sourceSha256": "440ee39c6dd952eaac1f732c8d7f5428ea12ec65e85c617980523db6eb5d410e",
+    "capture": "every authored valid and invalid semantic case exactly once",
+    "counts": {
+      "valid": 21,
+      "invalid": 20,
+      "diagnostics": 20
+    }
+  },
+  "valid": [
+    {
+      "name": "valid-1",
+      "code": "\n    @Component({\n      styles: ':host { display: block; }',\n    })\n    class Test {}\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-2",
+      "code": "\n    @Component({\n      styles: `\n        :host { display: block; }\n      `,\n    })\n    class Test {}\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-3",
+      "code": "\n    @Component({\n      selector: 'my-test',\n      standalone: true,\n      imports: [CommonModule],\n      styles: `\n        :host { display: block; }\n      `,\n      providers: [FooService]\n    })\n    class Test {}\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-4",
+      "code": "\n    @Component({\n      styles: [\n        ':host { display: block; }',\n        `.foo { color: red; }`\n      ],\n    })\n    class Test {}\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-5",
+      "code": "\n    @Component({\n      styleUrl: `./test.component.css`,\n    })\n    class Test {}\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-6",
+      "code": "\n    @Component({\n      styleUrls: [\n        '../shared.css',\n        `./test.component.css`\n      ],\n    })\n    class Test {}\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-7",
+      "code": "\n    @Component({\n      selector: 'my-test',\n      standalone: true,\n      imports: [CommonModule],\n      styleUrls: [\n        '../shared.css',\n        `./test.component.css`\n      ],\n      providers: [FooService]\n    })\n    class Test {}\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-8",
+      "code": "\n      @Component({\n        styles: ':host { display: block; }',\n      })\n      class Test {}\n    ",
+      "options": ["string"]
+    },
+    {
+      "name": "valid-9",
+      "code": "\n      @Component({\n        styles: `\n          :host { display: block; }\n        `,\n      })\n      class Test {}\n    ",
+      "options": ["string"]
+    },
+    {
+      "name": "valid-10",
+      "code": "\n      @Component({\n        selector: 'my-test',\n        standalone: true,\n        imports: [CommonModule],\n        styles: `\n          :host { display: block; }\n        `,\n        providers: [FooService]\n      })\n      class Test {}\n    ",
+      "options": ["string"]
+    },
+    {
+      "name": "valid-11",
+      "code": "\n      @Component({\n        styles: [\n          ':host { display: block; }',\n          `.foo { color: red; }`\n        ],\n      })\n      class Test {}\n    ",
+      "options": ["string"]
+    },
+    {
+      "name": "valid-12",
+      "code": "\n      @Component({\n        styleUrl: `./test.component.css`,\n      })\n      class Test {}\n    ",
+      "options": ["string"]
+    },
+    {
+      "name": "valid-13",
+      "code": "\n      @Component({\n        styleUrls: [\n          '../shared.css',\n          `./test.component.css`\n        ],\n      })\n      class Test {}\n    ",
+      "options": ["string"]
+    },
+    {
+      "name": "valid-14",
+      "code": "\n      @Component({\n        selector: 'my-test',\n        standalone: true,\n        imports: [CommonModule],\n        styleUrls: [\n          '../shared.css',\n          `./test.component.css`\n        ],\n        providers: [FooService]\n      })\n      class Test {}\n    ",
+      "options": ["string"]
+    },
+    {
+      "name": "valid-15",
+      "code": "\n      @Component({\n        styles: [':host { display: block; }'],\n      })\n      class Test {}\n    ",
+      "options": ["array"]
+    },
+    {
+      "name": "valid-16",
+      "code": "\n      @Component({\n        styles: [\n          `\n            :host { display: block; }\n          `\n        ],\n      })\n      class Test {}\n    ",
+      "options": ["array"]
+    },
+    {
+      "name": "valid-17",
+      "code": "\n      @Component({\n        selector: 'my-test',\n        standalone: true,\n        imports: [CommonModule],\n        styles: [\n          `\n            :host { display: block; }\n          `\n        ],\n        providers: [FooService]\n      })\n      class Test {}\n    ",
+      "options": ["array"]
+    },
+    {
+      "name": "valid-18",
+      "code": "\n      @Component({\n        styles: [\n          ':host { display: block; }',\n          `.foo { color: red; }`\n        ],\n      })\n      class Test {}\n    ",
+      "options": ["array"]
+    },
+    {
+      "name": "valid-19",
+      "code": "\n      @Component({\n        styleUrls: [`./test.component.css`],\n      })\n      class Test {}\n    ",
+      "options": ["array"]
+    },
+    {
+      "name": "valid-20",
+      "code": "\n      @Component({\n        styleUrls: [\n          '../shared.css',\n          `./test.component.css`\n        ],\n      })\n      class Test {}\n    ",
+      "options": ["array"]
+    },
+    {
+      "name": "valid-21",
+      "code": "\n      @Component({\n        selector: 'my-test',\n        standalone: true,\n        imports: [CommonModule],\n        styleUrls: [\n          '../shared.css',\n          `./test.component.css`\n        ],\n        providers: [FooService]\n      })\n      class Test {}\n    ",
+      "options": ["array"]
+    }
+  ],
+  "invalid": [
+    {
+      "name": "should fail when a component has a single style array value",
+      "code": "\n    @Component({\n      styles: [':host { display: block; }']\n              \n    })\n    class Test {}\n  ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "useStylesString",
+          "line": 3,
+          "column": 15,
+          "endLine": 3,
+          "endColumn": 44
+        }
+      ],
+      "output": "\n    @Component({\n      styles: ':host { display: block; }'\n              \n    })\n    class Test {}\n  "
+    },
+    {
+      "name": "should fail when a component has a single styles array value with multiple decorator properties",
+      "code": "\n    @Component({\n      standalone: true,\n      imports: [MatButtonModule],\n      styles: [':host { display: block; }'],\n              \n      providers: []\n    })\n    class Test {}\n  ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "useStylesString",
+          "line": 5,
+          "column": 15,
+          "endLine": 5,
+          "endColumn": 44
+        }
+      ],
+      "output": "\n    @Component({\n      standalone: true,\n      imports: [MatButtonModule],\n      styles: ':host { display: block; }',\n              \n      providers: []\n    })\n    class Test {}\n  "
+    },
+    {
+      "name": "should fail when a component has a single styleUrls array value",
+      "code": "\n    @Component({\n      styleUrls: ['./test.component.css']\n      \n    })\n    class Test {}\n  ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "useStyleUrl",
+          "line": 3,
+          "column": 7,
+          "endLine": 3,
+          "endColumn": 42
+        }
+      ],
+      "output": "\n    @Component({\n      styleUrl: './test.component.css'\n      \n    })\n    class Test {}\n  "
+    },
+    {
+      "name": "should fail when a component has a single styleUrls array value with multiple decorator properties",
+      "code": "\n    @Component({\n      standalone: true,\n      imports: [MatButtonModule],\n      styleUrls: ['./test.component.css'],\n      \n      providers: []\n    })\n    class Test {}\n  ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "useStyleUrl",
+          "line": 5,
+          "column": 7,
+          "endLine": 5,
+          "endColumn": 42
+        }
+      ],
+      "output": "\n    @Component({\n      standalone: true,\n      imports: [MatButtonModule],\n      styleUrl: './test.component.css',\n      \n      providers: []\n    })\n    class Test {}\n  "
+    },
+    {
+      "name": "should keep template strings when fixing styles array to string",
+      "code": "\n    const type = 'block';\n    @Component({\n      styles: [`:host\\t{ display: ${type}; }`]\n              \n    })\n    class Test {}\n    ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "useStylesString",
+          "line": 4,
+          "column": 15,
+          "endLine": 4,
+          "endColumn": 47
+        }
+      ],
+      "output": "\n    const type = 'block';\n    @Component({\n      styles: `:host\\t{ display: ${type}; }`\n              \n    })\n    class Test {}\n    "
+    },
+    {
+      "name": "should keep escaped characters when fixing styles array to string",
+      "code": "\n    @Component({\n      styles: [':host\\t{ display: block; }']\n              \n    })\n    class Test {}\n    ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "useStylesString",
+          "line": 3,
+          "column": 15,
+          "endLine": 3,
+          "endColumn": 45
+        }
+      ],
+      "output": "\n    @Component({\n      styles: ':host\\t{ display: block; }'\n              \n    })\n    class Test {}\n    "
+    },
+    {
+      "name": "should keep single quotes when fixing styles array to string",
+      "code": "\n    @Component({\n      styles: [':host{ display: block; }']\n              \n    })\n    class Test {}\n    ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "useStylesString",
+          "line": 3,
+          "column": 15,
+          "endLine": 3,
+          "endColumn": 43
+        }
+      ],
+      "output": "\n    @Component({\n      styles: ':host{ display: block; }'\n              \n    })\n    class Test {}\n    "
+    },
+    {
+      "name": "should keep double quotes when fixing styles array to string",
+      "code": "\n    @Component({\n      styles: [\":host{ display: block; }\"]\n              \n    })\n    class Test {}\n    ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "useStylesString",
+          "line": 3,
+          "column": 15,
+          "endLine": 3,
+          "endColumn": 43
+        }
+      ],
+      "output": "\n    @Component({\n      styles: \":host{ display: block; }\"\n              \n    })\n    class Test {}\n    "
+    },
+    {
+      "name": "should keep backtick quotes when fixing styles array to string",
+      "code": "\n    @Component({\n      styles: [`:host{ display: block; }`]\n              \n    })\n    class Test {}\n    ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "useStylesString",
+          "line": 3,
+          "column": 15,
+          "endLine": 3,
+          "endColumn": 43
+        }
+      ],
+      "output": "\n    @Component({\n      styles: `:host{ display: block; }`\n              \n    })\n    class Test {}\n    "
+    },
+    {
+      "name": "should keep backtick quotes when fixing styleUrls array to styleUrl string",
+      "code": "\n    @Component({\n      styleUrls: [`./test.component.css`]\n      \n    })\n    class Test {}\n    ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "useStyleUrl",
+          "line": 3,
+          "column": 7,
+          "endLine": 3,
+          "endColumn": 42
+        }
+      ],
+      "output": "\n    @Component({\n      styleUrl: `./test.component.css`\n      \n    })\n    class Test {}\n    "
+    },
+    {
+      "name": "should fail when a component has a single style array value when string is preferred",
+      "code": "\n    @Component({\n      styles: [':host { display: block; }']\n              \n    })\n    class Test {}\n  ",
+      "options": ["string"],
+      "errors": [
+        {
+          "messageId": "useStylesString",
+          "line": 3,
+          "column": 15,
+          "endLine": 3,
+          "endColumn": 44
+        }
+      ],
+      "output": "\n    @Component({\n      styles: ':host { display: block; }'\n              \n    })\n    class Test {}\n  "
+    },
+    {
+      "name": "should fail when a component has a single styleUrls array value when string is preferred",
+      "code": "\n    @Component({\n      styleUrls: ['./test.component.css']\n      \n    })\n    class Test {}\n  ",
+      "options": ["string"],
+      "errors": [
+        {
+          "messageId": "useStyleUrl",
+          "line": 3,
+          "column": 7,
+          "endLine": 3,
+          "endColumn": 42
+        }
+      ],
+      "output": "\n    @Component({\n      styleUrl: './test.component.css'\n      \n    })\n    class Test {}\n  "
+    },
+    {
+      "name": "should fail when a component has a styles string when an array is preferred",
+      "code": "\n    @Component({\n      styles: ':host { display: block; }'\n              \n    })\n    class Test {}\n  ",
+      "options": ["array"],
+      "errors": [
+        {
+          "messageId": "useStylesArray",
+          "line": 3,
+          "column": 15,
+          "endLine": 3,
+          "endColumn": 42
+        }
+      ],
+      "output": "\n    @Component({\n      styles: [':host { display: block; }']\n              \n    })\n    class Test {}\n  "
+    },
+    {
+      "name": "should fail when a component has a styles string with multiple decorator properties when an array is preferred",
+      "code": "\n    @Component({\n      standalone: true,\n      imports: [MatButtonModule],\n      styles: ':host { display: block; }',\n              \n      providers: []\n    })\n    class Test {}\n  ",
+      "options": ["array"],
+      "errors": [
+        {
+          "messageId": "useStylesArray",
+          "line": 5,
+          "column": 15,
+          "endLine": 5,
+          "endColumn": 42
+        }
+      ],
+      "output": "\n    @Component({\n      standalone: true,\n      imports: [MatButtonModule],\n      styles: [':host { display: block; }'],\n              \n      providers: []\n    })\n    class Test {}\n  "
+    },
+    {
+      "name": "should fail when a component has a styleUrl string value when an array is preferred",
+      "code": "\n    @Component({\n      styleUrl: './test.component.css',\n      \n    })\n    class Test {}\n  ",
+      "options": ["array"],
+      "errors": [
+        {
+          "messageId": "useStyleUrls",
+          "line": 3,
+          "column": 7,
+          "endLine": 3,
+          "endColumn": 39
+        }
+      ],
+      "output": "\n    @Component({\n      styleUrls: ['./test.component.css'],\n      \n    })\n    class Test {}\n  "
+    },
+    {
+      "name": "should keep template strings when fixing styles string to array",
+      "code": "\n    const type = 'block';\n    @Component({\n      styles: `:host\\t{ display: ${type}; }`\n              \n    })\n    class Test {}\n    ",
+      "options": ["array"],
+      "errors": [
+        {
+          "messageId": "useStylesArray",
+          "line": 4,
+          "column": 15,
+          "endLine": 4,
+          "endColumn": 45
+        }
+      ],
+      "output": "\n    const type = 'block';\n    @Component({\n      styles: [`:host\\t{ display: ${type}; }`]\n              \n    })\n    class Test {}\n    "
+    },
+    {
+      "name": "should keep escaped characters when fixing styles string to array",
+      "code": "\n    @Component({\n      styles: ':host\\t{ display: block; }'\n              \n    })\n    class Test {}\n    ",
+      "options": ["array"],
+      "errors": [
+        {
+          "messageId": "useStylesArray",
+          "line": 3,
+          "column": 15,
+          "endLine": 3,
+          "endColumn": 43
+        }
+      ],
+      "output": "\n    @Component({\n      styles: [':host\\t{ display: block; }']\n              \n    })\n    class Test {}\n    "
+    },
+    {
+      "name": "should keep single quotes when fixing styles string to array",
+      "code": "\n    @Component({\n      styles: ':host{ display: block; }'\n              \n    })\n    class Test {}\n    ",
+      "options": ["array"],
+      "errors": [
+        {
+          "messageId": "useStylesArray",
+          "line": 3,
+          "column": 15,
+          "endLine": 3,
+          "endColumn": 41
+        }
+      ],
+      "output": "\n    @Component({\n      styles: [':host{ display: block; }']\n              \n    })\n    class Test {}\n    "
+    },
+    {
+      "name": "should keep double quotes when fixing styles string to array",
+      "code": "\n    @Component({\n      styles: \":host{ display: block; }\"\n              \n    })\n    class Test {}\n    ",
+      "options": ["array"],
+      "errors": [
+        {
+          "messageId": "useStylesArray",
+          "line": 3,
+          "column": 15,
+          "endLine": 3,
+          "endColumn": 41
+        }
+      ],
+      "output": "\n    @Component({\n      styles: [\":host{ display: block; }\"]\n              \n    })\n    class Test {}\n    "
+    },
+    {
+      "name": "should keep backtick quotes when fixing styles string to array",
+      "code": "\n    @Component({\n      styles: `:host{ display: block; }`\n              \n    })\n    class Test {}\n    ",
+      "options": ["array"],
+      "errors": [
+        {
+          "messageId": "useStylesArray",
+          "line": 3,
+          "column": 15,
+          "endLine": 3,
+          "endColumn": 41
+        }
+      ],
+      "output": "\n    @Component({\n      styles: [`:host{ display: block; }`]\n              \n    })\n    class Test {}\n    "
+    }
+  ]
+}
