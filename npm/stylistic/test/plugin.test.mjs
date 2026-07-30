@@ -144,6 +144,7 @@ const stylisticRuleFixtures = [
   ['jsx-props-no-multi-spaces', '<App  foo />;\n', [], ['onlyOneSpace']],
   ['jsx-quotes', "<App title='value' />;\n", [], ['unexpected']],
   ['jsx-self-closing-comp', '<App></App>;\n', [], ['notSelfClosing']],
+  ['jsx-sort-props', '<App second first />;\n', [], ['sortPropsByAlpha']],
   ['multiline-comment-style', '// first\n// second\n', [], ['expectedBlock']],
   ['lines-between-class-members', 'class C { a() {}\nb() {} }\n', [], ['always']],
   [
@@ -4241,6 +4242,65 @@ const parenthesized = (a + b) * c;
       expect(readFileSync(jsxPath, 'utf8')).toBe('export const view = <App/>;\n');
       expect(readFileSync(tsxPath, 'utf8')).toBe(
         'type Item = { id: string }; export const list = <List<Item>/>;\n',
+      );
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('runs and fixes jsx-sort-props through a real oxlint TSX configuration', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-jsx-sort-props-'));
+
+    try {
+      const sourcePath = join(temp, 'sample.tsx');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+      writeFileSync(
+        sourcePath,
+        [
+          'declare const value: unknown;',
+          'export const view = <Panel second={value} first="😀" />;',
+          '',
+        ].join('\n'),
+      );
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [
+            {
+              name: 'stylistic',
+              specifier: join(packageRoot, 'index.js'),
+            },
+          ],
+          rules: {
+            'stylistic/jsx-sort-props': 'error',
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', sourcePath],
+        { encoding: 'utf8' },
+      );
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      const diagnostics = JSON.parse(result.stdout).diagnostics;
+      expect(diagnostics).toHaveLength(1);
+      expect(diagnostics[0].code).toBe('stylistic(jsx-sort-props)');
+      expect(diagnostics[0].message).toBe('Props should be sorted alphabetically');
+
+      const fixed = spawnSync(oxlint, ['-c', configPath, '--fix-suggestions', sourcePath], {
+        encoding: 'utf8',
+      });
+      expect(fixed.status).toBe(0);
+      expect(fixed.stderr).toBe('');
+      expect(readFileSync(sourcePath, 'utf8')).toBe(
+        [
+          'declare const value: unknown;',
+          'export const view = <Panel first="😀" second={value} />;',
+          '',
+        ].join('\n'),
       );
     } finally {
       rmSync(temp, { recursive: true, force: true });

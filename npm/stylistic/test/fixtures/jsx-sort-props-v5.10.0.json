@@ -1,0 +1,2958 @@
+{
+  "__generated": {
+    "source": "@stylistic/eslint-plugin",
+    "version": "v5.10.0",
+    "commit": "efbb1bc0e5aaedc4695c44a03f46f4fcbbe58712",
+    "sourceFile": "packages/eslint-plugin/rules/jsx-sort-props/jsx-sort-props.test.ts",
+    "license": "MIT",
+    "eslintVersion": "10.4.1",
+    "typescriptEslintParserVersion": "8.60.0",
+    "parserMatrix": "authored semantic cases replayed with Oxc JSX and TSX",
+    "tool": "tools/tasks/sync-stylistic-jsx-sort-props-tests.ts",
+    "inventory": {
+      "authoredValid": 43,
+      "authoredInvalid": 54,
+      "authoredDiagnostics": 120,
+      "fixableInvalid": 53,
+      "unfixableInvalid": 1,
+      "authoredTotal": 97,
+      "parserExpandedValid": 86,
+      "parserExpandedInvalid": 107,
+      "parserExpandedDiagnostics": 239,
+      "parserExpandedTotal": 193
+    }
+  },
+  "valid": [
+    {
+      "code": "<App />;",
+      "options": [],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "<App {...this.props} />;",
+      "options": [],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "<App a b c />;",
+      "options": [],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "<App {...this.props} a b c />;",
+      "options": [],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "<App c {...this.props} a b />;",
+      "options": [],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "<App a=\"c\" b=\"b\" c=\"a\" />;",
+      "options": [],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "<App {...this.props} a=\"c\" b=\"b\" c=\"a\" />;",
+      "options": [],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "<App c=\"a\" {...this.props} a=\"c\" b=\"b\" />;",
+      "options": [],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "<App A a />;",
+      "options": [],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "<App aB aa/>;",
+      "options": [],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "<App aA aB />;",
+      "options": [],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "<App aB aaa />;",
+      "options": [],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "<App a aB aa />;",
+      "options": [],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "<App Number=\"2\" name=\"John\" />;",
+      "options": [],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "<App a A />;",
+      "options": [
+        {
+          "ignoreCase": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "<App aa aB />;",
+      "options": [
+        {
+          "ignoreCase": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "<App a B c />;",
+      "options": [
+        {
+          "ignoreCase": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "<App A b C />;",
+      "options": [
+        {
+          "ignoreCase": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "<App name=\"John\" Number=\"2\" />;",
+      "options": [
+        {
+          "ignoreCase": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "<App a z onBar onFoo />;",
+      "options": [
+        {
+          "callbacksLast": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "<App z onBar onFoo />;",
+      "options": [
+        {
+          "callbacksLast": true,
+          "ignoreCase": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "<App a b=\"b\" />;",
+      "options": [
+        {
+          "shorthandFirst": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "<App z a=\"a\" />;",
+      "options": [
+        {
+          "shorthandFirst": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "<App x y z a=\"a\" b=\"b\" />;",
+      "options": [
+        {
+          "shorthandFirst": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "<App a=\"a\" b=\"b\" x y z />;",
+      "options": [
+        {
+          "shorthandLast": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "<App a=\"a\" b=\"b\" x y z onBar onFoo />;",
+      "options": [
+        {
+          "callbacksLast": true,
+          "shorthandLast": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "\n        <App\n          a={{\n            aA: 1,\n          }}\n          b\n        />\n      ",
+      "options": [
+        {
+          "multiline": "first"
+        }
+      ],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "\n        <App\n          a={{\n            aA: 1,\n          }}\n          b={[\n            1,\n          ]}\n          c\n          d\n        />\n      ",
+      "options": [
+        {
+          "multiline": "first"
+        }
+      ],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "\n        <App\n          a\n          b\n          c={{\n            cC: 1,\n          }}\n          d={[\n            1,\n          ]}\n          e=\"1\"\n        />\n      ",
+      "options": [
+        {
+          "multiline": "first",
+          "shorthandFirst": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "\n        <App\n          a\n          b={{\n            bB: 1,\n          }}\n        />\n      ",
+      "options": [
+        {
+          "multiline": "last"
+        }
+      ],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "\n        <App\n          a\n          b\n          c=\"1\"\n          d={{\n            dD: 1,\n          }}\n          e={[\n            1,\n          ]}\n        />\n      ",
+      "options": [
+        {
+          "multiline": "last"
+        }
+      ],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "\n        <App\n          a={1}\n          b=\"1\"\n          c={{\n            cC: 1,\n          }}\n          d={() => (\n            1\n          )}\n          e\n          f\n          onClick={() => ({\n            gG: 1,\n          })}\n        />\n      ",
+      "options": [
+        {
+          "multiline": "last",
+          "shorthandLast": true,
+          "callbacksLast": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "<App a b />;",
+      "options": [
+        {
+          "noSortAlphabetically": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "<App b a />;",
+      "options": [
+        {
+          "noSortAlphabetically": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "<App children={<App />} key={0} ref=\"r\" a b c />",
+      "options": [
+        {
+          "reservedFirst": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "<App children={<App />} key={0} ref=\"r\" a b c dangerouslySetInnerHTML={{__html: \"EPR\"}} />",
+      "options": [
+        {
+          "reservedFirst": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "<App children={<App />} key={0} a ref=\"r\" />",
+      "options": [
+        {
+          "reservedFirst": ["children", "dangerouslySetInnerHTML", "key"]
+        }
+      ],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "<App children={<App />} key={0} a dangerouslySetInnerHTML={{__html: \"EPR\"}} ref=\"r\" />",
+      "options": [
+        {
+          "reservedFirst": ["children", "dangerouslySetInnerHTML", "key"]
+        }
+      ],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "<App ref=\"r\" key={0} children={<App />} b a c />",
+      "options": [
+        {
+          "noSortAlphabetically": true,
+          "reservedFirst": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "<div ref=\"r\" dangerouslySetInnerHTML={{__html: \"EPR\"}} key={0} children={<App />} b a c />",
+      "options": [
+        {
+          "noSortAlphabetically": true,
+          "reservedFirst": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "<App key=\"key\" c=\"c\" b />",
+      "options": [
+        {
+          "reservedFirst": true,
+          "shorthandLast": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "\n        <RawFileField\n          onChange={handleChange}\n          onFileRemove={asMedia ? null : handleRemove}\n          {...props}\n        />\n      ",
+      "options": [],
+      "parsers": ["jsx", "tsx"]
+    },
+    {
+      "code": "\n        <RawFileField\n          onFileRemove={asMedia ? null : handleRemove}\n          onChange={handleChange}\n          {...props}\n        />\n      ",
+      "options": [
+        {
+          "locale": "sk-SK"
+        }
+      ],
+      "parsers": ["jsx", "tsx"]
+    }
+  ],
+  "invalid": [
+    {
+      "code": "<App b a />;",
+      "options": [],
+      "parsers": ["jsx", "tsx"],
+      "output": "<App a b />;",
+      "firstPassOutput": "<App a b />;",
+      "recursiveOutput": "<App a b />;",
+      "expectedDiagnostics": [
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [7, 8],
+          "loc": {
+            "line": 1,
+            "column": 8,
+            "endLine": 1,
+            "endColumn": 9
+          },
+          "fix": {
+            "range": [5, 8],
+            "text": "a b"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App aB a />;",
+      "options": [],
+      "parsers": ["jsx", "tsx"],
+      "output": "<App a aB />;",
+      "firstPassOutput": "<App a aB />;",
+      "recursiveOutput": "<App a aB />;",
+      "expectedDiagnostics": [
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [8, 9],
+          "loc": {
+            "line": 1,
+            "column": 9,
+            "endLine": 1,
+            "endColumn": 10
+          },
+          "fix": {
+            "range": [5, 9],
+            "text": "a aB"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App fistName=\"John\" tel={5555555} name=\"John Smith\" lastName=\"Smith\" Number=\"2\" />;",
+      "options": [],
+      "parsers": ["jsx", "tsx"],
+      "output": "<App Number=\"2\" fistName=\"John\" lastName=\"Smith\" name=\"John Smith\" tel={5555555} />;",
+      "firstPassOutput": "<App Number=\"2\" fistName=\"John\" lastName=\"Smith\" name=\"John Smith\" tel={5555555} />;",
+      "recursiveOutput": "<App Number=\"2\" fistName=\"John\" lastName=\"Smith\" name=\"John Smith\" tel={5555555} />;",
+      "expectedDiagnostics": [
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [35, 39],
+          "loc": {
+            "line": 1,
+            "column": 36,
+            "endLine": 1,
+            "endColumn": 40
+          },
+          "fix": {
+            "range": [5, 80],
+            "text": "Number=\"2\" fistName=\"John\" lastName=\"Smith\" name=\"John Smith\" tel={5555555}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [53, 61],
+          "loc": {
+            "line": 1,
+            "column": 54,
+            "endLine": 1,
+            "endColumn": 62
+          },
+          "fix": {
+            "range": [5, 80],
+            "text": "Number=\"2\" fistName=\"John\" lastName=\"Smith\" name=\"John Smith\" tel={5555555}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [70, 76],
+          "loc": {
+            "line": 1,
+            "column": 71,
+            "endLine": 1,
+            "endColumn": 77
+          },
+          "fix": {
+            "range": [5, 80],
+            "text": "Number=\"2\" fistName=\"John\" lastName=\"Smith\" name=\"John Smith\" tel={5555555}"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App aa aB />;",
+      "options": [],
+      "parsers": ["jsx", "tsx"],
+      "output": "<App aB aa />;",
+      "firstPassOutput": "<App aB aa />;",
+      "recursiveOutput": "<App aB aa />;",
+      "expectedDiagnostics": [
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [8, 10],
+          "loc": {
+            "line": 1,
+            "column": 9,
+            "endLine": 1,
+            "endColumn": 11
+          },
+          "fix": {
+            "range": [5, 10],
+            "text": "aB aa"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App aB aA />;",
+      "options": [],
+      "parsers": ["jsx", "tsx"],
+      "output": "<App aA aB />;",
+      "firstPassOutput": "<App aA aB />;",
+      "recursiveOutput": "<App aA aB />;",
+      "expectedDiagnostics": [
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [8, 10],
+          "loc": {
+            "line": 1,
+            "column": 9,
+            "endLine": 1,
+            "endColumn": 11
+          },
+          "fix": {
+            "range": [5, 10],
+            "text": "aA aB"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App aaB aA />;",
+      "options": [],
+      "parsers": ["jsx", "tsx"],
+      "output": "<App aA aaB />;",
+      "firstPassOutput": "<App aA aaB />;",
+      "recursiveOutput": "<App aA aaB />;",
+      "expectedDiagnostics": [
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [9, 11],
+          "loc": {
+            "line": 1,
+            "column": 10,
+            "endLine": 1,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [5, 11],
+            "text": "aA aaB"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App aaB aaa aA a />;",
+      "options": [],
+      "parsers": ["jsx", "tsx"],
+      "output": "<App a aA aaB aaa />;",
+      "firstPassOutput": "<App a aA aaB aaa />;",
+      "recursiveOutput": "<App a aA aaB aaa />;",
+      "expectedDiagnostics": [
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [13, 15],
+          "loc": {
+            "line": 1,
+            "column": 14,
+            "endLine": 1,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [5, 17],
+            "text": "a aA aaB aaa"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [16, 17],
+          "loc": {
+            "line": 1,
+            "column": 17,
+            "endLine": 1,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [5, 17],
+            "text": "a aA aaB aaa"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App {...this.props} b a />;",
+      "options": [],
+      "parsers": ["jsx", "tsx"],
+      "output": "<App {...this.props} a b />;",
+      "firstPassOutput": "<App {...this.props} a b />;",
+      "recursiveOutput": "<App {...this.props} a b />;",
+      "expectedDiagnostics": [
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [23, 24],
+          "loc": {
+            "line": 1,
+            "column": 24,
+            "endLine": 1,
+            "endColumn": 25
+          },
+          "fix": {
+            "range": [21, 24],
+            "text": "a b"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App c {...this.props} b a />;",
+      "options": [],
+      "parsers": ["jsx", "tsx"],
+      "output": "<App c {...this.props} a b />;",
+      "firstPassOutput": "<App c {...this.props} a b />;",
+      "recursiveOutput": "<App c {...this.props} a b />;",
+      "expectedDiagnostics": [
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [25, 26],
+          "loc": {
+            "line": 1,
+            "column": 26,
+            "endLine": 1,
+            "endColumn": 27
+          },
+          "fix": {
+            "range": [5, 26],
+            "text": "c {...this.props} a b"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App fistName=\"John\" tel={5555555} name=\"John Smith\" lastName=\"Smith\" Number=\"2\" />;",
+      "options": [
+        {
+          "ignoreCase": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"],
+      "output": "<App fistName=\"John\" lastName=\"Smith\" name=\"John Smith\" Number=\"2\" tel={5555555} />;",
+      "firstPassOutput": "<App fistName=\"John\" lastName=\"Smith\" name=\"John Smith\" Number=\"2\" tel={5555555} />;",
+      "recursiveOutput": "<App fistName=\"John\" lastName=\"Smith\" name=\"John Smith\" Number=\"2\" tel={5555555} />;",
+      "expectedDiagnostics": [
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [35, 39],
+          "loc": {
+            "line": 1,
+            "column": 36,
+            "endLine": 1,
+            "endColumn": 40
+          },
+          "fix": {
+            "range": [5, 80],
+            "text": "fistName=\"John\" lastName=\"Smith\" name=\"John Smith\" Number=\"2\" tel={5555555}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [53, 61],
+          "loc": {
+            "line": 1,
+            "column": 54,
+            "endLine": 1,
+            "endColumn": 62
+          },
+          "fix": {
+            "range": [5, 80],
+            "text": "fistName=\"John\" lastName=\"Smith\" name=\"John Smith\" Number=\"2\" tel={5555555}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [70, 76],
+          "loc": {
+            "line": 1,
+            "column": 71,
+            "endLine": 1,
+            "endColumn": 77
+          },
+          "fix": {
+            "range": [5, 80],
+            "text": "fistName=\"John\" lastName=\"Smith\" name=\"John Smith\" Number=\"2\" tel={5555555}"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App B a />;",
+      "options": [
+        {
+          "ignoreCase": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"],
+      "output": "<App a B />;",
+      "firstPassOutput": "<App a B />;",
+      "recursiveOutput": "<App a B />;",
+      "expectedDiagnostics": [
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [7, 8],
+          "loc": {
+            "line": 1,
+            "column": 8,
+            "endLine": 1,
+            "endColumn": 9
+          },
+          "fix": {
+            "range": [5, 8],
+            "text": "a B"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App B A c />;",
+      "options": [
+        {
+          "ignoreCase": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"],
+      "output": "<App A B c />;",
+      "firstPassOutput": "<App A B c />;",
+      "recursiveOutput": "<App A B c />;",
+      "expectedDiagnostics": [
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [7, 8],
+          "loc": {
+            "line": 1,
+            "column": 8,
+            "endLine": 1,
+            "endColumn": 9
+          },
+          "fix": {
+            "range": [5, 10],
+            "text": "A B c"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App c=\"a\" a=\"c\" b=\"b\" />;",
+      "options": [],
+      "parsers": ["jsx", "tsx"],
+      "output": "<App a=\"c\" b=\"b\" c=\"a\" />;",
+      "firstPassOutput": "<App a=\"c\" b=\"b\" c=\"a\" />;",
+      "recursiveOutput": "<App a=\"c\" b=\"b\" c=\"a\" />;",
+      "expectedDiagnostics": [
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [11, 12],
+          "loc": {
+            "line": 1,
+            "column": 12,
+            "endLine": 1,
+            "endColumn": 13
+          },
+          "fix": {
+            "range": [5, 22],
+            "text": "a=\"c\" b=\"b\" c=\"a\""
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [17, 18],
+          "loc": {
+            "line": 1,
+            "column": 18,
+            "endLine": 1,
+            "endColumn": 19
+          },
+          "fix": {
+            "range": [5, 22],
+            "text": "a=\"c\" b=\"b\" c=\"a\""
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App {...this.props} c=\"a\" a=\"c\" b=\"b\" />;",
+      "options": [],
+      "parsers": ["jsx", "tsx"],
+      "output": "<App {...this.props} a=\"c\" b=\"b\" c=\"a\" />;",
+      "firstPassOutput": "<App {...this.props} a=\"c\" b=\"b\" c=\"a\" />;",
+      "recursiveOutput": "<App {...this.props} a=\"c\" b=\"b\" c=\"a\" />;",
+      "expectedDiagnostics": [
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [27, 28],
+          "loc": {
+            "line": 1,
+            "column": 28,
+            "endLine": 1,
+            "endColumn": 29
+          },
+          "fix": {
+            "range": [21, 38],
+            "text": "a=\"c\" b=\"b\" c=\"a\""
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [33, 34],
+          "loc": {
+            "line": 1,
+            "column": 34,
+            "endLine": 1,
+            "endColumn": 35
+          },
+          "fix": {
+            "range": [21, 38],
+            "text": "a=\"c\" b=\"b\" c=\"a\""
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App d=\"d\" b=\"b\" {...this.props} c=\"a\" a=\"c\" />;",
+      "options": [],
+      "parsers": ["jsx", "tsx"],
+      "output": "<App b=\"b\" d=\"d\" {...this.props} a=\"c\" c=\"a\" />;",
+      "firstPassOutput": "<App b=\"b\" d=\"d\" {...this.props} a=\"c\" c=\"a\" />;",
+      "recursiveOutput": "<App b=\"b\" d=\"d\" {...this.props} a=\"c\" c=\"a\" />;",
+      "expectedDiagnostics": [
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [11, 12],
+          "loc": {
+            "line": 1,
+            "column": 12,
+            "endLine": 1,
+            "endColumn": 13
+          },
+          "fix": {
+            "range": [5, 44],
+            "text": "b=\"b\" d=\"d\" {...this.props} a=\"c\" c=\"a\""
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [39, 40],
+          "loc": {
+            "line": 1,
+            "column": 40,
+            "endLine": 1,
+            "endColumn": 41
+          },
+          "fix": {
+            "range": [5, 44],
+            "text": "b=\"b\" d=\"d\" {...this.props} a=\"c\" c=\"a\""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n          a={true}\n          z\n          r\n          _onClick={function(){}}\n          onHandle={function(){}}\n          {...this.props}\n          b={false}\n          {...otherProps}\n        >\n          {test}\n        </App>\n      ",
+      "options": [],
+      "parsers": ["jsx", "tsx"],
+      "output": "\n        <App\n          _onClick={function(){}}\n          a={true}\n          onHandle={function(){}}\n          r\n          z\n          {...this.props}\n          b={false}\n          {...otherProps}\n        >\n          {test}\n        </App>\n      ",
+      "firstPassOutput": "\n        <App\n          _onClick={function(){}}\n          a={true}\n          onHandle={function(){}}\n          r\n          z\n          {...this.props}\n          b={false}\n          {...otherProps}\n        >\n          {test}\n        </App>\n      ",
+      "recursiveOutput": "\n        <App\n          _onClick={function(){}}\n          a={true}\n          onHandle={function(){}}\n          r\n          z\n          {...this.props}\n          b={false}\n          {...otherProps}\n        >\n          {test}\n        </App>\n      ",
+      "expectedDiagnostics": [
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [55, 56],
+          "loc": {
+            "line": 5,
+            "column": 11,
+            "endLine": 5,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [24, 170],
+            "text": "_onClick={function(){}}\n          a={true}\n          onHandle={function(){}}\n          r\n          z\n          {...this.props}\n          b={false}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [67, 75],
+          "loc": {
+            "line": 6,
+            "column": 11,
+            "endLine": 6,
+            "endColumn": 19
+          },
+          "fix": {
+            "range": [24, 170],
+            "text": "_onClick={function(){}}\n          a={true}\n          onHandle={function(){}}\n          r\n          z\n          {...this.props}\n          b={false}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [101, 109],
+          "loc": {
+            "line": 7,
+            "column": 11,
+            "endLine": 7,
+            "endColumn": 19
+          },
+          "fix": {
+            "range": [24, 170],
+            "text": "_onClick={function(){}}\n          a={true}\n          onHandle={function(){}}\n          r\n          z\n          {...this.props}\n          b={false}"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App b={2} c={3} d={4} e={5} f={6} g={7} h={8} i={9} j={10} k={11} a={1} />",
+      "options": [],
+      "parsers": ["jsx", "tsx"],
+      "output": "<App a={1} b={2} c={3} d={4} e={5} f={6} g={7} h={8} i={9} j={10} k={11} />",
+      "firstPassOutput": "<App a={1} b={2} c={3} d={4} e={5} f={6} g={7} h={8} i={9} j={10} k={11} />",
+      "recursiveOutput": "<App a={1} b={2} c={3} d={4} e={5} f={6} g={7} h={8} i={9} j={10} k={11} />",
+      "expectedDiagnostics": [
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [67, 68],
+          "loc": {
+            "line": 1,
+            "column": 68,
+            "endLine": 1,
+            "endColumn": 69
+          },
+          "fix": {
+            "range": [5, 72],
+            "text": "a={1} b={2} c={3} d={4} e={5} f={6} g={7} h={8} i={9} j={10} k={11}"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <List\n          className={className}\n          onStageAnswer={onStageAnswer}\n          onCommitAnswer={onCommitAnswer}\n          isFocused={isFocused}\n          direction={direction}\n          allowMultipleSelection={allowMultipleSelection}\n          measureLongestChildNode={measureLongestChildNode}\n          layoutItemsSize={layoutItemsSize}\n          handleAppScroll={handleAppScroll}\n          isActive={isActive}\n          resetSelection={resetSelection}\n          onKeyboardChoiceHovered={onKeyboardChoiceHovered}\n          keyboardShortcutType\n        />\n      ",
+      "options": [],
+      "parsers": ["jsx", "tsx"],
+      "output": "\n        <List\n          allowMultipleSelection={allowMultipleSelection}\n          className={className}\n          direction={direction}\n          handleAppScroll={handleAppScroll}\n          isActive={isActive}\n          isFocused={isFocused}\n          keyboardShortcutType\n          layoutItemsSize={layoutItemsSize}\n          measureLongestChildNode={measureLongestChildNode}\n          onCommitAnswer={onCommitAnswer}\n          onKeyboardChoiceHovered={onKeyboardChoiceHovered}\n          onStageAnswer={onStageAnswer}\n          resetSelection={resetSelection}\n        />\n      ",
+      "firstPassOutput": "\n        <List\n          allowMultipleSelection={allowMultipleSelection}\n          className={className}\n          direction={direction}\n          handleAppScroll={handleAppScroll}\n          isActive={isActive}\n          isFocused={isFocused}\n          keyboardShortcutType\n          layoutItemsSize={layoutItemsSize}\n          measureLongestChildNode={measureLongestChildNode}\n          onCommitAnswer={onCommitAnswer}\n          onKeyboardChoiceHovered={onKeyboardChoiceHovered}\n          onStageAnswer={onStageAnswer}\n          resetSelection={resetSelection}\n        />\n      ",
+      "recursiveOutput": "\n        <List\n          allowMultipleSelection={allowMultipleSelection}\n          className={className}\n          direction={direction}\n          handleAppScroll={handleAppScroll}\n          isActive={isActive}\n          isFocused={isFocused}\n          keyboardShortcutType\n          layoutItemsSize={layoutItemsSize}\n          measureLongestChildNode={measureLongestChildNode}\n          onCommitAnswer={onCommitAnswer}\n          onKeyboardChoiceHovered={onKeyboardChoiceHovered}\n          onStageAnswer={onStageAnswer}\n          resetSelection={resetSelection}\n        />\n      ",
+      "expectedDiagnostics": [
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [97, 111],
+          "loc": {
+            "line": 5,
+            "column": 11,
+            "endLine": 5,
+            "endColumn": 25
+          },
+          "fix": {
+            "range": [25, 561],
+            "text": "allowMultipleSelection={allowMultipleSelection}\n          className={className}\n          direction={direction}\n          handleAppScroll={handleAppScroll}\n          isActive={isActive}\n          isFocused={isFocused}\n          keyboardShortcutType\n          layoutItemsSize={layoutItemsSize}\n          measureLongestChildNode={measureLongestChildNode}\n          onCommitAnswer={onCommitAnswer}\n          onKeyboardChoiceHovered={onKeyboardChoiceHovered}\n          onStageAnswer={onStageAnswer}\n          resetSelection={resetSelection}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [139, 148],
+          "loc": {
+            "line": 6,
+            "column": 11,
+            "endLine": 6,
+            "endColumn": 20
+          },
+          "fix": {
+            "range": [25, 561],
+            "text": "allowMultipleSelection={allowMultipleSelection}\n          className={className}\n          direction={direction}\n          handleAppScroll={handleAppScroll}\n          isActive={isActive}\n          isFocused={isFocused}\n          keyboardShortcutType\n          layoutItemsSize={layoutItemsSize}\n          measureLongestChildNode={measureLongestChildNode}\n          onCommitAnswer={onCommitAnswer}\n          onKeyboardChoiceHovered={onKeyboardChoiceHovered}\n          onStageAnswer={onStageAnswer}\n          resetSelection={resetSelection}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [171, 180],
+          "loc": {
+            "line": 7,
+            "column": 11,
+            "endLine": 7,
+            "endColumn": 20
+          },
+          "fix": {
+            "range": [25, 561],
+            "text": "allowMultipleSelection={allowMultipleSelection}\n          className={className}\n          direction={direction}\n          handleAppScroll={handleAppScroll}\n          isActive={isActive}\n          isFocused={isFocused}\n          keyboardShortcutType\n          layoutItemsSize={layoutItemsSize}\n          measureLongestChildNode={measureLongestChildNode}\n          onCommitAnswer={onCommitAnswer}\n          onKeyboardChoiceHovered={onKeyboardChoiceHovered}\n          onStageAnswer={onStageAnswer}\n          resetSelection={resetSelection}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [203, 225],
+          "loc": {
+            "line": 8,
+            "column": 11,
+            "endLine": 8,
+            "endColumn": 33
+          },
+          "fix": {
+            "range": [25, 561],
+            "text": "allowMultipleSelection={allowMultipleSelection}\n          className={className}\n          direction={direction}\n          handleAppScroll={handleAppScroll}\n          isActive={isActive}\n          isFocused={isFocused}\n          keyboardShortcutType\n          layoutItemsSize={layoutItemsSize}\n          measureLongestChildNode={measureLongestChildNode}\n          onCommitAnswer={onCommitAnswer}\n          onKeyboardChoiceHovered={onKeyboardChoiceHovered}\n          onStageAnswer={onStageAnswer}\n          resetSelection={resetSelection}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [261, 284],
+          "loc": {
+            "line": 9,
+            "column": 11,
+            "endLine": 9,
+            "endColumn": 34
+          },
+          "fix": {
+            "range": [25, 561],
+            "text": "allowMultipleSelection={allowMultipleSelection}\n          className={className}\n          direction={direction}\n          handleAppScroll={handleAppScroll}\n          isActive={isActive}\n          isFocused={isFocused}\n          keyboardShortcutType\n          layoutItemsSize={layoutItemsSize}\n          measureLongestChildNode={measureLongestChildNode}\n          onCommitAnswer={onCommitAnswer}\n          onKeyboardChoiceHovered={onKeyboardChoiceHovered}\n          onStageAnswer={onStageAnswer}\n          resetSelection={resetSelection}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [321, 336],
+          "loc": {
+            "line": 10,
+            "column": 11,
+            "endLine": 10,
+            "endColumn": 26
+          },
+          "fix": {
+            "range": [25, 561],
+            "text": "allowMultipleSelection={allowMultipleSelection}\n          className={className}\n          direction={direction}\n          handleAppScroll={handleAppScroll}\n          isActive={isActive}\n          isFocused={isFocused}\n          keyboardShortcutType\n          layoutItemsSize={layoutItemsSize}\n          measureLongestChildNode={measureLongestChildNode}\n          onCommitAnswer={onCommitAnswer}\n          onKeyboardChoiceHovered={onKeyboardChoiceHovered}\n          onStageAnswer={onStageAnswer}\n          resetSelection={resetSelection}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [365, 380],
+          "loc": {
+            "line": 11,
+            "column": 11,
+            "endLine": 11,
+            "endColumn": 26
+          },
+          "fix": {
+            "range": [25, 561],
+            "text": "allowMultipleSelection={allowMultipleSelection}\n          className={className}\n          direction={direction}\n          handleAppScroll={handleAppScroll}\n          isActive={isActive}\n          isFocused={isFocused}\n          keyboardShortcutType\n          layoutItemsSize={layoutItemsSize}\n          measureLongestChildNode={measureLongestChildNode}\n          onCommitAnswer={onCommitAnswer}\n          onKeyboardChoiceHovered={onKeyboardChoiceHovered}\n          onStageAnswer={onStageAnswer}\n          resetSelection={resetSelection}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [409, 417],
+          "loc": {
+            "line": 12,
+            "column": 11,
+            "endLine": 12,
+            "endColumn": 19
+          },
+          "fix": {
+            "range": [25, 561],
+            "text": "allowMultipleSelection={allowMultipleSelection}\n          className={className}\n          direction={direction}\n          handleAppScroll={handleAppScroll}\n          isActive={isActive}\n          isFocused={isFocused}\n          keyboardShortcutType\n          layoutItemsSize={layoutItemsSize}\n          measureLongestChildNode={measureLongestChildNode}\n          onCommitAnswer={onCommitAnswer}\n          onKeyboardChoiceHovered={onKeyboardChoiceHovered}\n          onStageAnswer={onStageAnswer}\n          resetSelection={resetSelection}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [481, 504],
+          "loc": {
+            "line": 14,
+            "column": 11,
+            "endLine": 14,
+            "endColumn": 34
+          },
+          "fix": {
+            "range": [25, 561],
+            "text": "allowMultipleSelection={allowMultipleSelection}\n          className={className}\n          direction={direction}\n          handleAppScroll={handleAppScroll}\n          isActive={isActive}\n          isFocused={isFocused}\n          keyboardShortcutType\n          layoutItemsSize={layoutItemsSize}\n          measureLongestChildNode={measureLongestChildNode}\n          onCommitAnswer={onCommitAnswer}\n          onKeyboardChoiceHovered={onKeyboardChoiceHovered}\n          onStageAnswer={onStageAnswer}\n          resetSelection={resetSelection}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [541, 561],
+          "loc": {
+            "line": 15,
+            "column": 11,
+            "endLine": 15,
+            "endColumn": 31
+          },
+          "fix": {
+            "range": [25, 561],
+            "text": "allowMultipleSelection={allowMultipleSelection}\n          className={className}\n          direction={direction}\n          handleAppScroll={handleAppScroll}\n          isActive={isActive}\n          isFocused={isFocused}\n          keyboardShortcutType\n          layoutItemsSize={layoutItemsSize}\n          measureLongestChildNode={measureLongestChildNode}\n          onCommitAnswer={onCommitAnswer}\n          onKeyboardChoiceHovered={onKeyboardChoiceHovered}\n          onStageAnswer={onStageAnswer}\n          resetSelection={resetSelection}"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <CreateNewJob\n          closed={false}\n          flagOptions={flagOptions}\n          jobHeight={300}\n          jobWidth={200}\n          campaign='Some Campaign name'\n          campaignStart={moment('2018-07-28 00:00:00')}\n          campaignFinish={moment('2018-09-01 00:00:00')}\n          jobNumber={'Job Number can be a String'}\n          jobTemplateOptions={jobTemplateOptions}\n          numberOfPages={30}\n          onChange={onChange}\n          onClose={onClose}\n          spreadSheetTemplateOptions={spreadSheetTemplateOptions}\n          stateMachineOptions={stateMachineOptions}\n          workflowTemplateOptions={workflowTemplateOptions}\n          workflowTemplateSteps={workflowTemplateSteps}\n          description='Some description for this job'\n\n          jobTemplate='1'\n          stateMachine='1'\n          flag='1'\n          spreadSheetTemplate='1'\n          workflowTemplate='1'\n          validation={validation}\n          onSubmit={onSubmit}\n        />\n      ",
+      "options": [],
+      "parsers": ["jsx", "tsx"],
+      "output": "\n        <CreateNewJob\n          campaign='Some Campaign name'\n          campaignFinish={moment('2018-09-01 00:00:00')}\n          campaignStart={moment('2018-07-28 00:00:00')}\n          closed={false}\n          description='Some description for this job'\n          flag='1'\n          flagOptions={flagOptions}\n          jobHeight={300}\n          jobNumber={'Job Number can be a String'}\n          jobTemplate='1'\n          jobTemplateOptions={jobTemplateOptions}\n          jobWidth={200}\n          numberOfPages={30}\n          onChange={onChange}\n          onClose={onClose}\n          onSubmit={onSubmit}\n          spreadSheetTemplate='1'\n\n          spreadSheetTemplateOptions={spreadSheetTemplateOptions}\n          stateMachine='1'\n          stateMachineOptions={stateMachineOptions}\n          validation={validation}\n          workflowTemplate='1'\n          workflowTemplateOptions={workflowTemplateOptions}\n          workflowTemplateSteps={workflowTemplateSteps}\n        />\n      ",
+      "firstPassOutput": "\n        <CreateNewJob\n          campaign='Some Campaign name'\n          campaignFinish={moment('2018-09-01 00:00:00')}\n          campaignStart={moment('2018-07-28 00:00:00')}\n          closed={false}\n          description='Some description for this job'\n          flag='1'\n          flagOptions={flagOptions}\n          jobHeight={300}\n          jobNumber={'Job Number can be a String'}\n          jobTemplate='1'\n          jobTemplateOptions={jobTemplateOptions}\n          jobWidth={200}\n          numberOfPages={30}\n          onChange={onChange}\n          onClose={onClose}\n          onSubmit={onSubmit}\n          spreadSheetTemplate='1'\n\n          spreadSheetTemplateOptions={spreadSheetTemplateOptions}\n          stateMachine='1'\n          stateMachineOptions={stateMachineOptions}\n          validation={validation}\n          workflowTemplate='1'\n          workflowTemplateOptions={workflowTemplateOptions}\n          workflowTemplateSteps={workflowTemplateSteps}\n        />\n      ",
+      "recursiveOutput": "\n        <CreateNewJob\n          campaign='Some Campaign name'\n          campaignFinish={moment('2018-09-01 00:00:00')}\n          campaignStart={moment('2018-07-28 00:00:00')}\n          closed={false}\n          description='Some description for this job'\n          flag='1'\n          flagOptions={flagOptions}\n          jobHeight={300}\n          jobNumber={'Job Number can be a String'}\n          jobTemplate='1'\n          jobTemplateOptions={jobTemplateOptions}\n          jobWidth={200}\n          numberOfPages={30}\n          onChange={onChange}\n          onClose={onClose}\n          onSubmit={onSubmit}\n          spreadSheetTemplate='1'\n\n          spreadSheetTemplateOptions={spreadSheetTemplateOptions}\n          stateMachine='1'\n          stateMachineOptions={stateMachineOptions}\n          validation={validation}\n          workflowTemplate='1'\n          workflowTemplateOptions={workflowTemplateOptions}\n          workflowTemplateSteps={workflowTemplateSteps}\n        />\n      ",
+      "expectedDiagnostics": [
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [145, 153],
+          "loc": {
+            "line": 7,
+            "column": 11,
+            "endLine": 7,
+            "endColumn": 19
+          },
+          "fix": {
+            "range": [33, 965],
+            "text": "campaign='Some Campaign name'\n          campaignFinish={moment('2018-09-01 00:00:00')}\n          campaignStart={moment('2018-07-28 00:00:00')}\n          closed={false}\n          description='Some description for this job'\n          flag='1'\n          flagOptions={flagOptions}\n          jobHeight={300}\n          jobNumber={'Job Number can be a String'}\n          jobTemplate='1'\n          jobTemplateOptions={jobTemplateOptions}\n          jobWidth={200}\n          numberOfPages={30}\n          onChange={onChange}\n          onClose={onClose}\n          onSubmit={onSubmit}\n          spreadSheetTemplate='1'\n\n          spreadSheetTemplateOptions={spreadSheetTemplateOptions}\n          stateMachine='1'\n          stateMachineOptions={stateMachineOptions}\n          validation={validation}\n          workflowTemplate='1'\n          workflowTemplateOptions={workflowTemplateOptions}\n          workflowTemplateSteps={workflowTemplateSteps}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [185, 198],
+          "loc": {
+            "line": 8,
+            "column": 11,
+            "endLine": 8,
+            "endColumn": 24
+          },
+          "fix": {
+            "range": [33, 965],
+            "text": "campaign='Some Campaign name'\n          campaignFinish={moment('2018-09-01 00:00:00')}\n          campaignStart={moment('2018-07-28 00:00:00')}\n          closed={false}\n          description='Some description for this job'\n          flag='1'\n          flagOptions={flagOptions}\n          jobHeight={300}\n          jobNumber={'Job Number can be a String'}\n          jobTemplate='1'\n          jobTemplateOptions={jobTemplateOptions}\n          jobWidth={200}\n          numberOfPages={30}\n          onChange={onChange}\n          onClose={onClose}\n          onSubmit={onSubmit}\n          spreadSheetTemplate='1'\n\n          spreadSheetTemplateOptions={spreadSheetTemplateOptions}\n          stateMachine='1'\n          stateMachineOptions={stateMachineOptions}\n          validation={validation}\n          workflowTemplate='1'\n          workflowTemplateOptions={workflowTemplateOptions}\n          workflowTemplateSteps={workflowTemplateSteps}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [241, 255],
+          "loc": {
+            "line": 9,
+            "column": 11,
+            "endLine": 9,
+            "endColumn": 25
+          },
+          "fix": {
+            "range": [33, 965],
+            "text": "campaign='Some Campaign name'\n          campaignFinish={moment('2018-09-01 00:00:00')}\n          campaignStart={moment('2018-07-28 00:00:00')}\n          closed={false}\n          description='Some description for this job'\n          flag='1'\n          flagOptions={flagOptions}\n          jobHeight={300}\n          jobNumber={'Job Number can be a String'}\n          jobTemplate='1'\n          jobTemplateOptions={jobTemplateOptions}\n          jobWidth={200}\n          numberOfPages={30}\n          onChange={onChange}\n          onClose={onClose}\n          onSubmit={onSubmit}\n          spreadSheetTemplate='1'\n\n          spreadSheetTemplateOptions={spreadSheetTemplateOptions}\n          stateMachine='1'\n          stateMachineOptions={stateMachineOptions}\n          validation={validation}\n          workflowTemplate='1'\n          workflowTemplateOptions={workflowTemplateOptions}\n          workflowTemplateSteps={workflowTemplateSteps}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [298, 307],
+          "loc": {
+            "line": 10,
+            "column": 11,
+            "endLine": 10,
+            "endColumn": 20
+          },
+          "fix": {
+            "range": [33, 965],
+            "text": "campaign='Some Campaign name'\n          campaignFinish={moment('2018-09-01 00:00:00')}\n          campaignStart={moment('2018-07-28 00:00:00')}\n          closed={false}\n          description='Some description for this job'\n          flag='1'\n          flagOptions={flagOptions}\n          jobHeight={300}\n          jobNumber={'Job Number can be a String'}\n          jobTemplate='1'\n          jobTemplateOptions={jobTemplateOptions}\n          jobWidth={200}\n          numberOfPages={30}\n          onChange={onChange}\n          onClose={onClose}\n          onSubmit={onSubmit}\n          spreadSheetTemplate='1'\n\n          spreadSheetTemplateOptions={spreadSheetTemplateOptions}\n          stateMachine='1'\n          stateMachineOptions={stateMachineOptions}\n          validation={validation}\n          workflowTemplate='1'\n          workflowTemplateOptions={workflowTemplateOptions}\n          workflowTemplateSteps={workflowTemplateSteps}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [349, 367],
+          "loc": {
+            "line": 11,
+            "column": 11,
+            "endLine": 11,
+            "endColumn": 29
+          },
+          "fix": {
+            "range": [33, 965],
+            "text": "campaign='Some Campaign name'\n          campaignFinish={moment('2018-09-01 00:00:00')}\n          campaignStart={moment('2018-07-28 00:00:00')}\n          closed={false}\n          description='Some description for this job'\n          flag='1'\n          flagOptions={flagOptions}\n          jobHeight={300}\n          jobNumber={'Job Number can be a String'}\n          jobTemplate='1'\n          jobTemplateOptions={jobTemplateOptions}\n          jobWidth={200}\n          numberOfPages={30}\n          onChange={onChange}\n          onClose={onClose}\n          onSubmit={onSubmit}\n          spreadSheetTemplate='1'\n\n          spreadSheetTemplateOptions={spreadSheetTemplateOptions}\n          stateMachine='1'\n          stateMachineOptions={stateMachineOptions}\n          validation={validation}\n          workflowTemplate='1'\n          workflowTemplateOptions={workflowTemplateOptions}\n          workflowTemplateSteps={workflowTemplateSteps}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [720, 731],
+          "loc": {
+            "line": 19,
+            "column": 11,
+            "endLine": 19,
+            "endColumn": 22
+          },
+          "fix": {
+            "range": [33, 965],
+            "text": "campaign='Some Campaign name'\n          campaignFinish={moment('2018-09-01 00:00:00')}\n          campaignStart={moment('2018-07-28 00:00:00')}\n          closed={false}\n          description='Some description for this job'\n          flag='1'\n          flagOptions={flagOptions}\n          jobHeight={300}\n          jobNumber={'Job Number can be a String'}\n          jobTemplate='1'\n          jobTemplateOptions={jobTemplateOptions}\n          jobWidth={200}\n          numberOfPages={30}\n          onChange={onChange}\n          onClose={onClose}\n          onSubmit={onSubmit}\n          spreadSheetTemplate='1'\n\n          spreadSheetTemplateOptions={spreadSheetTemplateOptions}\n          stateMachine='1'\n          stateMachineOptions={stateMachineOptions}\n          validation={validation}\n          workflowTemplate='1'\n          workflowTemplateOptions={workflowTemplateOptions}\n          workflowTemplateSteps={workflowTemplateSteps}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [775, 786],
+          "loc": {
+            "line": 21,
+            "column": 11,
+            "endLine": 21,
+            "endColumn": 22
+          },
+          "fix": {
+            "range": [33, 965],
+            "text": "campaign='Some Campaign name'\n          campaignFinish={moment('2018-09-01 00:00:00')}\n          campaignStart={moment('2018-07-28 00:00:00')}\n          closed={false}\n          description='Some description for this job'\n          flag='1'\n          flagOptions={flagOptions}\n          jobHeight={300}\n          jobNumber={'Job Number can be a String'}\n          jobTemplate='1'\n          jobTemplateOptions={jobTemplateOptions}\n          jobWidth={200}\n          numberOfPages={30}\n          onChange={onChange}\n          onClose={onClose}\n          onSubmit={onSubmit}\n          spreadSheetTemplate='1'\n\n          spreadSheetTemplateOptions={spreadSheetTemplateOptions}\n          stateMachine='1'\n          stateMachineOptions={stateMachineOptions}\n          validation={validation}\n          workflowTemplate='1'\n          workflowTemplateOptions={workflowTemplateOptions}\n          workflowTemplateSteps={workflowTemplateSteps}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [801, 813],
+          "loc": {
+            "line": 22,
+            "column": 11,
+            "endLine": 22,
+            "endColumn": 23
+          },
+          "fix": {
+            "range": [33, 965],
+            "text": "campaign='Some Campaign name'\n          campaignFinish={moment('2018-09-01 00:00:00')}\n          campaignStart={moment('2018-07-28 00:00:00')}\n          closed={false}\n          description='Some description for this job'\n          flag='1'\n          flagOptions={flagOptions}\n          jobHeight={300}\n          jobNumber={'Job Number can be a String'}\n          jobTemplate='1'\n          jobTemplateOptions={jobTemplateOptions}\n          jobWidth={200}\n          numberOfPages={30}\n          onChange={onChange}\n          onClose={onClose}\n          onSubmit={onSubmit}\n          spreadSheetTemplate='1'\n\n          spreadSheetTemplateOptions={spreadSheetTemplateOptions}\n          stateMachine='1'\n          stateMachineOptions={stateMachineOptions}\n          validation={validation}\n          workflowTemplate='1'\n          workflowTemplateOptions={workflowTemplateOptions}\n          workflowTemplateSteps={workflowTemplateSteps}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [828, 832],
+          "loc": {
+            "line": 23,
+            "column": 11,
+            "endLine": 23,
+            "endColumn": 15
+          },
+          "fix": {
+            "range": [33, 965],
+            "text": "campaign='Some Campaign name'\n          campaignFinish={moment('2018-09-01 00:00:00')}\n          campaignStart={moment('2018-07-28 00:00:00')}\n          closed={false}\n          description='Some description for this job'\n          flag='1'\n          flagOptions={flagOptions}\n          jobHeight={300}\n          jobNumber={'Job Number can be a String'}\n          jobTemplate='1'\n          jobTemplateOptions={jobTemplateOptions}\n          jobWidth={200}\n          numberOfPages={30}\n          onChange={onChange}\n          onClose={onClose}\n          onSubmit={onSubmit}\n          spreadSheetTemplate='1'\n\n          spreadSheetTemplateOptions={spreadSheetTemplateOptions}\n          stateMachine='1'\n          stateMachineOptions={stateMachineOptions}\n          validation={validation}\n          workflowTemplate='1'\n          workflowTemplateOptions={workflowTemplateOptions}\n          workflowTemplateSteps={workflowTemplateSteps}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [847, 866],
+          "loc": {
+            "line": 24,
+            "column": 11,
+            "endLine": 24,
+            "endColumn": 30
+          },
+          "fix": {
+            "range": [33, 965],
+            "text": "campaign='Some Campaign name'\n          campaignFinish={moment('2018-09-01 00:00:00')}\n          campaignStart={moment('2018-07-28 00:00:00')}\n          closed={false}\n          description='Some description for this job'\n          flag='1'\n          flagOptions={flagOptions}\n          jobHeight={300}\n          jobNumber={'Job Number can be a String'}\n          jobTemplate='1'\n          jobTemplateOptions={jobTemplateOptions}\n          jobWidth={200}\n          numberOfPages={30}\n          onChange={onChange}\n          onClose={onClose}\n          onSubmit={onSubmit}\n          spreadSheetTemplate='1'\n\n          spreadSheetTemplateOptions={spreadSheetTemplateOptions}\n          stateMachine='1'\n          stateMachineOptions={stateMachineOptions}\n          validation={validation}\n          workflowTemplate='1'\n          workflowTemplateOptions={workflowTemplateOptions}\n          workflowTemplateSteps={workflowTemplateSteps}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [881, 897],
+          "loc": {
+            "line": 25,
+            "column": 11,
+            "endLine": 25,
+            "endColumn": 27
+          },
+          "fix": {
+            "range": [33, 965],
+            "text": "campaign='Some Campaign name'\n          campaignFinish={moment('2018-09-01 00:00:00')}\n          campaignStart={moment('2018-07-28 00:00:00')}\n          closed={false}\n          description='Some description for this job'\n          flag='1'\n          flagOptions={flagOptions}\n          jobHeight={300}\n          jobNumber={'Job Number can be a String'}\n          jobTemplate='1'\n          jobTemplateOptions={jobTemplateOptions}\n          jobWidth={200}\n          numberOfPages={30}\n          onChange={onChange}\n          onClose={onClose}\n          onSubmit={onSubmit}\n          spreadSheetTemplate='1'\n\n          spreadSheetTemplateOptions={spreadSheetTemplateOptions}\n          stateMachine='1'\n          stateMachineOptions={stateMachineOptions}\n          validation={validation}\n          workflowTemplate='1'\n          workflowTemplateOptions={workflowTemplateOptions}\n          workflowTemplateSteps={workflowTemplateSteps}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [912, 922],
+          "loc": {
+            "line": 26,
+            "column": 11,
+            "endLine": 26,
+            "endColumn": 21
+          },
+          "fix": {
+            "range": [33, 965],
+            "text": "campaign='Some Campaign name'\n          campaignFinish={moment('2018-09-01 00:00:00')}\n          campaignStart={moment('2018-07-28 00:00:00')}\n          closed={false}\n          description='Some description for this job'\n          flag='1'\n          flagOptions={flagOptions}\n          jobHeight={300}\n          jobNumber={'Job Number can be a String'}\n          jobTemplate='1'\n          jobTemplateOptions={jobTemplateOptions}\n          jobWidth={200}\n          numberOfPages={30}\n          onChange={onChange}\n          onClose={onClose}\n          onSubmit={onSubmit}\n          spreadSheetTemplate='1'\n\n          spreadSheetTemplateOptions={spreadSheetTemplateOptions}\n          stateMachine='1'\n          stateMachineOptions={stateMachineOptions}\n          validation={validation}\n          workflowTemplate='1'\n          workflowTemplateOptions={workflowTemplateOptions}\n          workflowTemplateSteps={workflowTemplateSteps}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [946, 954],
+          "loc": {
+            "line": 27,
+            "column": 11,
+            "endLine": 27,
+            "endColumn": 19
+          },
+          "fix": {
+            "range": [33, 965],
+            "text": "campaign='Some Campaign name'\n          campaignFinish={moment('2018-09-01 00:00:00')}\n          campaignStart={moment('2018-07-28 00:00:00')}\n          closed={false}\n          description='Some description for this job'\n          flag='1'\n          flagOptions={flagOptions}\n          jobHeight={300}\n          jobNumber={'Job Number can be a String'}\n          jobTemplate='1'\n          jobTemplateOptions={jobTemplateOptions}\n          jobWidth={200}\n          numberOfPages={30}\n          onChange={onChange}\n          onClose={onClose}\n          onSubmit={onSubmit}\n          spreadSheetTemplate='1'\n\n          spreadSheetTemplateOptions={spreadSheetTemplateOptions}\n          stateMachine='1'\n          stateMachineOptions={stateMachineOptions}\n          validation={validation}\n          workflowTemplate='1'\n          workflowTemplateOptions={workflowTemplateOptions}\n          workflowTemplateSteps={workflowTemplateSteps}"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App key=\"key\" b c=\"c\" />",
+      "options": [
+        {
+          "reservedFirst": true,
+          "shorthandLast": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"],
+      "output": "<App key=\"key\" c=\"c\" b />",
+      "firstPassOutput": "<App key=\"key\" c=\"c\" b />",
+      "recursiveOutput": "<App key=\"key\" c=\"c\" b />",
+      "expectedDiagnostics": [
+        {
+          "messageId": "listShorthandLast",
+          "message": "Shorthand props must be listed after all other props",
+          "data": {},
+          "range": [15, 16],
+          "loc": {
+            "line": 1,
+            "column": 16,
+            "endLine": 1,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [5, 22],
+            "text": "key=\"key\" c=\"c\" b"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App ref=\"ref\" key=\"key\" isShorthand veryLastAttribute=\"yes\" />",
+      "options": [
+        {
+          "reservedFirst": true,
+          "shorthandLast": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"],
+      "output": "<App key=\"key\" ref=\"ref\" veryLastAttribute=\"yes\" isShorthand />",
+      "firstPassOutput": "<App key=\"key\" ref=\"ref\" veryLastAttribute=\"yes\" isShorthand />",
+      "recursiveOutput": "<App key=\"key\" ref=\"ref\" veryLastAttribute=\"yes\" isShorthand />",
+      "expectedDiagnostics": [
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [15, 18],
+          "loc": {
+            "line": 1,
+            "column": 16,
+            "endLine": 1,
+            "endColumn": 19
+          },
+          "fix": {
+            "range": [5, 60],
+            "text": "key=\"key\" ref=\"ref\" veryLastAttribute=\"yes\" isShorthand"
+          }
+        },
+        {
+          "messageId": "listShorthandLast",
+          "message": "Shorthand props must be listed after all other props",
+          "data": {},
+          "range": [25, 36],
+          "loc": {
+            "line": 1,
+            "column": 26,
+            "endLine": 1,
+            "endColumn": 37
+          },
+          "fix": {
+            "range": [5, 60],
+            "text": "key=\"key\" ref=\"ref\" veryLastAttribute=\"yes\" isShorthand"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App a v-for={i in 4} v-if={true} b />",
+      "options": [
+        {
+          "reservedFirst": ["v-if", "v-for"]
+        }
+      ],
+      "parsers": ["jsx", "tsx"],
+      "output": "<App v-if={true} v-for={i in 4} a b />",
+      "firstPassOutput": "<App v-if={true} v-for={i in 4} a b />",
+      "recursiveOutput": "<App v-if={true} v-for={i in 4} a b />",
+      "expectedDiagnostics": [
+        {
+          "messageId": "listReservedPropsFirst",
+          "message": "Reserved props must be listed before all other props",
+          "data": {},
+          "range": [7, 12],
+          "loc": {
+            "line": 1,
+            "column": 8,
+            "endLine": 1,
+            "endColumn": 13
+          },
+          "fix": {
+            "range": [5, 35],
+            "text": "v-if={true} v-for={i in 4} a b"
+          }
+        },
+        {
+          "messageId": "listReservedPropsFirst",
+          "message": "Reserved props must be listed before all other props",
+          "data": {},
+          "range": [22, 26],
+          "loc": {
+            "line": 1,
+            "column": 23,
+            "endLine": 1,
+            "endColumn": 27
+          },
+          "fix": {
+            "range": [5, 35],
+            "text": "v-if={true} v-for={i in 4} a b"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App v-slot={{ foo }} v-slots={{}} onClick={() => {}} />",
+      "options": [
+        {
+          "reservedLast": ["v-slot", "v-slots"]
+        }
+      ],
+      "parsers": ["jsx", "tsx"],
+      "output": "<App onClick={() => {}} v-slots={{}} v-slot={{ foo }} />",
+      "firstPassOutput": "<App onClick={() => {}} v-slots={{}} v-slot={{ foo }} />",
+      "recursiveOutput": "<App onClick={() => {}} v-slots={{}} v-slot={{ foo }} />",
+      "expectedDiagnostics": [
+        {
+          "messageId": "listReservedPropsLast",
+          "message": "Reserved props must be listed after all other props",
+          "data": {},
+          "range": [22, 29],
+          "loc": {
+            "line": 1,
+            "column": 23,
+            "endLine": 1,
+            "endColumn": 30
+          },
+          "fix": {
+            "range": [5, 53],
+            "text": "onClick={() => {}} v-slots={{}} v-slot={{ foo }}"
+          }
+        },
+        {
+          "messageId": "listReservedPropsLast",
+          "message": "Reserved props must be listed after all other props",
+          "data": {},
+          "range": [35, 42],
+          "loc": {
+            "line": 1,
+            "column": 36,
+            "endLine": 1,
+            "endColumn": 43
+          },
+          "fix": {
+            "range": [5, 53],
+            "text": "onClick={() => {}} v-slots={{}} v-slot={{ foo }}"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App a v-model:b={foo} b v-model={foo} c v-slot:b={{ foo }} v-slot:a={{ foo }} onClick={() => {}} />",
+      "options": [
+        {
+          "reservedFirst": ["v-model"],
+          "reservedLast": ["v-slot"]
+        }
+      ],
+      "parsers": ["jsx", "tsx"],
+      "output": "<App v-model={foo} v-model:b={foo} a b c onClick={() => {}} v-slot:a={{ foo }} v-slot:b={{ foo }} />",
+      "firstPassOutput": "<App v-model={foo} v-model:b={foo} a b c onClick={() => {}} v-slot:a={{ foo }} v-slot:b={{ foo }} />",
+      "recursiveOutput": "<App v-model={foo} v-model:b={foo} a b c onClick={() => {}} v-slot:a={{ foo }} v-slot:b={{ foo }} />",
+      "expectedDiagnostics": [
+        {
+          "messageId": "listReservedPropsFirst",
+          "message": "Reserved props must be listed before all other props",
+          "data": {},
+          "range": [7, 16],
+          "loc": {
+            "line": 1,
+            "column": 8,
+            "endLine": 1,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [5, 97],
+            "text": "v-model={foo} v-model:b={foo} a b c onClick={() => {}} v-slot:a={{ foo }} v-slot:b={{ foo }}"
+          }
+        },
+        {
+          "messageId": "listReservedPropsFirst",
+          "message": "Reserved props must be listed before all other props",
+          "data": {},
+          "range": [25, 32],
+          "loc": {
+            "line": 1,
+            "column": 26,
+            "endLine": 1,
+            "endColumn": 33
+          },
+          "fix": {
+            "range": [5, 97],
+            "text": "v-model={foo} v-model:b={foo} a b c onClick={() => {}} v-slot:a={{ foo }} v-slot:b={{ foo }}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [60, 68],
+          "loc": {
+            "line": 1,
+            "column": 61,
+            "endLine": 1,
+            "endColumn": 69
+          },
+          "fix": {
+            "range": [5, 97],
+            "text": "v-model={foo} v-model:b={foo} a b c onClick={() => {}} v-slot:a={{ foo }} v-slot:b={{ foo }}"
+          }
+        },
+        {
+          "messageId": "listReservedPropsLast",
+          "message": "Reserved props must be listed after all other props",
+          "data": {},
+          "range": [79, 86],
+          "loc": {
+            "line": 1,
+            "column": 80,
+            "endLine": 1,
+            "endColumn": 87
+          },
+          "fix": {
+            "range": [5, 97],
+            "text": "v-model={foo} v-model:b={foo} a b c onClick={() => {}} v-slot:a={{ foo }} v-slot:b={{ foo }}"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App a v-model:b={foo} b v-model={foo} c v-slot:b={{ foo }} v-slot:a={{ foo }} onClick={() => {}} />",
+      "options": [
+        {
+          "noSortAlphabetically": true,
+          "reservedFirst": ["v-model"],
+          "reservedLast": ["v-slot"]
+        }
+      ],
+      "parsers": ["jsx", "tsx"],
+      "output": "<App v-model:b={foo} v-model={foo} a b c onClick={() => {}} v-slot:b={{ foo }} v-slot:a={{ foo }} />",
+      "firstPassOutput": "<App v-model:b={foo} v-model={foo} a b c onClick={() => {}} v-slot:b={{ foo }} v-slot:a={{ foo }} />",
+      "recursiveOutput": "<App v-model:b={foo} v-model={foo} a b c onClick={() => {}} v-slot:b={{ foo }} v-slot:a={{ foo }} />",
+      "expectedDiagnostics": [
+        {
+          "messageId": "listReservedPropsFirst",
+          "message": "Reserved props must be listed before all other props",
+          "data": {},
+          "range": [7, 16],
+          "loc": {
+            "line": 1,
+            "column": 8,
+            "endLine": 1,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [5, 97],
+            "text": "v-model:b={foo} v-model={foo} a b c onClick={() => {}} v-slot:b={{ foo }} v-slot:a={{ foo }}"
+          }
+        },
+        {
+          "messageId": "listReservedPropsFirst",
+          "message": "Reserved props must be listed before all other props",
+          "data": {},
+          "range": [25, 32],
+          "loc": {
+            "line": 1,
+            "column": 26,
+            "endLine": 1,
+            "endColumn": 33
+          },
+          "fix": {
+            "range": [5, 97],
+            "text": "v-model:b={foo} v-model={foo} a b c onClick={() => {}} v-slot:b={{ foo }} v-slot:a={{ foo }}"
+          }
+        },
+        {
+          "messageId": "listReservedPropsLast",
+          "message": "Reserved props must be listed after all other props",
+          "data": {},
+          "range": [79, 86],
+          "loc": {
+            "line": 1,
+            "column": 80,
+            "endLine": 1,
+            "endColumn": 87
+          },
+          "fix": {
+            "range": [5, 97],
+            "text": "v-model:b={foo} v-model={foo} a b c onClick={() => {}} v-slot:b={{ foo }} v-slot:a={{ foo }}"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App a z onFoo onBar />;",
+      "options": [
+        {
+          "callbacksLast": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"],
+      "output": "<App a z onBar onFoo />;",
+      "firstPassOutput": "<App a z onBar onFoo />;",
+      "recursiveOutput": "<App a z onBar onFoo />;",
+      "expectedDiagnostics": [
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [15, 20],
+          "loc": {
+            "line": 1,
+            "column": 16,
+            "endLine": 1,
+            "endColumn": 21
+          },
+          "fix": {
+            "range": [5, 20],
+            "text": "a z onBar onFoo"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App a onBar onFoo z />;",
+      "options": [
+        {
+          "callbacksLast": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"],
+      "output": "<App a z onBar onFoo />;",
+      "firstPassOutput": "<App a z onBar onFoo />;",
+      "recursiveOutput": "<App a z onBar onFoo />;",
+      "expectedDiagnostics": [
+        {
+          "messageId": "listCallbacksLast",
+          "message": "Callbacks must be listed after all other props",
+          "data": {},
+          "range": [13, 18],
+          "loc": {
+            "line": 1,
+            "column": 14,
+            "endLine": 1,
+            "endColumn": 19
+          },
+          "fix": {
+            "range": [5, 20],
+            "text": "a z onBar onFoo"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App a=\"a\" b />;",
+      "options": [
+        {
+          "shorthandFirst": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"],
+      "output": "<App b a=\"a\" />;",
+      "firstPassOutput": "<App b a=\"a\" />;",
+      "recursiveOutput": "<App b a=\"a\" />;",
+      "expectedDiagnostics": [
+        {
+          "messageId": "listShorthandFirst",
+          "message": "Shorthand props must be listed before all other props",
+          "data": {},
+          "range": [11, 12],
+          "loc": {
+            "line": 1,
+            "column": 12,
+            "endLine": 1,
+            "endColumn": 13
+          },
+          "fix": {
+            "range": [5, 12],
+            "text": "b a=\"a\""
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App z x a=\"a\" />;",
+      "options": [
+        {
+          "shorthandFirst": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"],
+      "output": "<App x z a=\"a\" />;",
+      "firstPassOutput": "<App x z a=\"a\" />;",
+      "recursiveOutput": "<App x z a=\"a\" />;",
+      "expectedDiagnostics": [
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [7, 8],
+          "loc": {
+            "line": 1,
+            "column": 8,
+            "endLine": 1,
+            "endColumn": 9
+          },
+          "fix": {
+            "range": [5, 14],
+            "text": "x z a=\"a\""
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App b a=\"a\" />;",
+      "options": [
+        {
+          "shorthandLast": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"],
+      "output": "<App a=\"a\" b />;",
+      "firstPassOutput": "<App a=\"a\" b />;",
+      "recursiveOutput": "<App a=\"a\" b />;",
+      "expectedDiagnostics": [
+        {
+          "messageId": "listShorthandLast",
+          "message": "Shorthand props must be listed after all other props",
+          "data": {},
+          "range": [5, 6],
+          "loc": {
+            "line": 1,
+            "column": 6,
+            "endLine": 1,
+            "endColumn": 7
+          },
+          "fix": {
+            "range": [5, 12],
+            "text": "a=\"a\" b"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App a=\"a\" onBar onFoo z x />;",
+      "options": [
+        {
+          "shorthandLast": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"],
+      "output": "<App a=\"a\" onBar onFoo x z />;",
+      "firstPassOutput": "<App a=\"a\" onBar onFoo x z />;",
+      "recursiveOutput": "<App a=\"a\" onBar onFoo x z />;",
+      "expectedDiagnostics": [
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [25, 26],
+          "loc": {
+            "line": 1,
+            "column": 26,
+            "endLine": 1,
+            "endColumn": 27
+          },
+          "fix": {
+            "range": [5, 26],
+            "text": "a=\"a\" onBar onFoo x z"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App b a />;",
+      "options": [
+        {
+          "noSortAlphabetically": false
+        }
+      ],
+      "parsers": ["jsx", "tsx"],
+      "output": "<App a b />;",
+      "firstPassOutput": "<App a b />;",
+      "recursiveOutput": "<App a b />;",
+      "expectedDiagnostics": [
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [7, 8],
+          "loc": {
+            "line": 1,
+            "column": 8,
+            "endLine": 1,
+            "endColumn": 9
+          },
+          "fix": {
+            "range": [5, 8],
+            "text": "a b"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App a key={1} />",
+      "options": [
+        {
+          "reservedFirst": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"],
+      "output": "<App key={1} a />",
+      "firstPassOutput": "<App key={1} a />",
+      "recursiveOutput": "<App key={1} a />",
+      "expectedDiagnostics": [
+        {
+          "messageId": "listReservedPropsFirst",
+          "message": "Reserved props must be listed before all other props",
+          "data": {},
+          "range": [7, 10],
+          "loc": {
+            "line": 1,
+            "column": 8,
+            "endLine": 1,
+            "endColumn": 11
+          },
+          "fix": {
+            "range": [5, 14],
+            "text": "key={1} a"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<div a dangerouslySetInnerHTML={{__html: \"EPR\"}} />",
+      "options": [
+        {
+          "reservedFirst": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"],
+      "output": "<div dangerouslySetInnerHTML={{__html: \"EPR\"}} a />",
+      "firstPassOutput": "<div dangerouslySetInnerHTML={{__html: \"EPR\"}} a />",
+      "recursiveOutput": "<div dangerouslySetInnerHTML={{__html: \"EPR\"}} a />",
+      "expectedDiagnostics": [
+        {
+          "messageId": "listReservedPropsFirst",
+          "message": "Reserved props must be listed before all other props",
+          "data": {},
+          "range": [7, 30],
+          "loc": {
+            "line": 1,
+            "column": 8,
+            "endLine": 1,
+            "endColumn": 31
+          },
+          "fix": {
+            "range": [5, 48],
+            "text": "dangerouslySetInnerHTML={{__html: \"EPR\"}} a"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App ref=\"r\" key={2} b />",
+      "options": [
+        {
+          "reservedFirst": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"],
+      "output": "<App key={2} ref=\"r\" b />",
+      "firstPassOutput": "<App key={2} ref=\"r\" b />",
+      "recursiveOutput": "<App key={2} ref=\"r\" b />",
+      "expectedDiagnostics": [
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [13, 16],
+          "loc": {
+            "line": 1,
+            "column": 14,
+            "endLine": 1,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [5, 22],
+            "text": "key={2} ref=\"r\" b"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App key={2} b a />",
+      "options": [
+        {
+          "reservedFirst": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"],
+      "output": "<App key={2} a b />",
+      "firstPassOutput": "<App key={2} a b />",
+      "recursiveOutput": "<App key={2} a b />",
+      "expectedDiagnostics": [
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [15, 16],
+          "loc": {
+            "line": 1,
+            "column": 16,
+            "endLine": 1,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [5, 16],
+            "text": "key={2} a b"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App b a />",
+      "options": [
+        {
+          "reservedFirst": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"],
+      "output": "<App a b />",
+      "firstPassOutput": "<App a b />",
+      "recursiveOutput": "<App a b />",
+      "expectedDiagnostics": [
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [7, 8],
+          "loc": {
+            "line": 1,
+            "column": 8,
+            "endLine": 1,
+            "endColumn": 9
+          },
+          "fix": {
+            "range": [5, 8],
+            "text": "a b"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App dangerouslySetInnerHTML={{__html: \"EPR\"}} e key={2} b />",
+      "options": [
+        {
+          "reservedFirst": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"],
+      "output": "<App key={2} b dangerouslySetInnerHTML={{__html: \"EPR\"}} e />",
+      "firstPassOutput": "<App key={2} b dangerouslySetInnerHTML={{__html: \"EPR\"}} e />",
+      "recursiveOutput": "<App key={2} b dangerouslySetInnerHTML={{__html: \"EPR\"}} e />",
+      "expectedDiagnostics": [
+        {
+          "messageId": "listReservedPropsFirst",
+          "message": "Reserved props must be listed before all other props",
+          "data": {},
+          "range": [49, 52],
+          "loc": {
+            "line": 1,
+            "column": 50,
+            "endLine": 1,
+            "endColumn": 53
+          },
+          "fix": {
+            "range": [5, 58],
+            "text": "key={2} b dangerouslySetInnerHTML={{__html: \"EPR\"}} e"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [57, 58],
+          "loc": {
+            "line": 1,
+            "column": 58,
+            "endLine": 1,
+            "endColumn": 59
+          },
+          "fix": {
+            "range": [5, 58],
+            "text": "key={2} b dangerouslySetInnerHTML={{__html: \"EPR\"}} e"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App key={3} children={<App />} />",
+      "options": [
+        {
+          "reservedFirst": ["children", "dangerouslySetInnerHTML", "key"]
+        }
+      ],
+      "parsers": ["jsx", "tsx"],
+      "output": "<App children={<App />} key={3} />",
+      "firstPassOutput": "<App children={<App />} key={3} />",
+      "recursiveOutput": "<App children={<App />} key={3} />",
+      "expectedDiagnostics": [
+        {
+          "messageId": "listReservedPropsFirst",
+          "message": "Reserved props must be listed before all other props",
+          "data": {},
+          "range": [13, 21],
+          "loc": {
+            "line": 1,
+            "column": 14,
+            "endLine": 1,
+            "endColumn": 22
+          },
+          "fix": {
+            "range": [5, 31],
+            "text": "children={<App />} key={3}"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App z ref=\"r\" />",
+      "options": [
+        {
+          "noSortAlphabetically": true,
+          "reservedFirst": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"],
+      "output": "<App ref=\"r\" z />",
+      "firstPassOutput": "<App ref=\"r\" z />",
+      "recursiveOutput": "<App ref=\"r\" z />",
+      "expectedDiagnostics": [
+        {
+          "messageId": "listReservedPropsFirst",
+          "message": "Reserved props must be listed before all other props",
+          "data": {},
+          "range": [7, 10],
+          "loc": {
+            "line": 1,
+            "column": 8,
+            "endLine": 1,
+            "endColumn": 11
+          },
+          "fix": {
+            "range": [5, 14],
+            "text": "ref=\"r\" z"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App key={4} />",
+      "options": [
+        {
+          "reservedFirst": []
+        }
+      ],
+      "parsers": ["jsx", "tsx"],
+      "firstPassOutput": null,
+      "recursiveOutput": null,
+      "expectedDiagnostics": [
+        {
+          "messageId": "listIsEmpty",
+          "message": "A customized reserved first list must not be empty",
+          "data": {},
+          "range": [5, 12],
+          "loc": {
+            "line": 1,
+            "column": 6,
+            "endLine": 1,
+            "endColumn": 13
+          },
+          "fix": null
+        }
+      ]
+    },
+    {
+      "code": "<App onBar z />;",
+      "options": [
+        {
+          "callbacksLast": true,
+          "reservedFirst": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"],
+      "output": "<App z onBar />;",
+      "firstPassOutput": "<App z onBar />;",
+      "recursiveOutput": "<App z onBar />;",
+      "expectedDiagnostics": [
+        {
+          "messageId": "listCallbacksLast",
+          "message": "Callbacks must be listed after all other props",
+          "data": {},
+          "range": [5, 10],
+          "loc": {
+            "line": 1,
+            "column": 6,
+            "endLine": 1,
+            "endColumn": 11
+          },
+          "fix": {
+            "range": [5, 12],
+            "text": "z onBar"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n          a\n          b={{\n            bB: 1,\n          }}\n        />\n      ",
+      "options": [
+        {
+          "multiline": "first"
+        }
+      ],
+      "parsers": ["jsx", "tsx"],
+      "output": "\n        <App\n          b={{\n            bB: 1,\n          }}\n          a\n        />\n      ",
+      "firstPassOutput": "\n        <App\n          b={{\n            bB: 1,\n          }}\n          a\n        />\n      ",
+      "recursiveOutput": "\n        <App\n          b={{\n            bB: 1,\n          }}\n          a\n        />\n      ",
+      "expectedDiagnostics": [
+        {
+          "messageId": "listMultilineFirst",
+          "message": "Multiline props must be listed before all other props",
+          "data": {},
+          "range": [36, 37],
+          "loc": {
+            "line": 4,
+            "column": 11,
+            "endLine": 4,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [24, 72],
+            "text": "b={{\n            bB: 1,\n          }}\n          a"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n          a={1}\n          b={{\n            bB: 1,\n          }}\n          c\n        />\n      ",
+      "options": [
+        {
+          "multiline": "first",
+          "shorthandFirst": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"],
+      "output": "\n        <App\n          c\n          b={{\n            bB: 1,\n          }}\n          a={1}\n        />\n      ",
+      "firstPassOutput": "\n        <App\n          c\n          b={{\n            bB: 1,\n          }}\n          a={1}\n        />\n      ",
+      "recursiveOutput": "\n        <App\n          c\n          b={{\n            bB: 1,\n          }}\n          a={1}\n        />\n      ",
+      "expectedDiagnostics": [
+        {
+          "messageId": "listMultilineFirst",
+          "message": "Multiline props must be listed before all other props",
+          "data": {},
+          "range": [40, 41],
+          "loc": {
+            "line": 4,
+            "column": 11,
+            "endLine": 4,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [24, 88],
+            "text": "c\n          b={{\n            bB: 1,\n          }}\n          a={1}"
+          }
+        },
+        {
+          "messageId": "listShorthandFirst",
+          "message": "Shorthand props must be listed before all other props",
+          "data": {},
+          "range": [87, 88],
+          "loc": {
+            "line": 7,
+            "column": 11,
+            "endLine": 7,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [24, 88],
+            "text": "c\n          b={{\n            bB: 1,\n          }}\n          a={1}"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n          a={{\n            aA: 1,\n          }}\n          b\n        />\n      ",
+      "options": [
+        {
+          "multiline": "last"
+        }
+      ],
+      "parsers": ["jsx", "tsx"],
+      "output": "\n        <App\n          b\n          a={{\n            aA: 1,\n          }}\n        />\n      ",
+      "firstPassOutput": "\n        <App\n          b\n          a={{\n            aA: 1,\n          }}\n        />\n      ",
+      "recursiveOutput": "\n        <App\n          b\n          a={{\n            aA: 1,\n          }}\n        />\n      ",
+      "expectedDiagnostics": [
+        {
+          "messageId": "listMultilineLast",
+          "message": "Multiline props must be listed after all other props",
+          "data": {},
+          "range": [24, 25],
+          "loc": {
+            "line": 3,
+            "column": 11,
+            "endLine": 3,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [24, 72],
+            "text": "b\n          a={{\n            aA: 1,\n          }}"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n          a={{\n            aA: 1,\n          }}\n          b\n          inline={1}\n          onClick={() => ({\n            c: 1\n          })}\n          d=\"dD\"\n          e={() => ({\n            eE: 1\n          })}\n          f\n        />\n      ",
+      "options": [
+        {
+          "multiline": "last",
+          "shorthandLast": true,
+          "callbacksLast": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"],
+      "output": "\n        <App\n          d=\"dD\"\n          inline={1}\n          a={{\n            aA: 1,\n          }}\n          e={() => ({\n            eE: 1\n          })}\n          b\n          f\n          onClick={() => ({\n            c: 1\n          })}\n        />\n      ",
+      "firstPassOutput": "\n        <App\n          d=\"dD\"\n          inline={1}\n          a={{\n            aA: 1,\n          }}\n          e={() => ({\n            eE: 1\n          })}\n          b\n          f\n          onClick={() => ({\n            c: 1\n          })}\n        />\n      ",
+      "recursiveOutput": "\n        <App\n          d=\"dD\"\n          inline={1}\n          a={{\n            aA: 1,\n          }}\n          e={() => ({\n            eE: 1\n          })}\n          b\n          f\n          onClick={() => ({\n            c: 1\n          })}\n        />\n      ",
+      "expectedDiagnostics": [
+        {
+          "messageId": "listShorthandLast",
+          "message": "Shorthand props must be listed after all other props",
+          "data": {},
+          "range": [71, 72],
+          "loc": {
+            "line": 6,
+            "column": 11,
+            "endLine": 6,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [24, 235],
+            "text": "d=\"dD\"\n          inline={1}\n          a={{\n            aA: 1,\n          }}\n          e={() => ({\n            eE: 1\n          })}\n          b\n          f\n          onClick={() => ({\n            c: 1\n          })}"
+          }
+        },
+        {
+          "messageId": "listCallbacksLast",
+          "message": "Callbacks must be listed after all other props",
+          "data": {},
+          "range": [104, 111],
+          "loc": {
+            "line": 8,
+            "column": 11,
+            "endLine": 8,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [24, 235],
+            "text": "d=\"dD\"\n          inline={1}\n          a={{\n            aA: 1,\n          }}\n          e={() => ({\n            eE: 1\n          })}\n          b\n          f\n          onClick={() => ({\n            c: 1\n          })}"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <Typography\n          float\n          className={classNames(classes.inputWidth, {\n            [classes.noBorder]: isActive === \"values\",\n          })}\n          disabled={isDisabled}\n          initialValue={computePercentage(number, count)}\n          InputProps={{\n            ...customInputProps,\n          }}\n          key={index}\n          isRequired\n          {...sharedTypographyProps}\n          ref={textRef}\n          min=\"0\"\n          name=\"fieldName\"\n          placeholder={getTranslation(\"field\")}\n          onValidate={validate}\n          inputProps={{\n            className: inputClassName,\n          }}\n          outlined\n          {...rest}\n        />\n      ",
+      "options": [
+        {
+          "multiline": "last",
+          "shorthandFirst": true,
+          "callbacksLast": true,
+          "reservedFirst": true,
+          "ignoreCase": true
+        }
+      ],
+      "parsers": ["jsx", "tsx"],
+      "output": "\n        <Typography\n          key={index}\n          float\n          isRequired\n          disabled={isDisabled}\n          initialValue={computePercentage(number, count)}\n          className={classNames(classes.inputWidth, {\n            [classes.noBorder]: isActive === \"values\",\n          })}\n          InputProps={{\n            ...customInputProps,\n          }}\n          {...sharedTypographyProps}\n          ref={textRef}\n          outlined\n          min=\"0\"\n          name=\"fieldName\"\n          placeholder={getTranslation(\"field\")}\n          inputProps={{\n            className: inputClassName,\n          }}\n          onValidate={validate}\n          {...rest}\n        />\n      ",
+      "firstPassOutput": "\n        <Typography\n          key={index}\n          float\n          isRequired\n          disabled={isDisabled}\n          initialValue={computePercentage(number, count)}\n          className={classNames(classes.inputWidth, {\n            [classes.noBorder]: isActive === \"values\",\n          })}\n          InputProps={{\n            ...customInputProps,\n          }}\n          {...sharedTypographyProps}\n          ref={textRef}\n          outlined\n          min=\"0\"\n          name=\"fieldName\"\n          placeholder={getTranslation(\"field\")}\n          inputProps={{\n            className: inputClassName,\n          }}\n          onValidate={validate}\n          {...rest}\n        />\n      ",
+      "recursiveOutput": "\n        <Typography\n          key={index}\n          float\n          isRequired\n          disabled={isDisabled}\n          initialValue={computePercentage(number, count)}\n          className={classNames(classes.inputWidth, {\n            [classes.noBorder]: isActive === \"values\",\n          })}\n          InputProps={{\n            ...customInputProps,\n          }}\n          {...sharedTypographyProps}\n          ref={textRef}\n          outlined\n          min=\"0\"\n          name=\"fieldName\"\n          placeholder={getTranslation(\"field\")}\n          inputProps={{\n            className: inputClassName,\n          }}\n          onValidate={validate}\n          {...rest}\n        />\n      ",
+      "expectedDiagnostics": [
+        {
+          "messageId": "listMultilineLast",
+          "message": "Multiline props must be listed after all other props",
+          "data": {},
+          "range": [47, 56],
+          "loc": {
+            "line": 4,
+            "column": 11,
+            "endLine": 4,
+            "endColumn": 20
+          },
+          "fix": {
+            "range": [31, 643],
+            "text": "key={index}\n          float\n          isRequired\n          disabled={isDisabled}\n          initialValue={computePercentage(number, count)}\n          className={classNames(classes.inputWidth, {\n            [classes.noBorder]: isActive === \"values\",\n          })}\n          InputProps={{\n            ...customInputProps,\n          }}\n          {...sharedTypographyProps}\n          ref={textRef}\n          outlined\n          min=\"0\"\n          name=\"fieldName\"\n          placeholder={getTranslation(\"field\")}\n          inputProps={{\n            className: inputClassName,\n          }}\n          onValidate={validate}"
+          }
+        },
+        {
+          "messageId": "listReservedPropsFirst",
+          "message": "Reserved props must be listed before all other props",
+          "data": {},
+          "range": [330, 333],
+          "loc": {
+            "line": 12,
+            "column": 11,
+            "endLine": 12,
+            "endColumn": 14
+          },
+          "fix": {
+            "range": [31, 643],
+            "text": "key={index}\n          float\n          isRequired\n          disabled={isDisabled}\n          initialValue={computePercentage(number, count)}\n          className={classNames(classes.inputWidth, {\n            [classes.noBorder]: isActive === \"values\",\n          })}\n          InputProps={{\n            ...customInputProps,\n          }}\n          {...sharedTypographyProps}\n          ref={textRef}\n          outlined\n          min=\"0\"\n          name=\"fieldName\"\n          placeholder={getTranslation(\"field\")}\n          inputProps={{\n            className: inputClassName,\n          }}\n          onValidate={validate}"
+          }
+        },
+        {
+          "messageId": "listShorthandFirst",
+          "message": "Shorthand props must be listed before all other props",
+          "data": {},
+          "range": [352, 362],
+          "loc": {
+            "line": 13,
+            "column": 11,
+            "endLine": 13,
+            "endColumn": 21
+          },
+          "fix": {
+            "range": [31, 643],
+            "text": "key={index}\n          float\n          isRequired\n          disabled={isDisabled}\n          initialValue={computePercentage(number, count)}\n          className={classNames(classes.inputWidth, {\n            [classes.noBorder]: isActive === \"values\",\n          })}\n          InputProps={{\n            ...customInputProps,\n          }}\n          {...sharedTypographyProps}\n          ref={textRef}\n          outlined\n          min=\"0\"\n          name=\"fieldName\"\n          placeholder={getTranslation(\"field\")}\n          inputProps={{\n            className: inputClassName,\n          }}\n          onValidate={validate}"
+          }
+        },
+        {
+          "messageId": "listCallbacksLast",
+          "message": "Callbacks must be listed after all other props",
+          "data": {},
+          "range": [527, 537],
+          "loc": {
+            "line": 19,
+            "column": 11,
+            "endLine": 19,
+            "endColumn": 21
+          },
+          "fix": {
+            "range": [31, 643],
+            "text": "key={index}\n          float\n          isRequired\n          disabled={isDisabled}\n          initialValue={computePercentage(number, count)}\n          className={classNames(classes.inputWidth, {\n            [classes.noBorder]: isActive === \"values\",\n          })}\n          InputProps={{\n            ...customInputProps,\n          }}\n          {...sharedTypographyProps}\n          ref={textRef}\n          outlined\n          min=\"0\"\n          name=\"fieldName\"\n          placeholder={getTranslation(\"field\")}\n          inputProps={{\n            className: inputClassName,\n          }}\n          onValidate={validate}"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <foo\n          m={0}\n          n={0} // this is n\n          o={0}\n          c={0} // this is c\n          // fofof\n          f={0} // this is f\n          a={0}\n          b={0}\n          d={0}\n        />\n      ",
+      "options": [],
+      "parsers": ["jsx", "tsx"],
+      "output": "\n        <foo\n          a={0}\n          b={0}\n          d={0}\n          m={0}\n          n={0} // this is n\n          o={0}\n          c={0} // this is c\n          // fofof\n          f={0} // this is f\n        />\n      ",
+      "firstPassOutput": "\n        <foo\n          a={0}\n          b={0}\n          d={0}\n          m={0}\n          n={0} // this is n\n          o={0}\n          c={0} // this is c\n          // fofof\n          f={0} // this is f\n        />\n      ",
+      "recursiveOutput": "\n        <foo\n          a={0}\n          b={0}\n          d={0}\n          m={0}\n          n={0} // this is n\n          o={0}\n          c={0} // this is c\n          // fofof\n          f={0} // this is f\n        />\n      ",
+      "expectedDiagnostics": [
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [85, 86],
+          "loc": {
+            "line": 6,
+            "column": 11,
+            "endLine": 6,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [24, 199],
+            "text": "a={0}\n          b={0}\n          d={0}\n          m={0}\n          n={0} // this is n\n          o={0}\n          c={0} // this is c\n          // fofof\n          f={0} // this is f"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [133, 134],
+          "loc": {
+            "line": 8,
+            "column": 11,
+            "endLine": 8,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [24, 199],
+            "text": "a={0}\n          b={0}\n          d={0}\n          m={0}\n          n={0} // this is n\n          o={0}\n          c={0} // this is c\n          // fofof\n          f={0} // this is f"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [162, 163],
+          "loc": {
+            "line": 9,
+            "column": 11,
+            "endLine": 9,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [24, 199],
+            "text": "a={0}\n          b={0}\n          d={0}\n          m={0}\n          n={0} // this is n\n          o={0}\n          c={0} // this is c\n          // fofof\n          f={0} // this is f"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [178, 179],
+          "loc": {
+            "line": 10,
+            "column": 11,
+            "endLine": 10,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [24, 199],
+            "text": "a={0}\n          b={0}\n          d={0}\n          m={0}\n          n={0} // this is n\n          o={0}\n          c={0} // this is c\n          // fofof\n          f={0} // this is f"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [194, 195],
+          "loc": {
+            "line": 11,
+            "column": 11,
+            "endLine": 11,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [24, 199],
+            "text": "a={0}\n          b={0}\n          d={0}\n          m={0}\n          n={0} // this is n\n          o={0}\n          c={0} // this is c\n          // fofof\n          f={0} // this is f"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <foo\n          m={0}\n          n={0} // this is n\n          o={0}\n          c={0} // this is c\n          f={0} // this is f\n          e={0}\n          a={0}\n          b={0}\n          d={0}\n        />\n      ",
+      "options": [],
+      "parsers": ["jsx", "tsx"],
+      "output": "\n        <foo\n          a={0}\n          b={0}\n          c={0} // this is c\n          d={0}\n          e={0}\n          f={0} // this is f\n          m={0}\n          n={0} // this is n\n          o={0}\n        />\n      ",
+      "firstPassOutput": "\n        <foo\n          a={0}\n          b={0}\n          c={0} // this is c\n          d={0}\n          e={0}\n          f={0} // this is f\n          m={0}\n          n={0} // this is n\n          o={0}\n        />\n      ",
+      "recursiveOutput": "\n        <foo\n          a={0}\n          b={0}\n          c={0} // this is c\n          d={0}\n          e={0}\n          f={0} // this is f\n          m={0}\n          n={0} // this is n\n          o={0}\n        />\n      ",
+      "expectedDiagnostics": [
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [85, 86],
+          "loc": {
+            "line": 6,
+            "column": 11,
+            "endLine": 6,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [24, 196],
+            "text": "a={0}\n          b={0}\n          c={0} // this is c\n          d={0}\n          e={0}\n          f={0} // this is f\n          m={0}\n          n={0} // this is n\n          o={0}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [114, 115],
+          "loc": {
+            "line": 7,
+            "column": 11,
+            "endLine": 7,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [24, 196],
+            "text": "a={0}\n          b={0}\n          c={0} // this is c\n          d={0}\n          e={0}\n          f={0} // this is f\n          m={0}\n          n={0} // this is n\n          o={0}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [143, 144],
+          "loc": {
+            "line": 8,
+            "column": 11,
+            "endLine": 8,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [24, 196],
+            "text": "a={0}\n          b={0}\n          c={0} // this is c\n          d={0}\n          e={0}\n          f={0} // this is f\n          m={0}\n          n={0} // this is n\n          o={0}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [159, 160],
+          "loc": {
+            "line": 9,
+            "column": 11,
+            "endLine": 9,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [24, 196],
+            "text": "a={0}\n          b={0}\n          c={0} // this is c\n          d={0}\n          e={0}\n          f={0} // this is f\n          m={0}\n          n={0} // this is n\n          o={0}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [175, 176],
+          "loc": {
+            "line": 10,
+            "column": 11,
+            "endLine": 10,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [24, 196],
+            "text": "a={0}\n          b={0}\n          c={0} // this is c\n          d={0}\n          e={0}\n          f={0} // this is f\n          m={0}\n          n={0} // this is n\n          o={0}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [191, 192],
+          "loc": {
+            "line": 11,
+            "column": 11,
+            "endLine": 11,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [24, 196],
+            "text": "a={0}\n          b={0}\n          c={0} // this is c\n          d={0}\n          e={0}\n          f={0} // this is f\n          m={0}\n          n={0} // this is n\n          o={0}"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <foo\n          a1={0}\n          g={0}\n          d={0} // comment for d\n          // comment for d and aa\n          aa={0}\n          c={0} // comment for c\n          // comment for c and e\n          e={1}\n          ab={1} // comment for ab\n          f={0}\n        />\n      ",
+      "options": [],
+      "parsers": ["jsx", "tsx"],
+      "output": "\n        <foo\n          a1={0}\n          ab={1} // comment for ab\n          f={0}\n          g={0}\n          c={0} // comment for c\n          // comment for c and e\n          e={1}\n          d={0} // comment for d\n          // comment for d and aa\n          aa={0}\n        />\n      ",
+      "firstPassOutput": "\n        <foo\n          a1={0}\n          ab={1} // comment for ab\n          f={0}\n          g={0}\n          c={0} // comment for c\n          // comment for c and e\n          e={1}\n          d={0} // comment for d\n          // comment for d and aa\n          aa={0}\n        />\n      ",
+      "recursiveOutput": "\n        <foo\n          a1={0}\n          ab={1} // comment for ab\n          f={0}\n          g={0}\n          c={0} // comment for c\n          // comment for c and e\n          e={1}\n          d={0} // comment for d\n          // comment for d and aa\n          aa={0}\n        />\n      ",
+      "expectedDiagnostics": [
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [57, 58],
+          "loc": {
+            "line": 5,
+            "column": 11,
+            "endLine": 5,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [24, 263],
+            "text": "a1={0}\n          ab={1} // comment for ab\n          f={0}\n          g={0}\n          c={0} // comment for c\n          // comment for c and e\n          e={1}\n          d={0} // comment for d\n          // comment for d and aa\n          aa={0}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [124, 126],
+          "loc": {
+            "line": 7,
+            "column": 11,
+            "endLine": 7,
+            "endColumn": 13
+          },
+          "fix": {
+            "range": [24, 263],
+            "text": "a1={0}\n          ab={1} // comment for ab\n          f={0}\n          g={0}\n          c={0} // comment for c\n          // comment for c and e\n          e={1}\n          d={0} // comment for d\n          // comment for d and aa\n          aa={0}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [141, 142],
+          "loc": {
+            "line": 8,
+            "column": 11,
+            "endLine": 8,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [24, 263],
+            "text": "a1={0}\n          ab={1} // comment for ab\n          f={0}\n          g={0}\n          c={0} // comment for c\n          // comment for c and e\n          e={1}\n          d={0} // comment for d\n          // comment for d and aa\n          aa={0}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [207, 208],
+          "loc": {
+            "line": 10,
+            "column": 11,
+            "endLine": 10,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [24, 263],
+            "text": "a1={0}\n          ab={1} // comment for ab\n          f={0}\n          g={0}\n          c={0} // comment for c\n          // comment for c and e\n          e={1}\n          d={0} // comment for d\n          // comment for d and aa\n          aa={0}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [223, 225],
+          "loc": {
+            "line": 11,
+            "column": 11,
+            "endLine": 11,
+            "endColumn": 13
+          },
+          "fix": {
+            "range": [24, 263],
+            "text": "a1={0}\n          ab={1} // comment for ab\n          f={0}\n          g={0}\n          c={0} // comment for c\n          // comment for c and e\n          e={1}\n          d={0} // comment for d\n          // comment for d and aa\n          aa={0}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [258, 259],
+          "loc": {
+            "line": 12,
+            "column": 11,
+            "endLine": 12,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [24, 263],
+            "text": "a1={0}\n          ab={1} // comment for ab\n          f={0}\n          g={0}\n          c={0} // comment for c\n          // comment for c and e\n          e={1}\n          d={0} // comment for d\n          // comment for d and aa\n          aa={0}"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <foo\n          a1={0}\n          ab={1}\n          // comment for ab and f\n          f={0}\n          g={0}\n          c={0} // comment for c\n          // comment for c and e\n          e={1}\n          d={0}\n          aa={1} // comment for aa\n        />\n      ",
+      "options": [],
+      "parsers": ["jsx", "tsx"],
+      "output": "\n        <foo\n          a1={0}\n          aa={1} // comment for aa\n          d={0}\n          g={0}\n          ab={1}\n          // comment for ab and f\n          f={0}\n          c={0} // comment for c\n          // comment for c and e\n          e={1}\n        />\n      ",
+      "firstPassOutput": "\n        <foo\n          a1={0}\n          aa={1} // comment for aa\n          d={0}\n          g={0}\n          ab={1}\n          // comment for ab and f\n          f={0}\n          c={0} // comment for c\n          // comment for c and e\n          e={1}\n        />\n      ",
+      "recursiveOutput": "\n        <foo\n          a1={0}\n          aa={1} // comment for aa\n          d={0}\n          g={0}\n          ab={1}\n          // comment for ab and f\n          f={0}\n          c={0} // comment for c\n          // comment for c and e\n          e={1}\n        />\n      ",
+      "expectedDiagnostics": [
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [124, 125],
+          "loc": {
+            "line": 8,
+            "column": 11,
+            "endLine": 8,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [24, 246],
+            "text": "a1={0}\n          aa={1} // comment for aa\n          d={0}\n          g={0}\n          ab={1}\n          // comment for ab and f\n          f={0}\n          c={0} // comment for c\n          // comment for c and e\n          e={1}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [190, 191],
+          "loc": {
+            "line": 10,
+            "column": 11,
+            "endLine": 10,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [24, 246],
+            "text": "a1={0}\n          aa={1} // comment for aa\n          d={0}\n          g={0}\n          ab={1}\n          // comment for ab and f\n          f={0}\n          c={0} // comment for c\n          // comment for c and e\n          e={1}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [206, 207],
+          "loc": {
+            "line": 11,
+            "column": 11,
+            "endLine": 11,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [24, 246],
+            "text": "a1={0}\n          aa={1} // comment for aa\n          d={0}\n          g={0}\n          ab={1}\n          // comment for ab and f\n          f={0}\n          c={0} // comment for c\n          // comment for c and e\n          e={1}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [222, 224],
+          "loc": {
+            "line": 12,
+            "column": 11,
+            "endLine": 12,
+            "endColumn": 13
+          },
+          "fix": {
+            "range": [24, 246],
+            "text": "a1={0}\n          aa={1} // comment for aa\n          d={0}\n          g={0}\n          ab={1}\n          // comment for ab and f\n          f={0}\n          c={0} // comment for c\n          // comment for c and e\n          e={1}"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <foo a={0} b={1} /* comment for b and ab */ ab={1} aa={0} />\n      ",
+      "options": [],
+      "parsers": ["jsx", "tsx"],
+      "output": "\n        <foo a={0} aa={0} b={1} /* comment for b and ab */ ab={1} />\n      ",
+      "firstPassOutput": "\n        <foo a={0} aa={0} b={1} /* comment for b and ab */ ab={1} />\n      ",
+      "recursiveOutput": "\n        <foo a={0} aa={0} b={1} /* comment for b and ab */ ab={1} />\n      ",
+      "expectedDiagnostics": [
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [53, 55],
+          "loc": {
+            "line": 2,
+            "column": 53,
+            "endLine": 2,
+            "endColumn": 55
+          },
+          "fix": {
+            "range": [14, 66],
+            "text": "a={0} aa={0} b={1} /* comment for b and ab */ ab={1}"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [60, 62],
+          "loc": {
+            "line": 2,
+            "column": 60,
+            "endLine": 2,
+            "endColumn": 62
+          },
+          "fix": {
+            "range": [14, 66],
+            "text": "a={0} aa={0} b={1} /* comment for b and ab */ ab={1}"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <ReactJson src={rowResult} name=\"data\" collapsed={4} collapseStringsAfterLength={60} onEdit={onEdit} /* onDelete={onEdit} */ />\n      ",
+      "options": [],
+      "parsers": ["jsx", "tsx"],
+      "output": "\n        <ReactJson collapseStringsAfterLength={60} collapsed={4} name=\"data\" src={rowResult} onEdit={onEdit} /* onDelete={onEdit} */ />\n      ",
+      "firstPassOutput": "\n        <ReactJson collapseStringsAfterLength={60} collapsed={4} name=\"data\" src={rowResult} onEdit={onEdit} /* onDelete={onEdit} */ />\n      ",
+      "recursiveOutput": "\n        <ReactJson collapseStringsAfterLength={60} collapsed={4} name=\"data\" src={rowResult} onEdit={onEdit} /* onDelete={onEdit} */ />\n      ",
+      "expectedDiagnostics": [
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [36, 40],
+          "loc": {
+            "line": 2,
+            "column": 36,
+            "endLine": 2,
+            "endColumn": 40
+          },
+          "fix": {
+            "range": [20, 133],
+            "text": "collapseStringsAfterLength={60} collapsed={4} name=\"data\" src={rowResult} onEdit={onEdit} /* onDelete={onEdit} */"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [48, 57],
+          "loc": {
+            "line": 2,
+            "column": 48,
+            "endLine": 2,
+            "endColumn": 57
+          },
+          "fix": {
+            "range": [20, 133],
+            "text": "collapseStringsAfterLength={60} collapsed={4} name=\"data\" src={rowResult} onEdit={onEdit} /* onDelete={onEdit} */"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [62, 88],
+          "loc": {
+            "line": 2,
+            "column": 62,
+            "endLine": 2,
+            "endColumn": 88
+          },
+          "fix": {
+            "range": [20, 133],
+            "text": "collapseStringsAfterLength={60} collapsed={4} name=\"data\" src={rowResult} onEdit={onEdit} /* onDelete={onEdit} */"
+          }
+        },
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [94, 100],
+          "loc": {
+            "line": 2,
+            "column": 94,
+            "endLine": 2,
+            "endColumn": 100
+          },
+          "fix": {
+            "range": [20, 133],
+            "text": "collapseStringsAfterLength={60} collapsed={4} name=\"data\" src={rowResult} onEdit={onEdit} /* onDelete={onEdit} */"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <Page\n          // Pass all the props to the Page component.\n          {...props}\n          // Use the platform specific props from the doc.ts file.\n          {...TemplatePageProps[platform]}\n          // Use the getSubTitle helper function to get the page header subtitle from the active platform.\n          subTitle={getSubTitle(platform)}\n          // You can define custom sections using the `otherSections` prop.\n          // Here it is using a method that takes the platform as an argument to return the correct array of section props.\n          otherSections={_otherSections(platform) as IPageSectionProps[]}\n\n          // You can hide the side rail by setting `showSideRail` to false.\n          // showSideRail={false}\n\n          // You can pass a custom className to the page wrapper if needed.\n          // className=\"customPageClassName\"\n        />\n      ",
+      "options": [],
+      "parsers": ["tsx"],
+      "verifyFixChanges": false,
+      "firstPassOutput": "\n        <Page\n          // Pass all the props to the Page component.\n          {...props}\n          // Use the platform specific props from the doc.ts file.\n          {...TemplatePageProps[platform]}\n          // Use the getSubTitle helper function to get the page header subtitle from the active platform.\n          subTitle={getSubTitle(platform)}\n          // You can define custom sections using the `otherSections` prop.\n          // Here it is using a method that takes the platform as an argument to return the correct array of section props.\n          otherSections={_otherSections(platform) as IPageSectionProps[]}\n\n          // You can hide the side rail by setting `showSideRail` to false.\n          // showSideRail={false}\n\n          // You can pass a custom className to the page wrapper if needed.\n          // className=\"customPageClassName\"\n        />\n      ",
+      "recursiveOutput": "\n        <Page\n          // Pass all the props to the Page component.\n          {...props}\n          // Use the platform specific props from the doc.ts file.\n          {...TemplatePageProps[platform]}\n          // Use the getSubTitle helper function to get the page header subtitle from the active platform.\n          subTitle={getSubTitle(platform)}\n          // You can define custom sections using the `otherSections` prop.\n          // Here it is using a method that takes the platform as an argument to return the correct array of section props.\n          otherSections={_otherSections(platform) as IPageSectionProps[]}\n\n          // You can hide the side rail by setting `showSideRail` to false.\n          // showSideRail={false}\n\n          // You can pass a custom className to the page wrapper if needed.\n          // className=\"customPageClassName\"\n        />\n      ",
+      "expectedDiagnostics": [
+        {
+          "messageId": "sortPropsByAlpha",
+          "message": "Props should be sorted alphabetically",
+          "data": {},
+          "range": [561, 574],
+          "loc": {
+            "line": 11,
+            "column": 11,
+            "endLine": 11,
+            "endColumn": 24
+          },
+          "fix": {
+            "range": [0, 0],
+            "text": ""
+          }
+        }
+      ]
+    }
+  ]
+}
