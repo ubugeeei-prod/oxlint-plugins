@@ -14975,19 +14975,19 @@
       },
       {
         "name": "jsx-self-closing-comp",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule jsx-self-closing-comp."
+        "notes": "Port of @stylistic/eslint-plugin jsx-self-closing-comp v5.10.0. Native Oxc JSX and TSX traversal preserves the upstream component/html defaults, upstream DOM-name classification, LF-only multiline-whitespace and NBSP boundaries, exact UTF-8 report/fix ranges, fragments, comments, namespaces, and TSX generics; pinned parser-matrix fixtures, Vitest, shared settings, UTF-16 mapping, and real Oxlint lint/fix coverage exercise the integration."
       },
       {
         "name": "jsx-sort-props",

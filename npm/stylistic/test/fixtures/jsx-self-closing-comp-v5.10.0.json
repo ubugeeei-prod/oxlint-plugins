@@ -1,0 +1,1496 @@
+{
+  "__generated": {
+    "source": "@stylistic/eslint-plugin",
+    "version": "v5.10.0",
+    "commit": "efbb1bc0e5aaedc4695c44a03f46f4fcbbe58712",
+    "sourceFile": "packages/eslint-plugin/rules/jsx-self-closing-comp/jsx-self-closing-comp.test.ts",
+    "ruleFile": "packages/eslint-plugin/rules/jsx-self-closing-comp/jsx-self-closing-comp.ts",
+    "typesFile": "packages/eslint-plugin/rules/jsx-self-closing-comp/types.d.ts",
+    "parserMatrixFile": "shared/test-utils/parsers-jsx.ts",
+    "sourceSha256": "405bea51f11b694a1a4b0ca39af48d5f40c05deeec99aacde232bebc58f6fdef",
+    "ruleSourceSha256": "8831d20a9dd6f5f61fabe5c0af76c367d31877df2ef8cd807a5e0cd3e10732cf",
+    "typesSourceSha256": "749358dd39e345c9d80c51671de01ce0e238779731419c9ed579a6e0d21c374b",
+    "parserMatrixSourceSha256": "64dd12d67eac1eadf8a5a93de02bbb76c1d764c0ec7ebbdaae0c45389b52435c",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-stylistic-jsx-self-closing-comp-tests.ts",
+    "parserMatrix": ["default", "@babel/eslint-parser", "@typescript-eslint/parser"],
+    "inventory": {
+      "logicalValid": 35,
+      "logicalInvalid": 12,
+      "valid": 105,
+      "invalid": 36,
+      "diagnostics": 36,
+      "fixableInvalid": 36,
+      "unfixableInvalid": 0,
+      "total": 141
+    }
+  },
+  "valid": [
+    {
+      "code": "var HelloJohn = <Hello name=\"John\" />;\n// features: [], parser: default, , , ",
+      "parser": "default"
+    },
+    {
+      "code": "var HelloJohn = <Hello name=\"John\" />;\n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser"
+    },
+    {
+      "code": "var HelloJohn = <Hello name=\"John\" />;\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser"
+    },
+    {
+      "code": "var HelloJohn = <Hello.Compound name=\"John\" />;\n// features: [], parser: default, , , ",
+      "parser": "default"
+    },
+    {
+      "code": "var HelloJohn = <Hello.Compound name=\"John\" />;\n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser"
+    },
+    {
+      "code": "var HelloJohn = <Hello.Compound name=\"John\" />;\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser"
+    },
+    {
+      "code": "var Profile = <Hello name=\"John\"><img src=\"picture.png\" /></Hello>;\n// features: [], parser: default, , , ",
+      "parser": "default"
+    },
+    {
+      "code": "var Profile = <Hello name=\"John\"><img src=\"picture.png\" /></Hello>;\n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser"
+    },
+    {
+      "code": "var Profile = <Hello name=\"John\"><img src=\"picture.png\" /></Hello>;\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser"
+    },
+    {
+      "code": "var Profile = <Hello.Compound name=\"John\"><img src=\"picture.png\" /></Hello.Compound>;\n// features: [], parser: default, , , ",
+      "parser": "default"
+    },
+    {
+      "code": "var Profile = <Hello.Compound name=\"John\"><img src=\"picture.png\" /></Hello.Compound>;\n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser"
+    },
+    {
+      "code": "var Profile = <Hello.Compound name=\"John\"><img src=\"picture.png\" /></Hello.Compound>;\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser"
+    },
+    {
+      "code": "\n        <Hello>\n          <Hello name=\"John\" />\n        </Hello>\n      \n// features: [], parser: default, , , ",
+      "parser": "default"
+    },
+    {
+      "code": "\n        <Hello>\n          <Hello name=\"John\" />\n        </Hello>\n      \n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser"
+    },
+    {
+      "code": "\n        <Hello>\n          <Hello name=\"John\" />\n        </Hello>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser"
+    },
+    {
+      "code": "\n        <Hello.Compound>\n          <Hello.Compound name=\"John\" />\n        </Hello.Compound>\n      \n// features: [], parser: default, , , ",
+      "parser": "default"
+    },
+    {
+      "code": "\n        <Hello.Compound>\n          <Hello.Compound name=\"John\" />\n        </Hello.Compound>\n      \n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser"
+    },
+    {
+      "code": "\n        <Hello.Compound>\n          <Hello.Compound name=\"John\" />\n        </Hello.Compound>\n      \n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser"
+    },
+    {
+      "code": "var HelloJohn = <Hello name=\"John\"> </Hello>;\n// features: [], parser: default, , , ",
+      "parser": "default"
+    },
+    {
+      "code": "var HelloJohn = <Hello name=\"John\"> </Hello>;\n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser"
+    },
+    {
+      "code": "var HelloJohn = <Hello name=\"John\"> </Hello>;\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser"
+    },
+    {
+      "code": "var HelloJohn = <Hello.Compound name=\"John\"> </Hello.Compound>;\n// features: [], parser: default, , , ",
+      "parser": "default"
+    },
+    {
+      "code": "var HelloJohn = <Hello.Compound name=\"John\"> </Hello.Compound>;\n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser"
+    },
+    {
+      "code": "var HelloJohn = <Hello.Compound name=\"John\"> </Hello.Compound>;\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser"
+    },
+    {
+      "code": "var HelloJohn = <Hello name=\"John\">        </Hello>;\n// features: [], parser: default, , , ",
+      "parser": "default"
+    },
+    {
+      "code": "var HelloJohn = <Hello name=\"John\">        </Hello>;\n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser"
+    },
+    {
+      "code": "var HelloJohn = <Hello name=\"John\">        </Hello>;\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser"
+    },
+    {
+      "code": "var HelloJohn = <Hello.Compound name=\"John\">        </Hello.Compound>;\n// features: [], parser: default, , , ",
+      "parser": "default"
+    },
+    {
+      "code": "var HelloJohn = <Hello.Compound name=\"John\">        </Hello.Compound>;\n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser"
+    },
+    {
+      "code": "var HelloJohn = <Hello.Compound name=\"John\">        </Hello.Compound>;\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser"
+    },
+    {
+      "code": "var HelloJohn = <div>&nbsp;</div>;\n// features: [], parser: default, , , ",
+      "parser": "default"
+    },
+    {
+      "code": "var HelloJohn = <div>&nbsp;</div>;\n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser"
+    },
+    {
+      "code": "var HelloJohn = <div>&nbsp;</div>;\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser"
+    },
+    {
+      "code": "var HelloJohn = <div>{' '}</div>;\n// features: [], parser: default, , , ",
+      "parser": "default"
+    },
+    {
+      "code": "var HelloJohn = <div>{' '}</div>;\n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser"
+    },
+    {
+      "code": "var HelloJohn = <div>{' '}</div>;\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser"
+    },
+    {
+      "code": "var HelloJohn = <Hello name=\"John\">&nbsp;</Hello>;\n// features: [], parser: default, , , ",
+      "parser": "default"
+    },
+    {
+      "code": "var HelloJohn = <Hello name=\"John\">&nbsp;</Hello>;\n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser"
+    },
+    {
+      "code": "var HelloJohn = <Hello name=\"John\">&nbsp;</Hello>;\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser"
+    },
+    {
+      "code": "var HelloJohn = <Hello.Compound name=\"John\">&nbsp;</Hello.Compound>;\n// features: [], parser: default, , , ",
+      "parser": "default"
+    },
+    {
+      "code": "var HelloJohn = <Hello.Compound name=\"John\">&nbsp;</Hello.Compound>;\n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser"
+    },
+    {
+      "code": "var HelloJohn = <Hello.Compound name=\"John\">&nbsp;</Hello.Compound>;\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser"
+    },
+    {
+      "code": "var HelloJohn = <Hello name=\"John\" />;\n// features: [], parser: default, , options: [], ",
+      "parser": "default",
+      "options": []
+    },
+    {
+      "code": "var HelloJohn = <Hello name=\"John\" />;\n// features: [], parser: @babel/eslint-parser, , options: [], ",
+      "parser": "@babel/eslint-parser",
+      "options": []
+    },
+    {
+      "code": "var HelloJohn = <Hello name=\"John\" />;\n// features: [], parser: @typescript-eslint/parser, , options: [], ",
+      "parser": "@typescript-eslint/parser",
+      "options": []
+    },
+    {
+      "code": "var HelloJohn = <Hello.Compound name=\"John\" />;\n// features: [], parser: default, , options: [], ",
+      "parser": "default",
+      "options": []
+    },
+    {
+      "code": "var HelloJohn = <Hello.Compound name=\"John\" />;\n// features: [], parser: @babel/eslint-parser, , options: [], ",
+      "parser": "@babel/eslint-parser",
+      "options": []
+    },
+    {
+      "code": "var HelloJohn = <Hello.Compound name=\"John\" />;\n// features: [], parser: @typescript-eslint/parser, , options: [], ",
+      "parser": "@typescript-eslint/parser",
+      "options": []
+    },
+    {
+      "code": "var Profile = <Hello name=\"John\"><img src=\"picture.png\" /></Hello>;\n// features: [], parser: default, , options: [], ",
+      "parser": "default",
+      "options": []
+    },
+    {
+      "code": "var Profile = <Hello name=\"John\"><img src=\"picture.png\" /></Hello>;\n// features: [], parser: @babel/eslint-parser, , options: [], ",
+      "parser": "@babel/eslint-parser",
+      "options": []
+    },
+    {
+      "code": "var Profile = <Hello name=\"John\"><img src=\"picture.png\" /></Hello>;\n// features: [], parser: @typescript-eslint/parser, , options: [], ",
+      "parser": "@typescript-eslint/parser",
+      "options": []
+    },
+    {
+      "code": "var Profile = <Hello.Compound name=\"John\"><img src=\"picture.png\" /></Hello.Compound>;\n// features: [], parser: default, , options: [], ",
+      "parser": "default",
+      "options": []
+    },
+    {
+      "code": "var Profile = <Hello.Compound name=\"John\"><img src=\"picture.png\" /></Hello.Compound>;\n// features: [], parser: @babel/eslint-parser, , options: [], ",
+      "parser": "@babel/eslint-parser",
+      "options": []
+    },
+    {
+      "code": "var Profile = <Hello.Compound name=\"John\"><img src=\"picture.png\" /></Hello.Compound>;\n// features: [], parser: @typescript-eslint/parser, , options: [], ",
+      "parser": "@typescript-eslint/parser",
+      "options": []
+    },
+    {
+      "code": "\n        <Hello>\n          <Hello name=\"John\" />\n        </Hello>\n      \n// features: [], parser: default, , options: [], ",
+      "parser": "default",
+      "options": []
+    },
+    {
+      "code": "\n        <Hello>\n          <Hello name=\"John\" />\n        </Hello>\n      \n// features: [], parser: @babel/eslint-parser, , options: [], ",
+      "parser": "@babel/eslint-parser",
+      "options": []
+    },
+    {
+      "code": "\n        <Hello>\n          <Hello name=\"John\" />\n        </Hello>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [], ",
+      "parser": "@typescript-eslint/parser",
+      "options": []
+    },
+    {
+      "code": "\n        <Hello.Compound>\n          <Hello.Compound name=\"John\" />\n        </Hello.Compound>\n      \n// features: [], parser: default, , options: [], ",
+      "parser": "default",
+      "options": []
+    },
+    {
+      "code": "\n        <Hello.Compound>\n          <Hello.Compound name=\"John\" />\n        </Hello.Compound>\n      \n// features: [], parser: @babel/eslint-parser, , options: [], ",
+      "parser": "@babel/eslint-parser",
+      "options": []
+    },
+    {
+      "code": "\n        <Hello.Compound>\n          <Hello.Compound name=\"John\" />\n        </Hello.Compound>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [], ",
+      "parser": "@typescript-eslint/parser",
+      "options": []
+    },
+    {
+      "code": "var HelloJohn = <div> </div>;\n// features: [], parser: default, , options: [], ",
+      "parser": "default",
+      "options": []
+    },
+    {
+      "code": "var HelloJohn = <div> </div>;\n// features: [], parser: @babel/eslint-parser, , options: [], ",
+      "parser": "@babel/eslint-parser",
+      "options": []
+    },
+    {
+      "code": "var HelloJohn = <div> </div>;\n// features: [], parser: @typescript-eslint/parser, , options: [], ",
+      "parser": "@typescript-eslint/parser",
+      "options": []
+    },
+    {
+      "code": "var HelloJohn = <div>        </div>;\n// features: [], parser: default, , options: [], ",
+      "parser": "default",
+      "options": []
+    },
+    {
+      "code": "var HelloJohn = <div>        </div>;\n// features: [], parser: @babel/eslint-parser, , options: [], ",
+      "parser": "@babel/eslint-parser",
+      "options": []
+    },
+    {
+      "code": "var HelloJohn = <div>        </div>;\n// features: [], parser: @typescript-eslint/parser, , options: [], ",
+      "parser": "@typescript-eslint/parser",
+      "options": []
+    },
+    {
+      "code": "var HelloJohn = <div>&nbsp;</div>;\n// features: [], parser: default, , options: [], ",
+      "parser": "default",
+      "options": []
+    },
+    {
+      "code": "var HelloJohn = <div>&nbsp;</div>;\n// features: [], parser: @babel/eslint-parser, , options: [], ",
+      "parser": "@babel/eslint-parser",
+      "options": []
+    },
+    {
+      "code": "var HelloJohn = <div>&nbsp;</div>;\n// features: [], parser: @typescript-eslint/parser, , options: [], ",
+      "parser": "@typescript-eslint/parser",
+      "options": []
+    },
+    {
+      "code": "var HelloJohn = <div>{' '}</div>;\n// features: [], parser: default, , options: [], ",
+      "parser": "default",
+      "options": []
+    },
+    {
+      "code": "var HelloJohn = <div>{' '}</div>;\n// features: [], parser: @babel/eslint-parser, , options: [], ",
+      "parser": "@babel/eslint-parser",
+      "options": []
+    },
+    {
+      "code": "var HelloJohn = <div>{' '}</div>;\n// features: [], parser: @typescript-eslint/parser, , options: [], ",
+      "parser": "@typescript-eslint/parser",
+      "options": []
+    },
+    {
+      "code": "var HelloJohn = <Hello name=\"John\">&nbsp;</Hello>;\n// features: [], parser: default, , options: [], ",
+      "parser": "default",
+      "options": []
+    },
+    {
+      "code": "var HelloJohn = <Hello name=\"John\">&nbsp;</Hello>;\n// features: [], parser: @babel/eslint-parser, , options: [], ",
+      "parser": "@babel/eslint-parser",
+      "options": []
+    },
+    {
+      "code": "var HelloJohn = <Hello name=\"John\">&nbsp;</Hello>;\n// features: [], parser: @typescript-eslint/parser, , options: [], ",
+      "parser": "@typescript-eslint/parser",
+      "options": []
+    },
+    {
+      "code": "var HelloJohn = <Hello.Compound name=\"John\">&nbsp;</Hello.Compound>;\n// features: [], parser: default, , options: [], ",
+      "parser": "default",
+      "options": []
+    },
+    {
+      "code": "var HelloJohn = <Hello.Compound name=\"John\">&nbsp;</Hello.Compound>;\n// features: [], parser: @babel/eslint-parser, , options: [], ",
+      "parser": "@babel/eslint-parser",
+      "options": []
+    },
+    {
+      "code": "var HelloJohn = <Hello.Compound name=\"John\">&nbsp;</Hello.Compound>;\n// features: [], parser: @typescript-eslint/parser, , options: [], ",
+      "parser": "@typescript-eslint/parser",
+      "options": []
+    },
+    {
+      "code": "var HelloJohn = <Hello name=\"John\"></Hello>;\n// features: [], parser: default, , options: [{\"component\":false}], ",
+      "parser": "default",
+      "options": [
+        {
+          "component": false
+        }
+      ]
+    },
+    {
+      "code": "var HelloJohn = <Hello name=\"John\"></Hello>;\n// features: [], parser: @babel/eslint-parser, , options: [{\"component\":false}], ",
+      "parser": "@babel/eslint-parser",
+      "options": [
+        {
+          "component": false
+        }
+      ]
+    },
+    {
+      "code": "var HelloJohn = <Hello name=\"John\"></Hello>;\n// features: [], parser: @typescript-eslint/parser, , options: [{\"component\":false}], ",
+      "parser": "@typescript-eslint/parser",
+      "options": [
+        {
+          "component": false
+        }
+      ]
+    },
+    {
+      "code": "var HelloJohn = <Hello.Compound name=\"John\"></Hello.Compound>;\n// features: [], parser: default, , options: [{\"component\":false}], ",
+      "parser": "default",
+      "options": [
+        {
+          "component": false
+        }
+      ]
+    },
+    {
+      "code": "var HelloJohn = <Hello.Compound name=\"John\"></Hello.Compound>;\n// features: [], parser: @babel/eslint-parser, , options: [{\"component\":false}], ",
+      "parser": "@babel/eslint-parser",
+      "options": [
+        {
+          "component": false
+        }
+      ]
+    },
+    {
+      "code": "var HelloJohn = <Hello.Compound name=\"John\"></Hello.Compound>;\n// features: [], parser: @typescript-eslint/parser, , options: [{\"component\":false}], ",
+      "parser": "@typescript-eslint/parser",
+      "options": [
+        {
+          "component": false
+        }
+      ]
+    },
+    {
+      "code": "var HelloJohn = <Hello name=\"John\">\n</Hello>;\n// features: [], parser: default, , options: [{\"component\":false}], ",
+      "parser": "default",
+      "options": [
+        {
+          "component": false
+        }
+      ]
+    },
+    {
+      "code": "var HelloJohn = <Hello name=\"John\">\n</Hello>;\n// features: [], parser: @babel/eslint-parser, , options: [{\"component\":false}], ",
+      "parser": "@babel/eslint-parser",
+      "options": [
+        {
+          "component": false
+        }
+      ]
+    },
+    {
+      "code": "var HelloJohn = <Hello name=\"John\">\n</Hello>;\n// features: [], parser: @typescript-eslint/parser, , options: [{\"component\":false}], ",
+      "parser": "@typescript-eslint/parser",
+      "options": [
+        {
+          "component": false
+        }
+      ]
+    },
+    {
+      "code": "var HelloJohn = <Hello.Compound name=\"John\">\n</Hello.Compound>;\n// features: [], parser: default, , options: [{\"component\":false}], ",
+      "parser": "default",
+      "options": [
+        {
+          "component": false
+        }
+      ]
+    },
+    {
+      "code": "var HelloJohn = <Hello.Compound name=\"John\">\n</Hello.Compound>;\n// features: [], parser: @babel/eslint-parser, , options: [{\"component\":false}], ",
+      "parser": "@babel/eslint-parser",
+      "options": [
+        {
+          "component": false
+        }
+      ]
+    },
+    {
+      "code": "var HelloJohn = <Hello.Compound name=\"John\">\n</Hello.Compound>;\n// features: [], parser: @typescript-eslint/parser, , options: [{\"component\":false}], ",
+      "parser": "@typescript-eslint/parser",
+      "options": [
+        {
+          "component": false
+        }
+      ]
+    },
+    {
+      "code": "var HelloJohn = <Hello name=\"John\"> </Hello>;\n// features: [], parser: default, , options: [{\"component\":false}], ",
+      "parser": "default",
+      "options": [
+        {
+          "component": false
+        }
+      ]
+    },
+    {
+      "code": "var HelloJohn = <Hello name=\"John\"> </Hello>;\n// features: [], parser: @babel/eslint-parser, , options: [{\"component\":false}], ",
+      "parser": "@babel/eslint-parser",
+      "options": [
+        {
+          "component": false
+        }
+      ]
+    },
+    {
+      "code": "var HelloJohn = <Hello name=\"John\"> </Hello>;\n// features: [], parser: @typescript-eslint/parser, , options: [{\"component\":false}], ",
+      "parser": "@typescript-eslint/parser",
+      "options": [
+        {
+          "component": false
+        }
+      ]
+    },
+    {
+      "code": "var HelloJohn = <Hello.Compound name=\"John\"> </Hello.Compound>;\n// features: [], parser: default, , options: [{\"component\":false}], ",
+      "parser": "default",
+      "options": [
+        {
+          "component": false
+        }
+      ]
+    },
+    {
+      "code": "var HelloJohn = <Hello.Compound name=\"John\"> </Hello.Compound>;\n// features: [], parser: @babel/eslint-parser, , options: [{\"component\":false}], ",
+      "parser": "@babel/eslint-parser",
+      "options": [
+        {
+          "component": false
+        }
+      ]
+    },
+    {
+      "code": "var HelloJohn = <Hello.Compound name=\"John\"> </Hello.Compound>;\n// features: [], parser: @typescript-eslint/parser, , options: [{\"component\":false}], ",
+      "parser": "@typescript-eslint/parser",
+      "options": [
+        {
+          "component": false
+        }
+      ]
+    },
+    {
+      "code": "var contentContainer = <div className=\"content\" />;\n// features: [], parser: default, , options: [{\"html\":true}], ",
+      "parser": "default",
+      "options": [
+        {
+          "html": true
+        }
+      ]
+    },
+    {
+      "code": "var contentContainer = <div className=\"content\" />;\n// features: [], parser: @babel/eslint-parser, , options: [{\"html\":true}], ",
+      "parser": "@babel/eslint-parser",
+      "options": [
+        {
+          "html": true
+        }
+      ]
+    },
+    {
+      "code": "var contentContainer = <div className=\"content\" />;\n// features: [], parser: @typescript-eslint/parser, , options: [{\"html\":true}], ",
+      "parser": "@typescript-eslint/parser",
+      "options": [
+        {
+          "html": true
+        }
+      ]
+    },
+    {
+      "code": "var contentContainer = <div className=\"content\"><img src=\"picture.png\" /></div>;\n// features: [], parser: default, , options: [{\"html\":true}], ",
+      "parser": "default",
+      "options": [
+        {
+          "html": true
+        }
+      ]
+    },
+    {
+      "code": "var contentContainer = <div className=\"content\"><img src=\"picture.png\" /></div>;\n// features: [], parser: @babel/eslint-parser, , options: [{\"html\":true}], ",
+      "parser": "@babel/eslint-parser",
+      "options": [
+        {
+          "html": true
+        }
+      ]
+    },
+    {
+      "code": "var contentContainer = <div className=\"content\"><img src=\"picture.png\" /></div>;\n// features: [], parser: @typescript-eslint/parser, , options: [{\"html\":true}], ",
+      "parser": "@typescript-eslint/parser",
+      "options": [
+        {
+          "html": true
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          <div className=\"content\" />\n        </div>\n      \n// features: [], parser: default, , options: [{\"html\":true}], ",
+      "parser": "default",
+      "options": [
+        {
+          "html": true
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          <div className=\"content\" />\n        </div>\n      \n// features: [], parser: @babel/eslint-parser, , options: [{\"html\":true}], ",
+      "parser": "@babel/eslint-parser",
+      "options": [
+        {
+          "html": true
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          <div className=\"content\" />\n        </div>\n      \n// features: [], parser: @typescript-eslint/parser, , options: [{\"html\":true}], ",
+      "parser": "@typescript-eslint/parser",
+      "options": [
+        {
+          "html": true
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "code": "var contentContainer = <div className=\"content\"></div>;\n// features: [], parser: default, , , ",
+      "parser": "default",
+      "diagnostics": [
+        {
+          "messageId": "notSelfClosing",
+          "message": "Empty components are self-closing",
+          "data": {},
+          "range": [23, 48],
+          "location": {
+            "line": 1,
+            "column": 24,
+            "endLine": 1,
+            "endColumn": 49
+          },
+          "fix": {
+            "range": [47, 54],
+            "replacementText": " />"
+          }
+        }
+      ],
+      "output": "var contentContainer = <div className=\"content\" />;\n// features: [], parser: default, , , "
+    },
+    {
+      "code": "var contentContainer = <div className=\"content\"></div>;\n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser",
+      "diagnostics": [
+        {
+          "messageId": "notSelfClosing",
+          "message": "Empty components are self-closing",
+          "data": {},
+          "range": [23, 48],
+          "location": {
+            "line": 1,
+            "column": 24,
+            "endLine": 1,
+            "endColumn": 49
+          },
+          "fix": {
+            "range": [47, 54],
+            "replacementText": " />"
+          }
+        }
+      ],
+      "output": "var contentContainer = <div className=\"content\" />;\n// features: [], parser: @babel/eslint-parser, , , "
+    },
+    {
+      "code": "var contentContainer = <div className=\"content\"></div>;\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser",
+      "diagnostics": [
+        {
+          "messageId": "notSelfClosing",
+          "message": "Empty components are self-closing",
+          "data": {},
+          "range": [23, 48],
+          "location": {
+            "line": 1,
+            "column": 24,
+            "endLine": 1,
+            "endColumn": 49
+          },
+          "fix": {
+            "range": [47, 54],
+            "replacementText": " />"
+          }
+        }
+      ],
+      "output": "var contentContainer = <div className=\"content\" />;\n// features: [], parser: @typescript-eslint/parser, , , "
+    },
+    {
+      "code": "var contentContainer = <div className=\"content\"></div>;\n// features: [], parser: default, , options: [], ",
+      "parser": "default",
+      "options": [],
+      "diagnostics": [
+        {
+          "messageId": "notSelfClosing",
+          "message": "Empty components are self-closing",
+          "data": {},
+          "range": [23, 48],
+          "location": {
+            "line": 1,
+            "column": 24,
+            "endLine": 1,
+            "endColumn": 49
+          },
+          "fix": {
+            "range": [47, 54],
+            "replacementText": " />"
+          }
+        }
+      ],
+      "output": "var contentContainer = <div className=\"content\" />;\n// features: [], parser: default, , options: [], "
+    },
+    {
+      "code": "var contentContainer = <div className=\"content\"></div>;\n// features: [], parser: @babel/eslint-parser, , options: [], ",
+      "parser": "@babel/eslint-parser",
+      "options": [],
+      "diagnostics": [
+        {
+          "messageId": "notSelfClosing",
+          "message": "Empty components are self-closing",
+          "data": {},
+          "range": [23, 48],
+          "location": {
+            "line": 1,
+            "column": 24,
+            "endLine": 1,
+            "endColumn": 49
+          },
+          "fix": {
+            "range": [47, 54],
+            "replacementText": " />"
+          }
+        }
+      ],
+      "output": "var contentContainer = <div className=\"content\" />;\n// features: [], parser: @babel/eslint-parser, , options: [], "
+    },
+    {
+      "code": "var contentContainer = <div className=\"content\"></div>;\n// features: [], parser: @typescript-eslint/parser, , options: [], ",
+      "parser": "@typescript-eslint/parser",
+      "options": [],
+      "diagnostics": [
+        {
+          "messageId": "notSelfClosing",
+          "message": "Empty components are self-closing",
+          "data": {},
+          "range": [23, 48],
+          "location": {
+            "line": 1,
+            "column": 24,
+            "endLine": 1,
+            "endColumn": 49
+          },
+          "fix": {
+            "range": [47, 54],
+            "replacementText": " />"
+          }
+        }
+      ],
+      "output": "var contentContainer = <div className=\"content\" />;\n// features: [], parser: @typescript-eslint/parser, , options: [], "
+    },
+    {
+      "code": "var HelloJohn = <Hello name=\"John\"></Hello>;\n// features: [], parser: default, , , ",
+      "parser": "default",
+      "diagnostics": [
+        {
+          "messageId": "notSelfClosing",
+          "message": "Empty components are self-closing",
+          "data": {},
+          "range": [16, 35],
+          "location": {
+            "line": 1,
+            "column": 17,
+            "endLine": 1,
+            "endColumn": 36
+          },
+          "fix": {
+            "range": [34, 43],
+            "replacementText": " />"
+          }
+        }
+      ],
+      "output": "var HelloJohn = <Hello name=\"John\" />;\n// features: [], parser: default, , , "
+    },
+    {
+      "code": "var HelloJohn = <Hello name=\"John\"></Hello>;\n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser",
+      "diagnostics": [
+        {
+          "messageId": "notSelfClosing",
+          "message": "Empty components are self-closing",
+          "data": {},
+          "range": [16, 35],
+          "location": {
+            "line": 1,
+            "column": 17,
+            "endLine": 1,
+            "endColumn": 36
+          },
+          "fix": {
+            "range": [34, 43],
+            "replacementText": " />"
+          }
+        }
+      ],
+      "output": "var HelloJohn = <Hello name=\"John\" />;\n// features: [], parser: @babel/eslint-parser, , , "
+    },
+    {
+      "code": "var HelloJohn = <Hello name=\"John\"></Hello>;\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser",
+      "diagnostics": [
+        {
+          "messageId": "notSelfClosing",
+          "message": "Empty components are self-closing",
+          "data": {},
+          "range": [16, 35],
+          "location": {
+            "line": 1,
+            "column": 17,
+            "endLine": 1,
+            "endColumn": 36
+          },
+          "fix": {
+            "range": [34, 43],
+            "replacementText": " />"
+          }
+        }
+      ],
+      "output": "var HelloJohn = <Hello name=\"John\" />;\n// features: [], parser: @typescript-eslint/parser, , , "
+    },
+    {
+      "code": "var CompoundHelloJohn = <Hello.Compound name=\"John\"></Hello.Compound>;\n// features: [], parser: default, , , ",
+      "parser": "default",
+      "diagnostics": [
+        {
+          "messageId": "notSelfClosing",
+          "message": "Empty components are self-closing",
+          "data": {},
+          "range": [24, 52],
+          "location": {
+            "line": 1,
+            "column": 25,
+            "endLine": 1,
+            "endColumn": 53
+          },
+          "fix": {
+            "range": [51, 69],
+            "replacementText": " />"
+          }
+        }
+      ],
+      "output": "var CompoundHelloJohn = <Hello.Compound name=\"John\" />;\n// features: [], parser: default, , , "
+    },
+    {
+      "code": "var CompoundHelloJohn = <Hello.Compound name=\"John\"></Hello.Compound>;\n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser",
+      "diagnostics": [
+        {
+          "messageId": "notSelfClosing",
+          "message": "Empty components are self-closing",
+          "data": {},
+          "range": [24, 52],
+          "location": {
+            "line": 1,
+            "column": 25,
+            "endLine": 1,
+            "endColumn": 53
+          },
+          "fix": {
+            "range": [51, 69],
+            "replacementText": " />"
+          }
+        }
+      ],
+      "output": "var CompoundHelloJohn = <Hello.Compound name=\"John\" />;\n// features: [], parser: @babel/eslint-parser, , , "
+    },
+    {
+      "code": "var CompoundHelloJohn = <Hello.Compound name=\"John\"></Hello.Compound>;\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser",
+      "diagnostics": [
+        {
+          "messageId": "notSelfClosing",
+          "message": "Empty components are self-closing",
+          "data": {},
+          "range": [24, 52],
+          "location": {
+            "line": 1,
+            "column": 25,
+            "endLine": 1,
+            "endColumn": 53
+          },
+          "fix": {
+            "range": [51, 69],
+            "replacementText": " />"
+          }
+        }
+      ],
+      "output": "var CompoundHelloJohn = <Hello.Compound name=\"John\" />;\n// features: [], parser: @typescript-eslint/parser, , , "
+    },
+    {
+      "code": "var HelloJohn = <Hello name=\"John\">\n</Hello>;\n// features: [], parser: default, , , ",
+      "parser": "default",
+      "diagnostics": [
+        {
+          "messageId": "notSelfClosing",
+          "message": "Empty components are self-closing",
+          "data": {},
+          "range": [16, 35],
+          "location": {
+            "line": 1,
+            "column": 17,
+            "endLine": 1,
+            "endColumn": 36
+          },
+          "fix": {
+            "range": [34, 44],
+            "replacementText": " />"
+          }
+        }
+      ],
+      "output": "var HelloJohn = <Hello name=\"John\" />;\n// features: [], parser: default, , , "
+    },
+    {
+      "code": "var HelloJohn = <Hello name=\"John\">\n</Hello>;\n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser",
+      "diagnostics": [
+        {
+          "messageId": "notSelfClosing",
+          "message": "Empty components are self-closing",
+          "data": {},
+          "range": [16, 35],
+          "location": {
+            "line": 1,
+            "column": 17,
+            "endLine": 1,
+            "endColumn": 36
+          },
+          "fix": {
+            "range": [34, 44],
+            "replacementText": " />"
+          }
+        }
+      ],
+      "output": "var HelloJohn = <Hello name=\"John\" />;\n// features: [], parser: @babel/eslint-parser, , , "
+    },
+    {
+      "code": "var HelloJohn = <Hello name=\"John\">\n</Hello>;\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser",
+      "diagnostics": [
+        {
+          "messageId": "notSelfClosing",
+          "message": "Empty components are self-closing",
+          "data": {},
+          "range": [16, 35],
+          "location": {
+            "line": 1,
+            "column": 17,
+            "endLine": 1,
+            "endColumn": 36
+          },
+          "fix": {
+            "range": [34, 44],
+            "replacementText": " />"
+          }
+        }
+      ],
+      "output": "var HelloJohn = <Hello name=\"John\" />;\n// features: [], parser: @typescript-eslint/parser, , , "
+    },
+    {
+      "code": "var HelloJohn = <Hello.Compound name=\"John\">\n</Hello.Compound>;\n// features: [], parser: default, , , ",
+      "parser": "default",
+      "diagnostics": [
+        {
+          "messageId": "notSelfClosing",
+          "message": "Empty components are self-closing",
+          "data": {},
+          "range": [16, 44],
+          "location": {
+            "line": 1,
+            "column": 17,
+            "endLine": 1,
+            "endColumn": 45
+          },
+          "fix": {
+            "range": [43, 62],
+            "replacementText": " />"
+          }
+        }
+      ],
+      "output": "var HelloJohn = <Hello.Compound name=\"John\" />;\n// features: [], parser: default, , , "
+    },
+    {
+      "code": "var HelloJohn = <Hello.Compound name=\"John\">\n</Hello.Compound>;\n// features: [], parser: @babel/eslint-parser, , , ",
+      "parser": "@babel/eslint-parser",
+      "diagnostics": [
+        {
+          "messageId": "notSelfClosing",
+          "message": "Empty components are self-closing",
+          "data": {},
+          "range": [16, 44],
+          "location": {
+            "line": 1,
+            "column": 17,
+            "endLine": 1,
+            "endColumn": 45
+          },
+          "fix": {
+            "range": [43, 62],
+            "replacementText": " />"
+          }
+        }
+      ],
+      "output": "var HelloJohn = <Hello.Compound name=\"John\" />;\n// features: [], parser: @babel/eslint-parser, , , "
+    },
+    {
+      "code": "var HelloJohn = <Hello.Compound name=\"John\">\n</Hello.Compound>;\n// features: [], parser: @typescript-eslint/parser, , , ",
+      "parser": "@typescript-eslint/parser",
+      "diagnostics": [
+        {
+          "messageId": "notSelfClosing",
+          "message": "Empty components are self-closing",
+          "data": {},
+          "range": [16, 44],
+          "location": {
+            "line": 1,
+            "column": 17,
+            "endLine": 1,
+            "endColumn": 45
+          },
+          "fix": {
+            "range": [43, 62],
+            "replacementText": " />"
+          }
+        }
+      ],
+      "output": "var HelloJohn = <Hello.Compound name=\"John\" />;\n// features: [], parser: @typescript-eslint/parser, , , "
+    },
+    {
+      "code": "var HelloJohn = <Hello name=\"John\"></Hello>;\n// features: [], parser: default, , options: [], ",
+      "parser": "default",
+      "options": [],
+      "diagnostics": [
+        {
+          "messageId": "notSelfClosing",
+          "message": "Empty components are self-closing",
+          "data": {},
+          "range": [16, 35],
+          "location": {
+            "line": 1,
+            "column": 17,
+            "endLine": 1,
+            "endColumn": 36
+          },
+          "fix": {
+            "range": [34, 43],
+            "replacementText": " />"
+          }
+        }
+      ],
+      "output": "var HelloJohn = <Hello name=\"John\" />;\n// features: [], parser: default, , options: [], "
+    },
+    {
+      "code": "var HelloJohn = <Hello name=\"John\"></Hello>;\n// features: [], parser: @babel/eslint-parser, , options: [], ",
+      "parser": "@babel/eslint-parser",
+      "options": [],
+      "diagnostics": [
+        {
+          "messageId": "notSelfClosing",
+          "message": "Empty components are self-closing",
+          "data": {},
+          "range": [16, 35],
+          "location": {
+            "line": 1,
+            "column": 17,
+            "endLine": 1,
+            "endColumn": 36
+          },
+          "fix": {
+            "range": [34, 43],
+            "replacementText": " />"
+          }
+        }
+      ],
+      "output": "var HelloJohn = <Hello name=\"John\" />;\n// features: [], parser: @babel/eslint-parser, , options: [], "
+    },
+    {
+      "code": "var HelloJohn = <Hello name=\"John\"></Hello>;\n// features: [], parser: @typescript-eslint/parser, , options: [], ",
+      "parser": "@typescript-eslint/parser",
+      "options": [],
+      "diagnostics": [
+        {
+          "messageId": "notSelfClosing",
+          "message": "Empty components are self-closing",
+          "data": {},
+          "range": [16, 35],
+          "location": {
+            "line": 1,
+            "column": 17,
+            "endLine": 1,
+            "endColumn": 36
+          },
+          "fix": {
+            "range": [34, 43],
+            "replacementText": " />"
+          }
+        }
+      ],
+      "output": "var HelloJohn = <Hello name=\"John\" />;\n// features: [], parser: @typescript-eslint/parser, , options: [], "
+    },
+    {
+      "code": "var HelloJohn = <Hello.Compound name=\"John\"></Hello.Compound>;\n// features: [], parser: default, , options: [], ",
+      "parser": "default",
+      "options": [],
+      "diagnostics": [
+        {
+          "messageId": "notSelfClosing",
+          "message": "Empty components are self-closing",
+          "data": {},
+          "range": [16, 44],
+          "location": {
+            "line": 1,
+            "column": 17,
+            "endLine": 1,
+            "endColumn": 45
+          },
+          "fix": {
+            "range": [43, 61],
+            "replacementText": " />"
+          }
+        }
+      ],
+      "output": "var HelloJohn = <Hello.Compound name=\"John\" />;\n// features: [], parser: default, , options: [], "
+    },
+    {
+      "code": "var HelloJohn = <Hello.Compound name=\"John\"></Hello.Compound>;\n// features: [], parser: @babel/eslint-parser, , options: [], ",
+      "parser": "@babel/eslint-parser",
+      "options": [],
+      "diagnostics": [
+        {
+          "messageId": "notSelfClosing",
+          "message": "Empty components are self-closing",
+          "data": {},
+          "range": [16, 44],
+          "location": {
+            "line": 1,
+            "column": 17,
+            "endLine": 1,
+            "endColumn": 45
+          },
+          "fix": {
+            "range": [43, 61],
+            "replacementText": " />"
+          }
+        }
+      ],
+      "output": "var HelloJohn = <Hello.Compound name=\"John\" />;\n// features: [], parser: @babel/eslint-parser, , options: [], "
+    },
+    {
+      "code": "var HelloJohn = <Hello.Compound name=\"John\"></Hello.Compound>;\n// features: [], parser: @typescript-eslint/parser, , options: [], ",
+      "parser": "@typescript-eslint/parser",
+      "options": [],
+      "diagnostics": [
+        {
+          "messageId": "notSelfClosing",
+          "message": "Empty components are self-closing",
+          "data": {},
+          "range": [16, 44],
+          "location": {
+            "line": 1,
+            "column": 17,
+            "endLine": 1,
+            "endColumn": 45
+          },
+          "fix": {
+            "range": [43, 61],
+            "replacementText": " />"
+          }
+        }
+      ],
+      "output": "var HelloJohn = <Hello.Compound name=\"John\" />;\n// features: [], parser: @typescript-eslint/parser, , options: [], "
+    },
+    {
+      "code": "var HelloJohn = <Hello name=\"John\">\n</Hello>;\n// features: [], parser: default, , options: [], ",
+      "parser": "default",
+      "options": [],
+      "diagnostics": [
+        {
+          "messageId": "notSelfClosing",
+          "message": "Empty components are self-closing",
+          "data": {},
+          "range": [16, 35],
+          "location": {
+            "line": 1,
+            "column": 17,
+            "endLine": 1,
+            "endColumn": 36
+          },
+          "fix": {
+            "range": [34, 44],
+            "replacementText": " />"
+          }
+        }
+      ],
+      "output": "var HelloJohn = <Hello name=\"John\" />;\n// features: [], parser: default, , options: [], "
+    },
+    {
+      "code": "var HelloJohn = <Hello name=\"John\">\n</Hello>;\n// features: [], parser: @babel/eslint-parser, , options: [], ",
+      "parser": "@babel/eslint-parser",
+      "options": [],
+      "diagnostics": [
+        {
+          "messageId": "notSelfClosing",
+          "message": "Empty components are self-closing",
+          "data": {},
+          "range": [16, 35],
+          "location": {
+            "line": 1,
+            "column": 17,
+            "endLine": 1,
+            "endColumn": 36
+          },
+          "fix": {
+            "range": [34, 44],
+            "replacementText": " />"
+          }
+        }
+      ],
+      "output": "var HelloJohn = <Hello name=\"John\" />;\n// features: [], parser: @babel/eslint-parser, , options: [], "
+    },
+    {
+      "code": "var HelloJohn = <Hello name=\"John\">\n</Hello>;\n// features: [], parser: @typescript-eslint/parser, , options: [], ",
+      "parser": "@typescript-eslint/parser",
+      "options": [],
+      "diagnostics": [
+        {
+          "messageId": "notSelfClosing",
+          "message": "Empty components are self-closing",
+          "data": {},
+          "range": [16, 35],
+          "location": {
+            "line": 1,
+            "column": 17,
+            "endLine": 1,
+            "endColumn": 36
+          },
+          "fix": {
+            "range": [34, 44],
+            "replacementText": " />"
+          }
+        }
+      ],
+      "output": "var HelloJohn = <Hello name=\"John\" />;\n// features: [], parser: @typescript-eslint/parser, , options: [], "
+    },
+    {
+      "code": "var HelloJohn = <Hello.Compound name=\"John\">\n</Hello.Compound>;\n// features: [], parser: default, , options: [], ",
+      "parser": "default",
+      "options": [],
+      "diagnostics": [
+        {
+          "messageId": "notSelfClosing",
+          "message": "Empty components are self-closing",
+          "data": {},
+          "range": [16, 44],
+          "location": {
+            "line": 1,
+            "column": 17,
+            "endLine": 1,
+            "endColumn": 45
+          },
+          "fix": {
+            "range": [43, 62],
+            "replacementText": " />"
+          }
+        }
+      ],
+      "output": "var HelloJohn = <Hello.Compound name=\"John\" />;\n// features: [], parser: default, , options: [], "
+    },
+    {
+      "code": "var HelloJohn = <Hello.Compound name=\"John\">\n</Hello.Compound>;\n// features: [], parser: @babel/eslint-parser, , options: [], ",
+      "parser": "@babel/eslint-parser",
+      "options": [],
+      "diagnostics": [
+        {
+          "messageId": "notSelfClosing",
+          "message": "Empty components are self-closing",
+          "data": {},
+          "range": [16, 44],
+          "location": {
+            "line": 1,
+            "column": 17,
+            "endLine": 1,
+            "endColumn": 45
+          },
+          "fix": {
+            "range": [43, 62],
+            "replacementText": " />"
+          }
+        }
+      ],
+      "output": "var HelloJohn = <Hello.Compound name=\"John\" />;\n// features: [], parser: @babel/eslint-parser, , options: [], "
+    },
+    {
+      "code": "var HelloJohn = <Hello.Compound name=\"John\">\n</Hello.Compound>;\n// features: [], parser: @typescript-eslint/parser, , options: [], ",
+      "parser": "@typescript-eslint/parser",
+      "options": [],
+      "diagnostics": [
+        {
+          "messageId": "notSelfClosing",
+          "message": "Empty components are self-closing",
+          "data": {},
+          "range": [16, 44],
+          "location": {
+            "line": 1,
+            "column": 17,
+            "endLine": 1,
+            "endColumn": 45
+          },
+          "fix": {
+            "range": [43, 62],
+            "replacementText": " />"
+          }
+        }
+      ],
+      "output": "var HelloJohn = <Hello.Compound name=\"John\" />;\n// features: [], parser: @typescript-eslint/parser, , options: [], "
+    },
+    {
+      "code": "var contentContainer = <div className=\"content\"></div>;\n// features: [], parser: default, , options: [{\"html\":true}], ",
+      "parser": "default",
+      "options": [
+        {
+          "html": true
+        }
+      ],
+      "diagnostics": [
+        {
+          "messageId": "notSelfClosing",
+          "message": "Empty components are self-closing",
+          "data": {},
+          "range": [23, 48],
+          "location": {
+            "line": 1,
+            "column": 24,
+            "endLine": 1,
+            "endColumn": 49
+          },
+          "fix": {
+            "range": [47, 54],
+            "replacementText": " />"
+          }
+        }
+      ],
+      "output": "var contentContainer = <div className=\"content\" />;\n// features: [], parser: default, , options: [{\"html\":true}], "
+    },
+    {
+      "code": "var contentContainer = <div className=\"content\"></div>;\n// features: [], parser: @babel/eslint-parser, , options: [{\"html\":true}], ",
+      "parser": "@babel/eslint-parser",
+      "options": [
+        {
+          "html": true
+        }
+      ],
+      "diagnostics": [
+        {
+          "messageId": "notSelfClosing",
+          "message": "Empty components are self-closing",
+          "data": {},
+          "range": [23, 48],
+          "location": {
+            "line": 1,
+            "column": 24,
+            "endLine": 1,
+            "endColumn": 49
+          },
+          "fix": {
+            "range": [47, 54],
+            "replacementText": " />"
+          }
+        }
+      ],
+      "output": "var contentContainer = <div className=\"content\" />;\n// features: [], parser: @babel/eslint-parser, , options: [{\"html\":true}], "
+    },
+    {
+      "code": "var contentContainer = <div className=\"content\"></div>;\n// features: [], parser: @typescript-eslint/parser, , options: [{\"html\":true}], ",
+      "parser": "@typescript-eslint/parser",
+      "options": [
+        {
+          "html": true
+        }
+      ],
+      "diagnostics": [
+        {
+          "messageId": "notSelfClosing",
+          "message": "Empty components are self-closing",
+          "data": {},
+          "range": [23, 48],
+          "location": {
+            "line": 1,
+            "column": 24,
+            "endLine": 1,
+            "endColumn": 49
+          },
+          "fix": {
+            "range": [47, 54],
+            "replacementText": " />"
+          }
+        }
+      ],
+      "output": "var contentContainer = <div className=\"content\" />;\n// features: [], parser: @typescript-eslint/parser, , options: [{\"html\":true}], "
+    },
+    {
+      "code": "var contentContainer = <div className=\"content\">\n</div>;\n// features: [], parser: default, , options: [{\"html\":true}], ",
+      "parser": "default",
+      "options": [
+        {
+          "html": true
+        }
+      ],
+      "diagnostics": [
+        {
+          "messageId": "notSelfClosing",
+          "message": "Empty components are self-closing",
+          "data": {},
+          "range": [23, 48],
+          "location": {
+            "line": 1,
+            "column": 24,
+            "endLine": 1,
+            "endColumn": 49
+          },
+          "fix": {
+            "range": [47, 55],
+            "replacementText": " />"
+          }
+        }
+      ],
+      "output": "var contentContainer = <div className=\"content\" />;\n// features: [], parser: default, , options: [{\"html\":true}], "
+    },
+    {
+      "code": "var contentContainer = <div className=\"content\">\n</div>;\n// features: [], parser: @babel/eslint-parser, , options: [{\"html\":true}], ",
+      "parser": "@babel/eslint-parser",
+      "options": [
+        {
+          "html": true
+        }
+      ],
+      "diagnostics": [
+        {
+          "messageId": "notSelfClosing",
+          "message": "Empty components are self-closing",
+          "data": {},
+          "range": [23, 48],
+          "location": {
+            "line": 1,
+            "column": 24,
+            "endLine": 1,
+            "endColumn": 49
+          },
+          "fix": {
+            "range": [47, 55],
+            "replacementText": " />"
+          }
+        }
+      ],
+      "output": "var contentContainer = <div className=\"content\" />;\n// features: [], parser: @babel/eslint-parser, , options: [{\"html\":true}], "
+    },
+    {
+      "code": "var contentContainer = <div className=\"content\">\n</div>;\n// features: [], parser: @typescript-eslint/parser, , options: [{\"html\":true}], ",
+      "parser": "@typescript-eslint/parser",
+      "options": [
+        {
+          "html": true
+        }
+      ],
+      "diagnostics": [
+        {
+          "messageId": "notSelfClosing",
+          "message": "Empty components are self-closing",
+          "data": {},
+          "range": [23, 48],
+          "location": {
+            "line": 1,
+            "column": 24,
+            "endLine": 1,
+            "endColumn": 49
+          },
+          "fix": {
+            "range": [47, 55],
+            "replacementText": " />"
+          }
+        }
+      ],
+      "output": "var contentContainer = <div className=\"content\" />;\n// features: [], parser: @typescript-eslint/parser, , options: [{\"html\":true}], "
+    }
+  ]
+}

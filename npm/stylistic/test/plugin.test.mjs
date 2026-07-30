@@ -140,6 +140,7 @@ const stylisticRuleFixtures = [
   ['jsx-function-call-newline', 'render(<App\n  prop />);\n', [], ['missingLineBreak']],
   ['jsx-props-no-multi-spaces', '<App  foo />;\n', [], ['onlyOneSpace']],
   ['jsx-quotes', "<App title='value' />;\n", [], ['unexpected']],
+  ['jsx-self-closing-comp', '<App></App>;\n', [], ['notSelfClosing']],
   ['multiline-comment-style', '// first\n// second\n', [], ['expectedBlock']],
   ['lines-between-class-members', 'class C { a() {}\nb() {} }\n', [], ['always']],
   [
@@ -1066,6 +1067,61 @@ describe('stylistic plugin', () => {
         source,
       ).toEqual([{ range, replacementText }]);
     }
+  });
+
+  it('supports jsx-self-closing-comp options, shared settings, UTF-16 ranges, and fixes', () => {
+    const source =
+      'const marker = "😀"; const 日本語 = <Widget<Props> title="値"></Widget>;<div></div>;';
+    const componentStart = source.indexOf('<Widget');
+    const componentEnd = source.indexOf('></Widget>') + 1;
+    const componentClosingEnd = source.indexOf('</Widget>') + '</Widget>'.length;
+    const htmlStart = source.indexOf('<div>');
+    const htmlEnd = htmlStart + '<div>'.length;
+    const defaultReports = runRule('jsx-self-closing-comp', source, []);
+
+    expect(messageIds(defaultReports)).toEqual(['notSelfClosing', 'notSelfClosing']);
+    expect(defaultReports.map((report) => report.node.range)).toEqual([
+      [componentStart, componentEnd],
+      [htmlStart, htmlEnd],
+    ]);
+    expect(reportFix(defaultReports[0])).toEqual({
+      range: [componentEnd - 1, componentClosingEnd],
+      replacementText: ' />',
+    });
+    expect(applyReportFixes(source, defaultReports)).toBe(
+      'const marker = "😀"; const 日本語 = <Widget<Props> title="値" />;<div />;',
+    );
+
+    const sharedReports = runRule('jsx-self-closing-comp', source, [], {
+      corsaStylistic: {
+        rules: {
+          'jsx-self-closing-comp': [{ component: false }],
+        },
+      },
+    });
+    expect(sharedReports.map((report) => report.node.range)).toEqual([[htmlStart, htmlEnd]]);
+    expect(runRule('jsx-self-closing-comp', source, [{ component: false, html: false }])).toEqual(
+      [],
+    );
+  });
+
+  it('keeps jsx-self-closing-comp fragments, comments, NBSP, and non-LF terminators intact', () => {
+    const valid = [
+      '<></>',
+      '<Widget> </Widget>',
+      '<Widget>{/* preserve */}</Widget>',
+      '<Widget>\n\u00a0</Widget>',
+      '<Widget>\r</Widget>',
+      '<Widget>\u2028</Widget>',
+      '<Widget>\u2029</Widget>',
+    ];
+    for (const source of valid) {
+      expect(runRule('jsx-self-closing-comp', source, []), source).toEqual([]);
+    }
+
+    expect(messageIds(runRule('jsx-self-closing-comp', '<Widget>\r\n</Widget>', []))).toEqual([
+      'notSelfClosing',
+    ]);
   });
 
   it('accepts every upstream jsx-quotes valid case', () => {
@@ -3384,6 +3440,60 @@ const parenthesized = (a + b) * c;
           labels: [{ span: { offset: sourceText.indexOf('// note'), length: '// note'.length } }],
         },
       ]);
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('runs jsx-self-closing-comp through real oxlint TSX lint and fixes', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-jsx-self-closing-comp-'));
+
+    try {
+      const sourcePath = join(temp, 'sample.tsx');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+      writeFileSync(
+        sourcePath,
+        'export const component = <Widget<Props> title="日本語"></Widget>;\n' +
+          'export const html = <div>\r\n</div>;\n',
+      );
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [{ name: 'stylistic', specifier: join(packageRoot, 'index.js') }],
+          rules: {
+            'stylistic/jsx-self-closing-comp': 'error',
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', sourcePath],
+        { encoding: 'utf8' },
+      );
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      expect(JSON.parse(result.stdout).diagnostics).toMatchObject([
+        {
+          code: 'stylistic(jsx-self-closing-comp)',
+          message: 'Empty components are self-closing',
+        },
+        {
+          code: 'stylistic(jsx-self-closing-comp)',
+          message: 'Empty components are self-closing',
+        },
+      ]);
+
+      const fixed = spawnSync(oxlint, ['-c', configPath, '--fix-suggestions', sourcePath], {
+        encoding: 'utf8',
+      });
+      expect(fixed.status).toBe(0);
+      expect(fixed.stderr).toBe('');
+      expect(readFileSync(sourcePath, 'utf8')).toBe(
+        'export const component = <Widget<Props> title="日本語" />;\n' +
+          'export const html = <div />;\n',
+      );
     } finally {
       rmSync(temp, { recursive: true, force: true });
     }
