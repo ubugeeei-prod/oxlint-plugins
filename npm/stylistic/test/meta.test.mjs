@@ -53,6 +53,7 @@ describe('stylistic plugin meta contract', () => {
           'jsx-props-no-multi-spaces',
           'jsx-quotes',
           'jsx-self-closing-comp',
+          'jsx-wrap-multilines',
           'no-confusing-arrow',
           'no-extra-parens',
           'wrap-iife',
@@ -309,6 +310,24 @@ describe('stylistic plugin meta contract', () => {
       hasSuggestions: true,
       messages: {
         notSelfClosing: 'Empty components are self-closing',
+      },
+      schema: { type: 'array' },
+    });
+  });
+
+  it('preserves the complete upstream jsx-wrap-multilines metadata contract', () => {
+    expect(plugin.rules['jsx-wrap-multilines'].meta).toMatchObject({
+      type: 'layout',
+      docs: {
+        description: 'Disallow missing parentheses around multiline JSX',
+        recommended: false,
+        requiresTypeChecking: false,
+      },
+      fixable: 'code',
+      hasSuggestions: true,
+      messages: {
+        missingParens: 'Missing parentheses around multilines JSX',
+        parensOnNewLines: 'Parentheses around JSX should be on separate lines',
       },
       schema: { type: 'array' },
     });

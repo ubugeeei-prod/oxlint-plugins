@@ -117,6 +117,7 @@ const stylisticRuleFixtures = [
   ['jsx-newline', '<App><First />\n<Second /></App>;\n', [], ['require']],
   ['jsx-one-expression-per-line', '<App><Foo /></App>;\n', [], ['moveToNewLine']],
   ['jsx-max-props-per-line', '<App one two three />;\n', [{ maximum: 1 }], ['newLine']],
+  ['jsx-wrap-multilines', 'const view = <App>\n  <Child />\n</App>;\n', [], ['missingParens']],
   [
     'jsx-curly-spacing',
     '<App attr={ value }>{child}</App>;\n',
@@ -4093,6 +4094,65 @@ const parenthesized = (a + b) * c;
       expect(fixed.status).toBe(0);
       expect(readFileSync(jsxPath, 'utf8')).toContain('<First />\n\n<Second />');
       expect(readFileSync(tsxPath, 'utf8')).toContain('<Row<Item> />\n\n<Row<Item> />');
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('runs jsx-wrap-multilines through real oxlint JSX and TSX lint and fixes', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-jsx-wrap-multilines-plugin-'));
+
+    try {
+      const jsxPath = join(temp, 'sample.jsx');
+      const tsxPath = join(temp, 'sample.tsx');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+      writeFileSync(jsxPath, 'export const view = <App>\n  <Child />\n</App>;\n');
+      writeFileSync(
+        tsxPath,
+        'type Item = { id: string }; export const list = <List<Item>>\n  <Row<Item> />\n</List>;\n',
+      );
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [
+            {
+              name: 'stylistic',
+              specifier: join(packageRoot, 'index.js'),
+            },
+          ],
+          rules: {
+            'stylistic/jsx-wrap-multilines': 'error',
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', jsxPath, tsxPath],
+        { encoding: 'utf8' },
+      );
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      const diagnostics = JSON.parse(result.stdout).diagnostics;
+      expect(diagnostics.map((diagnostic) => diagnostic.code)).toEqual([
+        'stylistic(jsx-wrap-multilines)',
+        'stylistic(jsx-wrap-multilines)',
+      ]);
+      expect(diagnostics.map((diagnostic) => diagnostic.message)).toEqual([
+        'Missing parentheses around multilines JSX',
+        'Missing parentheses around multilines JSX',
+      ]);
+
+      const fixed = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--fix-suggestions', jsxPath, tsxPath],
+        { encoding: 'utf8' },
+      );
+      expect(fixed.status).toBe(0);
+      expect(fixed.stderr).toBe('');
+      expect(readFileSync(jsxPath, 'utf8')).toContain('const view = (<App>');
+      expect(readFileSync(tsxPath, 'utf8')).toContain('const list = (<List<Item>>');
     } finally {
       rmSync(temp, { recursive: true, force: true });
     }

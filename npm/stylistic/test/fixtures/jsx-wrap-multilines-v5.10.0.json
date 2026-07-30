@@ -1,0 +1,1669 @@
+{
+  "__generated": {
+    "source": "@stylistic/eslint-plugin",
+    "version": "v5.10.0",
+    "commit": "efbb1bc0e5aaedc4695c44a03f46f4fcbbe58712",
+    "sourceFile": "packages/eslint-plugin/rules/jsx-wrap-multilines/jsx-wrap-multilines.test.ts",
+    "license": "MIT",
+    "parserMatrix": "authored semantic cases; replayed with Oxc JSX/TSX",
+    "tool": "tools/tasks/sync-stylistic-jsx-wrap-multilines-tests.ts",
+    "inventory": {
+      "valid": 71,
+      "invalid": 75,
+      "diagnostics": 93,
+      "fixableInvalid": 75,
+      "unfixableInvalid": 0,
+      "total": 146
+    }
+  },
+  "valid": [
+    {
+      "code": "\n  var Hello = createReactClass({\n    render: function() {\n      return <p>Hello {this.props.name}</p>;\n    }\n  });\n"
+    },
+    {
+      "code": "\n  var Hello = createReactClass({\n    render: function() {\n      return <>Hello {this.props.name}</>;\n    }\n  });\n",
+      "features": ["fragment"]
+    },
+    {
+      "code": "\n  var Hello = createReactClass({\n    render: function() {\n      return (<div>\n        <p>Hello {this.props.name}</p>\n      </div>);\n    }\n  });\n"
+    },
+    {
+      "code": "\n  var Hello = createReactClass({\n    render: function() {\n      return <p>Hello {this.props.name}</p>;\n    }\n  });\n",
+      "options": [
+        {
+          "return": true
+        }
+      ]
+    },
+    {
+      "code": "\n  var Hello = createReactClass({\n    render: function() {\n      return <>Hello {this.props.name}</>;\n    }\n  });\n",
+      "features": ["fragment"],
+      "options": [
+        {
+          "return": true
+        }
+      ]
+    },
+    {
+      "code": "\n  var Hello = createReactClass({\n    render: function() {\n      return (<div>\n        <p>Hello {this.props.name}</p>\n      </div>);\n    }\n  });\n",
+      "options": [
+        {
+          "return": true
+        }
+      ]
+    },
+    {
+      "code": "\n  var Hello = createReactClass({\n    render: function() {\n      return <div>\n        <p>Hello {this.props.name}</p>\n      </div>;\n    }\n  });\n",
+      "options": [
+        {
+          "return": "ignore"
+        }
+      ]
+    },
+    {
+      "code": "\n  var Hello = createReactClass({\n    render: function() {\n      return <div>\n        <p>Hello {this.props.name}</p>\n      </div>;\n    }\n  });\n",
+      "options": [
+        {
+          "return": false
+        }
+      ]
+    },
+    {
+      "code": "var hello = foo ? <p>Hello</p> : <p>Hi</p>;"
+    },
+    {
+      "code": "var hello = foo ? <>Hello</> : <>Hi</>;",
+      "features": ["fragment"]
+    },
+    {
+      "code": "\n  var hello = foo ? (<div>\n    <p>Hello</p>\n  </div>) : (<div>\n    <p>Hi</p>\n  </div>);\n"
+    },
+    {
+      "code": "var hello = foo ? <p>Hello</p> : <p>Hi</p>;",
+      "options": [
+        {
+          "declaration": true
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello = foo ? (<div>\n    <p>Hello</p>\n  </div>) : (<div>\n    <p>Hi</p>\n  </div>);\n",
+      "options": [
+        {
+          "declaration": true
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello = foo ? <div>\n    <p>Hello</p>\n  </div> : <div>\n    <p>Hi</p>\n  </div>;\n",
+      "options": [
+        {
+          "declaration": "ignore"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello = foo ? <div>\n    <p>Hello</p>\n  </div> : <div>\n    <p>Hi</p>\n  </div>;\n",
+      "options": [
+        {
+          "declaration": false
+        }
+      ]
+    },
+    {
+      "code": "var hello; hello = foo ? <p>Hello</p> : <p>Hi</p>;"
+    },
+    {
+      "code": "\n  var hello;\n  hello = foo ? (<div>\n    <p>Hello</p>\n  </div>) : (<div>\n    <p>Hi</p>\n  </div>);\n"
+    },
+    {
+      "code": "var hello; hello = foo ? <p>Hello</p> : <p>Hi</p>;",
+      "options": [
+        {
+          "assignment": true
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello;\n  hello = foo ? (<div>\n    <p>Hello</p>\n  </div>) : (<div>\n    <p>Hi</p>\n  </div>);\n",
+      "options": [
+        {
+          "assignment": true
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello;\n  hello = foo ? <div>\n    <p>Hello</p>\n  </div> : <div>\n    <p>Hi</p>\n  </div>;\n",
+      "options": [
+        {
+          "assignment": "ignore"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello;\n  hello = foo ? <div>\n    <p>Hello</p>\n  </div> : <div>\n    <p>Hi</p>\n  </div>;\n",
+      "options": [
+        {
+          "assignment": false
+        }
+      ]
+    },
+    {
+      "code": "var hello = <p>Hello</p>;"
+    },
+    {
+      "code": "\n  var hello = (<div>\n    <p>Hello</p>\n  </div>);\n"
+    },
+    {
+      "code": "\n  var hello = (<>\n    <p>Hello</p>\n  </>);\n",
+      "features": ["fragment"]
+    },
+    {
+      "code": "var hello = <p>Hello</p>;",
+      "options": [
+        {
+          "declaration": true
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello = (<div>\n    <p>Hello</p>\n  </div>);\n",
+      "options": [
+        {
+          "declaration": true
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello = <div>\n    <p>Hello</p>\n  </div>;\n",
+      "options": [
+        {
+          "declaration": "ignore"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello = <>\n    <p>Hello</p>\n  </>;\n",
+      "features": ["fragment"],
+      "options": [
+        {
+          "declaration": "ignore"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello = <div>\n    <p>Hello</p>\n  </div>;\n",
+      "options": [
+        {
+          "declaration": false
+        }
+      ]
+    },
+    {
+      "code": "var hello; hello = <p>Hello</p>;",
+      "options": [
+        {
+          "declaration": "ignore"
+        }
+      ]
+    },
+    {
+      "code": "var hello; hello = <p>Hello</p>;",
+      "options": [
+        {
+          "declaration": false
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello;\n  hello = (<div>\n    <p>Hello</p>\n  </div>);\n"
+    },
+    {
+      "code": "\n  var hello;\n  hello = (<>\n    <p>Hello</p>\n  </>);\n",
+      "features": ["fragment"]
+    },
+    {
+      "code": "\n  var hello;\n  hello = (<div>\n    <p>Hello</p>\n  </div>);\n",
+      "options": [
+        {
+          "assignment": true
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello;\n  hello = <div>\n    <p>Hello</p>\n  </div>;\n",
+      "options": [
+        {
+          "assignment": "ignore"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello;\n  hello = <>\n    <p>Hello</p>\n  </>;\n",
+      "features": ["fragment"],
+      "options": [
+        {
+          "assignment": "ignore"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello;\n  hello = <div>\n    <p>Hello</p>\n  </div>;\n",
+      "options": [
+        {
+          "assignment": false
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello = () => (<div>\n    <p>Hello</p>\n  </div>);\n"
+    },
+    {
+      "code": "\n  var hello = () => (<>\n    <p>Hello</p>\n  </>);\n",
+      "features": ["fragment"]
+    },
+    {
+      "code": "var hello = () => <p>Hello</p>;"
+    },
+    {
+      "code": "\n  var hello = () => (<div>\n    <p>Hello</p>\n  </div>);\n",
+      "options": [
+        {
+          "arrow": true
+        }
+      ]
+    },
+    {
+      "code": "var hello = () => <p>Hello</p>;",
+      "options": [
+        {
+          "arrow": true
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello = () => <div>\n    <p>Hello</p>\n  </div>;\n",
+      "options": [
+        {
+          "arrow": "ignore"
+        }
+      ]
+    },
+    {
+      "code": "\nvar hello = () =>\n\t<div>\n\t\t<p>Hello</p>\n\t</div>;\n",
+      "options": [
+        {
+          "arrow": "ignore"
+        }
+      ]
+    },
+    {
+      "code": "\nvar hello = () => (\n\t<div>\n\t\t<p>Hello</p>\n\t</div>\n);\n",
+      "options": [
+        {
+          "arrow": "parens-new-line"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello = () => <>\n    <p>Hello</p>\n  </>;\n",
+      "features": ["fragment"],
+      "options": [
+        {
+          "arrow": "ignore"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello = () => <div>\n    <p>Hello</p>\n  </div>;\n",
+      "options": [
+        {
+          "arrow": false
+        }
+      ]
+    },
+    {
+      "code": "foo ? <p>Hello</p> : null;"
+    },
+    {
+      "code": "foo ? <p>Hello</p> : null;",
+      "options": [
+        {
+          "condition": true
+        }
+      ]
+    },
+    {
+      "code": "\n  <div>\n    {foo ? <div>\n        <p>Hello</p>\n      </div> : null}\n  </div>\n"
+    },
+    {
+      "code": "\n  <div>\n    {foo ? (<div>\n        <p>Hello</p>\n      </div>) : null}\n  </div>\n",
+      "options": [
+        {
+          "condition": true
+        }
+      ]
+    },
+    {
+      "code": "\n  <div>\n    {foo ? (<>\n        <p>Hello</p>\n      </>) : null}\n  </div>\n",
+      "features": ["fragment"],
+      "options": [
+        {
+          "condition": true
+        }
+      ]
+    },
+    {
+      "code": "foo && <p>Hello</p>;"
+    },
+    {
+      "code": "\n  <div>\n    {foo &&\n      <div>\n        <p>Hello World</p>\n      </div>\n    }\n  </div>\n"
+    },
+    {
+      "code": "\n  <div>\n    {foo &&\n      (<div>\n        <p>Hello World</p>\n      </div>)\n    }\n  </div>\n",
+      "options": [
+        {
+          "logical": true
+        }
+      ]
+    },
+    {
+      "code": "\n  <div>\n    {foo &&\n      (<>\n        <p>Hello World</p>\n      </>)\n    }\n  </div>\n",
+      "features": ["fragment"],
+      "options": [
+        {
+          "logical": true
+        }
+      ]
+    },
+    {
+      "code": "<div prop={<p>Hello</p>}></div>"
+    },
+    {
+      "code": "\n  <div prop={\n    <div>\n      <p>Hello</p>\n    </div>\n  }>\n    <p>Hello</p>\n  </div>\n"
+    },
+    {
+      "code": "\n  <div prop={\n    (<div>\n      <p>Hello</p>\n    </div>)\n  }>\n    <p>Hello</p>\n  </div>\n",
+      "options": [
+        {
+          "prop": true
+        }
+      ]
+    },
+    {
+      "code": "\n  <div prop={\n    (<>\n      <p>Hello</p>\n    </>)\n  }>\n    <p>Hello</p>\n  </div>\n",
+      "features": ["fragment"],
+      "options": [
+        {
+          "prop": true
+        }
+      ]
+    },
+    {
+      "code": "\n  var Hello = createReactClass({\n    render: function() {\n      return (\n        <div>\n          <p>Hello {this.props.name}</p>\n        </div>\n      );\n    }\n  });\n",
+      "options": [
+        {
+          "return": "parens-new-line"
+        }
+      ]
+    },
+    {
+      "code": "\n  var Hello = createReactClass({\n    render: function() {\n      return (\n        <>\n          <p>Hello {this.props.name}</p>\n        </>\n      );\n    }\n  });\n",
+      "features": ["fragment"],
+      "options": [
+        {
+          "return": "parens-new-line"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello = foo ? (\n    <div>\n    <p>Hello</p>\n    </div>\n  ) : (\n    <div>\n      <p>Hi</p>\n    </div>\n  );\n",
+      "options": [
+        {
+          "declaration": "parens-new-line"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello;\n  hello = foo ? (\n    <div>\n      <p>Hello</p>\n    </div>\n  ) : (\n    <div>\n      <p>Hi</p>\n    </div>\n  );\n",
+      "options": [
+        {
+          "assignment": "parens-new-line"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello = (\n    <div>\n      <p>Hello</p>\n    </div>\n  );\n",
+      "options": [
+        {
+          "declaration": "parens-new-line"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello;\n  hello = (\n    <div>\n      <p>Hello</p>\n    </div>\n  );\n",
+      "options": [
+        {
+          "assignment": "parens-new-line"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello = () => (\n    <div>\n      <p>Hello</p>\n    </div>\n  );\n",
+      "options": [
+        {
+          "arrow": "parens-new-line"
+        }
+      ]
+    },
+    {
+      "code": "\n  <div>\n    {foo ? (\n      <div>\n        <p>Hello</p>\n      </div>\n    ) : null}\n  </div>\n",
+      "options": [
+        {
+          "condition": "parens-new-line"
+        }
+      ]
+    },
+    {
+      "code": "\n  <div>\n    {foo && (\n      <div>\n        <p>Hello World</p>\n      </div>\n    )}\n  </div>\n",
+      "options": [
+        {
+          "logical": "parens-new-line"
+        }
+      ]
+    },
+    {
+      "code": "\n  <div prop={(\n    <div>\n      <p>Hello</p>\n    </div>\n  )}>\n    <p>Hello</p>\n  </div>\n",
+      "options": [
+        {
+          "prop": "parens-new-line"
+        }
+      ]
+    },
+    {
+      "code": "\n        obj = {\n          foo: <div><p>Hello</p></div>\n        }\n      ",
+      "options": [
+        {
+          "propertyValue": "parens"
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "code": "\n  var Hello = createReactClass({\n    render: function() {\n      return <div>\n        <p>Hello {this.props.name}</p>\n      </div>;\n    }\n  });\n",
+      "output": "\n  var Hello = createReactClass({\n    render: function() {\n      return (<div>\n        <p>Hello {this.props.name}</p>\n      </div>);\n    }\n  });\n",
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  var Hello = createReactClass({\n    render: function() {\n      return <>\n        <p>Hello {this.props.name}</p>\n      </>;\n    }\n  });\n",
+      "features": ["fragment"],
+      "output": "\n  var Hello = createReactClass({\n    render: function() {\n      return (<>\n        <p>Hello {this.props.name}</p>\n      </>);\n    }\n  });\n",
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  var Hello = createReactClass({\n    render: function() {\n      return <div>\n        <p>Hello {this.props.name}</p>\n      </div>;\n    }\n  });\n",
+      "output": "\n  var Hello = createReactClass({\n    render: function() {\n      return (<div>\n        <p>Hello {this.props.name}</p>\n      </div>);\n    }\n  });\n",
+      "options": [
+        {
+          "return": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  var Hello = createReactClass({\n    render: function() {\n      return <>\n        <p>Hello {this.props.name}</p>\n      </>;\n    }\n  });\n",
+      "features": ["fragment"],
+      "output": "\n  var Hello = createReactClass({\n    render: function() {\n      return (<>\n        <p>Hello {this.props.name}</p>\n      </>);\n    }\n  });\n",
+      "options": [
+        {
+          "return": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello = foo ? <div>\n    <p>Hello</p>\n  </div> : <div>\n    <p>Hi</p>\n  </div>;\n",
+      "output": "\n  var hello = foo ? (<div>\n    <p>Hello</p>\n  </div>) : (<div>\n    <p>Hi</p>\n  </div>);\n",
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        },
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello = foo ? <>\n    <p>Hello</p>\n  </> : <>\n    <p>Hi</p>\n  </>;\n",
+      "features": ["fragment"],
+      "output": "\n  var hello = foo ? (<>\n    <p>Hello</p>\n  </>) : (<>\n    <p>Hi</p>\n  </>);\n",
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        },
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello = foo ? <div>\n    <p>Hello</p>\n  </div> : <div>\n    <p>Hi</p>\n  </div>;\n",
+      "output": "\n  var hello = foo ? (<div>\n    <p>Hello</p>\n  </div>) : (<div>\n    <p>Hi</p>\n  </div>);\n",
+      "options": [
+        {
+          "declaration": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        },
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello = foo ? <>\n    <p>Hello</p>\n  </> : <>\n    <p>Hi</p>\n  </>;\n",
+      "features": ["fragment"],
+      "output": "\n  var hello = foo ? (<>\n    <p>Hello</p>\n  </>) : (<>\n    <p>Hi</p>\n  </>);\n",
+      "options": [
+        {
+          "declaration": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        },
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello;\n  hello = foo ? <div>\n    <p>Hello</p>\n  </div> : <div>\n    <p>Hi</p>\n  </div>;\n",
+      "output": "\n  var hello;\n  hello = foo ? (<div>\n    <p>Hello</p>\n  </div>) : (<div>\n    <p>Hi</p>\n  </div>);\n",
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        },
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello;\n  hello = foo ? <>\n    <p>Hello</p>\n  </> : <>\n    <p>Hi</p>\n  </>;\n",
+      "features": ["fragment"],
+      "output": "\n  var hello;\n  hello = foo ? (<>\n    <p>Hello</p>\n  </>) : (<>\n    <p>Hi</p>\n  </>);\n",
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        },
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello;\n  hello = foo ? <div>\n    <p>Hello</p>\n  </div> : <div>\n    <p>Hi</p>\n  </div>;\n",
+      "output": "\n  var hello;\n  hello = foo ? (<div>\n    <p>Hello</p>\n  </div>) : (<div>\n    <p>Hi</p>\n  </div>);\n",
+      "options": [
+        {
+          "assignment": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        },
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello;\n  hello = foo ? <>\n    <p>Hello</p>\n  </> : <>\n    <p>Hi</p>\n  </>;\n",
+      "features": ["fragment"],
+      "output": "\n  var hello;\n  hello = foo ? (<>\n    <p>Hello</p>\n  </>) : (<>\n    <p>Hi</p>\n  </>);\n",
+      "options": [
+        {
+          "assignment": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        },
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello = <div>\n    <p>Hello</p>\n  </div>;\n",
+      "output": "\n  var hello = (<div>\n    <p>Hello</p>\n  </div>);\n",
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello = <>\n    <p>Hello</p>\n  </>;\n",
+      "features": ["fragment"],
+      "output": "\n  var hello = (<>\n    <p>Hello</p>\n  </>);\n",
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello = <div>\n    <p>Hello</p>\n  </div>;\n",
+      "output": "\n  var hello = (<div>\n    <p>Hello</p>\n  </div>);\n",
+      "options": [
+        {
+          "declaration": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello;\n  hello = <div>\n    <p>Hello</p>\n  </div>;\n",
+      "output": "\n  var hello;\n  hello = (<div>\n    <p>Hello</p>\n  </div>);\n",
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello;\n  hello = <>\n    <p>Hello</p>\n  </>;\n",
+      "features": ["fragment"],
+      "output": "\n  var hello;\n  hello = (<>\n    <p>Hello</p>\n  </>);\n",
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello;\n  hello = <div>\n    <p>Hello</p>\n  </div>;\n",
+      "output": "\n  var hello;\n  hello = (<div>\n    <p>Hello</p>\n  </div>);\n",
+      "options": [
+        {
+          "assignment": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello = () => <div>\n    <p>Hello</p>\n  </div>;\n",
+      "output": "\n  var hello = () => (<div>\n    <p>Hello</p>\n  </div>);\n",
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello = () => <>\n    <p>Hello</p>\n  </>;\n",
+      "features": ["fragment"],
+      "output": "\n  var hello = () => (<>\n    <p>Hello</p>\n  </>);\n",
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello = () => <div>\n    <p>Hello</p>\n  </div>;\n",
+      "output": "\n  var hello = () => (<div>\n    <p>Hello</p>\n  </div>);\n",
+      "options": [
+        {
+          "arrow": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\nvar hello = () =>\n\t<div>\n\t\t<p>Hello</p>\n\t</div>;\n",
+      "output": "\nvar hello = () => (\n\t<div>\n\t\t<p>Hello</p>\n\t</div>\n);\n",
+      "options": [
+        {
+          "arrow": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  <div>\n    {foo ? <div>\n        <p>Hello</p>\n      </div> : null}\n  </div>\n",
+      "output": "\n  <div>\n    {foo ? (<div>\n        <p>Hello</p>\n      </div>) : null}\n  </div>\n",
+      "options": [
+        {
+          "condition": "parens"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  <div>\n    {foo ? <>\n        <p>Hello</p>\n      </> : null}\n  </div>\n",
+      "features": ["fragment"],
+      "output": "\n  <div>\n    {foo ? (<>\n        <p>Hello</p>\n      </>) : null}\n  </div>\n",
+      "options": [
+        {
+          "condition": "parens"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  <div>\n    {foo ? <div>\n        <p>Hello</p>\n      </div> : null}\n  </div>\n",
+      "output": "\n  <div>\n    {foo ? (<div>\n        <p>Hello</p>\n      </div>) : null}\n  </div>\n",
+      "options": [
+        {
+          "condition": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  <div>\n    {foo &&\n      <div>\n        <p>Hello World</p>\n      </div>\n    }\n  </div>\n",
+      "output": "\n  <div>\n    {foo &&\n      (<div>\n        <p>Hello World</p>\n      </div>)\n    }\n  </div>\n",
+      "options": [
+        {
+          "logical": "parens"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  <div>\n    {foo &&\n      <>\n        <p>Hello World</p>\n      </>\n    }\n  </div>\n",
+      "features": ["fragment"],
+      "output": "\n  <div>\n    {foo &&\n      (<>\n        <p>Hello World</p>\n      </>)\n    }\n  </div>\n",
+      "options": [
+        {
+          "logical": "parens"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  <div>\n    {foo &&\n      <div>\n        <p>Hello World</p>\n      </div>\n    }\n  </div>\n",
+      "output": "\n  <div>\n    {foo &&\n      (<div>\n        <p>Hello World</p>\n      </div>)\n    }\n  </div>\n",
+      "options": [
+        {
+          "logical": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  <div prop={\n    <div>\n      <p>Hello</p>\n    </div>\n  }>\n    <p>Hello</p>\n  </div>\n",
+      "output": "\n  <div prop={\n    (<div>\n      <p>Hello</p>\n    </div>)\n  }>\n    <p>Hello</p>\n  </div>\n",
+      "options": [
+        {
+          "prop": "parens"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  <div prop={\n    <>\n      <p>Hello</p>\n    </>\n  }>\n    <p>Hello</p>\n  </div>\n",
+      "features": ["fragment"],
+      "output": "\n  <div prop={\n    (<>\n      <p>Hello</p>\n    </>)\n  }>\n    <p>Hello</p>\n  </div>\n",
+      "options": [
+        {
+          "prop": "parens"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  <div prop={\n    <div>\n      <p>Hello</p>\n    </div>\n  }>\n    <p>Hello</p>\n  </div>\n",
+      "output": "\n  <div prop={\n    (<div>\n      <p>Hello</p>\n    </div>)\n  }>\n    <p>Hello</p>\n  </div>\n",
+      "options": [
+        {
+          "prop": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  var Hello = createReactClass({\n    render: function() {\n      return <div>\n        <p>Hello {this.props.name}</p>\n      </div>;\n    }\n  });\n",
+      "output": "\n  var Hello = createReactClass({\n    render: function() {\n      return (\n<div>\n        <p>Hello {this.props.name}</p>\n      </div>\n);\n    }\n  });\n",
+      "options": [
+        {
+          "return": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  var Hello = createReactClass({\n    render: function() {\n      return <>\n        <p>Hello {this.props.name}</p>\n      </>;\n    }\n  });\n",
+      "features": ["fragment"],
+      "output": "\n  var Hello = createReactClass({\n    render: function() {\n      return (\n<>\n        <p>Hello {this.props.name}</p>\n      </>\n);\n    }\n  });\n",
+      "options": [
+        {
+          "return": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  var Hello = createReactClass({\n    render: function() {\n      return (<div>\n        <p>Hello {this.props.name}</p>\n      </div>);\n    }\n  });\n",
+      "output": "\n  var Hello = createReactClass({\n    render: function() {\n      return (\n<div>\n        <p>Hello {this.props.name}</p>\n      </div>\n);\n    }\n  });\n",
+      "options": [
+        {
+          "return": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "parensOnNewLines",
+          "message": "Parentheses around JSX should be on separate lines"
+        }
+      ]
+    },
+    {
+      "code": "\n  var Hello = createReactClass({\n    render: function() {\n      return (\n\n      <div>\n        <p>Hello {this.props.name}</p>\n      </div>);\n    }\n  });\n",
+      "output": "\n  var Hello = createReactClass({\n    render: function() {\n      return (\n\n      <div>\n        <p>Hello {this.props.name}</p>\n      </div>\n);\n    }\n  });\n",
+      "options": [
+        {
+          "return": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "parensOnNewLines",
+          "message": "Parentheses around JSX should be on separate lines"
+        }
+      ]
+    },
+    {
+      "code": "\n  var Hello = createReactClass({\n    render: function() {\n      return (<div>\n        <p>Hello {this.props.name}</p>\n      </div>\n\n      );\n    }\n  });\n",
+      "output": "\n  var Hello = createReactClass({\n    render: function() {\n      return (\n<div>\n        <p>Hello {this.props.name}</p>\n      </div>\n\n      );\n    }\n  });\n",
+      "options": [
+        {
+          "return": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "parensOnNewLines",
+          "message": "Parentheses around JSX should be on separate lines"
+        }
+      ]
+    },
+    {
+      "code": "\n  var Hello = createReactClass({\n    render: function() {\n      return (<>\n        <p>Hello {this.props.name}</p>\n      </>);\n    }\n  });\n",
+      "features": ["fragment"],
+      "output": "\n  var Hello = createReactClass({\n    render: function() {\n      return (\n<>\n        <p>Hello {this.props.name}</p>\n      </>\n);\n    }\n  });\n",
+      "options": [
+        {
+          "return": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "parensOnNewLines",
+          "message": "Parentheses around JSX should be on separate lines"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello = foo ? <div>\n    <p>Hello</p>\n  </div> : <div>\n    <p>Hi</p>\n  </div>;\n",
+      "output": "\n  var hello = foo ? (\n<div>\n    <p>Hello</p>\n  </div>\n) : (\n<div>\n    <p>Hi</p>\n  </div>\n);\n",
+      "options": [
+        {
+          "declaration": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        },
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello = foo ? <>\n    <p>Hello</p>\n  </> : <>\n    <p>Hi</p>\n  </>;\n",
+      "features": ["fragment"],
+      "output": "\n  var hello = foo ? (\n<>\n    <p>Hello</p>\n  </>\n) : (\n<>\n    <p>Hi</p>\n  </>\n);\n",
+      "options": [
+        {
+          "declaration": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        },
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello = foo ? (<>\n    <p>Hello</p>\n  </>) : (<>\n    <p>Hi</p>\n  </>);\n",
+      "features": ["fragment"],
+      "output": "\n  var hello = foo ? (\n<>\n    <p>Hello</p>\n  </>\n) : (\n<>\n    <p>Hi</p>\n  </>\n);\n",
+      "options": [
+        {
+          "declaration": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "parensOnNewLines",
+          "message": "Parentheses around JSX should be on separate lines"
+        },
+        {
+          "messageId": "parensOnNewLines",
+          "message": "Parentheses around JSX should be on separate lines"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello = foo ? (<div>\n    <p>Hello</p>\n  </div>) : (<div>\n    <p>Hi</p>\n  </div>);\n",
+      "output": "\n  var hello = foo ? (\n<div>\n    <p>Hello</p>\n  </div>\n) : (\n<div>\n    <p>Hi</p>\n  </div>\n);\n",
+      "options": [
+        {
+          "declaration": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "parensOnNewLines",
+          "message": "Parentheses around JSX should be on separate lines"
+        },
+        {
+          "messageId": "parensOnNewLines",
+          "message": "Parentheses around JSX should be on separate lines"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello = foo ? (<>\n    <p>Hello</p>\n  </>) : (<>\n    <p>Hi</p>\n  </>);\n",
+      "features": ["fragment"],
+      "output": "\n  var hello = foo ? (\n<>\n    <p>Hello</p>\n  </>\n) : (\n<>\n    <p>Hi</p>\n  </>\n);\n",
+      "options": [
+        {
+          "declaration": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "parensOnNewLines",
+          "message": "Parentheses around JSX should be on separate lines"
+        },
+        {
+          "messageId": "parensOnNewLines",
+          "message": "Parentheses around JSX should be on separate lines"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello;\n  hello = foo ? <div>\n    <p>Hello</p>\n  </div> : <div>\n    <p>Hi</p>\n  </div>;\n",
+      "output": "\n  var hello;\n  hello = foo ? (\n<div>\n    <p>Hello</p>\n  </div>\n) : (\n<div>\n    <p>Hi</p>\n  </div>\n);\n",
+      "options": [
+        {
+          "assignment": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        },
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello;\n  hello = foo ? <>\n    <p>Hello</p>\n  </> : <>\n    <p>Hi</p>\n  </>;\n",
+      "features": ["fragment"],
+      "output": "\n  var hello;\n  hello = foo ? (\n<>\n    <p>Hello</p>\n  </>\n) : (\n<>\n    <p>Hi</p>\n  </>\n);\n",
+      "options": [
+        {
+          "assignment": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        },
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello;\n  hello = foo ? (<div>\n    <p>Hello</p>\n  </div>) : (<div>\n    <p>Hi</p>\n  </div>);\n",
+      "output": "\n  var hello;\n  hello = foo ? (\n<div>\n    <p>Hello</p>\n  </div>\n) : (\n<div>\n    <p>Hi</p>\n  </div>\n);\n",
+      "options": [
+        {
+          "assignment": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "parensOnNewLines",
+          "message": "Parentheses around JSX should be on separate lines"
+        },
+        {
+          "messageId": "parensOnNewLines",
+          "message": "Parentheses around JSX should be on separate lines"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello;\n  hello = foo ? (<>\n    <p>Hello</p>\n  </>) : (<>\n    <p>Hi</p>\n  </>);\n",
+      "features": ["fragment"],
+      "output": "\n  var hello;\n  hello = foo ? (\n<>\n    <p>Hello</p>\n  </>\n) : (\n<>\n    <p>Hi</p>\n  </>\n);\n",
+      "options": [
+        {
+          "assignment": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "parensOnNewLines",
+          "message": "Parentheses around JSX should be on separate lines"
+        },
+        {
+          "messageId": "parensOnNewLines",
+          "message": "Parentheses around JSX should be on separate lines"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello = <div>\n    <p>Hello</p>\n  </div>;\n",
+      "output": "\n  var hello = (\n<div>\n    <p>Hello</p>\n  </div>\n);\n",
+      "options": [
+        {
+          "declaration": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello = (<div>\n    <p>Hello</p>\n  </div>);\n",
+      "output": "\n  var hello = (\n<div>\n    <p>Hello</p>\n  </div>\n);\n",
+      "options": [
+        {
+          "declaration": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "parensOnNewLines",
+          "message": "Parentheses around JSX should be on separate lines"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello;\n  hello = <div>\n    <p>Hello</p>\n  </div>;\n",
+      "output": "\n  var hello;\n  hello = (\n<div>\n    <p>Hello</p>\n  </div>\n);\n",
+      "options": [
+        {
+          "assignment": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello;\n  hello = (<div>\n    <p>Hello</p>\n  </div>);\n",
+      "output": "\n  var hello;\n  hello = (\n<div>\n    <p>Hello</p>\n  </div>\n);\n",
+      "options": [
+        {
+          "assignment": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "parensOnNewLines",
+          "message": "Parentheses around JSX should be on separate lines"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello = () => (<div>\n    <p>Hello</p>\n  </div>);\n",
+      "output": "\n  var hello = () => (\n<div>\n    <p>Hello</p>\n  </div>\n);\n",
+      "options": [
+        {
+          "arrow": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "parensOnNewLines",
+          "message": "Parentheses around JSX should be on separate lines"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello = () => (<>\n    <p>Hello</p>\n  </>);\n",
+      "features": ["fragment"],
+      "output": "\n  var hello = () => (\n<>\n    <p>Hello</p>\n  </>\n);\n",
+      "options": [
+        {
+          "arrow": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "parensOnNewLines",
+          "message": "Parentheses around JSX should be on separate lines"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello = () => <div>\n    <p>Hello</p>\n  </div>;\n",
+      "output": "\n  var hello = () => (\n<div>\n    <p>Hello</p>\n  </div>\n);\n",
+      "options": [
+        {
+          "arrow": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  var hello = () => <>\n    <p>Hello</p>\n  </>;\n",
+      "features": ["fragment"],
+      "output": "\n  var hello = () => (\n<>\n    <p>Hello</p>\n  </>\n);\n",
+      "options": [
+        {
+          "arrow": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  <div>\n    {foo ? (<div>\n        <p>Hello</p>\n      </div>) : null}\n  </div>\n",
+      "output": "\n  <div>\n    {foo ? (\n<div>\n        <p>Hello</p>\n      </div>\n) : null}\n  </div>\n",
+      "options": [
+        {
+          "condition": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "parensOnNewLines",
+          "message": "Parentheses around JSX should be on separate lines"
+        }
+      ]
+    },
+    {
+      "code": "\n  <div>\n    {foo ? (<>\n        <p>Hello</p>\n      </>) : null}\n  </div>\n",
+      "features": ["fragment"],
+      "output": "\n  <div>\n    {foo ? (\n<>\n        <p>Hello</p>\n      </>\n) : null}\n  </div>\n",
+      "options": [
+        {
+          "condition": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "parensOnNewLines",
+          "message": "Parentheses around JSX should be on separate lines"
+        }
+      ]
+    },
+    {
+      "code": "\n  <div>\n    {foo ? <div>\n        <p>Hello</p>\n      </div> : null}\n  </div>\n",
+      "output": "\n  <div>\n    {foo ? (\n<div>\n        <p>Hello</p>\n      </div>\n) : null}\n  </div>\n",
+      "options": [
+        {
+          "condition": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  <div>\n    {foo ? <>\n        <p>Hello</p>\n      </> : null}\n  </div>\n",
+      "features": ["fragment"],
+      "output": "\n  <div>\n    {foo ? (\n<>\n        <p>Hello</p>\n      </>\n) : null}\n  </div>\n",
+      "options": [
+        {
+          "condition": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  <div>\n    {foo &&\n      (<div>\n        <p>Hello World</p>\n      </div>)\n    }\n  </div>\n",
+      "output": "\n  <div>\n    {foo &&\n      (\n<div>\n        <p>Hello World</p>\n      </div>\n)\n    }\n  </div>\n",
+      "options": [
+        {
+          "logical": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "parensOnNewLines",
+          "message": "Parentheses around JSX should be on separate lines"
+        }
+      ]
+    },
+    {
+      "code": "\n  <div>\n    {foo &&\n      <div>\n        <p>Hello World</p>\n      </div>\n    }\n  </div>\n",
+      "output": "\n  <div>\n    {foo && (\n      <div>\n        <p>Hello World</p>\n      </div>\n    )}\n  </div>\n",
+      "options": [
+        {
+          "logical": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  <div>\n    {foo &&\n      <>\n        <p>Hello World</p>\n      </>\n    }\n  </div>\n",
+      "features": ["fragment"],
+      "output": "\n  <div>\n    {foo && (\n      <>\n        <p>Hello World</p>\n      </>\n    )}\n  </div>\n",
+      "options": [
+        {
+          "logical": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  <div prop={\n    (<div>\n      <p>Hello</p>\n    </div>)\n  }>\n    <p>Hello</p>\n  </div>\n",
+      "output": "\n  <div prop={\n    (\n<div>\n      <p>Hello</p>\n    </div>\n)\n  }>\n    <p>Hello</p>\n  </div>\n",
+      "options": [
+        {
+          "prop": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "parensOnNewLines",
+          "message": "Parentheses around JSX should be on separate lines"
+        }
+      ]
+    },
+    {
+      "code": "\n  <div prop={\n    (<>\n      <p>Hello</p>\n    </>)\n  }>\n    <p>Hello</p>\n  </div>\n",
+      "features": ["fragment"],
+      "output": "\n  <div prop={\n    (\n<>\n      <p>Hello</p>\n    </>\n)\n  }>\n    <p>Hello</p>\n  </div>\n",
+      "options": [
+        {
+          "prop": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "parensOnNewLines",
+          "message": "Parentheses around JSX should be on separate lines"
+        }
+      ]
+    },
+    {
+      "code": "\n  <div prop={\n    <div>\n      <p>Hello</p>\n    </div>\n  }>\n    <p>Hello</p>\n  </div>\n",
+      "output": "\n  <div prop={(\n    <div>\n      <p>Hello</p>\n    </div>\n  )}>\n    <p>Hello</p>\n  </div>\n",
+      "options": [
+        {
+          "prop": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  <div prop={\n    <>\n      <p>Hello</p>\n    </>\n  }>\n    <p>Hello</p>\n  </div>\n",
+      "features": ["fragment"],
+      "output": "\n  <div prop={(\n    <>\n      <p>Hello</p>\n    </>\n  )}>\n    <p>Hello</p>\n  </div>\n",
+      "options": [
+        {
+          "prop": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  export default () =>\n    <div>\n        with newline without parentheses eslint crashes\n    </div>",
+      "output": "\n  export default () => (\n    <div>\n        with newline without parentheses eslint crashes\n    </div>\n  )",
+      "options": [
+        {
+          "declaration": "parens-new-line",
+          "assignment": "parens-new-line",
+          "return": "parens-new-line",
+          "arrow": "parens-new-line",
+          "condition": "parens-new-line",
+          "logical": "parens-new-line",
+          "prop": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n  const Component = () =>\n    <div>\n      <p>Some text</p>\n    </div>\n\n  export { Component as default }\n",
+      "output": "\n  const Component = () => (\n    <div>\n      <p>Some text</p>\n    </div>\n  )\n\n  export { Component as default }\n",
+      "options": [
+        {
+          "declaration": "parens-new-line",
+          "assignment": "parens-new-line",
+          "return": "parens-new-line",
+          "arrow": "parens-new-line",
+          "condition": "parens-new-line",
+          "logical": "ignore",
+          "prop": "ignore"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\nconst Component = props => (\n  <div>\n    {true &&\n      <div>\n        <p>Some text</p>\n      </div>\n    }\n  </div>\n)\n",
+      "output": "\nconst Component = props => (\n  <div>\n    {true && (\n      <div>\n        <p>Some text</p>\n      </div>\n    )}\n  </div>\n)\n",
+      "options": [
+        {
+          "logical": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n        import React from 'react';\n\n        const A =\n        <div>\n            B\n        </div>;\n      ",
+      "output": "\n        import React from 'react';\n\n        const A = (\n        <div>\n            B\n        </div>\n      );\n      ",
+      "options": [
+        {
+          "declaration": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n      const obj = {\n        foo: <div>\n          bar\n        </div>,\n        baz: 2,\n      }\n      ",
+      "output": "\n      const obj = {\n        foo: (\n<div>\n          bar\n        </div>\n),\n        baz: 2,\n      }\n      ",
+      "options": [
+        {
+          "propertyValue": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\nconst obj = {\n  foo: <div>\n         bar\n       </div>,\n  baz: <div prop={\n         <div>\n           <p>Hello</p>\n         </div>\n       }>\n         <p>Hello</p>\n       </div>,\n}\n      ",
+      "output": "\nconst obj = {\n  foo: (\n<div>\n         bar\n       </div>\n),\n  baz: (\n<div prop={\n         <div>\n           <p>Hello</p>\n         </div>\n       }>\n         <p>Hello</p>\n       </div>\n),\n}\n      ",
+      "options": [
+        {
+          "propertyValue": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        },
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\nconst obj = {\n  foo: <div>\n         bar\n       </div>,\n}\n      ",
+      "output": "\nconst obj = {\n  foo: (<div>\n         bar\n       </div>),\n}\n      ",
+      "options": [
+        {
+          "propertyValue": "parens"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\nconst obj = {\n  foo: {\n    bar: <div>\n      baz\n    </div>,\n  }\n}\n      ",
+      "output": "\nconst obj = {\n  foo: {\n    bar: (<div>\n      baz\n    </div>),\n  }\n}\n      ",
+      "options": [
+        {
+          "propertyValue": "parens"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n    const MissingParenWIthCOmment = () =>\n      // Something about this line\n      <>\n        <input />\n      </>\n          ",
+      "output": "\n    const MissingParenWIthCOmment = () => (\n      // Something about this line\n      <>\n        <input />\n      </>\n    )\n          ",
+      "options": [
+        {
+          "arrow": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    },
+    {
+      "code": "\n    var hello = {\n      foo:\n        // Something about this line\n        <div>\n          <p>Hello</p>\n        </div>\n    };\n          ",
+      "output": "\n    var hello = {\n      foo: (\n        // Something about this line\n        <div>\n          <p>Hello</p>\n        </div>\n      )};\n          ",
+      "options": [
+        {
+          "propertyValue": "parens-new-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "missingParens",
+          "message": "Missing parentheses around multilines JSX"
+        }
+      ]
+    }
+  ]
+}
