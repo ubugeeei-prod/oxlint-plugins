@@ -1,0 +1,1371 @@
+{
+  "__generated": {
+    "source": "@stylistic/eslint-plugin",
+    "version": "v5.10.0",
+    "commit": "efbb1bc0e5aaedc4695c44a03f46f4fcbbe58712",
+    "sourceFile": "packages/eslint-plugin/rules/jsx-one-expression-per-line/jsx-one-expression-per-line.test.ts",
+    "ruleFile": "packages/eslint-plugin/rules/jsx-one-expression-per-line/jsx-one-expression-per-line.ts",
+    "license": "MIT",
+    "parserMatrix": "authored semantic cases; replayed with Oxc JSX and TSX",
+    "tool": "tools/tasks/sync-stylistic-jsx-one-expression-per-line-tests.ts",
+    "inventory": {
+      "valid": 47,
+      "invalid": 69,
+      "diagnostics": 84,
+      "fixableInvalid": 69,
+      "unfixableInvalid": 0,
+      "total": 116
+    }
+  },
+  "valid": [
+    {
+      "code": "<App />"
+    },
+    {
+      "code": "\n\t\t\t\t<AllTabs>\n\t\t\t\t\tFail\n\t\t\t\t</AllTabs>\n      "
+    },
+    {
+      "code": "\n\t\t\t\t<TagsWithTabs>\n          Fail\n\t\t\t\t</TagsWithTabs>\n      "
+    },
+    {
+      "code": "\n        <ClosedTagWithTabs>\n          Fail\n\t\t\t\t</ClosedTagWithTabs>\n      "
+    },
+    {
+      "code": "\n\t\t\t\t<OpenTagWithTabs>\n          OK\n        </OpenTagWithTabs>\n      "
+    },
+    {
+      "code": "\n        <TextWithTabs>\n\t\t\t\t\t\tOK\n        </TextWithTabs>\n      "
+    },
+    {
+      "code": "\n        <AllSpaces>\n          OK\n        </AllSpaces>\n      "
+    },
+    {
+      "code": "<App></App>"
+    },
+    {
+      "code": "<App foo=\"bar\" />"
+    },
+    {
+      "code": "\n        <App>\n          <Foo />\n        </App>\n      "
+    },
+    {
+      "code": "\n        <App>\n          <Foo />\n          <Bar />\n        </App>\n      "
+    },
+    {
+      "code": "\n        <App>\n          <Foo></Foo>\n        </App>\n      "
+    },
+    {
+      "code": "\n        <App>\n          foo bar baz  whatever\n        </App>\n      "
+    },
+    {
+      "code": "\n        <App>\n          <Foo>\n          </Foo>\n        </App>\n      "
+    },
+    {
+      "code": "\n        <App\n          foo=\"bar\"\n        >\n        <Foo />\n        </App>\n      "
+    },
+    {
+      "code": "\n        <\n        App\n        >\n          <\n            Foo\n          />\n        </\n        App\n        >\n      "
+    },
+    {
+      "code": "<App>foo</App>",
+      "options": [
+        {
+          "allow": "literal"
+        }
+      ]
+    },
+    {
+      "code": "<App>123</App>",
+      "options": [
+        {
+          "allow": "literal"
+        }
+      ]
+    },
+    {
+      "code": "<App>foo</App>",
+      "options": [
+        {
+          "allow": "single-child"
+        }
+      ]
+    },
+    {
+      "code": "<App>{\"foo\"}</App>",
+      "options": [
+        {
+          "allow": "single-child"
+        }
+      ]
+    },
+    {
+      "code": "<App>123</App>",
+      "options": [
+        {
+          "allow": "non-jsx"
+        }
+      ]
+    },
+    {
+      "code": "<App>foo</App>",
+      "options": [
+        {
+          "allow": "non-jsx"
+        }
+      ]
+    },
+    {
+      "code": "<App>{\"foo\"}</App>",
+      "options": [
+        {
+          "allow": "non-jsx"
+        }
+      ]
+    },
+    {
+      "code": "<App>{<Bar />}</App>",
+      "options": [
+        {
+          "allow": "non-jsx"
+        }
+      ]
+    },
+    {
+      "code": "<App>{foo && <Bar />}</App>",
+      "options": [
+        {
+          "allow": "single-child"
+        }
+      ]
+    },
+    {
+      "code": "<App><Foo /></App>",
+      "options": [
+        {
+          "allow": "single-child"
+        }
+      ]
+    },
+    {
+      "code": "<></>",
+      "features": ["fragment"]
+    },
+    {
+      "code": "\n        <>\n          <Foo />\n        </>\n      ",
+      "features": ["fragment", "no-ts-old"]
+    },
+    {
+      "code": "\n        <>\n          <Foo />\n          <Bar />\n        </>\n      ",
+      "features": ["fragment", "no-ts-old"]
+    },
+    {
+      "code": "<App>Hello {name}</App>",
+      "options": [
+        {
+          "allow": "non-jsx"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>\n          Hello {name} there!\n        </App>",
+      "options": [
+        {
+          "allow": "non-jsx"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>\n          Hello {<Bar />} there!\n        </App>",
+      "options": [
+        {
+          "allow": "non-jsx"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>\n          Hello {(<Bar />)} there!\n        </App>",
+      "options": [
+        {
+          "allow": "non-jsx"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>\n          Hello {(() => <Bar />)()} there!\n        </App>",
+      "options": [
+        {
+          "allow": "non-jsx"
+        }
+      ]
+    },
+    {
+      "code": "<>\n               123\n               <Foo/>\n             </>",
+      "options": [
+        {
+          "allow": "non-jsx"
+        }
+      ]
+    },
+    {
+      "code": "\n        <>\n          <Foo/>\n            Bar\n            <Baz>\n          </Baz>\n        </>\n      ",
+      "options": [
+        {
+          "allow": "non-jsx"
+        }
+      ]
+    },
+    {
+      "code": "<App>{\"foo\"}</App>",
+      "options": [
+        {
+          "allow": "single-line"
+        }
+      ]
+    },
+    {
+      "code": "<App>{foo && <Bar />}</App>",
+      "options": [
+        {
+          "allow": "single-line"
+        }
+      ]
+    },
+    {
+      "code": "<App><Foo /></App>",
+      "options": [
+        {
+          "allow": "single-line"
+        }
+      ]
+    },
+    {
+      "code": "<>123<Foo/></>",
+      "options": [
+        {
+          "allow": "single-line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <>\n          123<Foo/><Bar/>\n        </>\n      ",
+      "options": [
+        {
+          "allow": "single-line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <>\n          <Foo/><Bar/>{'baz'}\n        </>\n      ",
+      "options": [
+        {
+          "allow": "single-line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <>\n          <Foo/><Bar/>baz\n        </>\n      ",
+      "options": [
+        {
+          "allow": "single-line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <>\n          <Foo/>Bar<Baz></Baz>\n        </>\n      ",
+      "options": [
+        {
+          "allow": "single-line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>\n          <Hello /> <ESLint />\n        </App>\n      ",
+      "options": [
+        {
+          "allow": "single-line"
+        }
+      ]
+    },
+    {
+      "code": "<App>{\"Hello\"} {\"ESLint\"}</App>",
+      "options": [
+        {
+          "allow": "single-line"
+        }
+      ]
+    },
+    {
+      "code": "<App>Hello <span>ESLint</span></App>",
+      "options": [
+        {
+          "allow": "single-line"
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "code": "\n        <App>{\"foo\"}</App>\n      ",
+      "output": "\n        <App>\n{\"foo\"}\n</App>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "{\"foo\"}"
+          },
+          "message": "`{\"foo\"}` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>foo</App>\n      ",
+      "output": "\n        <App>\nfoo\n</App>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "foo"
+          },
+          "message": "`foo` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "<App\n  foo\n>bar\n</App>",
+      "output": "<App\n  foo\n>\nbar\n</App>",
+      "errors": [
+        {
+          "messageId": "moveToNewLine"
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          foo {\"bar\"}\n        </div>\n      ",
+      "output": "\n        <div>\n          foo \n{' '}\n{\"bar\"}\n        </div>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "{\"bar\"}"
+          },
+          "message": "`{\"bar\"}` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          {\"foo\"} bar\n        </div>\n      ",
+      "output": "\n        <div>\n          {\"foo\"}\n{' '}\nbar\n</div>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": " bar        "
+          },
+          "message": "` bar        ` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>\n          <Foo /><Bar />\n        </App>\n      ",
+      "output": "\n        <App>\n          <Foo />\n<Bar />\n        </App>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "Bar"
+          },
+          "message": "`Bar` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          <span />foo\n        </div>\n      ",
+      "output": "\n        <div>\n          <span />\nfoo\n</div>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "foo        "
+          },
+          "message": "`foo        ` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          <span />{\"foo\"}\n        </div>\n      ",
+      "output": "\n        <div>\n          <span />\n{\"foo\"}\n        </div>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "{\"foo\"}"
+          },
+          "message": "`{\"foo\"}` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          {\"foo\"} { I18n.t('baz') }\n        </div>\n      ",
+      "output": "\n        <div>\n          {\"foo\"} \n{' '}\n{ I18n.t('baz') }\n        </div>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "{ I18n.t('baz') }"
+          },
+          "message": "`{ I18n.t('baz') }` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <Text style={styles.foo}>{ bar } <Text/> { I18n.t('baz') }</Text>\n      ",
+      "output": "\n        <Text style={styles.foo}>\n{ bar } \n{' '}\n<Text/> \n{' '}\n{ I18n.t('baz') }\n</Text>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "{ bar }"
+          },
+          "message": "`{ bar }` must be placed on a new line"
+        },
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "Text"
+          },
+          "message": "`Text` must be placed on a new line"
+        },
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "{ I18n.t('baz') }"
+          },
+          "message": "`{ I18n.t('baz') }` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <Text style={styles.foo}> <Bar/> <Baz/></Text>\n      ",
+      "output": "\n        <Text style={styles.foo}> \n{' '}\n<Bar/> \n{' '}\n<Baz/>\n</Text>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "Bar"
+          },
+          "message": "`Bar` must be placed on a new line"
+        },
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "Baz"
+          },
+          "message": "`Baz` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <Text style={styles.foo}> <Bar/> <Baz/> <Bunk/> <Bruno/> </Text>\n      ",
+      "output": "\n        <Text style={styles.foo}> \n{' '}\n<Bar/> \n{' '}\n<Baz/> \n{' '}\n<Bunk/> \n{' '}\n<Bruno/>\n{' '}\n </Text>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "Bar"
+          },
+          "message": "`Bar` must be placed on a new line"
+        },
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "Baz"
+          },
+          "message": "`Baz` must be placed on a new line"
+        },
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "Bunk"
+          },
+          "message": "`Bunk` must be placed on a new line"
+        },
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "Bruno"
+          },
+          "message": "`Bruno` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <Text style={styles.foo}> <Bar /></Text>\n      ",
+      "output": "\n        <Text style={styles.foo}> \n{' '}\n<Bar />\n</Text>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "Bar"
+          },
+          "message": "`Bar` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <Text style={styles.foo}> <Bar />\n        </Text>\n      ",
+      "output": "\n        <Text style={styles.foo}> \n{' '}\n<Bar />\n        </Text>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "Bar"
+          },
+          "message": "`Bar` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <Text style={styles.foo}>\n          <Bar /> <Baz />\n        </Text>\n      ",
+      "output": "\n        <Text style={styles.foo}>\n          <Bar /> \n{' '}\n<Baz />\n        </Text>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "Baz"
+          },
+          "message": "`Baz` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <Text style={styles.foo}>\n          <Bar /> <Baz />\n        </Text>\n      ",
+      "output": "\n        <Text style={styles.foo}>\n          <Bar /> \n{' '}\n<Baz />\n        </Text>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "Baz"
+          },
+          "message": "`Baz` must be placed on a new line"
+        }
+      ],
+      "options": [
+        {
+          "allow": "non-jsx"
+        }
+      ]
+    },
+    {
+      "code": "\n        <Text style={styles.foo}>\n          { bar } { I18n.t('baz') }\n        </Text>\n      ",
+      "output": "\n        <Text style={styles.foo}>\n          { bar } \n{' '}\n{ I18n.t('baz') }\n        </Text>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "{ I18n.t('baz') }"
+          },
+          "message": "`{ I18n.t('baz') }` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          foo<input />\n        </div>\n      ",
+      "output": "\n        <div>\n          foo\n<input />\n        </div>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "input"
+          },
+          "message": "`input` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          {\"foo\"}<span />\n        </div>\n      ",
+      "output": "\n        <div>\n          {\"foo\"}\n<span />\n        </div>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "span"
+          },
+          "message": "`span` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          foo <input />\n        </div>\n      ",
+      "output": "\n        <div>\n          foo \n{' '}\n<input />\n        </div>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "input"
+          },
+          "message": "`input` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          <input /> foo\n        </div>\n      ",
+      "output": "\n        <div>\n          <input />\n{' '}\nfoo\n</div>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": " foo        "
+          },
+          "message": "` foo        ` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          <span /> <input />\n        </div>\n      ",
+      "output": "\n        <div>\n          <span /> \n{' '}\n<input />\n        </div>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "input"
+          },
+          "message": "`input` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          <span />\n        {' '}<input />\n        </div>\n      ",
+      "output": "\n        <div>\n          <span />\n        {' '}\n<input />\n        </div>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "input"
+          },
+          "message": "`input` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          {\"foo\"} <input />\n        </div>\n      ",
+      "output": "\n        <div>\n          {\"foo\"} \n{' '}\n<input />\n        </div>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "input"
+          },
+          "message": "`input` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          <input /> {\"foo\"}\n        </div>\n      ",
+      "output": "\n        <div>\n          <input /> \n{' '}\n{\"foo\"}\n        </div>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "{\"foo\"}"
+          },
+          "message": "`{\"foo\"}` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>\n          <Foo></Foo><Bar></Bar>\n        </App>\n      ",
+      "output": "\n        <App>\n          <Foo></Foo>\n<Bar></Bar>\n        </App>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "Bar"
+          },
+          "message": "`Bar` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>\n        <Foo></Foo></App>\n      ",
+      "output": "\n        <App>\n        <Foo></Foo>\n</App>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "Foo"
+          },
+          "message": "`Foo` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App><Foo />\n        </App>\n      ",
+      "output": "\n        <App>\n<Foo />\n        </App>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "Foo"
+          },
+          "message": "`Foo` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>\n        <Foo/></App>\n      ",
+      "output": "\n        <App>\n        <Foo/>\n</App>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "Foo"
+          },
+          "message": "`Foo` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App><Foo\n        />\n        </App>\n      ",
+      "output": "\n        <App>\n<Foo\n        />\n        </App>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "Foo"
+          },
+          "message": "`Foo` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n        >\n        <Foo /></App>\n      ",
+      "output": "\n        <App\n        >\n        <Foo />\n</App>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "Foo"
+          },
+          "message": "`Foo` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n        >\n        <Foo\n        /></App>\n      ",
+      "output": "\n        <App\n        >\n        <Foo\n        />\n</App>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "Foo"
+          },
+          "message": "`Foo` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n        ><Foo />\n        </App>\n      ",
+      "output": "\n        <App\n        >\n<Foo />\n        </App>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "Foo"
+          },
+          "message": "`Foo` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>\n          <Foo></Foo\n        ></App>\n      ",
+      "output": "\n        <App>\n          <Foo></Foo\n        >\n</App>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "Foo"
+          },
+          "message": "`Foo` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>\n          <Foo></\n        Foo></App>\n      ",
+      "output": "\n        <App>\n          <Foo></\n        Foo>\n</App>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "Foo"
+          },
+          "message": "`Foo` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>\n          <Foo></\n        Foo><Bar />\n        </App>\n      ",
+      "output": "\n        <App>\n          <Foo></\n        Foo>\n<Bar />\n        </App>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "Bar"
+          },
+          "message": "`Bar` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>\n          <Foo>\n            <Bar /></Foo>\n        </App>\n      ",
+      "output": "\n        <App>\n          <Foo>\n            <Bar />\n</Foo>\n        </App>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "Bar"
+          },
+          "message": "`Bar` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>\n          <Foo>\n            <Bar> baz </Bar>\n          </Foo>\n        </App>\n      ",
+      "output": "\n        <App>\n          <Foo>\n            <Bar>\n{' '}\nbaz\n{' '}\n</Bar>\n          </Foo>\n        </App>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": " baz "
+          },
+          "message": "` baz ` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>\n          foo {\"bar\"} baz\n        </App>\n      ",
+      "output": "\n        <App>\n          foo \n{' '}\n{\"bar\"} baz\n        </App>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "{\"bar\"}"
+          },
+          "message": "`{\"bar\"}` must be placed on a new line"
+        },
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": " baz        "
+          },
+          "message": "` baz        ` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>\n          foo {\"bar\"}\n        </App>\n      ",
+      "output": "\n        <App>\n          foo \n{' '}\n{\"bar\"}\n        </App>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "{\"bar\"}"
+          },
+          "message": "`{\"bar\"}` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>\n          foo\n        {' '}\n        {\"bar\"} baz\n        </App>\n      ",
+      "output": "\n        <App>\n          foo\n        {' '}\n        {\"bar\"}\n{' '}\nbaz\n</App>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": " baz        "
+          },
+          "message": "` baz        ` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>\n\n          foo {\"bar\"} baz\n\n        </App>\n      ",
+      "output": "\n        <App>\n\n          foo \n{' '}\n{\"bar\"} baz\n\n        </App>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "{\"bar\"}"
+          },
+          "message": "`{\"bar\"}` must be placed on a new line"
+        },
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": " baz        "
+          },
+          "message": "` baz        ` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>\n\n          foo\n        {' '}\n        {\"bar\"} baz\n\n        </App>\n      ",
+      "output": "\n        <App>\n\n          foo\n        {' '}\n        {\"bar\"}\n{' '}\nbaz\n\n</App>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": " baz        "
+          },
+          "message": "` baz        ` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>{\n          foo\n        }</App>\n      ",
+      "output": "\n        <App>\n{\n          foo\n        }\n</App>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "{          foo        }"
+          },
+          "message": "`{          foo        }` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App> {\n          foo\n        } </App>\n      ",
+      "output": "\n        <App> \n{' '}\n{\n          foo\n        }\n{' '}\n </App>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "{          foo        }"
+          },
+          "message": "`{          foo        }` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>\n        {' '}\n        {\n          foo\n        } </App>\n      ",
+      "output": "\n        <App>\n        {' '}\n        {\n          foo\n        }\n{' '}\n </App>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "{          foo        }"
+          },
+          "message": "`{          foo        }` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App><Foo /></App>\n      ",
+      "output": "\n        <App>\n<Foo />\n</App>\n      ",
+      "options": [
+        {
+          "allow": "none"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "Foo"
+          },
+          "message": "`Foo` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>foo</App>\n      ",
+      "output": "\n        <App>\nfoo\n</App>\n      ",
+      "options": [
+        {
+          "allow": "none"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "foo"
+          },
+          "message": "`foo` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>{\"foo\"}</App>\n      ",
+      "output": "\n        <App>\n{\"foo\"}\n</App>\n      ",
+      "options": [
+        {
+          "allow": "none"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "{\"foo\"}"
+          },
+          "message": "`{\"foo\"}` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>foo\n        </App>\n      ",
+      "output": "\n        <App>\nfoo\n</App>\n      ",
+      "options": [
+        {
+          "allow": "literal"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "foo        "
+          },
+          "message": "`foo        ` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App><Foo /></App>\n      ",
+      "output": "\n        <App>\n<Foo />\n</App>\n      ",
+      "options": [
+        {
+          "allow": "literal"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "Foo"
+          },
+          "message": "`Foo` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App><Foo /></App>\n      ",
+      "output": "\n        <App>\n<Foo />\n</App>\n      ",
+      "options": [
+        {
+          "allow": "non-jsx"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "Foo"
+          },
+          "message": "`Foo` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App\n          foo=\"1\"\n          bar=\"2\"\n        >baz</App>\n      ",
+      "options": [
+        {
+          "allow": "literal"
+        }
+      ],
+      "output": "\n        <App\n          foo=\"1\"\n          bar=\"2\"\n        >\nbaz\n</App>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "baz"
+          },
+          "message": "`baz` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>foo\n        bar\n        </App>\n      ",
+      "options": [
+        {
+          "allow": "literal"
+        }
+      ],
+      "output": "\n        <App>\nfoo\n        bar\n</App>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "foo        bar        "
+          },
+          "message": "`foo        bar        ` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <>{\"foo\"}</>\n      ",
+      "output": "\n        <>\n{\"foo\"}\n</>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "{\"foo\"}"
+          },
+          "message": "`{\"foo\"}` must be placed on a new line"
+        }
+      ],
+      "features": ["fragment", "no-ts-old"]
+    },
+    {
+      "code": "\n        <App>\n          <Foo /><></>\n        </App>\n      ",
+      "output": "\n        <App>\n          <Foo />\n<></>\n        </App>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "<></>"
+          },
+          "message": "`<></>` must be placed on a new line"
+        }
+      ],
+      "features": ["fragment"]
+    },
+    {
+      "code": "\n        <\n        ><Foo />\n        </>\n      ",
+      "output": "\n        <\n        >\n<Foo />\n        </>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "Foo"
+          },
+          "message": "`Foo` must be placed on a new line"
+        }
+      ],
+      "features": ["fragment", "no-ts-old"]
+    },
+    {
+      "code": "\n        <div>\n        <MyComponent>a</MyComponent>\n        <MyOther>{a}</MyOther>\n        </div>\n      ",
+      "output": "\n        <div>\n        <MyComponent>\na\n</MyComponent>\n        <MyOther>\n{a}\n</MyOther>\n        </div>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "a"
+          },
+          "message": "`a` must be placed on a new line"
+        },
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "{a}"
+          },
+          "message": "`{a}` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        const IndexPage = () => (\n          <h1>{\"Hi people\"}<button/></h1>\n        );\n      ",
+      "output": "\n        const IndexPage = () => (\n          <h1>\n{\"Hi people\"}<button/></h1>\n        );\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "{\"Hi people\"}"
+          },
+          "message": "`{\"Hi people\"}` must be placed on a new line"
+        },
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "button"
+          },
+          "message": "`button` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        const IndexPage = () => (\n          <h1>\n{\"Hi people\"}<button/></h1>\n        );\n      ",
+      "output": "\n        const IndexPage = () => (\n          <h1>\n{\"Hi people\"}\n<button/>\n</h1>\n        );\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "button"
+          },
+          "message": "`button` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <Layout>\n        <p>Welcome to your new Gatsby site.</p>\n        <p>Now go build something great.</p>\n        <h1>Hi people<button/></h1>\n        </Layout>\n      ",
+      "output": "\n        <Layout>\n        <p>\nWelcome to your new Gatsby site.\n</p>\n        <p>\nNow go build something great.\n</p>\n        <h1>\nHi people<button/></h1>\n        </Layout>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "Welcome to your new Gatsby site."
+          },
+          "message": "`Welcome to your new Gatsby site.` must be placed on a new line"
+        },
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "Now go build something great."
+          },
+          "message": "`Now go build something great.` must be placed on a new line"
+        },
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "Hi people"
+          },
+          "message": "`Hi people` must be placed on a new line"
+        },
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "button"
+          },
+          "message": "`button` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <Layout>\n        <p>\nWelcome to your new Gatsby site.\n</p>\n        <p>\nNow go build something great.\n</p>\n        <h1>\nHi people<button/></h1>\n        </Layout>\n      ",
+      "output": "\n        <Layout>\n        <p>\nWelcome to your new Gatsby site.\n</p>\n        <p>\nNow go build something great.\n</p>\n        <h1>\nHi people\n<button/>\n</h1>\n        </Layout>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "button"
+          },
+          "message": "`button` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <Layout>\n          <div style={{ maxWidth: `300px`, marginBottom: `1.45rem` }}>\n            <Image />\n          </div><Link to=\"/page-2/\">Go to page 2</Link>\n        </Layout>\n      ",
+      "output": "\n        <Layout>\n          <div style={{ maxWidth: `300px`, marginBottom: `1.45rem` }}>\n            <Image />\n          </div>\n<Link to=\"/page-2/\">Go to page 2</Link>\n        </Layout>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "Link"
+          },
+          "message": "`Link` must be placed on a new line"
+        },
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "Go to page 2"
+          },
+          "message": "`Go to page 2` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n        <Layout>\n          <div style={{ maxWidth: `300px`, marginBottom: `1.45rem` }}>\n            <Image />\n          </div>\n<Link to=\"/page-2/\">Go to page 2</Link>\n        </Layout>\n      ",
+      "output": "\n        <Layout>\n          <div style={{ maxWidth: `300px`, marginBottom: `1.45rem` }}>\n            <Image />\n          </div>\n<Link to=\"/page-2/\">\nGo to page 2\n</Link>\n        </Layout>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "Go to page 2"
+          },
+          "message": "`Go to page 2` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "\n<Layout>\n  <div style={{ maxWidth: `300px`, marginBottom: `1.45rem` }}><Image /></div>{'Bar'}\n  <Link to=\"/page-2/\">Go to page 2</Link>\n</Layout>\n      ",
+      "output": "\n<Layout>\n  <div style={{ maxWidth: `300px`, marginBottom: `1.45rem` }}>\n<Image />\n</div>\n{'Bar'}\n  <Link to=\"/page-2/\">Go to page 2</Link>\n</Layout>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "Image"
+          },
+          "message": "`Image` must be placed on a new line"
+        },
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "{'Bar'}"
+          },
+          "message": "`{'Bar'}` must be placed on a new line"
+        }
+      ],
+      "options": [
+        {
+          "allow": "non-jsx"
+        }
+      ]
+    },
+    {
+      "code": "\n<Layout>\n  <div style={{ maxWidth: `300px`, marginBottom: `1.45rem` }}><Image /></div>{'Bar'}\n  <Link to=\"/page-2/\">Go to page 2</Link>\n</Layout>\n      ",
+      "output": "\n<Layout>\n  <div style={{ maxWidth: `300px`, marginBottom: `1.45rem` }}><Image /></div>\n{'Bar'}\n  <Link to=\"/page-2/\">Go to page 2</Link>\n</Layout>\n      ",
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "{'Bar'}"
+          },
+          "message": "`{'Bar'}` must be placed on a new line"
+        }
+      ],
+      "options": [
+        {
+          "allow": "single-line"
+        }
+      ]
+    },
+    {
+      "code": "<div><span>foo</span>\n</div>",
+      "output": "<div>\n<span>foo</span>\n</div>",
+      "options": [
+        {
+          "allow": "single-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "moveToNewLine",
+          "data": {
+            "descriptor": "span"
+          },
+          "message": "`span` must be placed on a new line"
+        }
+      ]
+    },
+    {
+      "code": "<App\n  foo\n>Up to {percent}% Off\n</App>",
+      "output": "<App\n  foo\n>\nUp to {percent}% Off\n</App>",
+      "options": [
+        {
+          "allow": "single-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "moveToNewLine"
+        }
+      ]
+    },
+    {
+      "code": "<App\n  foo\n>\n  Up to {percent}% Off</App>",
+      "output": "<App\n  foo\n>\n  Up to {percent}% Off\n</App>",
+      "options": [
+        {
+          "allow": "single-line"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "moveToNewLine"
+        }
+      ]
+    }
+  ]
+}

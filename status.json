@@ -14911,19 +14911,19 @@
       },
       {
         "name": "jsx-one-expression-per-line",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule jsx-one-expression-per-line."
+        "notes": "Native Rust/Oxc AST port of stable @stylistic/jsx-one-expression-per-line v5.10.0. The deterministic pinned fixture captures all 47 valid and 69 invalid authored upstream cases (84 diagnostics and 69 one-pass fixed outputs), replayed in JSX and TSX. Additional Rust and Vitest coverage verifies exact messages, descriptor data, UTF-8/UTF-16 ranges, whitespace-preserving fixes, report ordering, fragments, nested JSX, every allow mode, invalid options, Unicode, CRLF and all ECMAScript line terminators, parse failures, shared settings, and real Oxlint TSX lint/fix integration."
       },
       {
         "name": "jsx-pascal-case",

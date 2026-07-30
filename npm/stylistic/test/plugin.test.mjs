@@ -115,6 +115,7 @@ const stylisticRuleFixtures = [
   ['lines-around-comment', 'before();\n/** docs */\nafter();\n', [], ['before']],
   ['jsx-child-element-spacing', '<App>word\n<a>link</a></App>;\n', [], ['spacingBeforeNext']],
   ['jsx-newline', '<App><First />\n<Second /></App>;\n', [], ['require']],
+  ['jsx-one-expression-per-line', '<App><Foo /></App>;\n', [], ['moveToNewLine']],
   ['jsx-max-props-per-line', '<App one two three />;\n', [{ maximum: 1 }], ['newLine']],
   [
     'jsx-curly-spacing',
@@ -2220,6 +2221,119 @@ const parenthesized = (a + b) * c;
       });
       expect(fixResult.status).toBe(1);
       expect(readFileSync(sourcePath, 'utf8')).toBe(source);
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('maps jsx-one-expression-per-line Unicode ranges, fixes, options, and shared settings', () => {
+    const source = "const marker = '😀'; const view = <App>日本語<Foo />後</App>;";
+    const textStart = source.indexOf('日本語');
+    const elementStart = source.indexOf('<Foo />');
+    const tailStart = source.indexOf('後');
+    const reports = runRule('jsx-one-expression-per-line', source);
+
+    expect(
+      reports.map((report) => ({
+        messageId: report.messageId,
+        data: report.data,
+        range: report.node.range,
+        fix: reportFix(report),
+      })),
+    ).toEqual([
+      {
+        messageId: 'moveToNewLine',
+        data: { descriptor: '日本語' },
+        range: [textStart, elementStart],
+        fix: { range: [textStart, elementStart], replacementText: '\n日本語' },
+      },
+      {
+        messageId: 'moveToNewLine',
+        data: { descriptor: 'Foo' },
+        range: [elementStart, elementStart + '<Foo />'.length],
+        fix: {
+          range: [elementStart, elementStart + '<Foo />'.length],
+          replacementText: '\n<Foo />',
+        },
+      },
+      {
+        messageId: 'moveToNewLine',
+        data: { descriptor: '後' },
+        range: [tailStart, tailStart + 1],
+        fix: { range: [tailStart, tailStart + 1], replacementText: '\n後\n' },
+      },
+    ]);
+
+    expect(
+      runRule('jsx-one-expression-per-line', '<App>text<Foo /></App>', [], {
+        corsaStylistic: {
+          rules: {
+            'jsx-one-expression-per-line': [{ allow: 'single-line' }],
+          },
+        },
+      }),
+    ).toEqual([]);
+    expect(
+      messageIds(runRule('jsx-one-expression-per-line', '<App>text</App>', [{ allow: 'invalid' }])),
+    ).toEqual(['moveToNewLine']);
+  });
+
+  it('runs jsx-one-expression-per-line through real oxlint TSX lint and fixes', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-jsx-one-expression-per-line-'));
+
+    try {
+      const sourcePath = join(temp, 'sample.tsx');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+      const source = [
+        'export const label = "日本語";',
+        'export const view = <App>',
+        '  日本語',
+        '  <Foo/><Bar/>',
+        '</App>;',
+        '',
+      ].join('\n');
+      writeFileSync(sourcePath, source);
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [{ name: 'stylistic', specifier: join(packageRoot, 'index.js') }],
+          rules: {
+            'stylistic/jsx-one-expression-per-line': 'error',
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', sourcePath],
+        { encoding: 'utf8' },
+      );
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      expect(JSON.parse(result.stdout).diagnostics).toMatchObject([
+        {
+          code: 'stylistic(jsx-one-expression-per-line)',
+          message: '`Bar` must be placed on a new line',
+          labels: [
+            {
+              span: {
+                offset: Buffer.byteLength(source.slice(0, source.indexOf('<Bar/>'))),
+                length: '<Bar/>'.length,
+              },
+            },
+          ],
+        },
+      ]);
+
+      const fixed = spawnSync(oxlint, ['-c', configPath, '--fix-suggestions', sourcePath], {
+        encoding: 'utf8',
+      });
+      expect(fixed.status).toBe(0);
+      expect(fixed.stderr).toBe('');
+      expect(readFileSync(sourcePath, 'utf8')).toBe(
+        source.replace('<Foo/><Bar/>', '<Foo/>\n<Bar/>'),
+      );
     } finally {
       rmSync(temp, { recursive: true, force: true });
     }
