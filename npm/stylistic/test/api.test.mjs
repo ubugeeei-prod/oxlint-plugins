@@ -30,6 +30,9 @@ describe('stylistic native API', () => {
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'jsx-function-call-newline',
     );
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
+      'jsx-props-no-multi-spaces',
+    );
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('jsx-quotes');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'jsx-child-element-spacing',
@@ -132,6 +135,46 @@ describe('stylistic native API', () => {
       'exceed',
       'missingPadBlock',
       'missingPadBlock',
+    ]);
+  });
+
+  it('runs jsx-props-no-multi-spaces with exact native byte ranges and mixed fixability', () => {
+    const source = 'const 日本語 = <App<T>  foo="🦀"\n\nbar />;';
+    const diagnostics = runNativeStylisticLint(source, {
+      filename: 'fixture.tsx',
+      rules: [{ name: 'jsx-props-no-multi-spaces', options: [{ ignored: true }] }],
+    });
+    const fooStart = Buffer.byteLength(source.slice(0, source.indexOf('foo=')));
+    const fooEnd = Buffer.byteLength(source.slice(0, source.indexOf('foo=') + 'foo="🦀"'.length));
+    const genericEnd = Buffer.byteLength(source.slice(0, source.indexOf('>  foo') + 1));
+    const barStart = Buffer.byteLength(source.slice(0, source.indexOf('bar')));
+
+    expect(diagnostics).toMatchObject([
+      {
+        ruleName: 'jsx-props-no-multi-spaces',
+        messageId: 'onlyOneSpace',
+        message: 'Expected only one space between “App” and “foo”',
+        data: { prop1: 'App', prop2: 'foo' },
+        range: { start: fooStart, end: fooEnd },
+        suggestions: [
+          {
+            messageId: 'onlyOneSpace',
+            fixes: [
+              {
+                range: { start: genericEnd, end: fooStart },
+                replacementText: ' ',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        ruleName: 'jsx-props-no-multi-spaces',
+        messageId: 'noLineGap',
+        message: 'Expected no line gap between “foo” and “bar”',
+        data: { prop1: 'foo', prop2: 'bar' },
+        range: { start: barStart, end: barStart + 3 },
+      },
     ]);
   });
 

@@ -59,6 +59,7 @@ function createStylisticRule(ruleName) {
               'jsx-first-prop-new-line',
               'jsx-max-props-per-line',
               'jsx-newline',
+              'jsx-props-no-multi-spaces',
               'jsx-quotes',
               'no-confusing-arrow',
               'no-extra-parens',
@@ -71,6 +72,22 @@ function createStylisticRule(ruleName) {
       hasSuggestions: meta.hasSuggestions,
       messages: meta.messages,
       schema: { type: 'array' },
+      ...(ruleName === 'jsx-props-no-multi-spaces'
+        ? {
+            deprecated: {
+              message: 'The rule was replaced with a more general rule.',
+              deprecatedSince: '5.0.0',
+              replacedBy: [
+                {
+                  rule: {
+                    name: 'no-multi-spaces',
+                    url: 'https://eslint.style/rules/no-multi-spaces',
+                  },
+                },
+              ],
+            },
+          }
+        : {}),
     },
     createOnce(context) {
       return {

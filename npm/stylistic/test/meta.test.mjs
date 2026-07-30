@@ -50,6 +50,7 @@ describe('stylistic plugin meta contract', () => {
           'jsx-first-prop-new-line',
           'jsx-max-props-per-line',
           'jsx-newline',
+          'jsx-props-no-multi-spaces',
           'jsx-quotes',
           'no-confusing-arrow',
           'no-extra-parens',
@@ -261,6 +262,37 @@ describe('stylistic plugin meta contract', () => {
         moveToNewLine: '`{{descriptor}}` must be placed on a new line',
       },
       schema: { type: 'array' },
+    });
+  });
+
+  it('preserves the deprecated jsx-props-no-multi-spaces metadata contract', () => {
+    expect(plugin.rules['jsx-props-no-multi-spaces'].meta).toMatchObject({
+      type: 'layout',
+      docs: {
+        description:
+          'Disallow multiple spaces between inline JSX props. Deprecated, use `no-multi-spaces` rule instead.',
+        recommended: false,
+        requiresTypeChecking: false,
+      },
+      fixable: 'code',
+      hasSuggestions: true,
+      messages: {
+        noLineGap: 'Expected no line gap between “{{prop1}}” and “{{prop2}}”',
+        onlyOneSpace: 'Expected only one space between “{{prop1}}” and “{{prop2}}”',
+      },
+      schema: { type: 'array' },
+      deprecated: {
+        message: 'The rule was replaced with a more general rule.',
+        deprecatedSince: '5.0.0',
+        replacedBy: [
+          {
+            rule: {
+              name: 'no-multi-spaces',
+              url: 'https://eslint.style/rules/no-multi-spaces',
+            },
+          },
+        ],
+      },
     });
   });
 

@@ -65,6 +65,12 @@ raw replacement boundaries.
 prevented newlines between adjacent elements and expressions, including the
 `allowMultilines` option and comment-preserving fixes.
 
+`jsx-props-no-multi-spaces` preserves the stable v5.10.0 deprecated rule for
+existing configurations. It rejects blank lines between consecutive JSX props
+and fixes inline gaps to one space across JSX names, TypeScript generics,
+namespaced attributes, and spread props. New configurations should use the
+more general `no-multi-spaces` rule.
+
 ## JS API
 
 ```js
@@ -86,6 +92,7 @@ bindings.
 Most rule scanning logic is derived from `corsa-oxlint/stylistic` in
 [`ubugeeei-prod/corsa-bind`](https://github.com/ubugeeei-prod/corsa-bind)
 v0.43.0 (MIT). Additional stable ports, including `jsx-first-prop-new-line`,
-`jsx-newline`, `jsx-quotes`, `jsx-curly-newline`, and `semi`, follow
+`jsx-newline`, `jsx-quotes`, `jsx-curly-newline`, `jsx-props-no-multi-spaces`,
+and `semi`, follow
 [`@stylistic/eslint-plugin`](https://github.com/eslint-stylistic/eslint-stylistic)
 v5.10.0 (MIT).
