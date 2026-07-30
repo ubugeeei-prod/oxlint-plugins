@@ -107,6 +107,7 @@
     "port:tests:stylistic:wrap-iife": "node tools/tasks/sync-stylistic-wrap-iife-tests.ts",
     "port:tests:unocss": "node tools/tasks/sync-unocss-tests.ts",
     "profile": "node tools/tasks/profile.ts",
+    "profile:native-sizes": "node tools/tasks/profile-native-package-sizes.ts",
     "release": "node tools/tasks/release.ts",
     "security:audit": "node tools/tasks/security-audit.ts",
     "status:check": "node tools/tasks/verify-status.ts",

@@ -15,6 +15,24 @@ Required layers for every real plugin or rule port:
 
 The CI contract is `pnpm run verify`. Keep workflow YAML thin: setup the runner, install with `vp install --frozen-lockfile`, then run the workspace verification script. This prevents local, PR, and release checks from drifting.
 
+## Native package size signal
+
+Strategy A remains the distribution shape: every native plugin is independently
+installable and ships its own `.node` addon. `pnpm run profile:native-sizes`
+measures that shape after `vp build` without changing it.
+
+The benchmark and release workflows retain both
+`native-package-sizes.json` and `native-package-sizes.md` as artifacts. They
+record each package's raw and gzip-compressed `.node` bytes, npm tarball and
+unpacked bytes, plus the aggregate cost of installing every current native
+package on the measured platform. The JSON also records the source revision,
+runtime/toolchain, platform, compression level, and packaging command so results
+can be compared only when their environments are compatible.
+
+This signal intentionally has no size threshold. Use it to gather evidence
+before changing the distribution strategy; a size change alone does not fail CI
+or imply that a shared native core should be merged.
+
 Performance-sensitive rules should include tests that prove file-level skipping works. Prefer a Rust pre-scan or batched Rust result over one NAPI call per AST node.
 
 Do not use `std::collections::HashMap` or `std::collections::HashSet` in rule crates. Use `oxlint_plugins_carton::FastHashMap` or `FastHashSet` when a map is actually necessary.
