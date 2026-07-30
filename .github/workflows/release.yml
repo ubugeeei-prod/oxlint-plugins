@@ -44,6 +44,18 @@ jobs:
       - run: vp install --frozen-lockfile
       - run: node tools/tasks/verify-release-tag.ts
       - run: pnpm run verify
+      - name: Profile native package sizes
+        run: pnpm run profile:native-sizes
+        env:
+          NATIVE_SIZE_SOURCE_REVISION: ${{ github.sha }}
+      - name: Add native package sizes to job summary
+        run: cat profiles/native-package-sizes/native-package-sizes.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload native package size profile
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-package-size-profile
+          path: profiles/native-package-sizes/
+          if-no-files-found: error
 
   publish:
     name: Publish to npm
