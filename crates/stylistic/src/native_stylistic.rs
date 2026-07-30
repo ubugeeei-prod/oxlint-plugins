@@ -32,6 +32,7 @@ mod jsx_props_no_multi_spaces;
 mod jsx_quotes;
 mod jsx_rules;
 mod jsx_self_closing_comp;
+mod jsx_sort_props;
 mod jsx_tag_spacing;
 mod jsx_wrap_multilines;
 mod lexer;
@@ -690,6 +691,41 @@ const JSX_CHILD_ELEMENT_SPACING_MESSAGES: &[(&str, &str)] = &[
 ];
 const JSX_FUNCTION_CALL_NEWLINE_MESSAGES: &[(&str, &str)] =
     &[("missingLineBreak", "Missing line break around JSX")];
+const JSX_SORT_PROPS_MESSAGES: &[(&str, &str)] = &[
+    (
+        "listIsEmpty",
+        "A customized reserved first list must not be empty",
+    ),
+    (
+        "listReservedPropsFirst",
+        "Reserved props must be listed before all other props",
+    ),
+    (
+        "listReservedPropsLast",
+        "Reserved props must be listed after all other props",
+    ),
+    (
+        "listCallbacksLast",
+        "Callbacks must be listed after all other props",
+    ),
+    (
+        "listShorthandFirst",
+        "Shorthand props must be listed before all other props",
+    ),
+    (
+        "listShorthandLast",
+        "Shorthand props must be listed after all other props",
+    ),
+    (
+        "listMultilineFirst",
+        "Multiline props must be listed before all other props",
+    ),
+    (
+        "listMultilineLast",
+        "Multiline props must be listed after all other props",
+    ),
+    ("sortPropsByAlpha", "Props should be sorted alphabetically"),
+];
 const JSX_MAX_PROPS_PER_LINE_MESSAGES: &[(&str, &str)] =
     &[("newLine", "Prop `{{prop}}` must be placed on a new line")];
 const JSX_NEWLINE_MESSAGES: &[(&str, &str)] = &[
@@ -1314,6 +1350,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         messages: JSX_FUNCTION_CALL_NEWLINE_MESSAGES,
     },
     StylisticRuleDefinition {
+        name: "jsx-sort-props",
+        docs_description: "Enforce props alphabetical sorting",
+        messages: JSX_SORT_PROPS_MESSAGES,
+    },
+    StylisticRuleDefinition {
         name: "jsx-max-props-per-line",
         docs_description: "Enforce maximum of props on a single line in JSX",
         messages: JSX_MAX_PROPS_PER_LINE_MESSAGES,
@@ -1588,6 +1629,12 @@ pub fn run_stylistic_lint(
                     &mut diagnostics,
                 )
             }
+            "jsx-sort-props" => jsx_sort_props::check_jsx_sort_props(
+                source_text,
+                config.filename.as_deref(),
+                &rule.options,
+                &mut diagnostics,
+            ),
             "jsx-max-props-per-line" => jsx_max_props_per_line::check_jsx_max_props_per_line(
                 source_text,
                 config.filename.as_deref(),

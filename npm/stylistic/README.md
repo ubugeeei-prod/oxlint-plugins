@@ -71,6 +71,12 @@ and fixes inline gaps to one space across JSX names, TypeScript generics,
 namespaced attributes, and spread props. New configurations should use the
 more general `no-multi-spaces` rule.
 
+`jsx-sort-props` follows the complete stable v5.10.0 comparison precedence:
+callbacks, shorthand and multiline placement, custom reserved-first and
+reserved-last lists, case and locale handling, plus alphabetical order. Spread
+attributes remain ordering barriers, while attached JSX comments move with the
+same attribute blocks as upstream.
+
 ## JS API
 
 ```js
@@ -93,6 +99,7 @@ Most rule scanning logic is derived from `corsa-oxlint/stylistic` in
 [`ubugeeei-prod/corsa-bind`](https://github.com/ubugeeei-prod/corsa-bind)
 v0.43.0 (MIT). Additional stable ports, including `jsx-first-prop-new-line`,
 `jsx-newline`, `jsx-pascal-case`, `jsx-quotes`, `jsx-curly-newline`,
-`jsx-props-no-multi-spaces`, `jsx-wrap-multilines`, and `semi`, follow
+`jsx-props-no-multi-spaces`, `jsx-sort-props`, `jsx-wrap-multilines`, and
+`semi`, follow
 [`@stylistic/eslint-plugin`](https://github.com/eslint-stylistic/eslint-stylistic)
 v5.10.0 (MIT).

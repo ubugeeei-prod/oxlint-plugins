@@ -53,6 +53,7 @@ describe('stylistic plugin meta contract', () => {
           'jsx-props-no-multi-spaces',
           'jsx-quotes',
           'jsx-self-closing-comp',
+          'jsx-sort-props',
           'jsx-wrap-multilines',
           'no-confusing-arrow',
           'no-extra-parens',
@@ -538,6 +539,31 @@ describe('stylistic plugin meta contract', () => {
       hasSuggestions: true,
       messages: {
         missingLineBreak: 'Missing line break around JSX',
+      },
+      schema: { type: 'array' },
+    });
+  });
+
+  it('preserves the complete jsx-sort-props metadata contract', () => {
+    expect(plugin.rules['jsx-sort-props'].meta).toMatchObject({
+      type: 'layout',
+      docs: {
+        description: 'Enforce props alphabetical sorting',
+        recommended: false,
+        requiresTypeChecking: false,
+      },
+      fixable: 'code',
+      hasSuggestions: true,
+      messages: {
+        listIsEmpty: 'A customized reserved first list must not be empty',
+        listReservedPropsFirst: 'Reserved props must be listed before all other props',
+        listReservedPropsLast: 'Reserved props must be listed after all other props',
+        listCallbacksLast: 'Callbacks must be listed after all other props',
+        listShorthandFirst: 'Shorthand props must be listed before all other props',
+        listShorthandLast: 'Shorthand props must be listed after all other props',
+        listMultilineFirst: 'Multiline props must be listed before all other props',
+        listMultilineLast: 'Multiline props must be listed after all other props',
+        sortPropsByAlpha: 'Props should be sorted alphabetically',
       },
       schema: { type: 'array' },
     });

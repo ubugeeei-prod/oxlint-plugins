@@ -33,6 +33,7 @@ describe('stylistic native API', () => {
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'jsx-props-no-multi-spaces',
     );
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('jsx-sort-props');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('jsx-quotes');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'jsx-child-element-spacing',
@@ -1703,6 +1704,62 @@ describe('stylistic native API', () => {
               {
                 range: { start, end },
                 replacementText: `\n${jsx}\n`,
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+  });
+
+  it('runs jsx-sort-props with exact UTF-8 byte ranges and one complete fix', () => {
+    const source = 'const marker = "😀";\r\n<外側 ζeta value alpha />;';
+    const byteOffset = (text) => Buffer.byteLength(source.slice(0, source.indexOf(text)));
+    const fixStart = byteOffset('ζeta');
+    const fixEnd = byteOffset('alpha') + Buffer.byteLength('alpha');
+    const diagnostics = runNativeStylisticLint(source, {
+      filename: 'fixture.tsx',
+      rules: [{ name: 'jsx-sort-props', options: [] }],
+    });
+
+    expect(diagnostics).toEqual([
+      {
+        ruleName: 'jsx-sort-props',
+        messageId: 'sortPropsByAlpha',
+        message: 'Props should be sorted alphabetically',
+        range: {
+          start: byteOffset('value'),
+          end: byteOffset('value') + Buffer.byteLength('value'),
+        },
+        suggestions: [
+          {
+            messageId: 'sortPropsByAlpha',
+            message: 'Props should be sorted alphabetically',
+            fixes: [
+              {
+                range: { start: fixStart, end: fixEnd },
+                replacementText: 'alpha value ζeta',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        ruleName: 'jsx-sort-props',
+        messageId: 'sortPropsByAlpha',
+        message: 'Props should be sorted alphabetically',
+        range: {
+          start: byteOffset('alpha'),
+          end: byteOffset('alpha') + Buffer.byteLength('alpha'),
+        },
+        suggestions: [
+          {
+            messageId: 'sortPropsByAlpha',
+            message: 'Props should be sorted alphabetically',
+            fixes: [
+              {
+                range: { start: fixStart, end: fixEnd },
+                replacementText: 'alpha value ζeta',
               },
             ],
           },

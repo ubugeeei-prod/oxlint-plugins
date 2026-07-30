@@ -14991,19 +14991,19 @@
       },
       {
         "name": "jsx-sort-props",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule jsx-sort-props."
+        "notes": "Native Rust/Oxc JSX AST port of stable @stylistic/eslint-plugin v5.10.0 jsx-sort-props. The deterministic pinned fixture replays all 43 valid and 54 invalid authored cases across 193 Oxc JSX/TSX parser-expanded cases with 120 authored and 239 expanded exact diagnostics, UTF-8/UTF-16 ranges, first-pass fixes, and recursive output. Exhaustive Rust and Vitest coverage includes callback/shorthand/multiline/reserved-first/reserved-last/locale precedence, DOM-only reserved behavior, spreads, comment-attached blocks, namespaced and member names, TypeScript generics, Unicode, CRLF/CR/LF/LS/PS, malformed options, shared settings, native API/meta/plugin surfaces, and real Oxlint lint/fix integration."
       },
       {
         "name": "jsx-tag-spacing",
