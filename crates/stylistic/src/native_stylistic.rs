@@ -22,6 +22,7 @@ mod jsx_closing_bracket_location;
 mod jsx_closing_tag_location;
 mod jsx_curly_newline;
 mod jsx_curly_spacing;
+mod jsx_first_prop_new_line;
 mod jsx_quotes;
 mod jsx_rules;
 mod lexer;
@@ -653,6 +654,13 @@ const JSX_CURLY_SPACING_MESSAGES: &[(&str, &str)] = &[
         "A space is required before '{{token}}'",
     ),
 ];
+const JSX_FIRST_PROP_NEW_LINE_MESSAGES: &[(&str, &str)] = &[
+    ("propOnNewLine", "Property should be placed on a new line"),
+    (
+        "propOnSameLine",
+        "Property should be placed on the same line as the component declaration",
+    ),
+];
 const LINE_COMMENT_POSITION_MESSAGES: &[(&str, &str)] = &[
     ("above", "Expected comment to be above code."),
     ("beside", "Expected comment to be beside code."),
@@ -1182,6 +1190,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         messages: JSX_CURLY_SPACING_MESSAGES,
     },
     StylisticRuleDefinition {
+        name: "jsx-first-prop-new-line",
+        docs_description: "Enforce proper position of the first property in JSX",
+        messages: JSX_FIRST_PROP_NEW_LINE_MESSAGES,
+    },
+    StylisticRuleDefinition {
         name: "jsx-quotes",
         docs_description: "Enforce the consistent use of either double or single quotes in JSX attributes.",
         messages: JSX_QUOTES_MESSAGES,
@@ -1407,6 +1420,12 @@ pub fn run_stylistic_lint(
                 &mut diagnostics,
             ),
             "jsx-curly-spacing" => jsx_curly_spacing::check_jsx_curly_spacing(
+                source_text,
+                config.filename.as_deref(),
+                &rule.options,
+                &mut diagnostics,
+            ),
+            "jsx-first-prop-new-line" => jsx_first_prop_new_line::check_jsx_first_prop_new_line(
                 source_text,
                 config.filename.as_deref(),
                 &rule.options,

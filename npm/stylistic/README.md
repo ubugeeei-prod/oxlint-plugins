@@ -56,6 +56,11 @@ supports `consistent`, `never`, and the complete `singleline`/`multiline`
 object policy, with comment-safe whitespace fixes and exact UTF-16 locations
 through the JavaScript plugin.
 
+`jsx-first-prop-new-line` follows the stable `@stylistic/eslint-plugin` v5.10.0
+`always`, `never`, `multiline`, `multiline-multiprop`, and `multiprop` modes.
+Its fixes preserve TypeScript generic component arguments and match upstream's
+raw replacement boundaries.
+
 ## JS API
 
 ```js
@@ -76,7 +81,7 @@ bindings.
 
 Most rule scanning logic is derived from `corsa-oxlint/stylistic` in
 [`ubugeeei-prod/corsa-bind`](https://github.com/ubugeeei-prod/corsa-bind)
-v0.43.0 (MIT). Additional stable ports, including `jsx-quotes`, `jsx-curly-newline`,
-and `semi`, follow
+v0.43.0 (MIT). Additional stable ports, including `jsx-first-prop-new-line`,
+`jsx-quotes`, `jsx-curly-newline`, and `semi`, follow
 [`@stylistic/eslint-plugin`](https://github.com/eslint-stylistic/eslint-stylistic)
 v5.10.0 (MIT).

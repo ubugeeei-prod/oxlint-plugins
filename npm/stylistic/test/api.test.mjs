@@ -24,6 +24,9 @@ describe('stylistic native API', () => {
     );
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('jsx-curly-newline');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('jsx-curly-spacing');
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
+      'jsx-first-prop-new-line',
+    );
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('jsx-quotes');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'jsx-child-element-spacing',
@@ -1449,6 +1452,65 @@ describe('stylistic native API', () => {
               {
                 range: { start: childClose - 1, end: childClose },
                 replacementText: '',
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+  });
+
+  it('runs jsx-first-prop-new-line with exact UTF-8 attribute ranges and fixes', () => {
+    const source = [
+      'const 日本語 = <UI.Root first="one" second />;',
+      'const view = <svg:path',
+      'xml:lang="ja" />;',
+    ].join('\n');
+    const firstStart = Buffer.byteLength(source.slice(0, source.indexOf('first="one"')));
+    const firstEnd = firstStart + Buffer.byteLength('first="one"');
+    const memberNameEnd = Buffer.byteLength(source.slice(0, source.indexOf(' first="one"')));
+    const namespacedStart = Buffer.byteLength(source.slice(0, source.indexOf('xml:lang')));
+    const namespacedEnd = namespacedStart + Buffer.byteLength('xml:lang="ja"');
+    const namespacedNameEnd = Buffer.byteLength(
+      source.slice(0, source.indexOf('\nxml:lang', source.indexOf('<svg:path'))),
+    );
+    const diagnostics = runNativeStylisticLint(source, {
+      filename: 'fixture.tsx',
+      rules: [{ name: 'jsx-first-prop-new-line', options: ['multiprop'] }],
+    });
+
+    expect(diagnostics).toEqual([
+      {
+        ruleName: 'jsx-first-prop-new-line',
+        messageId: 'propOnNewLine',
+        message: 'Property should be placed on a new line',
+        range: { start: firstStart, end: firstEnd },
+        suggestions: [
+          {
+            messageId: 'propOnNewLine',
+            message: 'Property should be placed on a new line',
+            fixes: [
+              {
+                range: { start: memberNameEnd, end: firstStart },
+                replacementText: '\n',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        ruleName: 'jsx-first-prop-new-line',
+        messageId: 'propOnSameLine',
+        message: 'Property should be placed on the same line as the component declaration',
+        range: { start: namespacedStart, end: namespacedEnd },
+        suggestions: [
+          {
+            messageId: 'propOnSameLine',
+            message: 'Property should be placed on the same line as the component declaration',
+            fixes: [
+              {
+                range: { start: namespacedNameEnd, end: namespacedStart },
+                replacementText: ' ',
               },
             ],
           },

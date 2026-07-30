@@ -1,0 +1,747 @@
+{
+  "__generated": {
+    "source": "@stylistic/eslint-plugin",
+    "version": "5.10.0",
+    "sourceCommit": "efbb1bc0e5aaedc4695c44a03f46f4fcbbe58712",
+    "sourceFile": "packages/eslint-plugin/rules/jsx-first-prop-new-line/jsx-first-prop-new-line.test.ts",
+    "license": "MIT",
+    "eslintVersion": "10.0.0",
+    "parserVersions": {
+      "espree": "10.4.0",
+      "typescriptEslint": "8.56.0"
+    },
+    "tool": "tools/tasks/sync-stylistic-jsx-first-prop-new-line-tests.ts",
+    "inventory": {
+      "valid": 42,
+      "invalid": 17,
+      "diagnostics": 17,
+      "unfixableInvalid": 0,
+      "total": 59,
+      "fixableInvalid": 17
+    }
+  },
+  "valid": [
+    {
+      "code": "<Foo />\n// features: [], parser: default, , options: [\"never\"], ",
+      "options": ["never"],
+      "parser": "espree"
+    },
+    {
+      "code": "<Foo />\n// features: [], parser: @typescript-eslint/parser, , options: [\"never\"], ",
+      "options": ["never"],
+      "parser": "typescript"
+    },
+    {
+      "code": "<Foo prop=\"bar\" />\n// features: [], parser: default, , options: [\"never\"], ",
+      "options": ["never"],
+      "parser": "espree"
+    },
+    {
+      "code": "<Foo prop=\"bar\" />\n// features: [], parser: @typescript-eslint/parser, , options: [\"never\"], ",
+      "options": ["never"],
+      "parser": "typescript"
+    },
+    {
+      "code": "<Foo {...this.props} />\n// features: [], parser: default, , options: [\"never\"], ",
+      "options": ["never"],
+      "parser": "espree"
+    },
+    {
+      "code": "<Foo {...this.props} />\n// features: [], parser: @typescript-eslint/parser, , options: [\"never\"], ",
+      "options": ["never"],
+      "parser": "typescript"
+    },
+    {
+      "code": "<Foo a a a />\n// features: [], parser: default, , options: [\"never\"], ",
+      "options": ["never"],
+      "parser": "espree"
+    },
+    {
+      "code": "<Foo a a a />\n// features: [], parser: @typescript-eslint/parser, , options: [\"never\"], ",
+      "options": ["never"],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <Foo a\n          b\n        />\n      \n// features: [], parser: default, , options: [\"never\"], ",
+      "options": ["never"],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <Foo a\n          b\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"never\"], ",
+      "options": ["never"],
+      "parser": "typescript"
+    },
+    {
+      "code": "<Foo />\n// features: [], parser: default, , options: [\"multiline\"], ",
+      "options": ["multiline"],
+      "parser": "espree"
+    },
+    {
+      "code": "<Foo />\n// features: [], parser: @typescript-eslint/parser, , options: [\"multiline\"], ",
+      "options": ["multiline"],
+      "parser": "typescript"
+    },
+    {
+      "code": "<Foo prop=\"one\" />\n// features: [], parser: default, , options: [\"multiline\"], ",
+      "options": ["multiline"],
+      "parser": "espree"
+    },
+    {
+      "code": "<Foo prop=\"one\" />\n// features: [], parser: @typescript-eslint/parser, , options: [\"multiline\"], ",
+      "options": ["multiline"],
+      "parser": "typescript"
+    },
+    {
+      "code": "<Foo {...this.props} />\n// features: [], parser: default, , options: [\"multiline\"], ",
+      "options": ["multiline"],
+      "parser": "espree"
+    },
+    {
+      "code": "<Foo {...this.props} />\n// features: [], parser: @typescript-eslint/parser, , options: [\"multiline\"], ",
+      "options": ["multiline"],
+      "parser": "typescript"
+    },
+    {
+      "code": "<Foo a a a />\n// features: [], parser: default, , options: [\"multiline\"], ",
+      "options": ["multiline"],
+      "parser": "espree"
+    },
+    {
+      "code": "<Foo a a a />\n// features: [], parser: @typescript-eslint/parser, , options: [\"multiline\"], ",
+      "options": ["multiline"],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <Foo\n          propOne=\"one\"\n          propTwo=\"two\"\n        />\n      \n// features: [], parser: default, , options: [\"multiline\"], ",
+      "options": ["multiline"],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <Foo\n          propOne=\"one\"\n          propTwo=\"two\"\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"multiline\"], ",
+      "options": ["multiline"],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <Foo\n          {...this.props}\n          propTwo=\"two\"\n        />\n      \n// features: [], parser: default, , options: [\"multiline\"], ",
+      "options": ["multiline"],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <Foo\n          {...this.props}\n          propTwo=\"two\"\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"multiline\"], ",
+      "options": ["multiline"],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <Foo bar />\n      \n// features: [], parser: default, , options: [\"multiline-multiprop\"], ",
+      "options": ["multiline-multiprop"],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <Foo bar />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"multiline-multiprop\"], ",
+      "options": ["multiline-multiprop"],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <Foo bar baz />\n      \n// features: [], parser: default, , options: [\"multiline-multiprop\"], ",
+      "options": ["multiline-multiprop"],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <Foo bar baz />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"multiline-multiprop\"], ",
+      "options": ["multiline-multiprop"],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <Foo prop={{\n        }} />\n      \n// features: [], parser: default, , options: [\"multiline-multiprop\"], ",
+      "options": ["multiline-multiprop"],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <Foo prop={{\n        }} />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"multiline-multiprop\"], ",
+      "options": ["multiline-multiprop"],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <Foo\n          foo={{\n          }}\n          bar\n        />\n      \n// features: [], parser: default, , options: [\"multiline-multiprop\"], ",
+      "options": ["multiline-multiprop"],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <Foo\n          foo={{\n          }}\n          bar\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"multiline-multiprop\"], ",
+      "options": ["multiline-multiprop"],
+      "parser": "typescript"
+    },
+    {
+      "code": "<Foo />\n// features: [], parser: default, , options: [\"always\"], ",
+      "options": ["always"],
+      "parser": "espree"
+    },
+    {
+      "code": "<Foo />\n// features: [], parser: @typescript-eslint/parser, , options: [\"always\"], ",
+      "options": ["always"],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <Foo\n          propOne=\"one\"\n          propTwo=\"two\"\n        />\n      \n// features: [], parser: default, , options: [\"always\"], ",
+      "options": ["always"],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <Foo\n          propOne=\"one\"\n          propTwo=\"two\"\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"always\"], ",
+      "options": ["always"],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <Foo\n          {...this.props}\n          propTwo=\"two\"\n        />\n      \n// features: [], parser: default, , options: [\"always\"], ",
+      "options": ["always"],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <Foo\n          {...this.props}\n          propTwo=\"two\"\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"always\"], ",
+      "options": ["always"],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <Foo />\n      \n// features: [], parser: default, , options: [\"multiprop\"], ",
+      "options": ["multiprop"],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <Foo />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"multiprop\"], ",
+      "options": ["multiprop"],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <Foo bar />\n      \n// features: [], parser: default, , options: [\"multiprop\"], ",
+      "options": ["multiprop"],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <Foo bar />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"multiprop\"], ",
+      "options": ["multiprop"],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <Foo {...this.props} />\n      \n// features: [], parser: default, , options: [\"multiprop\"], ",
+      "options": ["multiprop"],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <Foo {...this.props} />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"multiprop\"], ",
+      "options": ["multiprop"],
+      "parser": "typescript"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "\n        <Foo propOne=\"one\" propTwo=\"two\" />\n      \n// features: [], parser: default, , options: [\"always\"], ",
+      "options": ["always"],
+      "parser": "espree",
+      "output": "\n        <Foo\npropOne=\"one\" propTwo=\"two\" />\n      \n// features: [], parser: default, , options: [\"always\"], ",
+      "recursiveOutput": "\n        <Foo\npropOne=\"one\" propTwo=\"two\" />\n      \n// features: [], parser: default, , options: [\"always\"], ",
+      "upstreamErrors": [
+        {
+          "messageId": "propOnNewLine"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "propOnNewLine",
+          "message": "Property should be placed on a new line",
+          "data": {},
+          "range": [14, 27],
+          "loc": {
+            "line": 2,
+            "column": 14,
+            "endLine": 2,
+            "endColumn": 27
+          },
+          "fix": {
+            "range": [13, 14],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <Foo propOne=\"one\" propTwo=\"two\" />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"always\"], ",
+      "options": ["always"],
+      "parser": "typescript",
+      "output": "\n        <Foo\npropOne=\"one\" propTwo=\"two\" />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"always\"], ",
+      "recursiveOutput": "\n        <Foo\npropOne=\"one\" propTwo=\"two\" />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"always\"], ",
+      "upstreamErrors": [
+        {
+          "messageId": "propOnNewLine"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "propOnNewLine",
+          "message": "Property should be placed on a new line",
+          "data": {},
+          "range": [14, 27],
+          "loc": {
+            "line": 2,
+            "column": 14,
+            "endLine": 2,
+            "endColumn": 27
+          },
+          "fix": {
+            "range": [13, 14],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <Foo propOne=\"one\"\n          propTwo=\"two\"\n        />\n      \n// features: [], parser: default, , options: [\"always\"], ",
+      "options": ["always"],
+      "parser": "espree",
+      "output": "\n        <Foo\npropOne=\"one\"\n          propTwo=\"two\"\n        />\n      \n// features: [], parser: default, , options: [\"always\"], ",
+      "recursiveOutput": "\n        <Foo\npropOne=\"one\"\n          propTwo=\"two\"\n        />\n      \n// features: [], parser: default, , options: [\"always\"], ",
+      "upstreamErrors": [
+        {
+          "messageId": "propOnNewLine"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "propOnNewLine",
+          "message": "Property should be placed on a new line",
+          "data": {},
+          "range": [14, 27],
+          "loc": {
+            "line": 2,
+            "column": 14,
+            "endLine": 2,
+            "endColumn": 27
+          },
+          "fix": {
+            "range": [13, 14],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <Foo propOne=\"one\"\n          propTwo=\"two\"\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"always\"], ",
+      "options": ["always"],
+      "parser": "typescript",
+      "output": "\n        <Foo\npropOne=\"one\"\n          propTwo=\"two\"\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"always\"], ",
+      "recursiveOutput": "\n        <Foo\npropOne=\"one\"\n          propTwo=\"two\"\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"always\"], ",
+      "upstreamErrors": [
+        {
+          "messageId": "propOnNewLine"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "propOnNewLine",
+          "message": "Property should be placed on a new line",
+          "data": {},
+          "range": [14, 27],
+          "loc": {
+            "line": 2,
+            "column": 14,
+            "endLine": 2,
+            "endColumn": 27
+          },
+          "fix": {
+            "range": [13, 14],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <Foo\n          propOne=\"one\"\n          propTwo=\"two\"\n        />\n      \n// features: [], parser: default, , options: [\"never\"], ",
+      "options": ["never"],
+      "parser": "espree",
+      "output": "\n        <Foo propOne=\"one\"\n          propTwo=\"two\"\n        />\n      \n// features: [], parser: default, , options: [\"never\"], ",
+      "recursiveOutput": "\n        <Foo propOne=\"one\"\n          propTwo=\"two\"\n        />\n      \n// features: [], parser: default, , options: [\"never\"], ",
+      "upstreamErrors": [
+        {
+          "messageId": "propOnSameLine"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "propOnSameLine",
+          "message": "Property should be placed on the same line as the component declaration",
+          "data": {},
+          "range": [24, 37],
+          "loc": {
+            "line": 3,
+            "column": 11,
+            "endLine": 3,
+            "endColumn": 24
+          },
+          "fix": {
+            "range": [13, 24],
+            "text": " "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <Foo\n          propOne=\"one\"\n          propTwo=\"two\"\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"never\"], ",
+      "options": ["never"],
+      "parser": "typescript",
+      "output": "\n        <Foo propOne=\"one\"\n          propTwo=\"two\"\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"never\"], ",
+      "recursiveOutput": "\n        <Foo propOne=\"one\"\n          propTwo=\"two\"\n        />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"never\"], ",
+      "upstreamErrors": [
+        {
+          "messageId": "propOnSameLine"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "propOnSameLine",
+          "message": "Property should be placed on the same line as the component declaration",
+          "data": {},
+          "range": [24, 37],
+          "loc": {
+            "line": 3,
+            "column": 11,
+            "endLine": 3,
+            "endColumn": 24
+          },
+          "fix": {
+            "range": [13, 24],
+            "text": " "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <Foo prop={{\n        }} />\n      \n// features: [], parser: default, , options: [\"multiline\"], ",
+      "options": ["multiline"],
+      "parser": "espree",
+      "output": "\n        <Foo\nprop={{\n        }} />\n      \n// features: [], parser: default, , options: [\"multiline\"], ",
+      "recursiveOutput": "\n        <Foo\nprop={{\n        }} />\n      \n// features: [], parser: default, , options: [\"multiline\"], ",
+      "upstreamErrors": [
+        {
+          "messageId": "propOnNewLine"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "propOnNewLine",
+          "message": "Property should be placed on a new line",
+          "data": {},
+          "range": [14, 32],
+          "loc": {
+            "line": 2,
+            "column": 14,
+            "endLine": 3,
+            "endColumn": 11
+          },
+          "fix": {
+            "range": [13, 14],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <Foo prop={{\n        }} />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"multiline\"], ",
+      "options": ["multiline"],
+      "parser": "typescript",
+      "output": "\n        <Foo\nprop={{\n        }} />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"multiline\"], ",
+      "recursiveOutput": "\n        <Foo\nprop={{\n        }} />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"multiline\"], ",
+      "upstreamErrors": [
+        {
+          "messageId": "propOnNewLine"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "propOnNewLine",
+          "message": "Property should be placed on a new line",
+          "data": {},
+          "range": [14, 32],
+          "loc": {
+            "line": 2,
+            "column": 14,
+            "endLine": 3,
+            "endColumn": 11
+          },
+          "fix": {
+            "range": [13, 14],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <Foo bar={{\n        }} baz />\n      \n// features: [], parser: default, , options: [\"multiline-multiprop\"], ",
+      "options": ["multiline-multiprop"],
+      "parser": "espree",
+      "output": "\n        <Foo\nbar={{\n        }} baz />\n      \n// features: [], parser: default, , options: [\"multiline-multiprop\"], ",
+      "recursiveOutput": "\n        <Foo\nbar={{\n        }} baz />\n      \n// features: [], parser: default, , options: [\"multiline-multiprop\"], ",
+      "upstreamErrors": [
+        {
+          "messageId": "propOnNewLine"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "propOnNewLine",
+          "message": "Property should be placed on a new line",
+          "data": {},
+          "range": [14, 31],
+          "loc": {
+            "line": 2,
+            "column": 14,
+            "endLine": 3,
+            "endColumn": 11
+          },
+          "fix": {
+            "range": [13, 14],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <Foo bar={{\n        }} baz />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"multiline-multiprop\"], ",
+      "options": ["multiline-multiprop"],
+      "parser": "typescript",
+      "output": "\n        <Foo\nbar={{\n        }} baz />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"multiline-multiprop\"], ",
+      "recursiveOutput": "\n        <Foo\nbar={{\n        }} baz />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"multiline-multiprop\"], ",
+      "upstreamErrors": [
+        {
+          "messageId": "propOnNewLine"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "propOnNewLine",
+          "message": "Property should be placed on a new line",
+          "data": {},
+          "range": [14, 31],
+          "loc": {
+            "line": 2,
+            "column": 14,
+            "endLine": 3,
+            "endColumn": 11
+          },
+          "fix": {
+            "range": [13, 14],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n      <Foo propOne=\"one\" propTwo=\"two\" />\n      \n// features: [], parser: default, , options: [\"multiprop\"], ",
+      "options": ["multiprop"],
+      "parser": "espree",
+      "output": "\n      <Foo\npropOne=\"one\" propTwo=\"two\" />\n      \n// features: [], parser: default, , options: [\"multiprop\"], ",
+      "recursiveOutput": "\n      <Foo\npropOne=\"one\" propTwo=\"two\" />\n      \n// features: [], parser: default, , options: [\"multiprop\"], ",
+      "upstreamErrors": [
+        {
+          "messageId": "propOnNewLine"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "propOnNewLine",
+          "message": "Property should be placed on a new line",
+          "data": {},
+          "range": [12, 25],
+          "loc": {
+            "line": 2,
+            "column": 12,
+            "endLine": 2,
+            "endColumn": 25
+          },
+          "fix": {
+            "range": [11, 12],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n      <Foo propOne=\"one\" propTwo=\"two\" />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"multiprop\"], ",
+      "options": ["multiprop"],
+      "parser": "typescript",
+      "output": "\n      <Foo\npropOne=\"one\" propTwo=\"two\" />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"multiprop\"], ",
+      "recursiveOutput": "\n      <Foo\npropOne=\"one\" propTwo=\"two\" />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"multiprop\"], ",
+      "upstreamErrors": [
+        {
+          "messageId": "propOnNewLine"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "propOnNewLine",
+          "message": "Property should be placed on a new line",
+          "data": {},
+          "range": [12, 25],
+          "loc": {
+            "line": 2,
+            "column": 12,
+            "endLine": 2,
+            "endColumn": 25
+          },
+          "fix": {
+            "range": [11, 12],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n      <Foo\nbar />\n      \n// features: [], parser: default, , options: [\"multiprop\"], ",
+      "options": ["multiprop"],
+      "parser": "espree",
+      "output": "\n      <Foo bar />\n      \n// features: [], parser: default, , options: [\"multiprop\"], ",
+      "recursiveOutput": "\n      <Foo bar />\n      \n// features: [], parser: default, , options: [\"multiprop\"], ",
+      "upstreamErrors": [
+        {
+          "messageId": "propOnSameLine"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "propOnSameLine",
+          "message": "Property should be placed on the same line as the component declaration",
+          "data": {},
+          "range": [12, 15],
+          "loc": {
+            "line": 3,
+            "column": 1,
+            "endLine": 3,
+            "endColumn": 4
+          },
+          "fix": {
+            "range": [11, 12],
+            "text": " "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n      <Foo\nbar />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"multiprop\"], ",
+      "options": ["multiprop"],
+      "parser": "typescript",
+      "output": "\n      <Foo bar />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"multiprop\"], ",
+      "recursiveOutput": "\n      <Foo bar />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"multiprop\"], ",
+      "upstreamErrors": [
+        {
+          "messageId": "propOnSameLine"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "propOnSameLine",
+          "message": "Property should be placed on the same line as the component declaration",
+          "data": {},
+          "range": [12, 15],
+          "loc": {
+            "line": 3,
+            "column": 1,
+            "endLine": 3,
+            "endColumn": 4
+          },
+          "fix": {
+            "range": [11, 12],
+            "text": " "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n      <Foo\n{...this.props} />\n      \n// features: [], parser: default, , options: [\"multiprop\"], ",
+      "options": ["multiprop"],
+      "parser": "espree",
+      "output": "\n      <Foo {...this.props} />\n      \n// features: [], parser: default, , options: [\"multiprop\"], ",
+      "recursiveOutput": "\n      <Foo {...this.props} />\n      \n// features: [], parser: default, , options: [\"multiprop\"], ",
+      "upstreamErrors": [
+        {
+          "messageId": "propOnSameLine"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "propOnSameLine",
+          "message": "Property should be placed on the same line as the component declaration",
+          "data": {},
+          "range": [12, 27],
+          "loc": {
+            "line": 3,
+            "column": 1,
+            "endLine": 3,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [11, 12],
+            "text": " "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n      <Foo\n{...this.props} />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"multiprop\"], ",
+      "options": ["multiprop"],
+      "parser": "typescript",
+      "output": "\n      <Foo {...this.props} />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"multiprop\"], ",
+      "recursiveOutput": "\n      <Foo {...this.props} />\n      \n// features: [], parser: @typescript-eslint/parser, , options: [\"multiprop\"], ",
+      "upstreamErrors": [
+        {
+          "messageId": "propOnSameLine"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "propOnSameLine",
+          "message": "Property should be placed on the same line as the component declaration",
+          "data": {},
+          "range": [12, 27],
+          "loc": {
+            "line": 3,
+            "column": 1,
+            "endLine": 3,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [11, 12],
+            "text": " "
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <DataTable<Items> fullscreen keyField=\"id\" items={items}\n          activeSortableColumn={sorting}\n          onSortClick={handleSortedClick}\n          rowActions={[\n          ]}\n        />\n      \n// features: [ts,no-babel-old], parser: @typescript-eslint/parser, , options: [\"multiline\"], ",
+      "options": ["multiline"],
+      "parser": "typescript",
+      "output": "\n        <DataTable<Items>\nfullscreen keyField=\"id\" items={items}\n          activeSortableColumn={sorting}\n          onSortClick={handleSortedClick}\n          rowActions={[\n          ]}\n        />\n      \n// features: [ts,no-babel-old], parser: @typescript-eslint/parser, , options: [\"multiline\"], ",
+      "recursiveOutput": "\n        <DataTable<Items>\nfullscreen keyField=\"id\" items={items}\n          activeSortableColumn={sorting}\n          onSortClick={handleSortedClick}\n          rowActions={[\n          ]}\n        />\n      \n// features: [ts,no-babel-old], parser: @typescript-eslint/parser, , options: [\"multiline\"], ",
+      "upstreamErrors": [
+        {
+          "messageId": "propOnNewLine"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "propOnNewLine",
+          "message": "Property should be placed on a new line",
+          "data": {},
+          "range": [27, 37],
+          "loc": {
+            "line": 2,
+            "column": 27,
+            "endLine": 2,
+            "endColumn": 37
+          },
+          "fix": {
+            "range": [26, 27],
+            "text": "\n"
+          }
+        }
+      ]
+    }
+  ]
+}
