@@ -4646,7 +4646,7 @@
       "id": "eslint-json",
       "npm": "@eslint/json",
       "repo": "https://github.com/eslint/json",
-      "baselineVersion": "2.0.0",
+      "baselineVersion": "2.0.1",
       "license": "Apache-2.0",
       "ruleCount": 6,
       "rules": [

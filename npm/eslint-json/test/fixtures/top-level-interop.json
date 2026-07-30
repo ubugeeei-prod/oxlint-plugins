@@ -1,7 +1,7 @@
 {
   "__generated": {
     "source": "@eslint/json",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "sourceFile": "tests/rules/top-level-interop.test.js",
     "license": "Apache-2.0",
     "tool": "tools/tasks/sync-eslint-json-tests.ts"
