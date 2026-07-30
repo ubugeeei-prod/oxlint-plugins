@@ -39,7 +39,7 @@ describe('stylistic plugin meta contract', () => {
     expect(rule.meta.docs.url).toMatch(/github\.com\/ubugeeei-prod\/oxlint-plugins/);
     expect(rule.meta.docs.recommended).toBe(false);
     expect(rule.meta.docs.requiresTypeChecking).toBe(false);
-    if (['no-mixed-operators', 'jsx-child-element-spacing'].includes(ruleName)) {
+    if (['no-mixed-operators', 'jsx-child-element-spacing', 'jsx-pascal-case'].includes(ruleName)) {
       expect(rule.meta.fixable).toBeUndefined();
       expect(rule.meta.hasSuggestions).toBe(false);
     } else {
@@ -486,6 +486,25 @@ describe('stylistic plugin meta contract', () => {
       },
       schema: { type: 'array' },
     });
+  });
+
+  it('preserves the stable jsx-pascal-case metadata contract', () => {
+    expect(plugin.rules['jsx-pascal-case'].meta).toMatchObject({
+      type: 'layout',
+      docs: {
+        description: 'Enforce PascalCase for user-defined JSX components',
+        recommended: false,
+        requiresTypeChecking: false,
+      },
+      hasSuggestions: false,
+      messages: {
+        usePascalCase: 'Imported JSX component {{name}} must be in PascalCase',
+        usePascalOrSnakeCase:
+          'Imported JSX component {{name}} must be in PascalCase or SCREAMING_SNAKE_CASE',
+      },
+      schema: { type: 'array' },
+    });
+    expect(plugin.rules['jsx-pascal-case'].meta.fixable).toBeUndefined();
   });
 
   it('preserves member-delimiter-style metadata from the stable upstream rule', () => {

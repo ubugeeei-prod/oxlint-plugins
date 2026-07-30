@@ -27,6 +27,7 @@ mod jsx_function_call_newline;
 mod jsx_max_props_per_line;
 mod jsx_newline;
 mod jsx_one_expression_per_line;
+mod jsx_pascal_case;
 mod jsx_props_no_multi_spaces;
 mod jsx_quotes;
 mod jsx_rules;
@@ -703,6 +704,16 @@ const JSX_ONE_EXPRESSION_PER_LINE_MESSAGES: &[(&str, &str)] = &[(
     "moveToNewLine",
     "`{{descriptor}}` must be placed on a new line",
 )];
+const JSX_PASCAL_CASE_MESSAGES: &[(&str, &str)] = &[
+    (
+        "usePascalCase",
+        "Imported JSX component {{name}} must be in PascalCase",
+    ),
+    (
+        "usePascalOrSnakeCase",
+        "Imported JSX component {{name}} must be in PascalCase or SCREAMING_SNAKE_CASE",
+    ),
+];
 const JSX_PROPS_NO_MULTI_SPACES_MESSAGES: &[(&str, &str)] = &[
     (
         "noLineGap",
@@ -1318,6 +1329,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         messages: JSX_ONE_EXPRESSION_PER_LINE_MESSAGES,
     },
     StylisticRuleDefinition {
+        name: "jsx-pascal-case",
+        docs_description: "Enforce PascalCase for user-defined JSX components",
+        messages: JSX_PASCAL_CASE_MESSAGES,
+    },
+    StylisticRuleDefinition {
         name: "jsx-props-no-multi-spaces",
         docs_description: "Disallow multiple spaces between inline JSX props. Deprecated, use `no-multi-spaces` rule instead.",
         messages: JSX_PROPS_NO_MULTI_SPACES_MESSAGES,
@@ -1442,7 +1458,7 @@ pub fn stylistic_rule_metas() -> Vec<RuleMeta> {
                 .collect::<BTreeMap<_, _>>(),
             has_suggestions: !matches!(
                 definition.name,
-                "no-mixed-operators" | "jsx-child-element-spacing"
+                "no-mixed-operators" | "jsx-child-element-spacing" | "jsx-pascal-case"
             ),
             listeners: PROGRAM_LISTENER
                 .iter()
@@ -1592,6 +1608,12 @@ pub fn run_stylistic_lint(
                     &mut diagnostics,
                 )
             }
+            "jsx-pascal-case" => jsx_pascal_case::check_jsx_pascal_case(
+                source_text,
+                config.filename.as_deref(),
+                &rule.options,
+                &mut diagnostics,
+            ),
             "jsx-props-no-multi-spaces" => {
                 jsx_props_no_multi_spaces::check_jsx_props_no_multi_spaces(
                     source_text,
