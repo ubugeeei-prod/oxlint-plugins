@@ -146,6 +146,68 @@ describe('perfectionist native API', () => {
     });
   });
 
+  it('returns exact export-declaration groups, CRLF locations, and UTF-16 fixes', () => {
+    const source = `'😀';\r\nexport { 世界 } from '世界';\r\nexport { api } from 'api';\r\n`;
+    const [diagnostic] = scanPerfectionistRule(source, 'fixture.ts', 'sort-exports', [
+      {
+        customGroups: [{ groupName: 'api', elementNamePattern: '^api$' }],
+        groups: ['api', 'unknown'],
+        locales: 'zh-CN',
+      },
+    ]);
+
+    expect(diagnostic).toEqual({
+      ruleName: 'sort-exports',
+      messageId: 'unexpectedExportsGroupOrder',
+      data: {
+        left: '世界',
+        right: 'api',
+        leftGroup: 'unknown',
+        rightGroup: 'api',
+      },
+      loc: {
+        startLine: 3,
+        startColumn: 0,
+        endLine: 3,
+        endColumn: 26,
+      },
+      fix: {
+        start: 7,
+        end: 59,
+        replacement: `export { api } from 'api';\r\nexport { 世界 } from '世界';`,
+      },
+    });
+  });
+
+  it('returns exact missing-comment data without unrelated placeholders', () => {
+    const [diagnostic] = scanPerfectionistRule(
+      `export type { value } from './types';`,
+      'fixture.ts',
+      'sort-exports',
+      [{ groups: [{ group: 'type-export', commentAbove: 'Types' }] }],
+    );
+
+    expect(diagnostic).toEqual({
+      ruleName: 'sort-exports',
+      messageId: 'missedCommentAboveExport',
+      data: {
+        right: './types',
+        missedCommentAbove: 'Types',
+      },
+      loc: {
+        startLine: 1,
+        startColumn: 0,
+        endLine: 1,
+        endColumn: 37,
+      },
+      fix: {
+        start: 0,
+        end: 0,
+        replacement: '// Types\n',
+      },
+    });
+  });
+
   it('returns exact group-order data and a comment-preserving fix', () => {
     const source = `import {
   // value docs
@@ -224,12 +286,37 @@ describe('perfectionist native API', () => {
     expect(
       scanPerfectionistRule('import { b, a } from "pkg";', 'fixture.ts', 'sort-named-exports', []),
     ).toEqual([]);
+    expect(
+      scanPerfectionistRule('export { b, a } from "pkg";', 'fixture.ts', 'sort-exports', []),
+    ).toEqual([]);
+    expect(
+      scanPerfectionistRule(
+        'export { z } from "z";\nexport { a } from "a";',
+        'fixture.ts',
+        'sort-named-exports',
+        [],
+      ),
+    ).toEqual([]);
   });
 
   it('fails closed for malformed named-export syntax', () => {
     expect(scanPerfectionistRule('export { b,', 'fixture.ts', 'sort-named-exports', [])).toEqual(
       [],
     );
+  });
+
+  it('fails closed for malformed export-declaration syntax and malformed options', () => {
+    expect(scanPerfectionistRule('export { a } from', 'fixture.ts', 'sort-exports', [])).toEqual(
+      [],
+    );
+    expect(
+      scanPerfectionistRule(
+        'export { b } from "b";\nexport { a } from "a";',
+        'fixture.ts',
+        'sort-exports',
+        [{ type: 'not-a-sort', groups: [null, false, 1] }],
+      ),
+    ).toHaveLength(1);
   });
 
   it('validates public API scalar arguments', () => {
