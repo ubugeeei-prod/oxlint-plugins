@@ -79,6 +79,210 @@ fn configured_import_declarations(
     scan_perfectionist_rule(source, "fixture.ts", "sort-imports", &options)
 }
 
+fn configured_array_includes(
+    source: &str,
+    options: serde_json::Value,
+) -> SmallVec<[RuleDiagnostic; 8]> {
+    scan_perfectionist_rule(source, "fixture.ts", "sort-array-includes", &options)
+}
+
+#[test]
+fn sorts_array_includes_with_exact_data_and_fix() {
+    let diagnostics = configured_array_includes("['b', 'a'].includes(value)", json!([]));
+
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "unexpectedArrayIncludesOrder");
+    assert_eq!(diagnostics[0].data.left, "b");
+    assert_eq!(diagnostics[0].data.right, "a");
+    assert_eq!(diagnostics[0].fix.start, 1);
+    assert_eq!(diagnostics[0].fix.end, 9);
+    assert_eq!(diagnostics[0].fix.replacement, "'a', 'b'");
+}
+
+#[test]
+fn sorts_array_constructor_arguments_only_for_includes_calls() {
+    let diagnostics = configured_array_includes(
+        "new Array('bb', 'a').includes(value)",
+        json!([{ "type": "line-length", "order": "asc" }]),
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].fix.replacement, "'a', 'bb'");
+
+    for source in [
+        "new NotAnArray('b', 'a').includes(value)",
+        "new Array[0]('b', 'a').includes(value)",
+        "['b', 'a'].includes",
+        "someFunction(['b', 'a'].includes)",
+        "['b', 'a']['includes'](value)",
+        "['b', 'a'].map(value)",
+    ] {
+        assert!(
+            configured_array_includes(source, json!([])).is_empty(),
+            "{source}"
+        );
+    }
+}
+
+#[test]
+fn treats_spreads_and_elisions_as_array_partition_boundaries() {
+    assert!(
+        configured_array_includes("['a', 'b', ...spread, 'c', 'd'].includes(value)", json!([]))
+            .is_empty()
+    );
+    assert!(
+        configured_array_includes("['a', 'b',, 'c', 'd'].includes(value)", json!([])).is_empty()
+    );
+
+    let diagnostics =
+        configured_array_includes("['b', 'a', ...spread, 'd', 'c'].includes(value)", json!([]));
+    assert_eq!(diagnostics.len(), 2);
+    assert_eq!(diagnostics[0].fix.replacement, "'a', 'b'");
+    assert_eq!(diagnostics[1].fix.replacement, "'c', 'd'");
+}
+
+#[test]
+fn applies_array_custom_groups_and_newline_policies() {
+    let diagnostics = configured_array_includes(
+        "['b',\n'a'].includes(value)",
+        json!([{
+            "customGroups": [{ "groupName": "a", "elementNamePattern": "^a$" }],
+            "groups": ["a", "literal"],
+            "newlinesBetween": 1
+        }]),
+    );
+
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(
+        diagnostics[0].message_id,
+        "unexpectedArrayIncludesGroupOrder"
+    );
+    assert_eq!(diagnostics[0].data.left_group.as_deref(), Some("literal"));
+    assert_eq!(diagnostics[0].data.right_group.as_deref(), Some("a"));
+
+    let spacing = configured_array_includes(
+        "['a',\n'b'].includes(value)",
+        json!([{
+            "customGroups": [{ "groupName": "a", "elementNamePattern": "^a$" }],
+            "groups": ["a", "literal"],
+            "newlinesBetween": 1
+        }]),
+    );
+    assert_eq!(spacing.len(), 1);
+    assert_eq!(
+        spacing[0].message_id,
+        "missedSpacingBetweenArrayIncludesMembers"
+    );
+}
+
+#[test]
+fn selects_first_matching_array_conditional_configuration() {
+    let diagnostics = configured_array_includes(
+        "[b, a].includes(value)",
+        json!([
+            {
+                "type": "unsorted",
+                "useConfigurationIf": {
+                    "matchesAstSelector": "ArrayExpression",
+                    "allNamesMatchPattern": "^[bc]$"
+                }
+            },
+            {
+                "type": "alphabetical",
+                "useConfigurationIf": { "matchesAstSelector": "* > ArrayExpression" }
+            },
+            { "type": "unsorted" }
+        ]),
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].fix.replacement, "a, b");
+
+    assert!(
+        configured_array_includes(
+            "[b, a].includes(value)",
+            json!([{
+                "type": "unsorted",
+                "useConfigurationIf": { "matchesAstSelector": "ArrayExpression" }
+            }])
+        )
+        .is_empty()
+    );
+}
+
+#[test]
+fn preserves_array_comments_and_partition_directives() {
+    let diagnostics = configured_array_includes(
+        "[\n  'b',\n  'a', // Comment after\n\n  'c'\n].includes(value)",
+        json!([{
+            "customGroups": [{ "groupName": "bc", "elementNamePattern": "b|c" }],
+            "groups": ["literal", "bc"],
+            "newlinesBetween": 1,
+            "newlinesInside": 0
+        }]),
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(
+        diagnostics[0].fix.replacement,
+        "'a', // Comment after\n  'b',"
+    );
+
+    assert!(
+        configured_array_includes(
+            "['b',\n// Part\n'a'].includes(value)",
+            json!([{ "partitionByComment": "^Part" }])
+        )
+        .is_empty()
+    );
+}
+
+#[test]
+fn keeps_disabled_array_elements_fixed_in_place() {
+    let diagnostics = configured_array_includes(
+        "[\n  'c',\n  'b',\n  // eslint-disable-next-line perfectionist/sort-array-includes\n  'a',\n].includes(value)",
+        json!([]),
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].data.left, "c");
+    assert_eq!(diagnostics[0].data.right, "b");
+    assert_eq!(diagnostics[0].fix.replacement, "'b',\n  'c'");
+}
+
+#[test]
+fn keeps_utf16_offsets_for_unicode_array_fixes() {
+    let source = "'😀';\r\n['世界', 'api'].includes(value);";
+    let diagnostics = configured_array_includes(
+        source,
+        json!([{
+            "customGroups": [{ "groupName": "api", "elementNamePattern": "^api$" }],
+            "groups": ["api", "unknown"],
+            "locales": "zh-CN"
+        }]),
+    );
+
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(
+        diagnostics[0].message_id,
+        "unexpectedArrayIncludesGroupOrder"
+    );
+    assert_eq!(diagnostics[0].fix.start, 8);
+    assert_eq!(diagnostics[0].fix.end, 19);
+    assert_eq!(diagnostics[0].fix.replacement, "'api', '世界'");
+}
+
+#[test]
+fn array_rule_isolated_and_malformed_sources_fail_closed() {
+    assert!(
+        scan_perfectionist_rule(
+            "['b', 'a'].includes(value)",
+            "fixture.ts",
+            "sort-named-imports",
+            &json!([])
+        )
+        .is_empty()
+    );
+    assert!(configured_array_includes("['b',", json!([])).is_empty());
+    assert!(configured_array_includes("['a', 'b'].includes(value)", json!("bad")).is_empty());
+}
+
 #[test]
 fn sorts_predefined_type_and_value_groups() {
     let diagnostics = configured(

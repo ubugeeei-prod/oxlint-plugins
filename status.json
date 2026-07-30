@@ -3856,9 +3856,9 @@
           "insta": false,
           "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-perfectionist/sort-array-includes with focused unsorted array includes coverage."
+        "notes": "Full Rust/Oxc AST port of eslint-plugin-perfectionist/sort-array-includes v5.10.0 options, diagnostics, fixes, comments, partitions, conditional configuration, settings, and UTF-16 locations. Pinned 233-case authored fixture plus Rust, NAPI, plugin, and real Oxlint regression coverage; React/JSX/TSX is intentionally excluded."
       },
       {
         "name": "sort-arrays",

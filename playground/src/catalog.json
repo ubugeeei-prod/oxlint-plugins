@@ -1497,7 +1497,10 @@
           "description": "enforce sorted array includes",
           "docsUrl": "https://perfectionist.dev/rules/sort-array-includes",
           "messages": {
-            "unexpected": "Expected sorted order."
+            "unexpectedArrayIncludesOrder": "Expected \"{{right}}\" to come before \"{{left}}\".",
+            "unexpectedArrayIncludesGroupOrder": "Expected \"{{right}}\" ({{rightGroup}}) to come before \"{{left}}\" ({{leftGroup}}).",
+            "extraSpacingBetweenArrayIncludesMembers": "Extra spacing between \"{{left}}\" and \"{{right}}\".",
+            "missedSpacingBetweenArrayIncludesMembers": "Missed spacing between \"{{left}}\" and \"{{right}}\"."
           }
         },
         {

@@ -30,14 +30,14 @@ use crate::types::{LineIndex, RuleDiagnostic, RuleDiagnosticData, RuleDiagnostic
 type RegexCache = RwLock<FastHashMap<(CompactString, CompactString), Option<Regex>>>;
 
 #[derive(Clone, Copy)]
-struct RuleContract {
-    rule: &'static str,
-    selector: &'static str,
-    order_message_id: &'static str,
-    group_order_message_id: &'static str,
-    extra_spacing_message_id: &'static str,
-    missed_spacing_message_id: &'static str,
-    missed_comment_above_message_id: Option<&'static str>,
+pub(crate) struct RuleContract {
+    pub(crate) rule: &'static str,
+    pub(crate) selector: &'static str,
+    pub(crate) order_message_id: &'static str,
+    pub(crate) group_order_message_id: &'static str,
+    pub(crate) extra_spacing_message_id: &'static str,
+    pub(crate) missed_spacing_message_id: &'static str,
+    pub(crate) missed_comment_above_message_id: Option<&'static str>,
 }
 
 const IMPORT_CONTRACT: RuleContract = RuleContract {
@@ -114,7 +114,7 @@ struct CustomGroup {
 }
 
 #[derive(Debug)]
-struct RuleOptions {
+pub(crate) struct RuleOptions {
     raw: Map<String, Value>,
     sort: SortOptions,
     groups: Vec<GroupEntry>,
@@ -126,24 +126,25 @@ struct RuleOptions {
 }
 
 pub(crate) struct SortableNode<'a> {
-    span: Span,
-    name: CompactString,
-    compare_name: CompactString,
-    source: &'a str,
-    source_start: u32,
-    source_end: u32,
-    size: usize,
-    group: CompactString,
-    group_index: usize,
-    partition_id: usize,
-    is_disabled: bool,
-    is_ignored: bool,
-    preserve_order_in_group: bool,
-    is_type_import: bool,
-    dependencies: SmallVec<[CompactString; 2]>,
-    dependency_names: SmallVec<[CompactString; 4]>,
-    add_safety_semicolon_when_inline: bool,
-    use_original_groups_for_spacing: bool,
+    pub(crate) span: Span,
+    pub(crate) name: CompactString,
+    pub(crate) compare_name: CompactString,
+    pub(crate) source: &'a str,
+    pub(crate) source_start: u32,
+    pub(crate) source_end: u32,
+    pub(crate) size: usize,
+    pub(crate) group: CompactString,
+    pub(crate) group_index: usize,
+    pub(crate) partition_id: usize,
+    pub(crate) is_disabled: bool,
+    pub(crate) is_ignored: bool,
+    pub(crate) preserve_order_in_group: bool,
+    pub(crate) is_type_import: bool,
+    pub(crate) dependencies: SmallVec<[CompactString; 2]>,
+    pub(crate) dependency_names: SmallVec<[CompactString; 4]>,
+    pub(crate) add_safety_semicolon_when_inline: bool,
+    pub(crate) use_original_groups_for_spacing: bool,
+    pub(crate) requires_comma_separator: bool,
 }
 
 struct PendingDiagnostic {
@@ -473,6 +474,7 @@ fn check_import_block<'a>(
                 dependency_names: import_dependency_names(source_text, declaration),
                 add_safety_semicolon_when_inline: true,
                 use_original_groups_for_spacing: false,
+                requires_comma_separator: false,
             })
         })
         .collect();
@@ -595,6 +597,7 @@ pub(crate) fn check_sort_exports(
                 dependency_names: SmallVec::new(),
                 add_safety_semicolon_when_inline: true,
                 use_original_groups_for_spacing: true,
+                requires_comma_separator: false,
             })
         })
         .collect();
@@ -1053,7 +1056,7 @@ fn source_for_span(source_text: &str, span: Span) -> Option<&str> {
     source_text.get(usize::try_from(span.start).ok()?..usize::try_from(span.end).ok()?)
 }
 
-fn check_specifiers(
+pub(crate) fn check_specifiers(
     source_text: &str,
     comments: &[Comment],
     options: &RuleOptions,
@@ -1202,7 +1205,7 @@ fn check_specifiers(
 }
 
 impl RuleOptions {
-    fn from_object(raw: Map<String, Value>) -> Self {
+    pub(crate) fn from_object(raw: Map<String, Value>) -> Self {
         let value = Value::Object(raw.clone());
         let groups = raw
             .get("groups")
@@ -1245,7 +1248,7 @@ impl RuleOptions {
         })
     }
 
-    fn group_index(&self, group_name: &str) -> usize {
+    pub(crate) fn group_index(&self, group_name: &str) -> usize {
         self.groups
             .iter()
             .position(|group| match group {
@@ -1559,6 +1562,7 @@ fn named_import<'a>(
         dependency_names: SmallVec::new(),
         add_safety_semicolon_when_inline: false,
         use_original_groups_for_spacing: false,
+        requires_comma_separator: false,
     })
 }
 
@@ -1617,10 +1621,11 @@ fn named_export<'a>(
         dependency_names: SmallVec::new(),
         add_safety_semicolon_when_inline: false,
         use_original_groups_for_spacing: false,
+        requires_comma_separator: false,
     })
 }
 
-fn movable_leading_comment_start(
+pub(crate) fn movable_leading_comment_start(
     source_text: &str,
     comments: &[Comment],
     specifier_span: Span,
@@ -1646,7 +1651,12 @@ fn movable_leading_comment_start(
     start
 }
 
-fn is_rule_disabled(source_text: &str, comments: &[Comment], span: Span, rule_name: &str) -> bool {
+pub(crate) fn is_rule_disabled(
+    source_text: &str,
+    comments: &[Comment],
+    span: Span,
+    rule_name: &str,
+) -> bool {
     let node_line = line_number_at(source_text, span.start);
     let mut block_disabled = false;
     let mut ordered_comments: SmallVec<[&Comment; 16]> = comments.iter().collect();
@@ -1729,7 +1739,7 @@ fn line_number_at(source_text: &str, offset: u32) -> u32 {
         + 1
 }
 
-fn compute_group(
+pub(crate) fn compute_group(
     options: &RuleOptions,
     name: &str,
     modifiers: &[&str],
@@ -2097,7 +2107,7 @@ fn compare_in_group(
             .and_then(|value| value.get("type"))
             .and_then(Value::as_str)
         {
-            Some("subgroup-order") => subgroup_compare(options, left, right, object),
+            Some("subgroup-order") => subgroup_compare(options, left, right, fallback),
             Some("type-import-first") => compare_type_imports(
                 left,
                 right,
@@ -2142,7 +2152,7 @@ fn fallback_compare(
         return Ordering::Equal;
     };
     if fallback.get("type").and_then(Value::as_str) == Some("subgroup-order") {
-        return subgroup_compare(options, left, right, raw);
+        return subgroup_compare(options, left, right, Some(fallback));
     }
     let mut value = raw.cloned().unwrap_or_default();
     for (key, item) in fallback {
@@ -2513,6 +2523,11 @@ fn build_fix(
         let separator = source_text.get(separator_start..separator_end)?;
         let sorted_left = &specifiers[*sorted_indices.get(position)?];
         let sorted_right = &specifiers[*sorted_indices.get(position + 1)?];
+        let separator = if sorted_left.requires_comma_separator {
+            array_separator(sorted_left, separator)
+        } else {
+            CompactString::from(separator)
+        };
         let checks_original_groups = specifiers
             .iter()
             .any(|specifier| specifier.use_original_groups_for_spacing);
@@ -2534,7 +2549,7 @@ fn build_fix(
             && let Newlines::Count(expected) = newlines_between(options, sorted_left, sorted_right)
         {
             normalize_separator(
-                separator,
+                separator.as_str(),
                 expected,
                 is_same_line(
                     source_text,
@@ -2543,9 +2558,9 @@ fn build_fix(
                 ),
             )
         } else {
-            CompactString::from(separator)
+            separator.clone()
         };
-        if desired_separator.as_str() != separator {
+        if desired_separator.as_str() != separator.as_str() {
             changed_start = Some(
                 changed_start.map_or(specifiers[position].span.end, |start| {
                     start.min(specifiers[position].span.end)
@@ -2567,12 +2582,20 @@ fn build_fix(
         &desired_source_starts,
         &desired_source_ends,
     )?;
-    let replacement_end = desired_offset_for_boundary(
+    let mut replacement_end = desired_offset_for_boundary(
         changed_end,
         specifiers,
         &desired_source_starts,
         &desired_source_ends,
     )?;
+    if specifiers.iter().any(|specifier| {
+        specifier.requires_comma_separator
+            && specifier.source_end == changed_end
+            && specifier.source_end > specifier.span.end
+    }) && replacement.as_bytes().get(replacement_end) == Some(&b',')
+    {
+        replacement_end += 1;
+    }
     Some(RuleDiagnosticFix {
         start: LineIndex::utf16_offset(source_text, changed_start),
         end: LineIndex::utf16_offset(source_text, changed_end),
@@ -2582,6 +2605,27 @@ fn build_fix(
                 .get(replacement_start..replacement_end)?,
         ),
     })
+}
+
+fn array_separator(node: &SortableNode<'_>, separator: &str) -> CompactString {
+    let embedded_comma = node
+        .source
+        .get(usize::try_from(node.span.end - node.source_start).unwrap_or(0)..)
+        .is_some_and(|trailing| trailing.contains(','));
+    let comma = separator.find(',');
+    match (embedded_comma, comma) {
+        (true, Some(index)) => {
+            let mut normalized = CompactString::from(separator);
+            normalized.remove(index);
+            normalized
+        }
+        (false, None) => {
+            let mut normalized = CompactString::new(",");
+            normalized.push_str(separator);
+            normalized
+        }
+        _ => CompactString::from(separator),
+    }
 }
 
 fn node_ends_with_safe_character(source_text: &str, node: &SortableNode<'_>) -> bool {
@@ -2698,7 +2742,7 @@ fn export_name(specifier: &ExportSpecifier<'_>, ignore_alias: bool) -> CompactSt
     }
 }
 
-fn matches_regex(value: &str, option: &Value) -> bool {
+pub(crate) fn matches_regex(value: &str, option: &Value) -> bool {
     match option {
         Value::Array(options) => options.iter().any(|option| matches_regex(value, option)),
         Value::String(pattern) => matches_single_regex(value, pattern, ""),
@@ -2811,7 +2855,7 @@ fn empty_lines_between(source_text: &str, left: u32, right: u32) -> usize {
         .map_or(0, |between| between.matches('\n').count().saturating_sub(1))
 }
 
-fn is_same_line(source_text: &str, left: u32, right: u32) -> bool {
+pub(crate) fn is_same_line(source_text: &str, left: u32, right: u32) -> bool {
     let Ok(left) = usize::try_from(left) else {
         return false;
     };

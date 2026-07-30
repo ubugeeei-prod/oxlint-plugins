@@ -117,16 +117,74 @@ describe('perfectionist plugin adapter', () => {
   });
 
   it.each(invalidCases)('reports %s through direct createOnce', (ruleName, code) => {
-    const reports = runRule(ruleName, code);
+    const reports = runRule(
+      ruleName,
+      code,
+      ruleName === 'sort-jsx-props' ? 'fixture.tsx' : 'fixture.ts',
+    );
 
     expect(reports).toHaveLength(1);
     expect(plugin.rules[ruleName].meta.messages[reports[0].messageId]).toBe(
-      ['sort-exports', 'sort-imports', 'sort-named-exports', 'sort-named-imports'].includes(
-        ruleName,
-      )
+      [
+        'sort-array-includes',
+        'sort-exports',
+        'sort-imports',
+        'sort-named-exports',
+        'sort-named-imports',
+      ].includes(ruleName)
         ? 'Expected "{{right}}" to come before "{{left}}".'
         : 'Expected sorted order.',
     );
+  });
+
+  it('declares the complete v5.10.0 sort-array-includes schema and messages', () => {
+    const rule = plugin.rules['sort-array-includes'];
+    const schema = rule.meta.schema.items;
+
+    expect(rule.meta.type).toBe('suggestion');
+    expect(rule.meta.schema).toMatchObject({
+      type: 'array',
+      uniqueItems: true,
+    });
+    expect(Object.keys(rule.meta.messages).sort()).toEqual([
+      'extraSpacingBetweenArrayIncludesMembers',
+      'missedSpacingBetweenArrayIncludesMembers',
+      'unexpectedArrayIncludesGroupOrder',
+      'unexpectedArrayIncludesOrder',
+    ]);
+    expect(Object.keys(schema.properties).sort()).toEqual([
+      'alphabet',
+      'customGroups',
+      'fallbackSort',
+      'groups',
+      'ignoreCase',
+      'locales',
+      'newlinesBetween',
+      'newlinesInside',
+      'order',
+      'partitionByComment',
+      'partitionByNewLine',
+      'specialCharacters',
+      'type',
+      'useConfigurationIf',
+    ]);
+    expect(schema.additionalProperties).toBe(false);
+    expect(schema.properties.type.enum).toEqual([
+      'subgroup-order',
+      'alphabetical',
+      'natural',
+      'line-length',
+      'custom',
+      'unsorted',
+    ]);
+    expect(schema.properties.customGroups.items.oneOf[0].properties.selector.enum).toEqual([
+      'literal',
+    ]);
+    expect(schema.properties.customGroups.items.oneOf[0].properties).not.toHaveProperty(
+      'modifiers',
+    );
+    expect(schema.properties.useConfigurationIf.properties).toHaveProperty('matchesAstSelector');
+    expect(schema.properties.useConfigurationIf).not.toHaveProperty('minProperties');
   });
 
   it('declares the complete sort-exports schema without named-specifier-only options', () => {
@@ -298,6 +356,48 @@ describe('perfectionist plugin adapter', () => {
       'error',
       { type: 'natural', order: 'asc' },
     ]);
+    expect(rules['perfectionist/sort-array-includes']).toEqual([
+      'error',
+      { type: 'natural', order: 'asc' },
+    ]);
+  });
+
+  it('merges settings and isolates sort-array-includes options and cache entries', () => {
+    const source = `['item2', 'item10'].includes(value)`;
+    const settings = { perfectionist: { type: 'natural', order: 'desc' } };
+
+    expect(runRule('sort-array-includes', source, 'fixture.ts', [], settings)).toHaveLength(1);
+    expect(
+      runRule('sort-array-includes', source, 'fixture.ts', [{ order: 'asc' }], settings),
+    ).toEqual([]);
+    expect(
+      runRule('sort-array-includes', source, 'fixture.ts', [{ type: 'natural', order: 'desc' }]),
+    ).toHaveLength(1);
+    expect(
+      runRule('sort-array-includes', source, 'fixture.ts', [{ type: 'natural', order: 'asc' }]),
+    ).toEqual([]);
+
+    const conditionalOptions = [
+      {
+        type: 'unsorted',
+        useConfigurationIf: { allNamesMatchPattern: '^does-not-match$' },
+      },
+      { useConfigurationIf: { matchesAstSelector: 'ArrayExpression' } },
+    ];
+    expect(
+      runRule('sort-array-includes', source, 'fixture.ts', conditionalOptions, {
+        perfectionist: { type: 'natural', order: 'asc' },
+      }),
+    ).toEqual([]);
+    expect(
+      runRule(
+        'sort-array-includes',
+        `['item10', 'item2'].includes(value)`,
+        'fixture.ts',
+        conditionalOptions,
+        { perfectionist: { type: 'natural', order: 'asc' } },
+      ),
+    ).toHaveLength(1);
   });
 
   it('merges global perfectionist settings with explicit sort-imports options', () => {
@@ -368,6 +468,66 @@ describe('perfectionist plugin adapter', () => {
       expect(fixed.status).toBe(0);
       expect(fixed.stderr).toBe('');
       expect(readFileSync(fixturePath, 'utf8')).toBe('import { item10, item2 } from "pkg";\n');
+    } finally {
+      rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('loads array groups and fixes through real oxlint without JSX/TSX parsing', () => {
+    const tempDir = mkdtempSync(join(tmpdir(), 'oxlint-perfectionist-array-includes-'));
+    try {
+      const fixturePath = join(tempDir, 'fixture.ts');
+      writeFileSync(fixturePath, `['b', 'a'].includes(value);\n`);
+      writeFileSync(
+        join(tempDir, 'oxlint.config.jsonc'),
+        JSON.stringify({
+          jsPlugins: [
+            {
+              name: 'perfectionist',
+              specifier: join(packageRoot, 'index.js'),
+            },
+          ],
+          rules: {
+            'perfectionist/sort-array-includes': [
+              'error',
+              {
+                customGroups: [{ groupName: 'a', elementNamePattern: '^a$' }],
+                groups: ['a', 'literal'],
+              },
+            ],
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        findOxlintCli(),
+        ['--config', 'oxlint.config.jsonc', '--quiet', '--format', 'json', 'fixture.ts'],
+        {
+          cwd: tempDir,
+          encoding: 'utf8',
+        },
+      );
+      const payload = JSON.parse(result.stdout);
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      expect(payload.diagnostics).toHaveLength(1);
+      expect(payload.diagnostics[0]).toMatchObject({
+        code: 'perfectionist(sort-array-includes)',
+        message: 'Expected "a" (a) to come before "b" (literal).',
+      });
+
+      const fixed = spawnSync(
+        findOxlintCli(),
+        ['--config', 'oxlint.config.jsonc', '--fix', 'fixture.ts'],
+        {
+          cwd: tempDir,
+          encoding: 'utf8',
+        },
+      );
+      expect(fixed.status).toBe(0);
+      expect(fixed.stderr).toBe('');
+      expect(readFileSync(fixturePath, 'utf8')).toBe(`['a', 'b'].includes(value);\n`);
     } finally {
       rmSync(tempDir, { recursive: true, force: true });
     }
