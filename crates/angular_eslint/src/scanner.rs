@@ -22,7 +22,6 @@ impl<'a> Scanner<'a> {
             "computed-must-return",
             r#"computed\s*\(\s*\(\s*\)\s*=>\s*\{"#,
         );
-        self.check_regex("consistent-component-styles", r#"\bstyleUrls\s*:"#);
         self.check_regex(
             "contextual-decorator",
             r#"@Input\s*\([^)]*\)\s*class\s+\w+"#,

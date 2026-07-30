@@ -4,6 +4,12 @@ import { describe, expect, it } from 'vitest';
 
 import { implementedAngularEslintRuleNames, scanAngularEslint } from '../api.js';
 
+const consistentComponentStylesFixture = JSON.parse(
+  readFileSync(
+    new URL('./fixtures/consistent-component-styles-v22.0.0.json', import.meta.url),
+    'utf8',
+  ),
+);
 const noInputRenameFixture = JSON.parse(
   readFileSync(new URL('./fixtures/no-input-rename-v22.0.0.json', import.meta.url), 'utf8'),
 );
@@ -327,6 +333,129 @@ describe('angular-eslint native API', () => {
         options,
       }),
     ).toMatchObject(expected);
+  });
+
+  it('pins every authored consistent-component-styles case from angular-eslint v22.0.0', () => {
+    expect(consistentComponentStylesFixture.metadata).toEqual({
+      package: '@angular-eslint/eslint-plugin',
+      version: '22.0.0',
+      sourceCommit: '7ee4556badebf8c140ffdefdd0b07b02820d5e96',
+      sourcePath: 'packages/eslint-plugin/tests/rules/consistent-component-styles/cases.ts',
+      sourceSha256: '440ee39c6dd952eaac1f732c8d7f5428ea12ec65e85c617980523db6eb5d410e',
+      capture: 'every authored valid and invalid semantic case exactly once',
+      counts: {
+        valid: 21,
+        invalid: 20,
+        diagnostics: 20,
+      },
+    });
+  });
+
+  it.each(consistentComponentStylesFixture.valid)(
+    'accepts upstream consistent-component-styles valid case: $name',
+    ({ code, options }) => {
+      expect(
+        scanAngularEslint(code, 'fixture.ts', {
+          ruleNames: ['consistent-component-styles'],
+          options,
+        }),
+      ).toEqual([]);
+    },
+  );
+
+  it.each(consistentComponentStylesFixture.invalid)(
+    'matches upstream consistent-component-styles invalid diagnostic: $name',
+    ({ code, errors, options }) => {
+      expect(
+        scanAngularEslint(code, 'fixture.ts', {
+          ruleNames: ['consistent-component-styles'],
+          options,
+        }),
+      ).toEqual(
+        errors.map((error) => ({
+          ruleName: 'consistent-component-styles',
+          messageId: error.messageId,
+          data: [],
+          loc: {
+            startLine: error.line,
+            startColumn: error.column - 1,
+            endLine: error.endLine,
+            endColumn: error.endColumn - 1,
+          },
+        })),
+      );
+    },
+  );
+
+  it('reports all consistent-component-styles shapes in metadata source order', () => {
+    const source = `
+@Component({
+  styles: ['inline'],
+  styleUrls: ['one.css'],
+  nested: { styles: ['nested'], styleUrls: ['nested.css'] },
+})
+class StringMode {}
+`;
+    expect(
+      scanAngularEslint(source, 'fixture.ts', {
+        ruleNames: ['consistent-component-styles'],
+        options: ['string'],
+      }).map(({ messageId, loc }) => ({ messageId, line: loc.startLine })),
+    ).toEqual([
+      { messageId: 'useStylesString', line: 3 },
+      { messageId: 'useStyleUrl', line: 4 },
+      { messageId: 'useStylesString', line: 5 },
+      { messageId: 'useStyleUrl', line: 5 },
+    ]);
+
+    expect(
+      scanAngularEslint(
+        `@Component({ styles: \`inline\`, styleUrl: choose('one.css') }) class ArrayMode {}`,
+        'fixture.ts',
+        {
+          ruleNames: ['consistent-component-styles'],
+          options: ['array'],
+        },
+      ).map(({ messageId }) => messageId),
+    ).toEqual(['useStylesArray', 'useStyleUrls']);
+  });
+
+  it('keeps consistent-component-styles isolated and fails closed on malformed TypeScript', () => {
+    const source = `@Component({ styleUrls: ['one.css'] }) class Test {}`;
+    expect(
+      scanAngularEslint(source, 'fixture.ts', {
+        ruleNames: ['no-output-rename'],
+        options: [],
+      }).some(({ ruleName }) => ruleName === 'consistent-component-styles'),
+    ).toBe(false);
+    expect(
+      scanAngularEslint(`@Component({ styleUrls: ['one.css']`, 'fixture.ts', {
+        ruleNames: ['consistent-component-styles'],
+        options: [],
+      }),
+    ).toEqual([]);
+  });
+
+  it('preserves UTF-16 columns for consistent-component-styles reports', () => {
+    expect(
+      scanAngularEslint(
+        `@Component({ marker: '😀', styles: ['x'], styleUrls: ['x.css'] }) class Test {}`,
+        'fixture.ts',
+        {
+          ruleNames: ['consistent-component-styles'],
+          options: [],
+        },
+      ),
+    ).toMatchObject([
+      {
+        messageId: 'useStylesString',
+        loc: { startLine: 1, startColumn: 35, endLine: 1, endColumn: 40 },
+      },
+      {
+        messageId: 'useStyleUrl',
+        loc: { startLine: 1, startColumn: 42, endLine: 1, endColumn: 62 },
+      },
+    ]);
   });
 
   it('pins every authored no-input-rename case from angular-eslint v22.0.0', () => {

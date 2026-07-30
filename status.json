@@ -92,7 +92,7 @@
           "lsp": false,
           "oxlintIntegration": true
         },
-        "notes": "Rust/Oxc syntax-pattern port of @angular-eslint/eslint-plugin/consistent-component-styles; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+        "notes": "Oxc AST port of @angular-eslint/eslint-plugin v22.0.0 consistent-component-styles. Covers the string default and array option, all four upstream diagnostic IDs, Component decorator metadata key/value selector semantics, exact UTF-16 locations, and source-order reporting. All 21 authored valid and 20 authored invalid upstream cases are pinned and replayed through Rust/NAPI/adapter tests, with real Oxlint option coverage. v22.1.0 source/tests/docs were audited with no semantic drift. The current diagnostic ABI does not transport fix edits, so upstream fixable metadata is exposed but reports remain location-only."
       },
       {
         "name": "contextual-decorator",
