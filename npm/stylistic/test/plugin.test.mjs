@@ -115,6 +115,7 @@ const stylisticRuleFixtures = [
   ['lines-around-comment', 'before();\n/** docs */\nafter();\n', [], ['before']],
   ['jsx-child-element-spacing', '<App>word\n<a>link</a></App>;\n', [], ['spacingBeforeNext']],
   ['jsx-newline', '<App><First />\n<Second /></App>;\n', [], ['require']],
+  ['jsx-max-props-per-line', '<App one two three />;\n', [{ maximum: 1 }], ['newLine']],
   [
     'jsx-curly-spacing',
     '<App attr={ value }>{child}</App>;\n',
@@ -3133,6 +3134,83 @@ const parenthesized = (a + b) * c;
       expect(readFileSync(jsxPath, 'utf8')).toBe('export const view = <Panel\nfirst second />;\n');
       expect(readFileSync(tsxPath, 'utf8')).toBe(
         'type Items = { id: string };\nexport const table = <DataTable<Items>\nfirst second />;\n',
+      );
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('supports jsx-max-props-per-line shared settings, data, UTF-16 ranges, and fixes', () => {
+    const source =
+      'const marker = "😀"; const view = <部品 xml:lang="日本語" {...props.値} final />;\n';
+    const spreadStart = source.indexOf('{...props.値}');
+    const reports = runRule('jsx-max-props-per-line', source, [], {
+      corsaStylistic: {
+        rules: {
+          'jsx-max-props-per-line': [{ maximum: 1 }],
+        },
+      },
+    });
+
+    expect(messageIds(reports)).toEqual(['newLine']);
+    expect(reports[0].data).toEqual({ prop: 'props.値' });
+    expect(reports[0].node.range).toEqual([spreadStart, spreadStart + '{...props.値}'.length]);
+    expect(
+      reports[0].suggest[0].fix({
+        replaceTextRange(range, replacementText) {
+          return { range, replacementText };
+        },
+      }),
+    ).toEqual([
+      {
+        range: [source.indexOf('xml:lang'), source.indexOf('final') + 'final'.length],
+        replacementText: 'xml:lang="日本語"\n{...props.値}\nfinal',
+      },
+    ]);
+  });
+
+  it('runs jsx-max-props-per-line through real oxlint TSX lint and fixes', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-jsx-max-props-per-line-'));
+
+    try {
+      const sourcePath = join(temp, 'sample.tsx');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+      writeFileSync(
+        sourcePath,
+        'export const view = <Panel title="日本語" count={2} disabled />;\n',
+      );
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [{ name: 'stylistic', specifier: join(packageRoot, 'index.js') }],
+          rules: {
+            'stylistic/jsx-max-props-per-line': ['error', { maximum: 1 }],
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', sourcePath],
+        { encoding: 'utf8' },
+      );
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      expect(JSON.parse(result.stdout).diagnostics).toMatchObject([
+        {
+          code: 'stylistic(jsx-max-props-per-line)',
+          message: 'Prop `count` must be placed on a new line',
+        },
+      ]);
+
+      const fixed = spawnSync(oxlint, ['-c', configPath, '--fix-suggestions', sourcePath], {
+        encoding: 'utf8',
+      });
+      expect(fixed.status).toBe(0);
+      expect(fixed.stderr).toBe('');
+      expect(readFileSync(sourcePath, 'utf8')).toBe(
+        'export const view = <Panel title="日本語"\ncount={2}\ndisabled />;\n',
       );
     } finally {
       rmSync(temp, { recursive: true, force: true });

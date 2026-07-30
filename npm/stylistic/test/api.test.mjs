@@ -34,6 +34,7 @@ describe('stylistic native API', () => {
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'jsx-child-element-spacing',
     );
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('jsx-max-props-per-line');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('no-confusing-arrow');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'type-annotation-spacing',
@@ -1670,6 +1671,44 @@ describe('stylistic native API', () => {
               {
                 range: { start: whitespaceStart, end: whitespaceEnd },
                 replacementText: '\n\n',
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+  });
+
+  it('runs jsx-max-props-per-line with exact UTF-8 ranges, prop data, and fixes', () => {
+    const source =
+      'const marker = "😀"; const view = <部品 xml:lang="日本語" {...props.値} final />;';
+    const spreadStart = Buffer.byteLength(source.slice(0, source.indexOf('{...props.値}')));
+    const spreadEnd = Buffer.byteLength(
+      source.slice(0, source.indexOf('{...props.値}') + '{...props.値}'.length),
+    );
+    const first = Buffer.byteLength(source.slice(0, source.indexOf('xml:lang')));
+    const last = Buffer.byteLength(source.slice(0, source.indexOf('final') + 'final'.length));
+    const message = 'Prop `props.値` must be placed on a new line';
+    const diagnostics = runNativeStylisticLint(source, {
+      filename: 'fixture.tsx',
+      rules: [{ name: 'jsx-max-props-per-line', options: [{ maximum: 1 }] }],
+    });
+
+    expect(diagnostics).toEqual([
+      {
+        ruleName: 'jsx-max-props-per-line',
+        messageId: 'newLine',
+        message,
+        data: { prop: 'props.値' },
+        range: { start: spreadStart, end: spreadEnd },
+        suggestions: [
+          {
+            messageId: 'newLine',
+            message,
+            fixes: [
+              {
+                range: { start: first, end: last },
+                replacementText: 'xml:lang="日本語"\n{...props.値}\nfinal',
               },
             ],
           },

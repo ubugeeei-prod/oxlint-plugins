@@ -14879,19 +14879,19 @@
       },
       {
         "name": "jsx-max-props-per-line",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule jsx-max-props-per-line."
+        "notes": "Native Oxc JSX/TSX AST port of stable @stylistic/jsx-max-props-per-line v5.10.0. The pinned synchronizer and Rust/Vitest suites replay all 19 valid and 22 invalid authored upstream cases with 22 exact diagnostics, prop data, attribute ranges, first-pass fixes, and recursive convergence, plus single/multi limits, multiline-only mode, Unicode UTF-8/UTF-16 ranges, CRLF/CR/LS/PS, comments, namespaced and spread props, nested JSX, TypeScript generics, invalid syntax/options, shared settings, metadata/API, and real Oxlint lint/fix coverage."
       },
       {
         "name": "jsx-newline",

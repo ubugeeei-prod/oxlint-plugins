@@ -48,6 +48,7 @@ describe('stylistic plugin meta contract', () => {
           'jsx-closing-bracket-location',
           'jsx-curly-spacing',
           'jsx-first-prop-new-line',
+          'jsx-max-props-per-line',
           'jsx-newline',
           'jsx-quotes',
           'no-confusing-arrow',
@@ -205,6 +206,23 @@ describe('stylistic plugin meta contract', () => {
         require: 'JSX element should start in a new line',
         prevent: 'JSX element should not start in a new line',
         allowMultilines: 'Multiline JSX elements should start in a new line',
+      },
+      schema: { type: 'array' },
+    });
+  });
+
+  it('preserves the stable jsx-max-props-per-line metadata contract', () => {
+    expect(plugin.rules['jsx-max-props-per-line'].meta).toMatchObject({
+      type: 'layout',
+      docs: {
+        description: 'Enforce maximum of props on a single line in JSX',
+        recommended: false,
+        requiresTypeChecking: false,
+      },
+      fixable: 'code',
+      hasSuggestions: true,
+      messages: {
+        newLine: 'Prop `{{prop}}` must be placed on a new line',
       },
       schema: { type: 'array' },
     });
