@@ -225,6 +225,23 @@ fn keeps_the_strongest_newline_policy_across_unused_groups() {
 }
 
 #[test]
+fn handles_unknown_groups_beyond_the_configured_entries() {
+    let diagnostics = configured(
+        "import { value, type Type } from 'pkg';",
+        json!([{
+            "groups": ["value-import", "a", "b", "c"],
+            "newlinesBetween": 1
+        }]),
+    );
+
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(
+        diagnostics[0].message_id,
+        "missedSpacingBetweenNamedImports"
+    );
+}
+
+#[test]
 fn selects_the_first_matching_conditional_configuration() {
     let diagnostics = configured(
         "import { b, g, r } from 'pkg';",

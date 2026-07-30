@@ -7,7 +7,7 @@
 //! Shared configurable named-import/export engine pinned to Perfectionist v5.9.1.
 
 use std::cmp::Ordering;
-use std::sync::OnceLock;
+use std::sync::{OnceLock, RwLock};
 
 use oxc_ast::{
     Comment, CommentKind,
@@ -18,12 +18,15 @@ use oxc_ast::{
     },
 };
 use oxc_span::Span;
-use oxlint_plugins_carton::{CompactString, SmallVec};
-use regex::RegexBuilder;
+use oxlint_plugins_carton::{CompactString, FastHashMap, SmallVec};
+use regex::{Regex, RegexBuilder};
 use serde_json::{Map, Value};
 
 use crate::sort_options::SortOptions;
 use crate::types::{LineIndex, RuleDiagnostic, RuleDiagnosticData, RuleDiagnosticFix};
+
+/// Compiled regexes keyed by their configured `(pattern, flags)` pair.
+type RegexCache = RwLock<FastHashMap<(CompactString, CompactString), Option<Regex>>>;
 
 #[derive(Clone, Copy)]
 struct RuleContract {
@@ -1192,11 +1195,32 @@ fn assign_partitions(
     }
 }
 
+/// Merges the group and custom-group sort overrides once per group present in
+/// the declaration, so comparisons never rebuild option maps or collators
+/// inside `sort_by`.
+fn group_sort_options(
+    options: &RuleOptions,
+    specifiers: &[SortableNode<'_>],
+) -> Vec<Option<(SortOptions, Value)>> {
+    let mut cached: Vec<Option<(SortOptions, Value)>> =
+        (0..=options.groups.len()).map(|_| None).collect();
+    for specifier in specifiers {
+        let Some(slot) = cached.get_mut(specifier.group_index) else {
+            continue;
+        };
+        if slot.is_none() {
+            *slot = Some(options.sort_options_for_group(specifier.group_index));
+        }
+    }
+    cached
+}
+
 fn sort_specifiers(
     options: &RuleOptions,
     specifiers: &[SortableNode<'_>],
     keep_disabled_in_place: bool,
 ) -> Vec<usize> {
+    let group_options = group_sort_options(options, specifiers);
     let mut sorted = Vec::with_capacity(specifiers.len());
     let mut start = 0;
     while start < specifiers.len() {
@@ -1219,7 +1243,14 @@ fn sort_specifiers(
             specifiers[left]
                 .group_index
                 .cmp(&specifiers[right].group_index)
-                .then_with(|| compare_in_group(options, &specifiers[left], &specifiers[right]))
+                .then_with(|| {
+                    compare_in_group(
+                        options,
+                        &group_options,
+                        &specifiers[left],
+                        &specifiers[right],
+                    )
+                })
                 .then_with(|| left.cmp(&right))
         });
         for disabled_index in disabled_indices {
@@ -1233,10 +1264,13 @@ fn sort_specifiers(
 
 fn compare_in_group(
     options: &RuleOptions,
+    group_options: &[Option<(SortOptions, Value)>],
     left: &SortableNode<'_>,
     right: &SortableNode<'_>,
 ) -> Ordering {
-    let (sort, raw) = options.sort_options_for_group(left.group_index);
+    let Some((sort, raw)) = group_options.get(left.group_index).and_then(Option::as_ref) else {
+        return Ordering::Equal;
+    };
     let object = raw.as_object();
     let primary = object
         .and_then(|value| value.get("type"))
@@ -1367,7 +1401,16 @@ fn newlines_between(
     if right.group_index > left.group_index + 2 {
         let mut maximum = None;
         let mut ignored = false;
-        let relevant = &options.groups[left.group_index..=right.group_index];
+        // `group_index` yields `groups.len()` for the implicit `unknown` group,
+        // so the inclusive end has to be clamped to the configured entries.
+        let end = right
+            .group_index
+            .saturating_add(1)
+            .min(options.groups.len());
+        let relevant = options
+            .groups
+            .get(left.group_index..end)
+            .unwrap_or_default();
         for (index, entry) in relevant.iter().enumerate() {
             let configured = match entry {
                 GroupEntry::Newlines(newlines) => Some(*newlines),
@@ -1858,12 +1901,38 @@ fn matches_single_regex(value: &str, pattern: &str, flags: &str) -> bool {
             !value.contains(needle)
         };
     }
+    with_compiled_regex(pattern, flags, |regex| {
+        regex.is_some_and(|regex| regex.is_match(value))
+    })
+}
+
+/// Compiles each configured `(pattern, flags)` pair once and reuses it, because
+/// group matching and conditional configuration re-test the same patterns for
+/// every specifier of every import declaration.
+fn with_compiled_regex<T>(
+    pattern: &str,
+    flags: &str,
+    visit: impl FnOnce(Option<&Regex>) -> T,
+) -> T {
+    static CACHE: OnceLock<RegexCache> = OnceLock::new();
+    let cache = CACHE.get_or_init(|| RwLock::new(FastHashMap::default()));
+    let key = (CompactString::from(pattern), CompactString::from(flags));
+    if let Ok(compiled) = cache.read()
+        && let Some(regex) = compiled.get(&key)
+    {
+        return visit(regex.as_ref());
+    }
     let mut builder = RegexBuilder::new(pattern);
     builder
         .case_insensitive(flags.contains('i'))
         .multi_line(flags.contains('m'))
         .dot_matches_new_line(flags.contains('s'));
-    builder.build().is_ok_and(|regex| regex.is_match(value))
+    let compiled = builder.build().ok();
+    let result = visit(compiled.as_ref());
+    if let Ok(mut cache) = cache.write() {
+        cache.insert(key, compiled);
+    }
+    result
 }
 
 fn is_partition_comment(source_text: &str, comment: &Comment, option: &Value) -> bool {
