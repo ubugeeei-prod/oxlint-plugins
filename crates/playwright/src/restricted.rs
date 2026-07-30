@@ -198,6 +198,7 @@ impl RestrictedVisitor<'_, '_, '_> {
             },
             data,
             loc: self.line_index.loc_for_span(self.source_text, span),
+            fix: None,
         });
     }
 }

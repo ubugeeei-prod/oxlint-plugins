@@ -58,3 +58,43 @@ scanPlaywright('page.getByTestId("submit")', 'fixture.spec.ts', {
 Static dot, string-computed, and template-computed member names are supported.
 Matcher modifiers and chains are checked against Playwright `expect`, configured
 global aliases, and named `expect` import aliases.
+
+## Title and tag options
+
+`valid-title` supports the complete v2.10.4 option family: disallowed words,
+space handling, per-call-kind type checks, and `mustMatch` / `mustNotMatch`
+patterns with optional custom messages. `valid-test-tags` supports mutually
+exclusive allow and deny lists containing exact strings or regular expressions:
+
+```jsonc
+{
+  "rules": {
+    "playwright/valid-title": [
+      "error",
+      {
+        "disallowedWords": ["correct", "properly"],
+        "mustMatch": {
+          "describe": ["#(?:unit|e2e)", "Describe titles need a test kind"],
+          "test": "#(?:unit|e2e)",
+        },
+      },
+    ],
+    "playwright/valid-test-tags": [
+      "error",
+      {
+        "allowedTags": ["@smoke", { "source": "^@team-" }],
+      },
+    ],
+  },
+}
+```
+
+The direct API uses `validTitle` and `validTestTags` with the same values.
+`testAliases` corresponds to `settings.playwright.globalAliases.test`. Imported
+`test` aliases and test functions created with `test.extend()` are discovered
+automatically.
+
+Title fixes preserve the original quote kind, return UTF-16 ranges to JavaScript,
+and converge across repeated fix passes. The pinned fixture replays all 247
+authored upstream cases for these rules (116 diagnostics and 39 fix-output
+contracts) in both the direct API and the Oxlint plugin adapter.

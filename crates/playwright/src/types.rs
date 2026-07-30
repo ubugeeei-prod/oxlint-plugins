@@ -15,6 +15,60 @@ pub struct PlaywrightOptions {
     pub restricted_matchers: SmallVec<[Restriction; 8]>,
     pub restricted_roles: SmallVec<[Restriction; 8]>,
     pub expect_aliases: SmallVec<[CompactString; 4]>,
+    pub test_aliases: SmallVec<[CompactString; 4]>,
+    pub valid_title: ValidTitleOptions,
+    pub valid_test_tags: ValidTestTagsOptions,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ValidTitleOptions {
+    pub disallowed_words: SmallVec<[CompactString; 8]>,
+    pub ignore_spaces: bool,
+    pub ignore_type_of_describe_name: bool,
+    pub ignore_type_of_step_name: bool,
+    pub ignore_type_of_test_name: bool,
+    pub must_match: TitlePatternOptions,
+    pub must_not_match: TitlePatternOptions,
+}
+
+impl Default for ValidTitleOptions {
+    fn default() -> Self {
+        Self {
+            disallowed_words: SmallVec::new(),
+            ignore_spaces: false,
+            ignore_type_of_describe_name: false,
+            ignore_type_of_step_name: true,
+            ignore_type_of_test_name: false,
+            must_match: TitlePatternOptions::default(),
+            must_not_match: TitlePatternOptions::default(),
+        }
+    }
+}
+
+#[derive(Clone, Debug, Default, Eq, PartialEq)]
+pub struct TitlePatternOptions {
+    pub describe: Option<TitlePattern>,
+    pub step: Option<TitlePattern>,
+    pub test: Option<TitlePattern>,
+}
+
+#[derive(Clone, Debug, Default, Eq, PartialEq)]
+pub struct TitlePattern {
+    pub source: CompactString,
+    pub message: Option<CompactString>,
+}
+
+#[derive(Clone, Debug, Default, Eq, PartialEq)]
+pub struct ValidTestTagsOptions {
+    pub allowed_tags: SmallVec<[TagPattern; 8]>,
+    pub disallowed_tags: SmallVec<[TagPattern; 8]>,
+}
+
+#[derive(Clone, Debug, Default, Eq, PartialEq)]
+pub struct TagPattern {
+    pub source: CompactString,
+    pub flags: CompactString,
+    pub is_regex: bool,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -31,6 +85,14 @@ pub struct Diagnostic {
     pub message_id: &'static str,
     pub data: DiagnosticData,
     pub loc: DiagnosticLoc,
+    pub fix: Option<DiagnosticFix>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct DiagnosticFix {
+    pub start: u32,
+    pub end: u32,
+    pub replacement: CompactString,
 }
 
 #[derive(Clone, Debug, Default, Eq, PartialEq)]
@@ -39,6 +101,10 @@ pub struct DiagnosticData {
     pub method: Option<CompactString>,
     pub restriction: Option<CompactString>,
     pub role: Option<CompactString>,
+    pub function_name: Option<CompactString>,
+    pub pattern: Option<CompactString>,
+    pub tag: Option<CompactString>,
+    pub word: Option<CompactString>,
 }
 
 pub(crate) struct LineIndex {

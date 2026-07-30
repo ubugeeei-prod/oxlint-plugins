@@ -1,5 +1,6 @@
 #![doc = "Rust implementation of eslint-plugin-playwright rule logic."]
 
+mod patterns;
 mod restricted;
 mod scanner;
 mod types;
@@ -12,11 +13,15 @@ use oxc_parser::Parser;
 use oxc_span::SourceType;
 use oxlint_plugins_carton::SmallVec;
 
+use crate::patterns::scan_pattern_rules;
 use crate::restricted::scan_restricted_rules;
 use crate::scanner::Scanner;
 use crate::types::LineIndex;
 
-pub use crate::types::{Diagnostic, DiagnosticData, DiagnosticLoc, PlaywrightOptions, Restriction};
+pub use crate::types::{
+    Diagnostic, DiagnosticData, DiagnosticFix, DiagnosticLoc, PlaywrightOptions, Restriction,
+    TagPattern, TitlePattern, TitlePatternOptions, ValidTestTagsOptions, ValidTitleOptions,
+};
 
 pub const RULE_NAMES: [&str; 58] = [
     "consistent-spacing-between-blocks",
@@ -107,6 +112,13 @@ pub fn scan_playwright_with_options(
         diagnostics: SmallVec::new(),
     };
     scanner.scan();
+    scan_pattern_rules(
+        &parser_return.program,
+        source_text,
+        &scanner.line_index,
+        options,
+        &mut scanner.diagnostics,
+    );
     scan_restricted_rules(
         &parser_return.program,
         source_text,

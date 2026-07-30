@@ -1,0 +1,3166 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-playwright",
+    "version": "2.10.4",
+    "sourceCommit": "894c0ec261763bb1e073b276c70bbf88b4ebad39",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-playwright-pattern-tests.ts",
+    "sourceFiles": [
+      "src/rules/valid-title.ts",
+      "src/rules/valid-title.test.ts",
+      "src/rules/valid-test-tags.ts",
+      "src/rules/valid-test-tags.test.ts"
+    ],
+    "sourceHashes": {
+      "src/rules/valid-title.ts": "737b531865149f253983f5c4ff1463cd21d26d69fc9745bc102e703d376eec2e",
+      "src/rules/valid-title.test.ts": "5d9e54b0934b52da8fe145947f82502907e3335970b88ed8288bbe925cd07b40",
+      "src/rules/valid-test-tags.ts": "89be1bdb88f34919ad5188a92e36ee6926d3c491ce959c8d3d23974a65c6466b",
+      "src/rules/valid-test-tags.test.ts": "7d1d1fab84228642225ecc96f5a314dd6510d05a75702ce5263c35326763a0b3"
+    },
+    "inventory": {
+      "suites": 10,
+      "valid": 141,
+      "invalid": 106,
+      "diagnostics": 116
+    }
+  },
+  "suites": [
+    {
+      "name": "valid-title",
+      "rule": "valid-title",
+      "valid": [
+        {
+          "code": "test.describe(\"the correct way to properly handle all the things\", () => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.describe.configure({ mode: \"parallel\" })",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.describe(() => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.describe.only(() => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test(\"that all is as it should be\", () => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.use({ locale: \"en-US\" })",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.only(\"that all is as it should be\", () => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.skip(\"that all is as it should be\", () => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.skip(({ browserName }) => browserName === \"Chrome\");",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.skip();",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.skip(true);",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.slow(true, \"Always\");",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.skip(browserName === \"Chrome\", \"This feature is skipped on Chrome\")",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.slow(\"that all is as it should be\", () => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.slow(true);",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.slow(({ browserName }) => browserName === \"Chrome\");",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.slow();",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.slow(browserName === \"webkit\", \"This feature is slow on Mac\")",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test(\"correctly sets the value\", () => {});",
+          "options": [
+            {
+              "disallowedWords": ["correct"],
+              "ignoreTypeOfDescribeName": false
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test(\"correctly sets the value\", () => {});",
+          "options": [{}],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test(\"that all is as it should be\", () => {});",
+          "options": [],
+          "settings": {
+            "playwright": {
+              "globalAliases": {
+                "test": ["it"]
+              }
+            }
+          },
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.describe(\"the correct way to properly handle all the things\", () => {});",
+          "options": [],
+          "settings": {
+            "playwright": {
+              "globalAliases": {
+                "test": ["it"]
+              }
+            }
+          },
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "const custom = test.extend({ myFixture: async ({}, use) => { await use('') } });\ncustom(\"that all is as it should be\", () => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "const custom = test.extend({ myFixture: async ({}, use) => { await use('') } });\ncustom.describe(\"the correct way to properly handle all the things\", () => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "import { test as custom } from '@playwright/test';\ncustom(\"that all is as it should be\", () => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        }
+      ],
+      "invalid": [
+        {
+          "code": "test(\"the correct way to properly handle all things\", () => {});",
+          "options": [
+            {
+              "disallowedWords": ["correct", "properly", "all"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "disallowedWord",
+              "data": {
+                "word": "correct"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 5
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.describe(\"the correct way to do things\", function () {})",
+          "options": [
+            {
+              "disallowedWords": ["correct"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "disallowedWord",
+              "data": {
+                "word": "correct"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 14
+              }
+            }
+          ]
+        },
+        {
+          "code": "test(\"has ALL the things\", () => {})",
+          "options": [
+            {
+              "disallowedWords": ["all"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "disallowedWord",
+              "data": {
+                "word": "ALL"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 5
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.describe('Very Descriptive Title Goes Here', function () {})",
+          "options": [
+            {
+              "disallowedWords": ["descriptive"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "disallowedWord",
+              "data": {
+                "word": "Descriptive"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 14
+              }
+            }
+          ]
+        },
+        {
+          "code": "test(`that the value is set properly`, function () {})",
+          "options": [
+            {
+              "disallowedWords": ["properly"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "disallowedWord",
+              "data": {
+                "word": "properly"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 5
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.step(`that the value is set properly`, function () {})",
+          "options": [
+            {
+              "disallowedWords": ["properly"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "disallowedWord",
+              "data": {
+                "word": "properly"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 10
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.step.skip(`that the value is set properly`, function () {})",
+          "options": [
+            {
+              "disallowedWords": ["properly"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "disallowedWord",
+              "data": {
+                "word": "properly"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 15
+              }
+            }
+          ]
+        },
+        {
+          "code": "it(\"the correct way to properly handle all things\", () => {});",
+          "options": [
+            {
+              "disallowedWords": ["correct", "properly", "all"]
+            }
+          ],
+          "settings": {
+            "playwright": {
+              "globalAliases": {
+                "test": ["it"]
+              }
+            }
+          },
+          "expectedDiagnostics": [
+            {
+              "messageId": "disallowedWord",
+              "data": {
+                "word": "correct"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 3
+              }
+            }
+          ]
+        },
+        {
+          "code": "const custom = test.extend({ myFixture: async ({}, use) => { await use('') } });\ncustom(\"the correct way to do things\", () => {});",
+          "options": [
+            {
+              "disallowedWords": ["correct"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "disallowedWord",
+              "data": {
+                "word": "correct"
+              },
+              "loc": {
+                "startLine": 2,
+                "startColumn": 7
+              }
+            }
+          ]
+        },
+        {
+          "code": "const custom = test.extend({ myFixture: async ({}, use) => { await use('') } });\ncustom.describe(\"the correct way to do things\", () => {});",
+          "options": [
+            {
+              "disallowedWords": ["correct"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "disallowedWord",
+              "data": {
+                "word": "correct"
+              },
+              "loc": {
+                "startLine": 2,
+                "startColumn": 16
+              }
+            }
+          ]
+        },
+        {
+          "code": "import { test as custom } from '@playwright/test';\ncustom(\"the correct way to do things\", () => {});",
+          "options": [
+            {
+              "disallowedWords": ["correct"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "disallowedWord",
+              "data": {
+                "word": "correct"
+              },
+              "loc": {
+                "startLine": 2,
+                "startColumn": 7
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mustMatch & mustNotMatch options",
+      "rule": "valid-title",
+      "valid": [
+        {
+          "code": "test.describe(\"the correct way to properly handle all the things\", () => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test(\"that all is as it should be\", () => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test(\"correctly sets the value\", () => {});",
+          "options": [
+            {
+              "mustMatch": {}
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test(\"correctly sets the value\", () => {});",
+          "options": [
+            {
+              "mustMatch": " "
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test(\"correctly sets the value\", () => {});",
+          "options": [
+            {
+              "mustMatch": [" "]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test(\"correctly sets the value #unit\", () => {});",
+          "options": [
+            {
+              "mustMatch": "#(?:unit|integration|e2e)"
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test(\"correctly sets the value\", () => {});",
+          "options": [
+            {
+              "mustMatch": "^[^#]+$|(?:#(?:unit|e2e))"
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test(\"correctly sets the value\", () => {});",
+          "options": [
+            {
+              "mustMatch": {
+                "describe": "#(?:unit|integration|e2e)"
+              }
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.step(\"correctly sets the value\", () => {});",
+          "options": [
+            {
+              "mustMatch": {
+                "describe": "#(?:unit|integration|e2e)"
+              }
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.describe('things to test', () => {\n  test.describe('unit tests #unit', () => {\n    test('is true #unit', () => {\n      expect(true).toBe(true);\n    });\n  });\n\n  test.describe('e2e tests #e2e', () => {\n    test('is another test #e2e', () => {});\n  });\n});",
+          "options": [
+            {
+              "mustMatch": {
+                "test": "^[^#]+$|(?:#(?:unit|e2e))"
+              }
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "it(\"that all is as it should be\", () => {});",
+          "options": [],
+          "settings": {
+            "playwright": {
+              "globalAliases": {
+                "test": ["it"]
+              }
+            }
+          },
+          "expectedDiagnostics": []
+        }
+      ],
+      "invalid": [
+        {
+          "code": "test.describe('things to test', () => {\n  test.describe('unit tests #unit', () => {\n    test('is true', () => {\n      expect(true).toBe(true);\n    });\n  });\n\n  test.describe('e2e tests #e4e', () => {\n    test('is another test #e2e #playwright4life', () => {\n      test.step('#wow', () => {});\n    });\n  });\n});",
+          "options": [
+            {
+              "mustMatch": "^[^#]+$|(?:#(?:unit|e2e))",
+              "mustNotMatch": "(?:#(?!unit|e2e))\\w+"
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "mustNotMatch",
+              "data": {
+                "functionName": "describe",
+                "pattern": "/(?:#(?!unit|e2e))\\w+/u"
+              },
+              "loc": {
+                "startLine": 8,
+                "startColumn": 16
+              }
+            },
+            {
+              "messageId": "mustNotMatch",
+              "data": {
+                "functionName": "test",
+                "pattern": "/(?:#(?!unit|e2e))\\w+/u"
+              },
+              "loc": {
+                "startLine": 9,
+                "startColumn": 9
+              }
+            },
+            {
+              "messageId": "mustNotMatch",
+              "data": {
+                "functionName": "step",
+                "pattern": "/(?:#(?!unit|e2e))\\w+/u"
+              },
+              "loc": {
+                "startLine": 10,
+                "startColumn": 16
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.describe('things to test', () => {\n  test.describe('unit tests #unit', () => {\n    test('is true', () => {\n      expect(true).toBe(true);\n    });\n  });\n\n  test.describe('e2e tests #e4e', () => {\n    test('is another test #e2e #playwright4life', () => {\n      test.step('#wow', () => {});\n    });\n  });\n});",
+          "options": [
+            {
+              "mustMatch": [
+                "^[^#]+$|(?:#(?:unit|e2e))",
+                "Please include \"#unit\" or \"#e2e\" in titles"
+              ],
+              "mustNotMatch": [
+                "(?:#(?!unit|e2e))\\w+",
+                "Please include \"#unit\" or \"#e2e\" in titles"
+              ]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "mustNotMatchCustom",
+              "data": {
+                "functionName": "describe",
+                "message": "Please include \"#unit\" or \"#e2e\" in titles",
+                "pattern": "/(?:#(?!unit|e2e))\\w+/u"
+              },
+              "loc": {
+                "startLine": 8,
+                "startColumn": 16
+              }
+            },
+            {
+              "messageId": "mustNotMatchCustom",
+              "data": {
+                "functionName": "test",
+                "message": "Please include \"#unit\" or \"#e2e\" in titles",
+                "pattern": "/(?:#(?!unit|e2e))\\w+/u"
+              },
+              "loc": {
+                "startLine": 9,
+                "startColumn": 9
+              }
+            },
+            {
+              "messageId": "mustNotMatchCustom",
+              "data": {
+                "message": "Please include \"#unit\" or \"#e2e\" in titles",
+                "pattern": "/(?:#(?!unit|e2e))\\w+/u"
+              },
+              "loc": {
+                "startLine": 10,
+                "startColumn": 16
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.describe('things to test', () => {\n  test.describe('unit tests #unit', () => {\n    test('is true', () => {\n      expect(true).toBe(true);\n    });\n  });\n\n  test.describe('e2e tests #e4e', () => {\n    test('is another test #e2e #playwright4life', () => {\n      test.step('#wow', () => {});\n    });\n  });\n});",
+          "options": [
+            {
+              "mustMatch": {
+                "describe": "^[^#]+$|(?:#(?:unit|e2e))"
+              },
+              "mustNotMatch": {
+                "describe": ["(?:#(?!unit|e2e))\\w+"]
+              }
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "mustNotMatch",
+              "data": {
+                "functionName": "describe",
+                "pattern": "/(?:#(?!unit|e2e))\\w+/u"
+              },
+              "loc": {
+                "startLine": 8,
+                "startColumn": 16
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.describe('things to test', () => {\n  test.describe('unit tests #unit', () => {\n    test('is true', () => {\n      expect(true).toBe(true);\n    });\n  });\n\n  test.describe('e2e tests #e4e', () => {\n    test('is another test #e2e #playwright4life', () => {\n      test.step('#wow', () => {});\n    });\n  });\n});",
+          "options": [
+            {
+              "mustMatch": {
+                "describe": "^[^#]+$|(?:#(?:unit|e2e))"
+              },
+              "mustNotMatch": {
+                "describe": [
+                  "(?:#(?!unit|e2e))\\w+",
+                  "Please include \"#unit\" or \"#e2e\" in describe titles"
+                ]
+              }
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "mustNotMatchCustom",
+              "data": {
+                "functionName": "describe",
+                "message": "Please include \"#unit\" or \"#e2e\" in describe titles",
+                "pattern": "/(?:#(?!unit|e2e))\\w+/u"
+              },
+              "loc": {
+                "startLine": 8,
+                "startColumn": 16
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.describe('things to test', () => {\n  test.describe('unit tests #unit', () => {\n    test('is true', () => {\n      expect(true).toBe(true);\n    });\n  });\n\n  test.describe('e2e tests #e4e', () => {\n    test('is another test #e2e #playwright4life', () => {\n      test.step('#wow', () => {});\n    });\n  });\n});",
+          "options": [
+            {
+              "mustMatch": {
+                "test": "^[^#]+$|(?:#(?:unit|e2e))"
+              },
+              "mustNotMatch": {
+                "describe": "(?:#(?!unit|e2e))\\w+"
+              }
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "mustNotMatch",
+              "data": {
+                "functionName": "describe",
+                "pattern": "/(?:#(?!unit|e2e))\\w+/u"
+              },
+              "loc": {
+                "startLine": 8,
+                "startColumn": 16
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.describe('things to test', () => {\n  test.describe('unit tests #unit', () => {\n    test('is true #playwright4life', () => {\n      expect(true).toBe(true);\n    });\n  });\n\n  test.describe('e2e tests #e4e', () => {\n    test('is another test #e2e #playwright4life', () => {\n      test.step('#wow', () => {});\n    });\n  });\n});",
+          "options": [
+            {
+              "mustMatch": {
+                "test": [
+                  "^[^#]+$|(?:#(?:unit|e2e))",
+                  "Please include \"#unit\" or \"#e2e\" in it titles"
+                ]
+              },
+              "mustNotMatch": {
+                "describe": [
+                  "(?:#(?!unit|e2e))\\w+",
+                  "Please include \"#unit\" or \"#e2e\" in describe titles"
+                ]
+              }
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "mustMatchCustom",
+              "data": {
+                "functionName": "test",
+                "message": "Please include \"#unit\" or \"#e2e\" in it titles",
+                "pattern": "/^[^#]+$|(?:#(?:unit|e2e))/u"
+              },
+              "loc": {
+                "startLine": 3,
+                "startColumn": 9
+              }
+            },
+            {
+              "messageId": "mustNotMatchCustom",
+              "data": {
+                "functionName": "describe",
+                "message": "Please include \"#unit\" or \"#e2e\" in describe titles",
+                "pattern": "/(?:#(?!unit|e2e))\\w+/u"
+              },
+              "loc": {
+                "startLine": 8,
+                "startColumn": 16
+              }
+            }
+          ]
+        },
+        {
+          "code": "test(\"the correct way to properly handle all things\", () => {});",
+          "options": [
+            {
+              "mustMatch": "#(?:unit|integration|e2e)"
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "mustMatch",
+              "data": {
+                "functionName": "test",
+                "pattern": "/#(?:unit|integration|e2e)/u"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 5
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.describe(\"the test\", () => {});",
+          "options": [
+            {
+              "mustMatch": {
+                "describe": "#(?:unit|integration|e2e)"
+              }
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "mustMatch",
+              "data": {
+                "functionName": "describe",
+                "pattern": "/#(?:unit|integration|e2e)/u"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 14
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.step(\"the test\", () => {});",
+          "options": [
+            {
+              "mustMatch": {
+                "step": "#(?:unit|integration|e2e)"
+              }
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "mustMatch",
+              "data": {
+                "functionName": "step",
+                "pattern": "/#(?:unit|integration|e2e)/u"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 10
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.describe.skip(\"the test\", () => {});",
+          "options": [
+            {
+              "mustMatch": {
+                "describe": "#(?:unit|integration|e2e)"
+              }
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "mustMatch",
+              "data": {
+                "functionName": "describe",
+                "pattern": "/#(?:unit|integration|e2e)/u"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 19
+              }
+            }
+          ]
+        },
+        {
+          "code": "it.describe('things to test', () => {\n  it.describe('unit tests #unit', () => {\n    it('is true', () => {\n      expect(true).toBe(true);\n    });\n  });\n\n  it.describe('e2e tests #e4e', () => {\n    it('is another test #e2e #playwright4life', () => {});\n  });\n});",
+          "options": [
+            {
+              "mustMatch": "^[^#]+$|(?:#(?:unit|e2e))",
+              "mustNotMatch": "(?:#(?!unit|e2e))\\w+"
+            }
+          ],
+          "settings": {
+            "playwright": {
+              "globalAliases": {
+                "test": ["it"]
+              }
+            }
+          },
+          "expectedDiagnostics": [
+            {
+              "messageId": "mustNotMatch",
+              "data": {
+                "functionName": "describe",
+                "pattern": "/(?:#(?!unit|e2e))\\w+/u"
+              },
+              "loc": {
+                "startLine": 8,
+                "startColumn": 14
+              }
+            },
+            {
+              "messageId": "mustNotMatch",
+              "data": {
+                "functionName": "test",
+                "pattern": "/(?:#(?!unit|e2e))\\w+/u"
+              },
+              "loc": {
+                "startLine": 9,
+                "startColumn": 7
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "title-must-be-string",
+      "rule": "valid-title",
+      "valid": [
+        {
+          "code": "test(\"is a string\", () => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test(\"is\" + \" a \" + \" string\", () => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test(1 + \" + \" + 1, () => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test(`${myFunc} is a string`, () => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.describe(\"is a string\", () => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.describe(() => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.describe.skip(\"is a string\", () => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.describe.skip(`${myFunc} is a string`, () => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.step(123, () => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.describe(String(/.+/), () => {});",
+          "options": [
+            {
+              "ignoreTypeOfDescribeName": true
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test(String(/.+/), () => {});",
+          "options": [
+            {
+              "ignoreTypeOfTestName": true
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.describe(myFunction, () => {});",
+          "options": [
+            {
+              "ignoreTypeOfDescribeName": true
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.describe(skipFunction, () => {});",
+          "options": [
+            {
+              "disallowedWords": [],
+              "ignoreTypeOfDescribeName": true
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "const foo = \"my-title\"; test(foo, () => {});",
+          "options": [
+            {
+              "ignoreTypeOfTestName": true
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "const foo = \"my-title\"; test(foo, () => {});",
+          "options": [
+            {
+              "ignoreTypeOfTestName": false
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "const title = \"is a string\";\ntest(title, () => {\n  expect(1).toBe(1);\n});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "const cases = [{ name: 'test one' }, { name: 'test two' }];\nfor (const { name } of cases) {\n  test(name, () => {\n    expect(1).toBe(1);\n  });\n}",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "const cases = [{ name: 'test one' }];\ncases.forEach(({ name }) => {\n  test(name, () => {});\n});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "const cases = [{ name: 'test one' }];\nconst { name } = cases[0];\ntest(name, () => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "const cases = ['test one', 'test two'];\nfor (const name of cases) {\n  test(name, () => {});\n}",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "const cases = [{ name: 'test one' }];\ntest(cases[0].name, () => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "const suites = [{ name: 'suite one' }];\nfor (const { name } of suites) {\n  test.describe(name, () => {\n    test('inner', () => {});\n  });\n}",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "it(\"is a string\", () => {});",
+          "options": [],
+          "settings": {
+            "playwright": {
+              "globalAliases": {
+                "test": ["it"]
+              }
+            }
+          },
+          "expectedDiagnostics": []
+        }
+      ],
+      "invalid": [
+        {
+          "code": "test(String(/.+/), () => {});",
+          "options": [
+            {
+              "ignoreTypeOfTestName": false
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "titleMustBeString",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 5
+              }
+            }
+          ]
+        },
+        {
+          "code": "test(123, () => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "titleMustBeString",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 5
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.only(123, () => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "titleMustBeString",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 10
+              }
+            }
+          ]
+        },
+        {
+          "code": "test(1 + 2 + 3, () => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "titleMustBeString",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 5
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.only(1 + 2 + 3, () => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "titleMustBeString",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 10
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.skip(123, () => {});",
+          "options": [
+            {
+              "ignoreTypeOfDescribeName": true
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "titleMustBeString",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 10
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.describe(String(/.+/), () => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "titleMustBeString",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 14
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.describe(6, function () {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "titleMustBeString",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 14
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.describe.skip(123, () => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "titleMustBeString",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 19
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.step(123, () => {});",
+          "options": [
+            {
+              "ignoreTypeOfStepName": false
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "titleMustBeString",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 10
+              }
+            }
+          ]
+        },
+        {
+          "code": "const title = 123;\ntest(title, () => {\n  expect(1).toBe(1);\n});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "titleMustBeString",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 14
+              }
+            }
+          ]
+        },
+        {
+          "code": "it(String(/.+/), () => {});",
+          "options": [
+            {
+              "ignoreTypeOfTestName": false
+            }
+          ],
+          "settings": {
+            "playwright": {
+              "globalAliases": {
+                "test": ["it"]
+              }
+            }
+          },
+          "expectedDiagnostics": [
+            {
+              "messageId": "titleMustBeString",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 3
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "no-empty-title",
+      "rule": "valid-title",
+      "valid": [
+        {
+          "code": "test.describe()",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "someFn(\"\", function () {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.describe(\"foo\", function () {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.describe(\"foo\", function () { test(\"bar\", function () {}) })",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test(\"foo\", function () {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.only(\"foo\", function () {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test(`foo`, function () {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.skip(`foo`, function () {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test(`${foo}`, function () {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.fixme(`${foo}`, function () {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.step(`${foo}`, function () {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.describe()",
+          "options": [],
+          "settings": {
+            "playwright": {
+              "globalAliases": {
+                "test": ["it"]
+              }
+            }
+          },
+          "expectedDiagnostics": []
+        }
+      ],
+      "invalid": [
+        {
+          "code": "test.describe(\"\", function () {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "emptyTitle",
+              "data": {
+                "functionName": "describe"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 0
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.describe('foo', () => {\n  test('', () => {});\n});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "emptyTitle",
+              "data": {
+                "functionName": "test"
+              },
+              "loc": {
+                "startLine": 2,
+                "startColumn": 2
+              }
+            }
+          ]
+        },
+        {
+          "code": "test(\"\", function () {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "emptyTitle",
+              "data": {
+                "functionName": "test"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 0
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.only(\"\", function () {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "emptyTitle",
+              "data": {
+                "functionName": "test"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 0
+              }
+            }
+          ]
+        },
+        {
+          "code": "test(``, function () {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "emptyTitle",
+              "data": {
+                "functionName": "test"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 0
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.only(``, function () {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "emptyTitle",
+              "data": {
+                "functionName": "test"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 0
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.step(``, function () {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "emptyTitle",
+              "data": {
+                "functionName": "step"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 0
+              }
+            }
+          ]
+        },
+        {
+          "code": "it.describe(\"\", function () {})",
+          "options": [],
+          "settings": {
+            "playwright": {
+              "globalAliases": {
+                "test": ["it"]
+              }
+            }
+          },
+          "expectedDiagnostics": [
+            {
+              "messageId": "emptyTitle",
+              "data": {
+                "functionName": "describe"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 0
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "no-accidental-space",
+      "rule": "valid-title",
+      "valid": [
+        {
+          "code": "someFn(\"foo\", function () {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test()",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test(\"foo\", function () {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.describe()",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.describe(\"foo\", function () {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.step()",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.step(\"foo\", function () {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.only()",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.only(\"foo\", function () {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.describe('foo', () => {\n  test('bar', () => {})\n})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test(`GIVEN... \n  `, () => {});",
+          "options": [
+            {
+              "ignoreSpaces": true
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "it(\"foo\", function () {})",
+          "options": [],
+          "settings": {
+            "playwright": {
+              "globalAliases": {
+                "test": ["it"]
+              }
+            }
+          },
+          "expectedDiagnostics": []
+        }
+      ],
+      "invalid": [
+        {
+          "code": "test.describe(\" foo\", function () {})",
+          "options": [],
+          "settings": null,
+          "output": "test.describe(\"foo\", function () {})",
+          "expectedDiagnostics": [
+            {
+              "messageId": "accidentalSpace",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 14
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.describe(\" foo foe fum\", function () {})",
+          "options": [],
+          "settings": null,
+          "output": "test.describe(\"foo foe fum\", function () {})",
+          "expectedDiagnostics": [
+            {
+              "messageId": "accidentalSpace",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 14
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.describe(\"foo foe fum \", function () {})",
+          "options": [],
+          "settings": null,
+          "output": "test.describe(\"foo foe fum\", function () {})",
+          "expectedDiagnostics": [
+            {
+              "messageId": "accidentalSpace",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 14
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.describe(' foo', function () {})",
+          "options": [],
+          "settings": null,
+          "output": "test.describe('foo', function () {})",
+          "expectedDiagnostics": [
+            {
+              "messageId": "accidentalSpace",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 14
+              }
+            }
+          ]
+        },
+        {
+          "code": "test(\" foo\", function () {})",
+          "options": [],
+          "settings": null,
+          "output": "test(\"foo\", function () {})",
+          "expectedDiagnostics": [
+            {
+              "messageId": "accidentalSpace",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 5
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.only(\" foo\", function () {})",
+          "options": [],
+          "settings": null,
+          "output": "test.only(\"foo\", function () {})",
+          "expectedDiagnostics": [
+            {
+              "messageId": "accidentalSpace",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 10
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.skip(\" foo\", function () {})",
+          "options": [],
+          "settings": null,
+          "output": "test.skip(\"foo\", function () {})",
+          "expectedDiagnostics": [
+            {
+              "messageId": "accidentalSpace",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 10
+              }
+            }
+          ]
+        },
+        {
+          "code": "test(\"foo \", function () {})",
+          "options": [],
+          "settings": null,
+          "output": "test(\"foo\", function () {})",
+          "expectedDiagnostics": [
+            {
+              "messageId": "accidentalSpace",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 5
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.skip(\"foo \", function () {})",
+          "options": [],
+          "settings": null,
+          "output": "test.skip(\"foo\", function () {})",
+          "expectedDiagnostics": [
+            {
+              "messageId": "accidentalSpace",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 10
+              }
+            }
+          ]
+        },
+        {
+          "code": "test(` foo`, function () {})",
+          "options": [],
+          "settings": null,
+          "output": "test(`foo`, function () {})",
+          "expectedDiagnostics": [
+            {
+              "messageId": "accidentalSpace",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 5
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.only(` foo`, function () {})",
+          "options": [],
+          "settings": null,
+          "output": "test.only(`foo`, function () {})",
+          "expectedDiagnostics": [
+            {
+              "messageId": "accidentalSpace",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 10
+              }
+            }
+          ]
+        },
+        {
+          "code": "test(` foo bar bang`, function () {})",
+          "options": [],
+          "settings": null,
+          "output": "test(`foo bar bang`, function () {})",
+          "expectedDiagnostics": [
+            {
+              "messageId": "accidentalSpace",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 5
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.only(` foo bar bang`, function () {})",
+          "options": [],
+          "settings": null,
+          "output": "test.only(`foo bar bang`, function () {})",
+          "expectedDiagnostics": [
+            {
+              "messageId": "accidentalSpace",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 10
+              }
+            }
+          ]
+        },
+        {
+          "code": "test(` foo bar bang  `, function () {})",
+          "options": [],
+          "settings": null,
+          "output": "test(`foo bar bang`, function () {})",
+          "expectedDiagnostics": [
+            {
+              "messageId": "accidentalSpace",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 5
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.only(` foo bar bang  `, function () {})",
+          "options": [],
+          "settings": null,
+          "output": "test.only(`foo bar bang`, function () {})",
+          "expectedDiagnostics": [
+            {
+              "messageId": "accidentalSpace",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 10
+              }
+            }
+          ]
+        },
+        {
+          "code": "test(\" foo  \", function () {})",
+          "options": [],
+          "settings": null,
+          "output": "test(\"foo\", function () {})",
+          "expectedDiagnostics": [
+            {
+              "messageId": "accidentalSpace",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 5
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.step(` foo bar bang  `, function () {})",
+          "options": [],
+          "settings": null,
+          "output": "test.step(`foo bar bang`, function () {})",
+          "expectedDiagnostics": [
+            {
+              "messageId": "accidentalSpace",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 10
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.step(\" foo\", function () {})",
+          "options": [],
+          "settings": null,
+          "output": "test.step(\"foo\", function () {})",
+          "expectedDiagnostics": [
+            {
+              "messageId": "accidentalSpace",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 10
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.step(\" foo  \", function () {})",
+          "options": [],
+          "settings": null,
+          "output": "test.step(\"foo\", function () {})",
+          "expectedDiagnostics": [
+            {
+              "messageId": "accidentalSpace",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 10
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.describe(' foo', () => {\n  test('bar', () => {})\n})",
+          "options": [],
+          "settings": null,
+          "output": "test.describe('foo', () => {\n  test('bar', () => {})\n})",
+          "expectedDiagnostics": [
+            {
+              "messageId": "accidentalSpace",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 14
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.describe('foo', () => {\n  test(' bar', () => {})\n})",
+          "options": [],
+          "settings": null,
+          "output": "test.describe('foo', () => {\n  test('bar', () => {})\n})",
+          "expectedDiagnostics": [
+            {
+              "messageId": "accidentalSpace",
+              "data": {},
+              "loc": {
+                "startLine": 2,
+                "startColumn": 7
+              }
+            }
+          ]
+        },
+        {
+          "code": "it.describe(\" foo\", function () {})",
+          "options": [],
+          "settings": {
+            "playwright": {
+              "globalAliases": {
+                "test": ["it"]
+              }
+            }
+          },
+          "output": "it.describe(\"foo\", function () {})",
+          "expectedDiagnostics": [
+            {
+              "messageId": "accidentalSpace",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 12
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "no-duplicate-prefix describe",
+      "rule": "valid-title",
+      "valid": [
+        {
+          "code": "test.describe(\"foo\", function () {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "it.describe(\"foo\", function () {})",
+          "options": [],
+          "settings": {
+            "playwright": {
+              "globalAliases": {
+                "test": ["it"]
+              }
+            }
+          },
+          "expectedDiagnostics": []
+        }
+      ],
+      "invalid": [
+        {
+          "code": "test.describe(\"describe foo\", function () {})",
+          "options": [],
+          "settings": null,
+          "output": "test.describe(\"foo\", function () {})",
+          "expectedDiagnostics": [
+            {
+              "messageId": "duplicatePrefix",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 14
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.describe('describe foo', function () {})",
+          "options": [],
+          "settings": null,
+          "output": "test.describe('foo', function () {})",
+          "expectedDiagnostics": [
+            {
+              "messageId": "duplicatePrefix",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 14
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.describe(`describe foo`, function () {})",
+          "options": [],
+          "settings": null,
+          "output": "test.describe(`foo`, function () {})",
+          "expectedDiagnostics": [
+            {
+              "messageId": "duplicatePrefix",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 14
+              }
+            }
+          ]
+        },
+        {
+          "code": "it.describe(\"describe foo\", function () {})",
+          "options": [],
+          "settings": {
+            "playwright": {
+              "globalAliases": {
+                "test": ["it"]
+              }
+            }
+          },
+          "output": "it.describe(\"foo\", function () {})",
+          "expectedDiagnostics": [
+            {
+              "messageId": "duplicatePrefix",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 12
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "no-duplicate-prefix test",
+      "rule": "valid-title",
+      "valid": [
+        {
+          "code": "test(\"foo\", function () {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('foo', function () {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test(`foo`, function () {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test(\"foo test\", function () {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "it(\"foo\", function () {})",
+          "options": [],
+          "settings": {
+            "playwright": {
+              "globalAliases": {
+                "test": ["it"]
+              }
+            }
+          },
+          "expectedDiagnostics": []
+        }
+      ],
+      "invalid": [
+        {
+          "code": "test(\"test\", function () {})",
+          "options": [],
+          "settings": null,
+          "output": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "duplicatePrefix",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 5
+              }
+            }
+          ]
+        },
+        {
+          "code": "test(\"test foo\", function () {})",
+          "options": [],
+          "settings": null,
+          "output": "test(\"foo\", function () {})",
+          "expectedDiagnostics": [
+            {
+              "messageId": "duplicatePrefix",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 5
+              }
+            }
+          ]
+        },
+        {
+          "code": "test(`test foo`, function () {})",
+          "options": [],
+          "settings": null,
+          "output": "test(`foo`, function () {})",
+          "expectedDiagnostics": [
+            {
+              "messageId": "duplicatePrefix",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 5
+              }
+            }
+          ]
+        },
+        {
+          "code": "test(`test foo test`, function () {})",
+          "options": [],
+          "settings": null,
+          "output": "test(`foo test`, function () {})",
+          "expectedDiagnostics": [
+            {
+              "messageId": "duplicatePrefix",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 5
+              }
+            }
+          ]
+        },
+        {
+          "code": "it(\"test foo\", function () {})",
+          "options": [],
+          "settings": {
+            "playwright": {
+              "globalAliases": {
+                "test": ["it"]
+              }
+            }
+          },
+          "output": "it(\"foo\", function () {})",
+          "expectedDiagnostics": [
+            {
+              "messageId": "duplicatePrefix",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 3
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "no-duplicate-prefix step",
+      "rule": "valid-title",
+      "valid": [
+        {
+          "code": "test.step(\"foo\", function () {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.step('foo', function () {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.step(`foo`, function () {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        }
+      ],
+      "invalid": [
+        {
+          "code": "test.step(\"step foo\", function () {})",
+          "options": [],
+          "settings": null,
+          "output": "test.step(\"foo\", function () {})",
+          "expectedDiagnostics": [
+            {
+              "messageId": "duplicatePrefix",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 10
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.step('step foo', function () {})",
+          "options": [],
+          "settings": null,
+          "output": "test.step('foo', function () {})",
+          "expectedDiagnostics": [
+            {
+              "messageId": "duplicatePrefix",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 10
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.step(`step foo`, function () {})",
+          "options": [],
+          "settings": null,
+          "output": "test.step(`foo`, function () {})",
+          "expectedDiagnostics": [
+            {
+              "messageId": "duplicatePrefix",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 10
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "no-duplicate-prefix nested",
+      "rule": "valid-title",
+      "valid": [
+        {
+          "code": "test.describe('foo', () => {\n  test('bar', () => {})\n})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.describe('foo', () => {\n  test('describes things correctly', () => {})\n})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "it.describe('foo', () => {\n  it('bar', () => {})\n})",
+          "options": [],
+          "settings": {
+            "playwright": {
+              "globalAliases": {
+                "test": ["it"]
+              }
+            }
+          },
+          "expectedDiagnostics": []
+        }
+      ],
+      "invalid": [
+        {
+          "code": "test.describe('describe foo', () => {\n  test('bar', () => {})\n})",
+          "options": [],
+          "settings": null,
+          "output": "test.describe('foo', () => {\n  test('bar', () => {})\n})",
+          "expectedDiagnostics": [
+            {
+              "messageId": "duplicatePrefix",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 14
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.describe('describe foo', () => {\n  test('describes things correctly', () => {})\n})",
+          "options": [],
+          "settings": null,
+          "output": "test.describe('foo', () => {\n  test('describes things correctly', () => {})\n})",
+          "expectedDiagnostics": [
+            {
+              "messageId": "duplicatePrefix",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 14
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.describe('foo', () => {\n  test('test bar', () => {})\n})",
+          "options": [],
+          "settings": null,
+          "output": "test.describe('foo', () => {\n  test('bar', () => {})\n})",
+          "expectedDiagnostics": [
+            {
+              "messageId": "duplicatePrefix",
+              "data": {},
+              "loc": {
+                "startLine": 2,
+                "startColumn": 7
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.describe('foo', () => {\n  test('bar', () => {\n    test.step('step foobar', () => {})\n  })\n})",
+          "options": [],
+          "settings": null,
+          "output": "test.describe('foo', () => {\n  test('bar', () => {\n    test.step('foobar', () => {})\n  })\n})",
+          "expectedDiagnostics": [
+            {
+              "messageId": "duplicatePrefix",
+              "data": {},
+              "loc": {
+                "startLine": 3,
+                "startColumn": 14
+              }
+            }
+          ]
+        },
+        {
+          "code": "it.describe('describe foo', () => {\n  it('bar', () => {})\n})",
+          "options": [],
+          "settings": {
+            "playwright": {
+              "globalAliases": {
+                "test": ["it"]
+              }
+            }
+          },
+          "output": "it.describe('foo', () => {\n  it('bar', () => {})\n})",
+          "expectedDiagnostics": [
+            {
+              "messageId": "duplicatePrefix",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 12
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "valid-test-tags",
+      "rule": "valid-test-tags",
+      "valid": [
+        {
+          "code": "test('my test', { tag: '@e2e' }, async ({ page }) => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test(`my test`, { tag: `@e2e` }, async ({ page }) => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test(`my test`, { tag: [`@e2e`, `@login`] }, async ({ page }) => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test(`my test`, { tag: `@regression` }, async ({ page }) => {})",
+          "options": [
+            {
+              "allowedTags": ["@regression", "@smoke"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test(`my test`, { tag: `@e2e` }, async ({ page }) => {})",
+          "options": [
+            {
+              "disallowedTags": ["@skip", "@todo"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test(`@e2e my test`, async ({ page }) => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('my test', { tag: ['@e2e', '@login'] }, async ({ page }) => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.describe('my suite', { tag: '@regression' }, () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.step('my step', { tag: '@critical' }, async () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('my test', async ({ page }) => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('my test', { timeout: 5000 }, async ({ page }) => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('my test', { tag: '@regression' }, async ({ page }) => {})",
+          "options": [
+            {
+              "allowedTags": ["@regression", "@smoke"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('my test', { tag: '@my-tag-123' }, async ({ page }) => {})",
+          "options": [
+            {
+              "allowedTags": [
+                "@regression",
+                {
+                  "source": "^@my-tag-\\d+$",
+                  "flags": ""
+                }
+              ]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('my test', { tag: '@e2e' }, async ({ page }) => {})",
+          "options": [
+            {
+              "disallowedTags": ["@skip", "@todo"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('my test', { tag: '@my-tag-123' }, async ({ page }) => {})",
+          "options": [
+            {
+              "disallowedTags": [
+                "@skip",
+                {
+                  "source": "^@temp-",
+                  "flags": ""
+                }
+              ]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.skip('my test', { tag: '@e2e' }, async ({ page }) => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.fixme('my test', { tag: '@e2e' }, async ({ page }) => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.only('my test', { tag: '@e2e' }, async ({ page }) => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('my test', { tag: '@e2e', annotation: { type: 'issue', description: 'BUG-123' } }, async ({ page }) => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('my test', { tag: '@e2e', annotation: [{ type: 'issue', description: 'BUG-123' }, { type: 'flaky' }] }, async ({ page }) => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('my test', { tag: ['@e2e', '@login'], annotation: { type: 'issue', description: 'BUG-123' } }, async ({ page }) => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.skip('my test', { tag: '@e2e', annotation: { type: 'issue', description: 'BUG-123' } }, async ({ page }) => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.fixme('my test', { tag: '@e2e', annotation: { type: 'issue', description: 'BUG-123' } }, async ({ page }) => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.only('my test', { tag: '@e2e', annotation: { type: 'issue', description: 'BUG-123' } }, async ({ page }) => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('@e2e my test', async ({ page }) => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('@e2e @login my test', async ({ page }) => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('my test @regression @smoke', async ({ page }) => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.describe('@suite my describe block', () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.step('@step my step', async () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('@e2e my test', { tag: '@regression' }, async ({ page }) => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('@regression my test', async ({ page }) => {})",
+          "options": [
+            {
+              "allowedTags": ["@regression", "@smoke"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('@my-tag-123 my test', async ({ page }) => {})",
+          "options": [
+            {
+              "allowedTags": [
+                "@regression",
+                {
+                  "source": "^@my-tag-\\d+$",
+                  "flags": ""
+                }
+              ]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('@e2e my test', async ({ page }) => {})",
+          "options": [
+            {
+              "disallowedTags": ["@skip", "@todo"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('@my-tag-123 my test', async ({ page }) => {})",
+          "options": [
+            {
+              "disallowedTags": [
+                "@skip",
+                {
+                  "source": "^@temp-",
+                  "flags": ""
+                }
+              ]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.skip('@e2e my test', async ({ page }) => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.fixme('@e2e my test', async ({ page }) => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.only('@e2e my test', async ({ page }) => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('my test without tags', async ({ page }) => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('my test with spaces and no @tags', async ({ page }) => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('e2e my test', async ({ page }) => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('e2e @login my test', async ({ page }) => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('my test e2e @smoke', async ({ page }) => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.skip('e2e my test', async ({ page }) => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.describe('e2e my suite', () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.step('my step', async () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        }
+      ],
+      "invalid": [
+        {
+          "code": "test('my test', { tag: 'e2e' }, async ({ page }) => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "invalidTagFormat",
+              "data": {}
+            }
+          ]
+        },
+        {
+          "code": "test(`my test`, { tag: `e2e` }, async ({ page }) => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "invalidTagFormat",
+              "data": {}
+            }
+          ]
+        },
+        {
+          "code": "test(`my test`, { tag: `@skip` }, async ({ page }) => {})",
+          "options": [
+            {
+              "disallowedTags": ["@skip", "@todo"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "disallowedTag",
+              "data": {
+                "tag": "@skip"
+              }
+            }
+          ]
+        },
+        {
+          "code": "test(`my test`, { tag: `@e2e` }, async ({ page }) => {})",
+          "options": [
+            {
+              "allowedTags": ["@regression", "@smoke"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unknownTag",
+              "data": {
+                "tag": "@e2e"
+              }
+            }
+          ]
+        },
+        {
+          "code": "test(`my test`, { tag: [`@todo`] }, async ({ page }) => {})",
+          "options": [
+            {
+              "disallowedTags": ["@skip", "@todo"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "disallowedTag",
+              "data": {
+                "tag": "@todo"
+              }
+            }
+          ]
+        },
+        {
+          "code": "test(`@skip my test`, async ({ page }) => {})",
+          "options": [
+            {
+              "disallowedTags": ["@skip", "@todo"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "disallowedTag",
+              "data": {
+                "tag": "@skip"
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('my test', { tag: 123 }, async ({ page }) => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "invalidTagValue",
+              "data": {}
+            }
+          ]
+        },
+        {
+          "code": "test('my test', { tag: ['e2e', 'login'] }, async ({ page }) => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "invalidTagFormat",
+              "data": {}
+            },
+            {
+              "messageId": "invalidTagFormat",
+              "data": {}
+            }
+          ]
+        },
+        {
+          "code": "test('my test', { tag: '@e2e' }, async ({ page }) => {})",
+          "options": [
+            {
+              "allowedTags": ["@regression", "@smoke"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unknownTag",
+              "data": {
+                "tag": "@e2e"
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('my test', { tag: '@skip' }, async ({ page }) => {})",
+          "options": [
+            {
+              "disallowedTags": ["@skip", "@todo"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "disallowedTag",
+              "data": {
+                "tag": "@skip"
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('my test', { tag: '@temp-123' }, async ({ page }) => {})",
+          "options": [
+            {
+              "disallowedTags": [
+                "@skip",
+                {
+                  "source": "^@temp-",
+                  "flags": ""
+                }
+              ]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "disallowedTag",
+              "data": {
+                "tag": "@temp-123"
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('my test', { tag: '@my-tag-abc' }, async ({ page }) => {})",
+          "options": [
+            {
+              "allowedTags": [
+                "@regression",
+                {
+                  "source": "^@my-tag-\\d+$",
+                  "flags": ""
+                }
+              ]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unknownTag",
+              "data": {
+                "tag": "@my-tag-abc"
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.skip('my test', { tag: 'e2e' }, async ({ page }) => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "invalidTagFormat",
+              "data": {}
+            }
+          ]
+        },
+        {
+          "code": "test.fixme('my test', { tag: 'e2e' }, async ({ page }) => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "invalidTagFormat",
+              "data": {}
+            }
+          ]
+        },
+        {
+          "code": "test.only('my test', { tag: 'e2e' }, async ({ page }) => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "invalidTagFormat",
+              "data": {}
+            }
+          ]
+        },
+        {
+          "code": "test('@e2e my test', async ({ page }) => {})",
+          "options": [
+            {
+              "allowedTags": ["@regression", "@smoke"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unknownTag",
+              "data": {
+                "tag": "@e2e"
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('@e2e @login my test', async ({ page }) => {})",
+          "options": [
+            {
+              "allowedTags": ["@regression", "@smoke"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unknownTag",
+              "data": {
+                "tag": "@e2e"
+              }
+            },
+            {
+              "messageId": "unknownTag",
+              "data": {
+                "tag": "@login"
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('@my-tag-abc my test', async ({ page }) => {})",
+          "options": [
+            {
+              "allowedTags": [
+                "@regression",
+                {
+                  "source": "^@my-tag-\\d+$",
+                  "flags": ""
+                }
+              ]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unknownTag",
+              "data": {
+                "tag": "@my-tag-abc"
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('@skip my test', async ({ page }) => {})",
+          "options": [
+            {
+              "disallowedTags": ["@skip", "@todo"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "disallowedTag",
+              "data": {
+                "tag": "@skip"
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('@skip @todo my test', async ({ page }) => {})",
+          "options": [
+            {
+              "disallowedTags": ["@skip", "@todo"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "disallowedTag",
+              "data": {
+                "tag": "@skip"
+              }
+            },
+            {
+              "messageId": "disallowedTag",
+              "data": {
+                "tag": "@todo"
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('@temp-123 my test', async ({ page }) => {})",
+          "options": [
+            {
+              "disallowedTags": [
+                "@skip",
+                {
+                  "source": "^@temp-",
+                  "flags": ""
+                }
+              ]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "disallowedTag",
+              "data": {
+                "tag": "@temp-123"
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.fixme('@e2e my test', async ({ page }) => {})",
+          "options": [
+            {
+              "allowedTags": ["@regression", "@smoke"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unknownTag",
+              "data": {
+                "tag": "@e2e"
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.only('@skip my test', async ({ page }) => {})",
+          "options": [
+            {
+              "disallowedTags": ["@skip", "@todo"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "disallowedTag",
+              "data": {
+                "tag": "@skip"
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.step('@e2e my step', async () => {})",
+          "options": [
+            {
+              "allowedTags": ["@regression", "@smoke"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unknownTag",
+              "data": {
+                "tag": "@e2e"
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('@e2e my test', { tag: '@e2e' }, async ({ page }) => {})",
+          "options": [
+            {
+              "allowedTags": ["@regression", "@smoke"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unknownTag",
+              "data": {
+                "tag": "@e2e"
+              }
+            },
+            {
+              "messageId": "unknownTag",
+              "data": {
+                "tag": "@e2e"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

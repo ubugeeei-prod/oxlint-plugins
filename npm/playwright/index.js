@@ -16,6 +16,7 @@ const restrictedRules = new Set([
   'no-restricted-matchers',
   'no-restricted-roles',
 ]);
+const patternRules = new Set(['valid-test-tags', 'valid-title']);
 
 const sharedGlobals = Object.freeze({
   expect: false,
@@ -134,21 +135,23 @@ function createLegacyRecommendedConfig() {
 
 function createPlaywrightRule(ruleName) {
   const restrictedMeta = restrictedRuleMeta(ruleName);
+  const patternMeta = patternRuleMeta(ruleName);
+  const exactMeta = restrictedMeta ?? patternMeta;
   return {
     meta: {
       type: ruleType(ruleName),
       docs: {
         description:
-          restrictedMeta?.description ?? `enforce playwright ${ruleName.replaceAll('-', ' ')}`,
+          exactMeta?.description ?? `enforce playwright ${ruleName.replaceAll('-', ' ')}`,
         category: 'Best Practices',
         recommended: recommendedRuleConfig[`playwright/${ruleName}`] !== undefined,
         url: `${DOCS_BASE}/${ruleName}.md`,
       },
       fixable: fixableRule(ruleName) ? 'code' : undefined,
-      messages: restrictedMeta?.messages ?? {
+      messages: exactMeta?.messages ?? {
         unexpected: 'Unexpected Playwright pattern.',
       },
-      schema: restrictedMeta?.schema ?? [],
+      schema: exactMeta?.schema ?? [],
     },
     createOnce(context) {
       return {
@@ -173,6 +176,7 @@ function fixableRule(ruleName) {
     ruleName === 'no-focused-test' ||
     ruleName === 'no-skipped-test' ||
     ruleName === 'no-slowed-test' ||
+    ruleName === 'valid-title' ||
     ruleName.startsWith('prefer-') ||
     ruleName === 'require-to-pass-timeout' ||
     ruleName === 'require-to-throw-message'
@@ -180,9 +184,10 @@ function fixableRule(ruleName) {
 }
 
 function diagnosticsForRule(context, ruleName) {
-  const options = restrictedRules.has(ruleName)
-    ? restrictedScanOptions(context, ruleName)
-    : undefined;
+  const options =
+    restrictedRules.has(ruleName) || patternRules.has(ruleName)
+      ? ruleScanOptions(context, ruleName)
+      : undefined;
   return diagnosticsForContext(context, options).filter(
     (diagnostic) => diagnostic.ruleName === ruleName,
   );
@@ -192,7 +197,9 @@ function diagnosticsForContext(context, options) {
   const sourceCode = context.sourceCode || {};
   const sourceText = sourceTextForContext(context);
   const filename = typeof context.filename === 'string' ? context.filename : 'file.spec.ts';
-  const optionsKey = JSON.stringify(options ?? null);
+  const optionsKey = JSON.stringify(options ?? null, (_key, value) =>
+    value instanceof RegExp ? { source: value.source, flags: value.flags } : value,
+  );
   let cached = diagnosticsCache.get(sourceCode);
 
   if (!cached || cached.sourceText !== sourceText || cached.filename !== filename) {
@@ -210,7 +217,7 @@ function diagnosticsForContext(context, options) {
 }
 
 function reportDiagnostic(context, diagnostic) {
-  context.report({
+  const descriptor = {
     messageId: diagnostic.messageId,
     data: diagnostic.data,
     loc: {
@@ -223,7 +230,15 @@ function reportDiagnostic(context, diagnostic) {
         column: diagnostic.loc.endColumn,
       },
     },
-  });
+  };
+  if (diagnostic.fix) {
+    descriptor.fix = (fixer) =>
+      fixer.replaceTextRange(
+        [diagnostic.fix.start, diagnostic.fix.end],
+        diagnostic.fix.replacement,
+      );
+  }
+  context.report(descriptor);
 }
 
 function sourceTextForContext(context) {
@@ -237,14 +252,110 @@ function sourceTextForContext(context) {
   return '';
 }
 
-function restrictedScanOptions(context, ruleName) {
+function ruleScanOptions(context, ruleName) {
   const options = Array.isArray(context.options) ? context.options : [];
   const expectAliases = context.settings?.playwright?.globalAliases?.expect;
+  const testAliases = context.settings?.playwright?.globalAliases?.test;
   return {
     ...(ruleName === 'no-restricted-locators' ? { noRestrictedLocators: options[0] } : {}),
     ...(ruleName === 'no-restricted-matchers' ? { noRestrictedMatchers: options[0] } : {}),
     ...(ruleName === 'no-restricted-roles' ? { noRestrictedRoles: options[0] } : {}),
+    ...(ruleName === 'valid-title' ? { validTitle: options[0] } : {}),
+    ...(ruleName === 'valid-test-tags' ? { validTestTags: options[0] } : {}),
     ...(Array.isArray(expectAliases) ? { expectAliases } : {}),
+    ...(Array.isArray(testAliases) ? { testAliases } : {}),
+  };
+}
+
+function patternRuleMeta(ruleName) {
+  if (ruleName === 'valid-test-tags') {
+    return {
+      description: 'Enforce valid tag format in Playwright test blocks and titles',
+      messages: {
+        disallowedTag: 'Tag "{{tag}}" is not allowed',
+        invalidTagFormat: 'Tag must start with @',
+        invalidTagValue: 'Tag must be a string or array of strings',
+        unknownTag: 'Unknown tag "{{tag}}"',
+      },
+      schema: [
+        {
+          additionalProperties: false,
+          properties: {
+            allowedTags: tagListSchema(),
+            disallowedTags: tagListSchema(),
+          },
+          type: 'object',
+        },
+      ],
+    };
+  }
+  if (ruleName === 'valid-title') {
+    const matcherAndMessage = {
+      additionalItems: false,
+      items: { type: 'string' },
+      maxItems: 2,
+      minItems: 1,
+      type: 'array',
+    };
+    return {
+      description: 'Enforce valid titles',
+      messages: {
+        accidentalSpace: 'should not have leading or trailing spaces',
+        disallowedWord: '"{{ word }}" is not allowed in test titles',
+        duplicatePrefix: 'should not have duplicate prefix',
+        emptyTitle: '{{ functionName }} should not have an empty title',
+        mustMatch: '{{ functionName }} should match {{ pattern }}',
+        mustMatchCustom: '{{ message }}',
+        mustNotMatch: '{{ functionName }} should not match {{ pattern }}',
+        mustNotMatchCustom: '{{ message }}',
+        titleMustBeString: 'Title must be a string',
+      },
+      schema: [
+        {
+          additionalProperties: false,
+          patternProperties: {
+            '^must(?:Not)?Match$': {
+              oneOf: [
+                { type: 'string' },
+                matcherAndMessage,
+                {
+                  additionalProperties: {
+                    oneOf: [{ type: 'string' }, matcherAndMessage],
+                  },
+                  propertyNames: { enum: ['describe', 'test', 'step'] },
+                  type: 'object',
+                },
+              ],
+            },
+          },
+          properties: {
+            disallowedWords: { items: { type: 'string' }, type: 'array' },
+            ignoreSpaces: { default: false, type: 'boolean' },
+            ignoreTypeOfDescribeName: { default: false, type: 'boolean' },
+            ignoreTypeOfStepName: { default: true, type: 'boolean' },
+            ignoreTypeOfTestName: { default: false, type: 'boolean' },
+          },
+          type: 'object',
+        },
+      ],
+    };
+  }
+  return null;
+}
+
+function tagListSchema() {
+  return {
+    items: {
+      oneOf: [
+        { type: 'string' },
+        {
+          additionalProperties: false,
+          properties: { source: { type: 'string' } },
+          type: 'object',
+        },
+      ],
+    },
+    type: 'array',
   };
 }
 

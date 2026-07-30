@@ -13,8 +13,17 @@ export type PlaywrightDiagnostic = {
     method?: string;
     restriction?: string;
     role?: string;
+    functionName?: string;
+    pattern?: string;
+    tag?: string;
+    word?: string;
   };
   loc: PlaywrightDiagnosticLoc;
+  fix?: {
+    start: number;
+    end: number;
+    replacement: string;
+  };
 };
 
 export type PlaywrightRestrictedLocator =
@@ -36,6 +45,35 @@ export type PlaywrightScanOptions = {
   noRestrictedMatchers?: Record<string, string | null>;
   noRestrictedRoles?: PlaywrightRestrictedRole[];
   expectAliases?: string[];
+  testAliases?: string[];
+  validTitle?: PlaywrightValidTitleOptions;
+  validTestTags?: PlaywrightValidTestTagsOptions;
+};
+
+export type PlaywrightTitlePattern =
+  | string
+  | [pattern: string]
+  | [pattern: string, message: string];
+
+export type PlaywrightValidTitleOptions = {
+  disallowedWords?: string[];
+  ignoreSpaces?: boolean;
+  ignoreTypeOfDescribeName?: boolean;
+  ignoreTypeOfStepName?: boolean;
+  ignoreTypeOfTestName?: boolean;
+  mustMatch?:
+    | PlaywrightTitlePattern
+    | Partial<Record<'describe' | 'step' | 'test', PlaywrightTitlePattern>>;
+  mustNotMatch?:
+    | PlaywrightTitlePattern
+    | Partial<Record<'describe' | 'step' | 'test', PlaywrightTitlePattern>>;
+};
+
+export type PlaywrightTagPattern = string | RegExp | { source: string; flags?: string };
+
+export type PlaywrightValidTestTagsOptions = {
+  allowedTags?: PlaywrightTagPattern[];
+  disallowedTags?: PlaywrightTagPattern[];
 };
 
 export function implementedPlaywrightRuleNames(): string[];
