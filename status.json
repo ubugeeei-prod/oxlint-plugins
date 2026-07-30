@@ -14783,19 +14783,19 @@
       },
       {
         "name": "jsx-curly-spacing",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule jsx-curly-spacing."
+        "notes": "Native Oxc JSX/TSX AST port of stable @stylistic/jsx-curly-spacing v5.10.0. A commit-pinned synchronizer and Rust/Vitest exact-replay suites cover all 142 valid and 154 invalid authored upstream cases with 320 ordered diagnostics, IDs, messages, template data, brace locations, comment-safe fixes, and recursive convergence. Focused coverage adds attribute/children inheritance and disable switches, object-literal overrides, spread attributes, fragments, nested JSX order, empty/comment-only expressions, ECMAScript line terminators, UTF-8 byte to UTF-16 ranges, invalid/non-JSX input, metadata/API/shared settings, and real Oxlint TSX lint/fix integration."
       },
       {
         "name": "jsx-equals-spacing",

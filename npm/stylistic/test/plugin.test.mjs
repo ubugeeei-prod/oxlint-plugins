@@ -115,6 +115,12 @@ const stylisticRuleFixtures = [
   ['lines-around-comment', 'before();\n/** docs */\nafter();\n', [], ['before']],
   ['jsx-child-element-spacing', '<App>word\n<a>link</a></App>;\n', [], ['spacingBeforeNext']],
   [
+    'jsx-curly-spacing',
+    '<App attr={ value }>{child}</App>;\n',
+    [],
+    ['noSpaceAfter', 'noSpaceBefore'],
+  ],
+  [
     'jsx-closing-bracket-location',
     '<App\n  prop />;\n',
     [{ location: 'tag-aligned' }],
@@ -2945,6 +2951,106 @@ const parenthesized = (a + b) * c;
       expect(fixed.stderr).toBe('');
       expect(readFileSync(sourcePath, 'utf8')).toBe(
         `export const view = <Panel\n  title="日本語"\n${' '.repeat(20)}/>;\n`,
+      );
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it('supports jsx-curly-spacing shared settings, UTF-16 ranges, data, and fixes', () => {
+    const source = 'const marker = "😀日本語"; const view = <App attr={value}>{ child }</App>;\n';
+    const reports = runRule('jsx-curly-spacing', source, [], {
+      corsaStylistic: {
+        rules: {
+          'jsx-curly-spacing': [
+            {
+              attributes: { when: 'always' },
+              children: { when: 'never' },
+            },
+          ],
+        },
+      },
+    });
+    const ranges = [...source.matchAll(/[{}]/gu)].map((match) => [
+      match.index,
+      match.index + match[0].length,
+    ]);
+
+    expect(messageIds(reports)).toEqual([
+      'spaceNeededAfter',
+      'spaceNeededBefore',
+      'noSpaceAfter',
+      'noSpaceBefore',
+    ]);
+    expect(reports.map((report) => report.data)).toEqual([
+      { token: '{' },
+      { token: '}' },
+      { token: '{' },
+      { token: '}' },
+    ]);
+    expect(reports.map((report) => report.node.range)).toEqual(ranges);
+    expect(applyReportFixes(source, reports)).toBe(
+      'const marker = "😀日本語"; const view = <App attr={ value }>{child}</App>;\n',
+    );
+  });
+
+  it('runs jsx-curly-spacing through real oxlint TSX lint and recursive fixes', () => {
+    const oxlint = findOxlintCli();
+    const temp = mkdtempSync(join(tmpdir(), 'stylistic-jsx-curly-spacing-'));
+
+    try {
+      const sourcePath = join(temp, 'sample.tsx');
+      const configPath = join(temp, 'oxlint.config.jsonc');
+      writeFileSync(sourcePath, 'export const view = <App title={value}>{ child }</App>;\n');
+      writeFileSync(
+        configPath,
+        JSON.stringify({
+          jsPlugins: [{ name: 'stylistic', specifier: join(packageRoot, 'index.js') }],
+          rules: {
+            'stylistic/jsx-curly-spacing': [
+              'error',
+              {
+                attributes: { when: 'always' },
+                children: { when: 'never' },
+              },
+            ],
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        oxlint,
+        ['-c', configPath, '--quiet', '--format', 'json', sourcePath],
+        { encoding: 'utf8' },
+      );
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      expect(JSON.parse(result.stdout).diagnostics).toMatchObject([
+        {
+          code: 'stylistic(jsx-curly-spacing)',
+          message: "A space is required after '{'",
+        },
+        {
+          code: 'stylistic(jsx-curly-spacing)',
+          message: "A space is required before '}'",
+        },
+        {
+          code: 'stylistic(jsx-curly-spacing)',
+          message: "There should be no space after '{'",
+        },
+        {
+          code: 'stylistic(jsx-curly-spacing)',
+          message: "There should be no space before '}'",
+        },
+      ]);
+
+      const fixed = spawnSync(oxlint, ['-c', configPath, '--fix-suggestions', sourcePath], {
+        encoding: 'utf8',
+      });
+      expect(fixed.status).toBe(0);
+      expect(fixed.stderr).toBe('');
+      expect(readFileSync(sourcePath, 'utf8')).toBe(
+        'export const view = <App title={ value }>{child}</App>;\n',
       );
     } finally {
       rmSync(temp, { recursive: true, force: true });

@@ -21,6 +21,7 @@ mod jsx_child_element_spacing;
 mod jsx_closing_bracket_location;
 mod jsx_closing_tag_location;
 mod jsx_curly_newline;
+mod jsx_curly_spacing;
 mod jsx_quotes;
 mod jsx_rules;
 mod lexer;
@@ -632,6 +633,26 @@ const JSX_CURLY_NEWLINE_MESSAGES: &[(&str, &str)] = &[
     ("unexpectedBefore", "Unexpected newline before '}'."),
     ("unexpectedAfter", "Unexpected newline after '{'."),
 ];
+const JSX_CURLY_SPACING_MESSAGES: &[(&str, &str)] = &[
+    (
+        "noNewlineAfter",
+        "There should be no newline after '{{token}}'",
+    ),
+    (
+        "noNewlineBefore",
+        "There should be no newline before '{{token}}'",
+    ),
+    ("noSpaceAfter", "There should be no space after '{{token}}'"),
+    (
+        "noSpaceBefore",
+        "There should be no space before '{{token}}'",
+    ),
+    ("spaceNeededAfter", "A space is required after '{{token}}'"),
+    (
+        "spaceNeededBefore",
+        "A space is required before '{{token}}'",
+    ),
+];
 const LINE_COMMENT_POSITION_MESSAGES: &[(&str, &str)] = &[
     ("above", "Expected comment to be above code."),
     ("beside", "Expected comment to be beside code."),
@@ -1156,6 +1177,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         messages: JSX_CURLY_NEWLINE_MESSAGES,
     },
     StylisticRuleDefinition {
+        name: "jsx-curly-spacing",
+        docs_description: "Enforce or disallow spaces inside of curly braces in JSX attributes and expressions",
+        messages: JSX_CURLY_SPACING_MESSAGES,
+    },
+    StylisticRuleDefinition {
         name: "jsx-quotes",
         docs_description: "Enforce the consistent use of either double or single quotes in JSX attributes.",
         messages: JSX_QUOTES_MESSAGES,
@@ -1375,6 +1401,12 @@ pub fn run_stylistic_lint(
                 &mut diagnostics,
             ),
             "jsx-curly-newline" => jsx_curly_newline::check_jsx_curly_newline(
+                source_text,
+                config.filename.as_deref(),
+                &rule.options,
+                &mut diagnostics,
+            ),
+            "jsx-curly-spacing" => jsx_curly_spacing::check_jsx_curly_spacing(
                 source_text,
                 config.filename.as_deref(),
                 &rule.options,

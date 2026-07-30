@@ -1,0 +1,5331 @@
+{
+  "__generated": {
+    "source": "@stylistic/eslint-plugin",
+    "version": "v5.10.0",
+    "commit": "efbb1bc0e5aaedc4695c44a03f46f4fcbbe58712",
+    "sourceFile": "packages/eslint-plugin/rules/jsx-curly-spacing/jsx-curly-spacing.test.ts",
+    "ruleFile": "packages/eslint-plugin/rules/jsx-curly-spacing/jsx-curly-spacing.ts",
+    "license": "MIT",
+    "parserMatrix": ["default", "@babel/eslint-parser", "@typescript-eslint/parser"],
+    "parserExpansion": "authored semantic cases replayed with Oxc JSX/TSX",
+    "tool": "tools/tasks/sync-stylistic-jsx-curly-spacing-tests.ts",
+    "inventory": {
+      "valid": 142,
+      "invalid": 154,
+      "diagnostics": 320,
+      "fixableInvalid": 154,
+      "unfixableInvalid": 0,
+      "total": 296
+    }
+  },
+  "valid": [
+    {
+      "code": "<App foo={bar} />;"
+    },
+    {
+      "code": "<App foo={bar}>{bar}</App>;"
+    },
+    {
+      "code": "<App foo={bar}>{ bar }</App>;"
+    },
+    {
+      "code": "\n        <App foo={\n        bar\n        }>\n        {bar}\n        </App>;\n      "
+    },
+    {
+      "code": "<App foo={{ bar: true, baz: true }}>{{ bar: true, baz: true }}</App>;"
+    },
+    {
+      "code": "<App foo={{ bar: true, baz: true }}>{ { bar: true, baz: true } }</App>;"
+    },
+    {
+      "code": "\n        <App foo={\n        { bar: true, baz: true }\n        } />;\n      "
+    },
+    {
+      "code": "\n        <App foo={\n        { bar: true, baz: true }\n        }>\n        {{ bar: true, baz: true }}\n        </App>;\n      "
+    },
+    {
+      "code": "<App>{ foo /* comment 1 */ }</App>"
+    },
+    {
+      "code": "<App>{ /* comment 1 */ foo }</App>"
+    },
+    {
+      "code": "<App foo={bar} />;",
+      "options": [
+        {
+          "attributes": true
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={\n        bar\n        } />;\n      ",
+      "options": [
+        {
+          "attributes": true
+        }
+      ]
+    },
+    {
+      "code": "<App foo={{ bar: true, baz: true }} />;",
+      "options": [
+        {
+          "attributes": true
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={\n        { bar: true, baz: true }\n        } />;\n      ",
+      "options": [
+        {
+          "attributes": true
+        }
+      ]
+    },
+    {
+      "code": "<App foo={bar} />;",
+      "options": [
+        {
+          "attributes": false
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={\n        bar\n        } />;\n      ",
+      "options": [
+        {
+          "attributes": false
+        }
+      ]
+    },
+    {
+      "code": "<App foo={{ bar: true, baz: true }} />;",
+      "options": [
+        {
+          "attributes": false
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={\n        { bar: true, baz: true }\n        } />;\n      ",
+      "options": [
+        {
+          "attributes": false
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ bar } />;",
+      "options": [
+        {
+          "attributes": false
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ { bar: true, baz: true } } />;",
+      "options": [
+        {
+          "attributes": false
+        }
+      ]
+    },
+    {
+      "code": "<App>{bar}</App>;",
+      "options": [
+        {
+          "children": true
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>{\n        bar\n        }</App>;\n      ",
+      "options": [
+        {
+          "children": true
+        }
+      ]
+    },
+    {
+      "code": "<App>{{ bar: true, baz: true }}</App>;",
+      "options": [
+        {
+          "children": true
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>{\n        { bar: true, baz: true }\n        }</App>;\n      ",
+      "options": [
+        {
+          "children": true
+        }
+      ]
+    },
+    {
+      "code": "<App>{bar}</App>;",
+      "options": [
+        {
+          "children": false
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>{\n        bar\n        }</App>;\n      ",
+      "options": [
+        {
+          "children": false
+        }
+      ]
+    },
+    {
+      "code": "<App>{{ bar: true, baz: true }}</App>;",
+      "options": [
+        {
+          "children": false
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>{\n        { bar: true, baz: true }\n        }</App>;\n      ",
+      "options": [
+        {
+          "children": false
+        }
+      ]
+    },
+    {
+      "code": "<App>{ bar }</App>;",
+      "options": [
+        {
+          "children": false
+        }
+      ]
+    },
+    {
+      "code": "<App>{ { bar: true, baz: true } }</App>;",
+      "options": [
+        {
+          "children": false
+        }
+      ]
+    },
+    {
+      "code": "<App foo={bar} />;",
+      "options": [
+        {
+          "when": "never"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={bar} />;",
+      "options": [
+        {
+          "when": "never",
+          "allowMultiline": false
+        }
+      ]
+    },
+    {
+      "code": "<App foo={bar} />;",
+      "options": [
+        {
+          "when": "never",
+          "allowMultiline": true
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={\n        bar\n        } />;\n      ",
+      "options": [
+        {
+          "when": "never",
+          "allowMultiline": true
+        }
+      ]
+    },
+    {
+      "code": "<App foo={{ bar: true, baz: true }} />;",
+      "options": [
+        {
+          "when": "never",
+          "spacing": {
+            "objectLiterals": "never"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={\n        { bar: true, baz: true }\n        } />;\n      ",
+      "options": [
+        {
+          "when": "never",
+          "spacing": {
+            "objectLiterals": "never"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ bar } />;",
+      "options": [
+        {
+          "when": "always"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ bar } />;",
+      "options": [
+        {
+          "when": "always",
+          "allowMultiline": false
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ bar } />;",
+      "options": [
+        {
+          "when": "always",
+          "allowMultiline": true
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={\n        bar\n        } />;\n      ",
+      "options": [
+        {
+          "when": "always",
+          "allowMultiline": true
+        }
+      ]
+    },
+    {
+      "code": "<App foo={{ bar: true, baz: true }} />;",
+      "options": [
+        {
+          "when": "always",
+          "spacing": {
+            "objectLiterals": "never"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={\n        { bar: true, baz: true }\n        } />;\n      ",
+      "options": [
+        {
+          "when": "always",
+          "spacing": {
+            "objectLiterals": "never"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App foo={bar} />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "never"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ bar } />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "always"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ bar } />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "always",
+            "allowMultiline": false
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App foo={{ bar:baz }} />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "never"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={\n        { bar: true, baz: true }\n        } />;\n      ",
+      "options": [
+        {
+          "attributes": {
+            "when": "never"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ {bar:baz} } />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "always"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={\n        { bar: true, baz: true }\n        } />;\n      ",
+      "options": [
+        {
+          "attributes": {
+            "when": "always"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={\n        bar\n        } />;\n      ",
+      "options": [
+        {
+          "attributes": {
+            "when": "always"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={\n        bar\n        } />;\n      ",
+      "options": [
+        {
+          "attributes": {
+            "when": "always",
+            "allowMultiline": true
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={\n        bar\n        } />;\n      ",
+      "options": [
+        {
+          "attributes": {
+            "when": "never"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={\n        bar\n        } />;\n      ",
+      "options": [
+        {
+          "attributes": {
+            "when": "never",
+            "allowMultiline": true
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App foo={bar/* comment 2 */} />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "never"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ bar } />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "always",
+            "spacing": {}
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={\n        bar\n        } />;\n      ",
+      "options": [
+        {
+          "attributes": {
+            "when": "always",
+            "spacing": {}
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App foo={{ bar: true, baz: true }} />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "always",
+            "spacing": {
+              "objectLiterals": "never"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={\n        { bar: true, baz: true }\n        } />;\n      ",
+      "options": [
+        {
+          "attributes": {
+            "when": "always",
+            "spacing": {
+              "objectLiterals": "never"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App>{bar}</App>;",
+      "options": [
+        {
+          "children": {
+            "when": "never"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App>{ bar }</App>;",
+      "options": [
+        {
+          "children": {
+            "when": "always"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App>{ bar }</App>;",
+      "options": [
+        {
+          "children": {
+            "when": "always",
+            "allowMultiline": false
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App>{{ bar:baz }}</App>;",
+      "options": [
+        {
+          "children": {
+            "when": "never"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>{\n        { bar: true, baz: true }\n        }</App>;\n      ",
+      "options": [
+        {
+          "children": {
+            "when": "never"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App>{ {bar:baz} }</App>;",
+      "options": [
+        {
+          "children": {
+            "when": "always"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>{\n        { bar: true, baz: true }\n        }</App>;\n      ",
+      "options": [
+        {
+          "children": {
+            "when": "always"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>{\n        bar\n        }</App>;\n      ",
+      "options": [
+        {
+          "children": {
+            "when": "always"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>{\n        bar\n        }</App>;\n      ",
+      "options": [
+        {
+          "children": {
+            "when": "always",
+            "allowMultiline": true
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>{\n        bar\n        }</App>;\n      ",
+      "options": [
+        {
+          "children": {
+            "when": "never"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>{\n        bar\n        }</App>;\n      ",
+      "options": [
+        {
+          "children": {
+            "when": "never",
+            "allowMultiline": true
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>{/* comment 3 */}</App>;\n      ",
+      "options": [
+        {
+          "children": {
+            "when": "never"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App>{bar/* comment 4 */}</App>;",
+      "options": [
+        {
+          "children": {
+            "when": "never"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App>{ bar }</App>;",
+      "options": [
+        {
+          "children": {
+            "when": "always",
+            "spacing": {}
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>{\n        bar\n        }</App>;\n      ",
+      "options": [
+        {
+          "children": {
+            "when": "always",
+            "spacing": {}
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App>{{ bar: true, baz: true }}</App>;",
+      "options": [
+        {
+          "children": {
+            "when": "always",
+            "spacing": {
+              "objectLiterals": "never"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>{\n        { bar: true, baz: true }\n        }</App>;\n      ",
+      "options": [
+        {
+          "children": {
+            "when": "always",
+            "spacing": {
+              "objectLiterals": "never"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App {...bar} />;"
+    },
+    {
+      "code": "<App {...bar} />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "never"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App { ...bar } />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "always"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App { ...bar } />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "always",
+            "allowMultiline": false
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App {\n        ...bar\n        } />;\n      ",
+      "options": [
+        {
+          "attributes": {
+            "when": "always"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App {\n        ...bar\n        } />;\n      ",
+      "options": [
+        {
+          "attributes": {
+            "when": "always",
+            "allowMultiline": true
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App {\n        ...bar\n        } />;\n      ",
+      "options": [
+        {
+          "attributes": {
+            "when": "never"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App {\n        ...bar\n        } />;\n      ",
+      "options": [
+        {
+          "attributes": {
+            "when": "never",
+            "allowMultiline": true
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App {...bar/* comment 5 */} />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "never"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App foo={bar} {...baz} />;"
+    },
+    {
+      "code": "<App foo={bar} {...baz} />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "never"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ bar } { ...baz } />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "always"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ bar } { ...baz } />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "always",
+            "allowMultiline": false
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App foo={{ bar:baz }} {...baz} />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "never"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ {bar:baz} } { ...baz } />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "always"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={\n        bar\n        } {\n        ...bar\n        } />;\n      ",
+      "options": [
+        {
+          "attributes": {
+            "when": "always"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App foo={bar/* comment 6 */} {...baz/* comment 7 */} />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "never"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App foo={3} bar={ {a: 2} } />",
+      "options": [
+        {
+          "attributes": {
+            "when": "never",
+            "spacing": {
+              "objectLiterals": "always"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App>{bar/* comment 8 */}</App>;",
+      "options": [
+        {
+          "children": {
+            "when": "never"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App>{bar} {baz}</App>;"
+    },
+    {
+      "code": "<App>{bar} {baz}</App>;",
+      "options": [
+        {
+          "children": {
+            "when": "never"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App>{ bar } { baz }</App>;",
+      "options": [
+        {
+          "children": {
+            "when": "always"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App>{ bar } { baz }</App>;",
+      "options": [
+        {
+          "children": {
+            "when": "always",
+            "allowMultiline": false
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App>{{ bar:baz }} {baz}</App>;",
+      "options": [
+        {
+          "children": {
+            "when": "never"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App>{ {bar:baz} } { baz }</App>;",
+      "options": [
+        {
+          "children": {
+            "when": "always"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>{\n        bar\n        } {\n        bar\n        }</App>;\n      ",
+      "options": [
+        {
+          "children": {
+            "when": "always"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App>{bar/* comment 9 */} {baz/* comment 10 */}</App>;",
+      "options": [
+        {
+          "children": {
+            "when": "never"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App>{3} { {a: 2} }</App>",
+      "options": [
+        {
+          "children": {
+            "when": "never",
+            "spacing": {
+              "objectLiterals": "always"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ bar }>{bar}</App>",
+      "options": [
+        {
+          "attributes": {
+            "when": "always"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={ 42 } { ...bar } baz={{ 4: 2 }}>\n        {foo} {{ bar: baz }}\n        </App>\n      ",
+      "options": [
+        {
+          "when": "never",
+          "attributes": {
+            "when": "always",
+            "spacing": {
+              "objectLiterals": "never"
+            }
+          },
+          "children": true
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={42} {...bar} baz={ { 4: 2 } }>\n        {foo} { { bar: baz } }\n        </App>\n      ",
+      "options": [
+        {
+          "when": "never",
+          "spacing": {
+            "objectLiterals": "always"
+          },
+          "attributes": true,
+          "children": {
+            "when": "never"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={42} {...bar} baz={ { 4: 2 } }>\n        {foo} { { bar: baz } }\n        </App>\n      ",
+      "options": [
+        {
+          "spacing": {
+            "objectLiterals": "always"
+          },
+          "attributes": {
+            "when": "never",
+            "spacing": {
+              "objectLiterals": "always"
+            }
+          },
+          "children": {
+            "when": "never"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App foo={bar} />;",
+      "options": ["never"]
+    },
+    {
+      "code": "\n        <App foo={\n        { bar: true, baz: true }\n        } />;\n      ",
+      "options": [
+        "never",
+        {
+          "spacing": {
+            "objectLiterals": "never"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ bar } />;",
+      "options": ["always"]
+    },
+    {
+      "code": "<App foo={ bar } />;",
+      "options": [
+        "always",
+        {
+          "allowMultiline": false
+        }
+      ]
+    },
+    {
+      "code": "<App foo={{ bar:baz }} />;",
+      "options": ["never"]
+    },
+    {
+      "code": "\n        <App foo={\n        { bar: true, baz: true }\n        } />;\n      ",
+      "options": ["never"]
+    },
+    {
+      "code": "<App foo={ {bar:baz} } />;",
+      "options": ["always"]
+    },
+    {
+      "code": "\n        <App foo={\n        { bar: true, baz: true }\n        } />;\n      ",
+      "options": ["always"]
+    },
+    {
+      "code": "\n        <App foo={\n        bar\n        } />;\n      ",
+      "options": ["always"]
+    },
+    {
+      "code": "\n        <App foo={\n        bar\n        } />;\n      ",
+      "options": ["never"]
+    },
+    {
+      "code": "\n        <App>{/* comment 11 */}</App>;\n      ",
+      "options": ["never"]
+    },
+    {
+      "code": "<App foo={bar/* comment 12 */} />;",
+      "options": ["never"]
+    },
+    {
+      "code": "<App foo={ bar } />;",
+      "options": [
+        "always",
+        {
+          "spacing": {}
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={\n        bar\n        } />;\n      ",
+      "options": [
+        "always",
+        {
+          "spacing": {}
+        }
+      ]
+    },
+    {
+      "code": "<App foo={{ bar: true, baz: true }} />;",
+      "options": [
+        "always",
+        {
+          "spacing": {
+            "objectLiterals": "never"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={\n        bar\n        } />;\n      ",
+      "options": [
+        "always",
+        {
+          "allowMultiline": true
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={\n        { bar: true, baz: true }\n        } />;\n      ",
+      "options": [
+        "always",
+        {
+          "spacing": {
+            "objectLiterals": "never"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App {...bar} />;",
+      "options": ["never"]
+    },
+    {
+      "code": "<App { ...bar } />;",
+      "options": ["always"]
+    },
+    {
+      "code": "<App { ...bar } />;",
+      "options": [
+        "always",
+        {
+          "allowMultiline": false
+        }
+      ]
+    },
+    {
+      "code": "\n        <App {\n        ...bar\n        } />;\n      ",
+      "options": ["always"]
+    },
+    {
+      "code": "\n        <App {\n        ...bar\n        } />;\n      ",
+      "options": ["never"]
+    },
+    {
+      "code": "<App {...bar/* comment 13 */} />;",
+      "options": ["never"]
+    },
+    {
+      "code": "<App foo={bar} {...baz} />;",
+      "options": ["never"]
+    },
+    {
+      "code": "<App foo={ bar } { ...baz } />;",
+      "options": ["always"]
+    },
+    {
+      "code": "<App foo={ bar } { ...baz } />;",
+      "options": [
+        "always",
+        {
+          "allowMultiline": false
+        }
+      ]
+    },
+    {
+      "code": "<App foo={{ bar:baz }} {...baz} />;",
+      "options": ["never"]
+    },
+    {
+      "code": "<App foo={ {bar:baz} } { ...baz } />;",
+      "options": ["always"]
+    },
+    {
+      "code": "\n        <App foo={\n        bar\n        } {\n        ...bar\n        }/>;\n      ",
+      "options": ["always"]
+    },
+    {
+      "code": "<App foo={bar/* comment 14 */} {...baz/* comment 15 */} />;",
+      "options": ["never"]
+    },
+    {
+      "code": "<App foo={3} bar={ {a: 2} } />",
+      "options": [
+        "never",
+        {
+          "spacing": {
+            "objectLiterals": "always"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ bar }>{bar}</App>",
+      "options": ["always"]
+    },
+    {
+      "code": "\n        <App>{`\n        text\n        `}</App>\n      ",
+      "options": [
+        {
+          "children": {
+            "when": "never",
+            "allowMultiline": false
+          }
+        }
+      ]
+    },
+    {
+      "code": "<>{bar} {baz}</>;"
+    },
+    {
+      "code": "<div onLayout={() => { /* dummy callback to fix android bug with component measuring */ }} />"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "<App foo={ bar }>{bar}</App>;",
+      "output": "<App foo={bar}>{bar}</App>;",
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ bar }>{ bar }</App>;",
+      "output": "<App foo={bar}>{ bar }</App>;",
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ { bar: true, baz: true } }>{{ bar: true, baz: true }}</App>;",
+      "output": "<App foo={{ bar: true, baz: true }}>{{ bar: true, baz: true }}</App>;",
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ { bar: true, baz: true } }>{ { bar: true, baz: true } }</App>;",
+      "output": "<App foo={{ bar: true, baz: true }}>{ { bar: true, baz: true } }</App>;",
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ bar } />;",
+      "output": "<App foo={bar} />;",
+      "options": [
+        {
+          "attributes": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ { bar: true, baz: true } } />;",
+      "output": "<App foo={{ bar: true, baz: true }} />;",
+      "options": [
+        {
+          "attributes": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App>{ bar }</App>;",
+      "output": "<App>{bar}</App>;",
+      "options": [
+        {
+          "children": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<>{ bar }</>;",
+      "output": "<>{bar}</>;",
+      "options": [
+        {
+          "children": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App>{ { bar: true, baz: true } }</App>;",
+      "output": "<App>{{ bar: true, baz: true }}</App>;",
+      "options": [
+        {
+          "children": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ bar } />;",
+      "output": "<App foo={bar} />;",
+      "options": [
+        {
+          "when": "never"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={\n        bar\n        } />;\n      ",
+      "output": "\n        <App foo={bar} />;\n      ",
+      "options": [
+        {
+          "when": "never",
+          "allowMultiline": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noNewlineAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no newline after '{'"
+        },
+        {
+          "messageId": "noNewlineBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no newline before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ { bar: true, baz: true } } />;",
+      "output": "<App foo={{ bar: true, baz: true }} />;",
+      "options": [
+        {
+          "when": "never",
+          "spacing": {
+            "objectLiterals": "never"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={\n        { bar: true, baz: true }\n        } />;\n      ",
+      "output": "\n        <App foo={{ bar: true, baz: true }} />;\n      ",
+      "options": [
+        {
+          "when": "never",
+          "allowMultiline": false,
+          "spacing": {
+            "objectLiterals": "never"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noNewlineAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no newline after '{'"
+        },
+        {
+          "messageId": "noNewlineBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no newline before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={{ bar: true, baz: true }} />;",
+      "output": "<App foo={ { bar: true, baz: true } } />;",
+      "options": [
+        {
+          "when": "never",
+          "spacing": {
+            "objectLiterals": "always"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={\n        { bar: true, baz: true }\n        } />;\n      ",
+      "output": "\n        <App foo={ { bar: true, baz: true } } />;\n      ",
+      "options": [
+        {
+          "when": "never",
+          "allowMultiline": false,
+          "spacing": {
+            "objectLiterals": "always"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noNewlineAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no newline after '{'"
+        },
+        {
+          "messageId": "noNewlineBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no newline before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={bar} />;",
+      "output": "<App foo={ bar } />;",
+      "options": [
+        {
+          "when": "always"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={\n        bar\n        } />;\n      ",
+      "output": "\n        <App foo={ bar } />;\n      ",
+      "options": [
+        {
+          "when": "always",
+          "allowMultiline": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noNewlineAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no newline after '{'"
+        },
+        {
+          "messageId": "noNewlineBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no newline before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ { bar: true, baz: true } } />;",
+      "output": "<App foo={{ bar: true, baz: true }} />;",
+      "options": [
+        {
+          "when": "always",
+          "spacing": {
+            "objectLiterals": "never"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={\n        { bar: true, baz: true }\n        } />;\n      ",
+      "output": "\n        <App foo={{ bar: true, baz: true }} />;\n      ",
+      "options": [
+        {
+          "when": "always",
+          "allowMultiline": false,
+          "spacing": {
+            "objectLiterals": "never"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noNewlineAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no newline after '{'"
+        },
+        {
+          "messageId": "noNewlineBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no newline before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={{ bar: true, baz: true }} />;",
+      "output": "<App foo={ { bar: true, baz: true } } />;",
+      "options": [
+        {
+          "when": "always",
+          "spacing": {
+            "objectLiterals": "always"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={\n        { bar: true, baz: true }\n        } />;\n      ",
+      "output": "\n        <App foo={ { bar: true, baz: true } } />;\n      ",
+      "options": [
+        {
+          "when": "always",
+          "allowMultiline": false,
+          "spacing": {
+            "objectLiterals": "always"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noNewlineAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no newline after '{'"
+        },
+        {
+          "messageId": "noNewlineBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no newline before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ bar } />;",
+      "output": "<App foo={bar} />;",
+      "options": [
+        {
+          "attributes": true,
+          "when": "never"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={\n        bar\n        } />;\n      ",
+      "output": "\n        <App foo={bar} />;\n      ",
+      "options": [
+        {
+          "attributes": true,
+          "when": "never",
+          "allowMultiline": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noNewlineAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no newline after '{'"
+        },
+        {
+          "messageId": "noNewlineBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no newline before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ { bar: true, baz: true } } />;",
+      "output": "<App foo={{ bar: true, baz: true }} />;",
+      "options": [
+        {
+          "attributes": true,
+          "when": "never",
+          "spacing": {
+            "objectLiterals": "never"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={{ bar: true, baz: true }} />;",
+      "output": "<App foo={ { bar: true, baz: true } } />;",
+      "options": [
+        {
+          "attributes": true,
+          "when": "never",
+          "spacing": {
+            "objectLiterals": "always"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={bar} />;",
+      "output": "<App foo={ bar } />;",
+      "options": [
+        {
+          "attributes": true,
+          "when": "always"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={\n        bar\n        } />;\n      ",
+      "output": "\n        <App foo={ bar } />;\n      ",
+      "options": [
+        {
+          "attributes": true,
+          "when": "always",
+          "allowMultiline": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noNewlineAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no newline after '{'"
+        },
+        {
+          "data": {
+            "token": "}"
+          },
+          "messageId": "noNewlineBefore",
+          "message": "There should be no newline before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ { bar: true, baz: true } } />;",
+      "output": "<App foo={{ bar: true, baz: true }} />;",
+      "options": [
+        {
+          "attributes": true,
+          "when": "always",
+          "spacing": {
+            "objectLiterals": "never"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={{ bar: true, baz: true }} />;",
+      "output": "<App foo={ { bar: true, baz: true } } />;",
+      "options": [
+        {
+          "attributes": true,
+          "when": "always",
+          "spacing": {
+            "objectLiterals": "always"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ bar } />;",
+      "output": "<App foo={bar} />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "never"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ bar } />;",
+      "output": "<App foo={bar} />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "never",
+            "allowMultiline": false
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={bar} />;",
+      "output": "<App foo={ bar } />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "always"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={bar} />;",
+      "output": "<App foo={ bar } />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "always",
+            "allowMultiline": false
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ bar} />;",
+      "output": "<App foo={ bar } />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "always"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={bar } />;",
+      "output": "<App foo={ bar } />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "always"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ bar} />;",
+      "output": "<App foo={bar} />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "never"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={bar } />;",
+      "output": "<App foo={bar} />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "never"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={\n        bar\n        } />;\n      ",
+      "output": "\n        <App foo={bar} />;\n      ",
+      "options": [
+        {
+          "attributes": {
+            "when": "never",
+            "allowMultiline": false
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noNewlineAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no newline after '{'"
+        },
+        {
+          "messageId": "noNewlineBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no newline before '}'"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={\n        bar\n        } />;\n      ",
+      "output": "\n        <App foo={ bar } />;\n      ",
+      "options": [
+        {
+          "attributes": {
+            "when": "always",
+            "allowMultiline": false
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noNewlineAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no newline after '{'"
+        },
+        {
+          "messageId": "noNewlineBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no newline before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={bar} />;",
+      "output": "<App foo={ bar } />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "always",
+            "spacing": {}
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ bar} />;",
+      "output": "<App foo={ bar } />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "always",
+            "spacing": {}
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={bar } />;",
+      "output": "<App foo={ bar } />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "always",
+            "spacing": {}
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ {bar: true, baz: true} } />;",
+      "output": "<App foo={{bar: true, baz: true}} />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "always",
+            "spacing": {
+              "objectLiterals": "never"
+            }
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App>{ bar }</App>;",
+      "output": "<App>{bar}</App>;",
+      "options": [
+        {
+          "children": true,
+          "when": "never"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>{\n        bar\n        }</App>;\n      ",
+      "output": "\n        <App>{bar}</App>;\n      ",
+      "options": [
+        {
+          "children": true,
+          "when": "never",
+          "allowMultiline": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noNewlineAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no newline after '{'"
+        },
+        {
+          "messageId": "noNewlineBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no newline before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App>{ { bar: true, baz: true } }</App>;",
+      "output": "<App>{{ bar: true, baz: true }}</App>;",
+      "options": [
+        {
+          "children": true,
+          "when": "never",
+          "spacing": {
+            "objectLiterals": "never"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App>{{ bar: true, baz: true }}</App>;",
+      "output": "<App>{ { bar: true, baz: true } }</App>;",
+      "options": [
+        {
+          "children": true,
+          "when": "never",
+          "spacing": {
+            "objectLiterals": "always"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App>{bar}</App>;",
+      "output": "<App>{ bar }</App>;",
+      "options": [
+        {
+          "children": true,
+          "when": "always"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>{\n        bar\n        }</App>;\n      ",
+      "output": "\n        <App>{ bar }</App>;\n      ",
+      "options": [
+        {
+          "children": true,
+          "when": "always",
+          "allowMultiline": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noNewlineAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no newline after '{'"
+        },
+        {
+          "messageId": "noNewlineBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no newline before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App>{ { bar: true, baz: true } }</App>;",
+      "output": "<App>{{ bar: true, baz: true }}</App>;",
+      "options": [
+        {
+          "children": true,
+          "when": "always",
+          "spacing": {
+            "objectLiterals": "never"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App>{{ bar: true, baz: true }}</App>;",
+      "output": "<App>{ { bar: true, baz: true } }</App>;",
+      "options": [
+        {
+          "children": true,
+          "when": "always",
+          "spacing": {
+            "objectLiterals": "always"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App>{ bar }</App>;",
+      "output": "<App>{bar}</App>;",
+      "options": [
+        {
+          "children": {
+            "when": "never"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App>{ bar }</App>;",
+      "output": "<App>{bar}</App>;",
+      "options": [
+        {
+          "children": {
+            "when": "never",
+            "allowMultiline": false
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App>{bar}</App>;",
+      "output": "<App>{ bar }</App>;",
+      "options": [
+        {
+          "children": {
+            "when": "always"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App>{bar}</App>;",
+      "output": "<App>{ bar }</App>;",
+      "options": [
+        {
+          "children": {
+            "when": "always",
+            "allowMultiline": false
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App>{ bar}</App>;",
+      "output": "<App>{ bar }</App>;",
+      "options": [
+        {
+          "children": {
+            "when": "always"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App>{bar }</App>;",
+      "output": "<App>{ bar }</App>;",
+      "options": [
+        {
+          "children": {
+            "when": "always"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        }
+      ]
+    },
+    {
+      "code": "<App>{ bar}</App>;",
+      "output": "<App>{bar}</App>;",
+      "options": [
+        {
+          "children": {
+            "when": "never"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        }
+      ]
+    },
+    {
+      "code": "<App>{bar }</App>;",
+      "output": "<App>{bar}</App>;",
+      "options": [
+        {
+          "children": {
+            "when": "never"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>{\n        bar\n        }</App>;\n      ",
+      "output": "\n        <App>{bar}</App>;\n      ",
+      "options": [
+        {
+          "children": {
+            "when": "never",
+            "allowMultiline": false
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noNewlineAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no newline after '{'"
+        },
+        {
+          "messageId": "noNewlineBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no newline before '}'"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>{\n        bar\n        }</App>;\n      ",
+      "output": "\n        <App>{ bar }</App>;\n      ",
+      "options": [
+        {
+          "children": {
+            "when": "always",
+            "allowMultiline": false
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noNewlineAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no newline after '{'"
+        },
+        {
+          "messageId": "noNewlineBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no newline before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App>{bar}</App>;",
+      "output": "<App>{ bar }</App>;",
+      "options": [
+        {
+          "children": {
+            "when": "always",
+            "spacing": {}
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App>{ bar}</App>;",
+      "output": "<App>{ bar }</App>;",
+      "options": [
+        {
+          "children": {
+            "when": "always",
+            "spacing": {}
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App>{bar }</App>;",
+      "output": "<App>{ bar }</App>;",
+      "options": [
+        {
+          "children": {
+            "when": "always",
+            "spacing": {}
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        }
+      ]
+    },
+    {
+      "code": "<App>{ {bar: true, baz: true} }</App>;",
+      "output": "<App>{{bar: true, baz: true}}</App>;",
+      "options": [
+        {
+          "children": {
+            "when": "always",
+            "spacing": {
+              "objectLiterals": "never"
+            }
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App { ...bar } />;",
+      "output": "<App {...bar} />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "never"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App { ...bar } />;",
+      "output": "<App {...bar} />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "never",
+            "allowMultiline": false
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App {...bar} />;",
+      "output": "<App { ...bar } />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "always"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App {...bar} />;",
+      "output": "<App { ...bar } />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "always",
+            "allowMultiline": false
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App { ...bar} />;",
+      "output": "<App { ...bar } />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "always"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App {...bar } />;",
+      "output": "<App { ...bar } />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "always"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        }
+      ]
+    },
+    {
+      "code": "<App { ...bar} />;",
+      "output": "<App {...bar} />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "never"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        }
+      ]
+    },
+    {
+      "code": "<App {...bar } />;",
+      "output": "<App {...bar} />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "never"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App {\n        ...bar\n        } />;\n      ",
+      "output": "\n        <App {...bar} />;\n      ",
+      "options": [
+        {
+          "attributes": {
+            "when": "never",
+            "allowMultiline": false
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noNewlineAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no newline after '{'"
+        },
+        {
+          "messageId": "noNewlineBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no newline before '}'"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App {\n        ...bar\n        } />;\n      ",
+      "output": "\n        <App { ...bar } />;\n      ",
+      "options": [
+        {
+          "attributes": {
+            "when": "always",
+            "allowMultiline": false
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noNewlineAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no newline after '{'"
+        },
+        {
+          "messageId": "noNewlineBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no newline before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ bar } { ...baz } />;",
+      "output": "<App foo={bar} {...baz} />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "never"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        },
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ bar } { ...baz } />;",
+      "output": "<App foo={bar} {...baz} />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "never",
+            "allowMultiline": false
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        },
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={bar} {...baz} />;",
+      "output": "<App foo={ bar } { ...baz } />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "always"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        },
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={bar} {...baz} />;",
+      "output": "<App foo={ bar } { ...baz } />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "always",
+            "allowMultiline": false
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        },
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ bar} { ...baz} />;",
+      "output": "<App foo={ bar } { ...baz } />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "always"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={bar } {...baz } />;",
+      "output": "<App foo={ bar } { ...baz } />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "always"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ bar} { ...baz} />;",
+      "output": "<App foo={bar} {...baz} />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "never"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={bar } {...baz } />;",
+      "output": "<App foo={bar} {...baz} />;",
+      "options": [
+        {
+          "attributes": {
+            "when": "never"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={\n        bar\n        } {\n        ...baz\n        } />;\n      ",
+      "output": "\n        <App foo={bar} {...baz} />;\n      ",
+      "options": [
+        {
+          "attributes": {
+            "when": "never",
+            "allowMultiline": false
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noNewlineAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no newline after '{'"
+        },
+        {
+          "messageId": "noNewlineBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no newline before '}'"
+        },
+        {
+          "messageId": "noNewlineAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no newline after '{'"
+        },
+        {
+          "messageId": "noNewlineBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no newline before '}'"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={\n        bar\n        } {\n        ...baz\n        } />;\n      ",
+      "output": "\n        <App foo={ bar } { ...baz } />;\n      ",
+      "options": [
+        {
+          "attributes": {
+            "when": "always",
+            "allowMultiline": false
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noNewlineAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no newline after '{'"
+        },
+        {
+          "messageId": "noNewlineBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no newline before '}'"
+        },
+        {
+          "messageId": "noNewlineAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no newline after '{'"
+        },
+        {
+          "messageId": "noNewlineBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no newline before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ 3 } bar={{a: 2}} />",
+      "output": "<App foo={3} bar={ {a: 2} } />",
+      "options": [
+        {
+          "attributes": {
+            "when": "never",
+            "spacing": {
+              "objectLiterals": "always"
+            }
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        },
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ foo /* comment 16 */ } />",
+      "output": "<App foo={foo /* comment 16 */} />",
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={foo /* comment 17 */} />",
+      "output": "<App foo={ foo /* comment 17 */ } />",
+      "options": [
+        {
+          "attributes": {
+            "when": "always"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ /* comment 18 */ foo } />",
+      "output": "<App foo={/* comment 18 */ foo} />",
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={/* comment 19 */ foo} />",
+      "output": "<App foo={ /* comment 19 */ foo } />",
+      "options": [
+        {
+          "attributes": {
+            "when": "always"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App>{ bar } { baz }</App>;",
+      "output": "<App>{bar} {baz}</App>;",
+      "options": [
+        {
+          "children": {
+            "when": "never"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        },
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App>{ bar } { baz }</App>;",
+      "output": "<App>{bar} {baz}</App>;",
+      "options": [
+        {
+          "children": {
+            "when": "never",
+            "allowMultiline": false
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        },
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App>{bar} {baz}</App>;",
+      "output": "<App>{ bar } { baz }</App>;",
+      "options": [
+        {
+          "children": {
+            "when": "always"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        },
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App>{bar} {baz}</App>;",
+      "output": "<App>{ bar } { baz }</App>;",
+      "options": [
+        {
+          "children": {
+            "when": "always",
+            "allowMultiline": false
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        },
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App>{ bar} { baz}</App>;",
+      "output": "<App>{ bar } { baz }</App>;",
+      "options": [
+        {
+          "children": {
+            "when": "always"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App>{bar } {baz }</App>;",
+      "output": "<App>{ bar } { baz }</App>;",
+      "options": [
+        {
+          "children": {
+            "when": "always"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        }
+      ]
+    },
+    {
+      "code": "<App>{ bar} { baz}</App>;",
+      "output": "<App>{bar} {baz}</App>;",
+      "options": [
+        {
+          "children": {
+            "when": "never"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        }
+      ]
+    },
+    {
+      "code": "<App>{bar } {baz }</App>;",
+      "output": "<App>{bar} {baz}</App>;",
+      "options": [
+        {
+          "children": {
+            "when": "never"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>{\n        bar\n        } {\n        baz\n        }</App>;\n      ",
+      "output": "\n        <App>{bar} {baz}</App>;\n      ",
+      "options": [
+        {
+          "children": {
+            "when": "never",
+            "allowMultiline": false
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noNewlineAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no newline after '{'"
+        },
+        {
+          "messageId": "noNewlineBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no newline before '}'"
+        },
+        {
+          "messageId": "noNewlineAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no newline after '{'"
+        },
+        {
+          "messageId": "noNewlineBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no newline before '}'"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>{\n        bar\n        } {\n        baz\n        }</App>;\n      ",
+      "output": "\n        <App>{ bar } { baz }</App>;\n      ",
+      "options": [
+        {
+          "children": {
+            "when": "always",
+            "allowMultiline": false
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noNewlineAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no newline after '{'"
+        },
+        {
+          "messageId": "noNewlineBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no newline before '}'"
+        },
+        {
+          "messageId": "noNewlineAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no newline after '{'"
+        },
+        {
+          "messageId": "noNewlineBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no newline before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App>{ 3 } bar={{a: 2}}</App>",
+      "output": "<App>{3} bar={ {a: 2} }</App>",
+      "options": [
+        {
+          "children": {
+            "when": "never",
+            "spacing": {
+              "objectLiterals": "always"
+            }
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        },
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App>{foo /* comment 20 */}</App>",
+      "output": "<App>{ foo /* comment 20 */ }</App>",
+      "options": [
+        {
+          "children": {
+            "when": "always"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App>{/* comment 21 */ foo}</App>",
+      "output": "<App>{ /* comment 21 */ foo }</App>",
+      "options": [
+        {
+          "children": {
+            "when": "always"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ bar } />;",
+      "output": "<App foo={bar} />;",
+      "options": ["never"],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ bar } />;",
+      "output": "<App foo={bar} />;",
+      "options": [
+        "never",
+        {
+          "allowMultiline": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={\n        { bar: true, baz: true }\n        } />;\n      ",
+      "output": "\n        <App foo={{ bar: true, baz: true }} />;\n      ",
+      "options": [
+        "never",
+        {
+          "allowMultiline": false,
+          "spacing": {
+            "objectLiterals": "never"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noNewlineAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no newline after '{'"
+        },
+        {
+          "messageId": "noNewlineBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no newline before '}'"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={\n        { bar: true, baz: true }\n        } />;\n      ",
+      "output": "\n        <App foo={ { bar: true, baz: true } } />;\n      ",
+      "options": [
+        "never",
+        {
+          "allowMultiline": false,
+          "spacing": {
+            "objectLiterals": "always"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noNewlineAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no newline after '{'"
+        },
+        {
+          "messageId": "noNewlineBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no newline before '}'"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={\n        { bar: true, baz: true }\n        } />;\n      ",
+      "output": "\n        <App foo={{ bar: true, baz: true }} />;\n      ",
+      "options": [
+        "always",
+        {
+          "allowMultiline": false,
+          "spacing": {
+            "objectLiterals": "never"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noNewlineAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no newline after '{'"
+        },
+        {
+          "messageId": "noNewlineBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no newline before '}'"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={\n        { bar: true, baz: true }\n        } />;\n      ",
+      "output": "\n        <App foo={ { bar: true, baz: true } } />;\n      ",
+      "options": [
+        "always",
+        {
+          "allowMultiline": false,
+          "spacing": {
+            "objectLiterals": "always"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noNewlineAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no newline after '{'"
+        },
+        {
+          "messageId": "noNewlineBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no newline before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={bar} />;",
+      "output": "<App foo={ bar } />;",
+      "options": ["always"],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={bar} />;",
+      "output": "<App foo={ bar } />;",
+      "options": [
+        "always",
+        {
+          "allowMultiline": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ bar} />;",
+      "output": "<App foo={ bar } />;",
+      "options": ["always"],
+      "errors": [
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={bar } />;",
+      "output": "<App foo={ bar } />;",
+      "options": ["always"],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ bar} />;",
+      "output": "<App foo={bar} />;",
+      "options": ["never"],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={bar } />;",
+      "output": "<App foo={bar} />;",
+      "options": ["never"],
+      "errors": [
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={\n        bar\n        } />;\n      ",
+      "output": "\n        <App foo={bar} />;\n      ",
+      "options": [
+        "never",
+        {
+          "allowMultiline": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noNewlineAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no newline after '{'"
+        },
+        {
+          "messageId": "noNewlineBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no newline before '}'"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={\n        bar\n        } />;\n      ",
+      "output": "\n        <App foo={ bar } />;\n      ",
+      "options": [
+        "always",
+        {
+          "allowMultiline": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noNewlineAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no newline after '{'"
+        },
+        {
+          "messageId": "noNewlineBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no newline before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={bar} />;",
+      "output": "<App foo={ bar } />;",
+      "options": [
+        "always",
+        {
+          "spacing": {}
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ bar} />;",
+      "output": "<App foo={ bar } />;",
+      "options": [
+        "always",
+        {
+          "spacing": {}
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={bar } />;",
+      "output": "<App foo={ bar } />;",
+      "options": [
+        "always",
+        {
+          "spacing": {}
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ {bar: true, baz: true} } />;",
+      "output": "<App foo={{bar: true, baz: true}} />;",
+      "options": [
+        "always",
+        {
+          "spacing": {
+            "objectLiterals": "never"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App { ...bar } />;",
+      "output": "<App {...bar} />;",
+      "options": ["never"],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App { ...bar } />;",
+      "output": "<App {...bar} />;",
+      "options": [
+        "never",
+        {
+          "allowMultiline": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App {...bar} />;",
+      "output": "<App { ...bar } />;",
+      "options": ["always"],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App {...bar} />;",
+      "output": "<App { ...bar } />;",
+      "options": [
+        "always",
+        {
+          "allowMultiline": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App { ...bar} />;",
+      "output": "<App { ...bar } />;",
+      "options": ["always"],
+      "errors": [
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App {...bar } />;",
+      "output": "<App { ...bar } />;",
+      "options": ["always"],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        }
+      ]
+    },
+    {
+      "code": "<App { ...bar} />;",
+      "output": "<App {...bar} />;",
+      "options": ["never"],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        }
+      ]
+    },
+    {
+      "code": "<App {...bar } />;",
+      "output": "<App {...bar} />;",
+      "options": ["never"],
+      "errors": [
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App {\n        ...bar\n        } />;\n      ",
+      "output": "\n        <App {...bar} />;\n      ",
+      "options": [
+        "never",
+        {
+          "allowMultiline": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noNewlineAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no newline after '{'"
+        },
+        {
+          "messageId": "noNewlineBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no newline before '}'"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App {\n        ...bar\n        } />;\n      ",
+      "output": "\n        <App { ...bar } />;\n      ",
+      "options": [
+        "always",
+        {
+          "allowMultiline": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noNewlineAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no newline after '{'"
+        },
+        {
+          "messageId": "noNewlineBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no newline before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ bar } { ...baz } />;",
+      "output": "<App foo={bar} {...baz} />;",
+      "options": ["never"],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        },
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ bar } { ...baz } />;",
+      "output": "<App foo={bar} {...baz} />;",
+      "options": [
+        "never",
+        {
+          "allowMultiline": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        },
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={bar} {...baz} />;",
+      "output": "<App foo={ bar } { ...baz } />;",
+      "options": ["always"],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        },
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={bar} {...baz} />;",
+      "output": "<App foo={ bar } { ...baz } />;",
+      "options": [
+        "always",
+        {
+          "allowMultiline": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        },
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ bar} { ...baz} />;",
+      "output": "<App foo={ bar } { ...baz } />;",
+      "options": ["always"],
+      "errors": [
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={bar } {...baz } />;",
+      "output": "<App foo={ bar } { ...baz } />;",
+      "options": ["always"],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ bar} { ...baz} />;",
+      "output": "<App foo={bar} {...baz} />;",
+      "options": ["never"],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={bar } {...baz } />;",
+      "output": "<App foo={bar} {...baz} />;",
+      "options": ["never"],
+      "errors": [
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={\n        bar\n        } {\n        ...baz\n        } />;\n      ",
+      "output": "\n        <App foo={bar} {...baz} />;\n      ",
+      "options": [
+        "never",
+        {
+          "allowMultiline": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noNewlineAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no newline after '{'"
+        },
+        {
+          "messageId": "noNewlineBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no newline before '}'"
+        },
+        {
+          "messageId": "noNewlineAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no newline after '{'"
+        },
+        {
+          "messageId": "noNewlineBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no newline before '}'"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App foo={\n        bar\n        } {\n        ...baz\n        } />;\n      ",
+      "output": "\n        <App foo={ bar } { ...baz } />;\n      ",
+      "options": [
+        "always",
+        {
+          "allowMultiline": false
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noNewlineAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no newline after '{'"
+        },
+        {
+          "messageId": "noNewlineBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no newline before '}'"
+        },
+        {
+          "messageId": "noNewlineAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no newline after '{'"
+        },
+        {
+          "messageId": "noNewlineBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no newline before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={ 3 } bar={{a: 2}} />",
+      "output": "<App foo={3} bar={ {a: 2} } />",
+      "options": [
+        "never",
+        {
+          "spacing": {
+            "objectLiterals": "always"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        },
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={foo /* comment 22 */} />",
+      "output": "<App foo={ foo /* comment 22 */ } />",
+      "options": ["always"],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App foo={/* comment 23 */ foo} />",
+      "output": "<App foo={ /* comment 23 */ foo } />",
+      "options": ["always"],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App>{/*comment24*/ }</App>",
+      "output": "<App>{/*comment24*/}</App>",
+      "options": [
+        {
+          "children": {
+            "when": "never"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "<App>{ /*comment25*/}</App>",
+      "output": "<App>{/*comment25*/}</App>",
+      "options": [
+        {
+          "children": {
+            "when": "never"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        }
+      ]
+    },
+    {
+      "code": "<App>{/*comment26*/}</App>",
+      "output": "<App>{ /*comment26*/ }</App>",
+      "options": [
+        {
+          "children": {
+            "when": "always"
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>\n        { /* comment 27 */ }\n        </App>;\n      ",
+      "output": "\n        <App>\n        {/* comment 27 */}\n        </App>;\n      ",
+      "options": [
+        {
+          "when": "never",
+          "children": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>\n        {/* comment 28 */}\n        </App>;\n      ",
+      "output": "\n        <App>\n        { /* comment 28 */ }\n        </App>;\n      ",
+      "options": [
+        {
+          "when": "always",
+          "children": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>\n        {/*comment29*/\n        }\n        </App>\n      ",
+      "output": "\n        <App>\n        {/*comment29*/}\n        </App>\n      ",
+      "options": [
+        {
+          "children": {
+            "when": "never",
+            "allowMultiline": false
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noNewlineBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no newline before '}'"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>\n        {\n        /*comment30*/}\n        </App>\n      ",
+      "output": "\n        <App>\n        {/*comment30*/}\n        </App>\n      ",
+      "options": [
+        {
+          "children": {
+            "when": "never",
+            "allowMultiline": false
+          }
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noNewlineAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no newline after '{'"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>{ /* comment 31 */\n        bar\n        } {\n        baz\n        /* comment 32 */ }</App>;\n      ",
+      "output": "\n        <App>{/* comment 31 */\n        bar\n        } {\n        baz\n        /* comment 32 */}</App>;\n      ",
+      "options": [
+        {
+          "when": "never",
+          "children": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    },
+    {
+      "code": "\n        <App>{/* comment 33 */\n        bar\n        } {\n        baz\n        /* comment 33 */}</App>;\n      ",
+      "output": "\n        <App>{ /* comment 33 */\n        bar\n        } {\n        baz\n        /* comment 33 */ }</App>;\n      ",
+      "options": [
+        {
+          "when": "always",
+          "children": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "spaceNeededAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "A space is required after '{'"
+        },
+        {
+          "messageId": "spaceNeededBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "A space is required before '}'"
+        }
+      ]
+    },
+    {
+      "code": "\n        <div className={ this.state.renderInfo ? \"infoPanel col-xs-12\" : \"unToggled col-xs-12\" } />\n      ",
+      "output": "\n        <div className={this.state.renderInfo ? \"infoPanel col-xs-12\" : \"unToggled col-xs-12\"} />\n      ",
+      "options": [
+        "never",
+        {
+          "allowMultiline": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noSpaceAfter",
+          "data": {
+            "token": "{"
+          },
+          "message": "There should be no space after '{'"
+        },
+        {
+          "messageId": "noSpaceBefore",
+          "data": {
+            "token": "}"
+          },
+          "message": "There should be no space before '}'"
+        }
+      ]
+    }
+  ]
+}

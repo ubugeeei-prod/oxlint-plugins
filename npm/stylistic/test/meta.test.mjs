@@ -46,6 +46,7 @@ describe('stylistic plugin meta contract', () => {
       expect(rule.meta.fixable).toBe(
         [
           'jsx-closing-bracket-location',
+          'jsx-curly-spacing',
           'jsx-quotes',
           'no-confusing-arrow',
           'no-extra-parens',
@@ -142,6 +143,29 @@ describe('stylistic plugin meta contract', () => {
         expectedAfter: "Expected newline after '{'.",
         unexpectedBefore: "Unexpected newline before '}'.",
         unexpectedAfter: "Unexpected newline after '{'.",
+      },
+      schema: { type: 'array' },
+    });
+  });
+
+  it('preserves the stable jsx-curly-spacing metadata contract', () => {
+    expect(plugin.rules['jsx-curly-spacing'].meta).toMatchObject({
+      type: 'layout',
+      docs: {
+        description:
+          'Enforce or disallow spaces inside of curly braces in JSX attributes and expressions',
+        recommended: false,
+        requiresTypeChecking: false,
+      },
+      fixable: 'code',
+      hasSuggestions: true,
+      messages: {
+        noNewlineAfter: "There should be no newline after '{{token}}'",
+        noNewlineBefore: "There should be no newline before '{{token}}'",
+        noSpaceAfter: "There should be no space after '{{token}}'",
+        noSpaceBefore: "There should be no space before '{{token}}'",
+        spaceNeededAfter: "A space is required after '{{token}}'",
+        spaceNeededBefore: "A space is required before '{{token}}'",
       },
       schema: { type: 'array' },
     });
