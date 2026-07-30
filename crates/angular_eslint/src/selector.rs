@@ -74,6 +74,7 @@ impl Visit<'_> for Scanner<'_> {
     fn visit_class(&mut self, class: &Class<'_>) {
         self.check_class_suffix_decorators(class);
         self.check_component_inline_declarations(class);
+        self.check_input_rename(class);
         self.check_prefix_rules(class);
         self.check_selector_decorators(class);
         walk::walk_class(self, class);

@@ -2,6 +2,7 @@
 
 mod class_suffix;
 mod inline_declarations;
+mod input_rename;
 mod prefix;
 mod scanner;
 mod selector;

@@ -51,7 +51,6 @@ impl<'a> Scanner<'a> {
             "no-implicit-take-until-destroyed",
             r#"\btakeUntilDestroyed\s*\(\s*\)"#,
         );
-        self.check_regex("no-input-rename", r#"@Input\s*\(\s*['"][^'"]+['"]"#);
         self.check_regex("no-inputs-metadata-property", r#"\binputs\s*:"#);
         self.check_regex(
             "no-lifecycle-call",

@@ -1,6 +1,12 @@
+import { readFileSync } from 'node:fs';
+
 import { describe, expect, it } from 'vitest';
 
 import { implementedAngularEslintRuleNames, scanAngularEslint } from '../api.js';
+
+const noInputRenameFixture = JSON.parse(
+  readFileSync(new URL('./fixtures/no-input-rename-v22.0.0.json', import.meta.url), 'utf8'),
+);
 
 const expectedRuleNames = [
   'component-class-suffix',
@@ -321,6 +327,131 @@ describe('angular-eslint native API', () => {
         options,
       }),
     ).toMatchObject(expected);
+  });
+
+  it('pins every authored no-input-rename case from angular-eslint v22.0.0', () => {
+    expect(noInputRenameFixture.metadata).toMatchObject({
+      version: '22.0.0',
+      sourceCommit: '7ee4556badebf8c140ffdefdd0b07b02820d5e96',
+      counts: {
+        valid: 46,
+        invalid: 35,
+        diagnostics: 35,
+      },
+    });
+  });
+
+  it.each(noInputRenameFixture.valid)(
+    'accepts upstream no-input-rename valid case: $name',
+    ({ code, options }) => {
+      expect(
+        scanAngularEslint(code, 'fixture.ts', {
+          ruleNames: ['no-input-rename'],
+          options,
+        }),
+      ).toEqual([]);
+    },
+  );
+
+  it.each(noInputRenameFixture.invalid)(
+    'matches upstream no-input-rename invalid location: $name',
+    ({ code, errors, options }) => {
+      const diagnostics = scanAngularEslint(code, 'fixture.ts', {
+        ruleNames: ['no-input-rename'],
+        options,
+      });
+      expect(diagnostics).toHaveLength(errors.length);
+      expect(diagnostics).toEqual(
+        errors.map((error) => ({
+          ruleName: 'no-input-rename',
+          messageId: 'noInputRename',
+          data: [],
+          loc: {
+            startLine: error.line,
+            startColumn: error.column - 1,
+            endLine: error.endLine,
+            endColumn: error.endColumn - 1,
+          },
+        })),
+      );
+    },
+  );
+
+  it('reports decorator, signal, required signal, and metadata aliases in source order', () => {
+    const source = `
+@Component({ inputs: ['metadata: publicMetadata'] })
+class Test {
+  @Input('publicDecorator') decorator: string;
+  signal = input(0, { alias: 'publicSignal' });
+  required = input.required<string>({ alias: 'publicRequired' });
+}
+`;
+    const diagnostics = scanAngularEslint(source, 'fixture.ts', {
+      ruleNames: ['no-input-rename'],
+      options: [],
+    });
+    expect(diagnostics).toHaveLength(4);
+    expect(diagnostics.map(({ messageId }) => messageId)).toEqual([
+      'noInputRename',
+      'noInputRename',
+      'noInputRename',
+      'noInputRename',
+    ]);
+    expect(diagnostics.map(({ loc }) => loc.startLine)).toEqual([2, 4, 5, 6]);
+  });
+
+  it('keeps no-input-rename isolated and fails closed on malformed TypeScript', () => {
+    const source = `class Test { @Input('renamed') name: string; }`;
+    expect(
+      scanAngularEslint(source, 'fixture.ts', {
+        ruleNames: ['no-output-rename'],
+        options: [],
+      }).some(({ ruleName }) => ruleName === 'no-input-rename'),
+    ).toBe(false);
+    expect(
+      scanAngularEslint(`class Test { @Input('renamed'`, 'fixture.ts', {
+        ruleNames: ['no-input-rename'],
+        options: [],
+      }),
+    ).toEqual([]);
+  });
+
+  it('preserves UTF-16 columns for no-input-rename aliases', () => {
+    expect(
+      scanAngularEslint(
+        `class Test { emoji = '😀'; @Input('renamed') name: string; }`,
+        'fixture.ts',
+        {
+          ruleNames: ['no-input-rename'],
+          options: [],
+        },
+      ),
+    ).toMatchObject([
+      {
+        messageId: 'noInputRename',
+        loc: {
+          startLine: 1,
+          startColumn: 34,
+          endLine: 1,
+          endColumn: 43,
+        },
+      },
+    ]);
+  });
+
+  it('does not mistake computed identifier keys for static Angular metadata', () => {
+    const source = `
+const selector = 'selector';
+const inputs = 'inputs';
+@Directive({ [selector]: 'publicName', [inputs]: ['internal: publicName'] })
+class Test { @Input('publicName') internal: string; }
+`;
+    expect(
+      scanAngularEslint(source, 'fixture.ts', {
+        ruleNames: ['no-input-rename'],
+        options: [],
+      }),
+    ).toMatchObject([{ messageId: 'noInputRename', loc: { startLine: 5 } }]);
   });
 
   it.each([
