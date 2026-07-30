@@ -1,0 +1,440 @@
+{
+  "metadata": {
+    "package": "@angular-eslint/eslint-plugin",
+    "version": "22.1.0",
+    "sourceCommit": "a666e1b45c9782d1ac2066fd55ec0127d0580950",
+    "sourceTag": "v22.1.0",
+    "sourcePath": "packages/eslint-plugin/tests/rules/require-localize-metadata/cases.ts",
+    "sourceSha256": "532a9e3c1d93294fd7245b183eab26098217f6971c3fa1fddb230dc5cc904faa",
+    "capture": "every authored valid and invalid semantic case exactly once",
+    "counts": {
+      "valid": 13,
+      "invalid": 15,
+      "diagnostics": 16
+    }
+  },
+  "valid": [
+    {
+      "name": "valid-1",
+      "code": "const localizedText = $localize`Hello i18n!`;",
+      "options": []
+    },
+    {
+      "name": "valid-2",
+      "code": "const localizedText = $localize`:site header|:Hello i18n!`;",
+      "options": []
+    },
+    {
+      "name": "valid-3",
+      "code": "const localizedText = $localize`:@@custom_id:Hello i18n!`;",
+      "options": []
+    },
+    {
+      "name": "valid-4",
+      "code": "const localizedText = $localize`:site header|@@custom_id:Hello i18n!`;",
+      "options": []
+    },
+    {
+      "name": "valid-5",
+      "code": "\n      let localizedText = $localize`:An introduction header for this sample:Hello i18n!`;\n      localizedText = $localize`:An introduction header for this sample modified:Hello i18n modified!`;\n    ",
+      "options": [
+        {
+          "requireDescription": true
+        }
+      ]
+    },
+    {
+      "name": "valid-6",
+      "code": "\n      const localizedTexts = {\n        helloI18n: $localize`:An introduction header for this sample:Hello i18n!`\n      };\n      localizedTexts.helloI18n = $localize`:An introduction header for this sample modified:Hello i18n modified!`;\n    ",
+      "options": [
+        {
+          "requireDescription": true
+        }
+      ]
+    },
+    {
+      "name": "valid-7",
+      "code": "\n      return $localize`:An introduction header for this sample:Hello i18n!`;\n    ",
+      "options": [
+        {
+          "requireDescription": true
+        }
+      ]
+    },
+    {
+      "name": "valid-8",
+      "code": "\n      someFunction($localize`:An introduction header for this sample:Hello i18n!`);\n    ",
+      "options": [
+        {
+          "requireDescription": true
+        }
+      ]
+    },
+    {
+      "name": "valid-9",
+      "code": "const localizedText = `Hello i18n!`;",
+      "options": [
+        {
+          "requireDescription": true
+        }
+      ]
+    },
+    {
+      "name": "valid-10",
+      "code": "const localizedText = $localize`:site header|:Hello i18n!`;",
+      "options": [
+        {
+          "requireMeaning": true
+        }
+      ]
+    },
+    {
+      "name": "valid-11",
+      "code": "const localizedText = $localize`:site header|An introduction header for this sample:Hello i18n!`;",
+      "options": [
+        {
+          "requireDescription": true,
+          "requireMeaning": true
+        }
+      ]
+    },
+    {
+      "name": "valid-12",
+      "code": "const localizedText = $localize`:@@some.custom.id:Hello i18n!`;",
+      "options": [
+        {
+          "requireCustomId": true
+        }
+      ]
+    },
+    {
+      "name": "valid-13",
+      "code": "const localizedText = $localize`:@@some.custom.id:Hello i18n!`;",
+      "options": [
+        {
+          "requireCustomId": "^some.*id$"
+        }
+      ]
+    }
+  ],
+  "invalid": [
+    {
+      "name": "it should fail if no $localize description is provided when required for variable declarations",
+      "code": "\n      const localizedText = $localize`Hello i18n!`;\n                                     \n    ",
+      "options": [
+        {
+          "requireDescription": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "requireLocalizeDescription",
+          "data": {},
+          "line": 2,
+          "column": 38,
+          "endLine": 2,
+          "endColumn": 51
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "it should fail if no $localize description is provided when required for expressions statements",
+      "code": "\n      const localizedTexts = {\n        helloI18n: $localize`:An introduction header for this sample:Hello i18n!`\n      };\n      localizedTexts.helloI18n = $localize`Hello i18n!`;\n                                          \n    ",
+      "options": [
+        {
+          "requireDescription": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "requireLocalizeDescription",
+          "data": {},
+          "line": 5,
+          "column": 43,
+          "endLine": 5,
+          "endColumn": 56
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "it should fail if no $localize description is provided when required for return statements",
+      "code": "\n      return $localize`Hello i18n!`;\n                      \n    ",
+      "options": [
+        {
+          "requireDescription": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "requireLocalizeDescription",
+          "data": {},
+          "line": 2,
+          "column": 23,
+          "endLine": 2,
+          "endColumn": 36
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "it should fail if no $localize description is provided when required for call expressions",
+      "code": "\n      someFunction($localize`Hello i18n!`);\n                            \n    ",
+      "options": [
+        {
+          "requireDescription": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "requireLocalizeDescription",
+          "data": {},
+          "line": 2,
+          "column": 29,
+          "endLine": 2,
+          "endColumn": 42
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "it should fail if no $localize description is provided when required for variable declarations, despite a meaning being provided",
+      "code": "\n      const localizedText = $localize`:site header|:Hello i18n!`;\n                                     \n    ",
+      "options": [
+        {
+          "requireDescription": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "requireLocalizeDescription",
+          "data": {},
+          "line": 2,
+          "column": 38,
+          "endLine": 2,
+          "endColumn": 65
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "it should fail if no $localize description is provided when required for variable declarations, despite a ID being provided",
+      "code": "\n      const localizedText = $localize`:@@custom_id:Hello i18n!`;\n                                     \n    ",
+      "options": [
+        {
+          "requireDescription": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "requireLocalizeDescription",
+          "data": {},
+          "line": 2,
+          "column": 38,
+          "endLine": 2,
+          "endColumn": 64
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "it should fail if no $localize description is provided when required for variable declarations, despite a meaning and ID being provided",
+      "code": "\n      const localizedText = $localize`:site header|@@custom_id:Hello i18n!`;\n                                     \n    ",
+      "options": [
+        {
+          "requireDescription": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "requireLocalizeDescription",
+          "data": {},
+          "line": 2,
+          "column": 38,
+          "endLine": 2,
+          "endColumn": 76
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "should fail if no $localize meaning is provided",
+      "code": "\n      const localizedText = $localize`Hello i18n!`;\n                                     \n    ",
+      "options": [
+        {
+          "requireMeaning": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "requireLocalizeMeaning",
+          "data": {},
+          "line": 2,
+          "column": 38,
+          "endLine": 2,
+          "endColumn": 51
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "it should fail if no $localize meaning is provided despite a description being provided",
+      "code": "\n      const localizedText = $localize`:An introduction header for this sample:Hello i18n!`;\n                                     \n    ",
+      "options": [
+        {
+          "requireDescription": true,
+          "requireMeaning": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "requireLocalizeMeaning",
+          "data": {},
+          "line": 2,
+          "column": 38,
+          "endLine": 2,
+          "endColumn": 91
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "should fail if the $localize meaning is empty",
+      "code": "\n      const localizedText = $localize`:|An introduction header for this sample:Hello i18n!`;\n                                     \n    ",
+      "options": [
+        {
+          "requireMeaning": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "requireLocalizeMeaning",
+          "data": {},
+          "line": 2,
+          "column": 38,
+          "endLine": 2,
+          "endColumn": 92
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "should fail if no $localize metadata is provided",
+      "code": "\n      const localizedText = $localize`:Hello i18n!`;\n                                     \n    ",
+      "options": [
+        {
+          "requireDescription": true,
+          "requireMeaning": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "requireLocalizeDescription",
+          "data": {},
+          "line": 2,
+          "column": 38,
+          "endLine": 2,
+          "endColumn": 52
+        },
+        {
+          "messageId": "requireLocalizeMeaning",
+          "data": {},
+          "line": 2,
+          "column": 38,
+          "endLine": 2,
+          "endColumn": 52
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "should fail if the $localize metadata is not provided",
+      "code": "\n      const localizedText = $localize`Hello i18n!`;\n                                     \n    ",
+      "options": [
+        {
+          "requireCustomId": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "requireLocalizeCustomId",
+          "data": {
+            "patternMessage": ""
+          },
+          "line": 2,
+          "column": 38,
+          "endLine": 2,
+          "endColumn": 51
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "it should fail if the $localize custom_id has wrong delimiter",
+      "code": "\n      const localizedText = $localize`:@some.custom.id:Hello i18n!`;\n                                     \n    ",
+      "options": [
+        {
+          "requireCustomId": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "requireLocalizeCustomId",
+          "data": {
+            "patternMessage": ""
+          },
+          "line": 2,
+          "column": 38,
+          "endLine": 2,
+          "endColumn": 68
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "it should fail if the $localize metadata doesn't contain custom_id",
+      "code": "\n      const localizedText = $localize`:meaning|description:Hello i18n!`;\n                                     \n    ",
+      "options": [
+        {
+          "requireCustomId": true
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "requireLocalizeCustomId",
+          "data": {
+            "patternMessage": ""
+          },
+          "line": 2,
+          "column": 38,
+          "endLine": 2,
+          "endColumn": 72
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "it should fail if the $localize custom_id doesn't match the pattern",
+      "code": "\n      const localizedText = $localize`:@@some.custom.id:Hello i18n!`;\n                                     \n    ",
+      "options": [
+        {
+          "requireCustomId": "^some.wrong.pattern$"
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "requireLocalizeCustomId",
+          "data": {
+            "patternMessage": " matching the pattern /^some.wrong.pattern$/ on 'some.custom.id'"
+          },
+          "line": 2,
+          "column": 38,
+          "endLine": 2,
+          "endColumn": 69
+        }
+      ],
+      "output": null
+    }
+  ]
+}

@@ -652,7 +652,7 @@
           "lsp": false,
           "oxlintIntegration": true
         },
-        "notes": "Rust/Oxc syntax-pattern port of @angular-eslint/eslint-plugin/require-localize-metadata; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+        "notes": "Full Rust/Oxc AST port of the angular-eslint v22.1.0 require-localize-metadata contract, including three independent options, custom-ID pattern data, pinned authored-fixture replay, exact ESTree TemplateElement diagnostics, NAPI/API/plugin coverage, and real Oxlint jsPlugins integration."
       },
       {
         "name": "runtime-localize",

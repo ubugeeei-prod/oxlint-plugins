@@ -32,6 +32,16 @@ all 39 authored valid and 26 authored invalid cases from tag `v22.1.0`
 (`a666e1b45c9782d1ac2066fd55ec0127d0580950`) with exact message IDs, data,
 and UTF-16 locations.
 
+`require-localize-metadata` is an Oxc AST port of the angular-eslint v22.1.0
+contract for bare `$localize` tagged templates. It preserves the independently
+optional description, meaning, and custom-ID requirements, including custom-ID
+ECMAScript patterns (including lookaround and backreferences), exact message
+data, report ordering, first-quasi metadata parsing, and ESTree TemplateElement
+locations. The checked-in deterministic fixture replays all 13 authored valid
+and 15 authored invalid cases (16 diagnostics) from tag `v22.1.0`
+(`a666e1b45c9782d1ac2066fd55ec0127d0580950`) with exact message IDs, data, and
+UTF-16 locations.
+
 The current native diagnostic ABI contains message data and locations, but not
 fix or suggestion edit payloads. The plugin therefore exposes upstream
 fixability and suggestion metadata where applicable, plus exact schemas and

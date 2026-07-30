@@ -94,7 +94,6 @@ impl<'a> Scanner<'a> {
             "require-lifecycle-on-prototype",
             r#"ng(OnInit|OnDestroy|AfterViewInit|OnChanges)\s*=\s*\("#,
         );
-        self.check_regex("require-localize-metadata", r#"\$localize`"#);
         self.check_regex("runtime-localize", r#"\$localize\.locale\b"#);
         self.check_regex(
             "sort-keys-in-type-decorator",

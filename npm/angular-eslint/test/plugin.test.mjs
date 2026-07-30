@@ -22,6 +22,12 @@ const noInputRenameFixture = JSON.parse(
 const preferSignalsFixture = JSON.parse(
   readFileSync(new URL('./fixtures/prefer-signals-v22.1.0.json', import.meta.url), 'utf8'),
 );
+const requireLocalizeMetadataFixture = JSON.parse(
+  readFileSync(
+    new URL('./fixtures/require-localize-metadata-v22.1.0.json', import.meta.url),
+    'utf8',
+  ),
+);
 const playgroundCatalog = JSON.parse(
   readFileSync(resolve(workspaceRoot, 'playground/src/catalog.json'), 'utf8'),
 );
@@ -127,7 +133,6 @@ const invalidCases = [
   ['prefer-standalone', '@Component({ standalone: false }) class C {}\n'],
   ['relative-url-prefix', '@Component({ templateUrl: "cmp.html" }) class C {}\n'],
   ['require-lifecycle-on-prototype', 'class LifecycleField { ngOnInit = () => {}; }\n'],
-  ['require-localize-metadata', '$localize`Hello`;\n'],
   ['runtime-localize', '$localize.locale = "fr";\n'],
   [
     'sort-keys-in-type-decorator',
@@ -1220,6 +1225,179 @@ declare function createTypedSignal(): Signal<boolean>;
           message:
             'The selector should start with one of these prefixes: "app" or "lib" (https://angular.dev/style-guide#choosing-component-selectors)',
         },
+      ]);
+    } finally {
+      rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+});
+
+describe('require-localize-metadata plugin contract', () => {
+  it('exposes exact upstream metadata and matching playground catalog data', () => {
+    const { meta } = plugin.rules['require-localize-metadata'];
+    expect(meta.type).toBe('suggestion');
+    expect(meta.docs.description).toBe(
+      'Ensures that $localize tagged messages contain helpful metadata to aid with translations.',
+    );
+    expect(meta.schema).toEqual([
+      {
+        type: 'object',
+        properties: {
+          requireDescription: { type: 'boolean', default: false },
+          requireMeaning: { type: 'boolean', default: false },
+          requireCustomId: {
+            oneOf: [{ type: 'boolean' }, { type: 'string' }],
+            default: false,
+          },
+        },
+        additionalProperties: false,
+      },
+    ]);
+    expect(meta.messages).toEqual({
+      requireLocalizeDescription:
+        '$localize tagged messages should contain a description. See more at https://angular.dev/guide/i18n/prepare#i18n-metadata-for-translation',
+      requireLocalizeMeaning:
+        '$localize tagged messages should contain a meaning. See more at https://angular.dev/guide/i18n/prepare#i18n-metadata-for-translation',
+      requireLocalizeCustomId:
+        '$localize tagged messages should contain a custom id{{patternMessage}}. See more at https://angular.dev/guide/i18n/prepare#i18n-metadata-for-translation',
+    });
+    expect(meta.fixable).toBeUndefined();
+    expect(meta.hasSuggestions).toBeUndefined();
+
+    const playgroundRule = playgroundCatalog.plugins
+      .find(({ plugin: pluginName }) => pluginName === '@angular-eslint')
+      .rules.find(({ name }) => name === 'require-localize-metadata');
+    expect(playgroundRule).toMatchObject({
+      description: meta.docs.description,
+      messages: meta.messages,
+    });
+  });
+
+  it.each(requireLocalizeMetadataFixture.valid)(
+    'accepts upstream require-localize-metadata valid case through createOnce: $name',
+    ({ code, options }) => {
+      expect(runRule('require-localize-metadata', code, options)).toEqual([]);
+    },
+  );
+
+  it.each(requireLocalizeMetadataFixture.invalid)(
+    'matches upstream require-localize-metadata diagnostic through createOnce: $name',
+    ({ code, errors, options }) => {
+      expect(runRule('require-localize-metadata', code, options)).toEqual(
+        errors.map((error) => ({
+          messageId: error.messageId,
+          data: error.data,
+          loc: {
+            start: {
+              line: error.line,
+              column: error.column - 1,
+            },
+            end: {
+              line: error.endLine,
+              column: error.endColumn - 1,
+            },
+          },
+        })),
+      );
+    },
+  );
+
+  it('forwards defaults, independent options, exact order, data, and locations', () => {
+    expect(runRule('require-localize-metadata', '$localize`Hello`;')).toEqual([]);
+    const reports = runRule('require-localize-metadata', '$localize`Hello ${name}`;', [
+      {
+        requireDescription: true,
+        requireMeaning: true,
+        requireCustomId: '^stable$',
+      },
+    ]);
+    expect(reports).toEqual([
+      {
+        messageId: 'requireLocalizeDescription',
+        data: {},
+        loc: {
+          start: { line: 1, column: 9 },
+          end: { line: 1, column: 18 },
+        },
+      },
+      {
+        messageId: 'requireLocalizeMeaning',
+        data: {},
+        loc: {
+          start: { line: 1, column: 9 },
+          end: { line: 1, column: 18 },
+        },
+      },
+      {
+        messageId: 'requireLocalizeCustomId',
+        data: {
+          patternMessage: " matching the pattern /^stable$/ on 'undefined'",
+        },
+        loc: {
+          start: { line: 1, column: 9 },
+          end: { line: 1, column: 18 },
+        },
+      },
+    ]);
+    for (const report of reports) {
+      expect(report).not.toHaveProperty('fix');
+      expect(report).not.toHaveProperty('suggest');
+    }
+  });
+
+  it('honors all options through real oxlint jsPlugins', () => {
+    const tempDir = mkdtempSync(join(tmpdir(), 'oxlint-angular-require-localize-metadata-'));
+    try {
+      writeFileSync(
+        join(tempDir, 'fixture.ts'),
+        '$localize`Hello`;\n' + '$localize`:meaning|description@@wrong:World`;\n',
+      );
+      writeFileSync(
+        join(tempDir, 'oxlint.config.jsonc'),
+        JSON.stringify({
+          jsPlugins: [
+            {
+              name: '@angular-eslint',
+              specifier: join(packageRoot, 'index.js'),
+            },
+          ],
+          rules: {
+            '@angular-eslint/require-localize-metadata': [
+              'error',
+              {
+                requireDescription: true,
+                requireMeaning: true,
+                requireCustomId: '^stable$',
+              },
+            ],
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        findOxlintCli(),
+        ['--config', 'oxlint.config.jsonc', '--quiet', '--format', 'json', 'fixture.ts'],
+        {
+          cwd: tempDir,
+          encoding: 'utf8',
+        },
+      );
+      const payload = JSON.parse(result.stdout);
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      expect(payload.diagnostics).toHaveLength(4);
+      expect(payload.diagnostics.map(({ code }) => code)).toEqual(
+        Array(4).fill('@angular-eslint(require-localize-metadata)'),
+      );
+      expect(payload.diagnostics.map(({ labels }) => labels[0].span.line)).toEqual([1, 1, 1, 2]);
+      expect(payload.diagnostics.map(({ message }) => message)).toEqual([
+        plugin.rules['require-localize-metadata'].meta.messages.requireLocalizeDescription,
+        plugin.rules['require-localize-metadata'].meta.messages.requireLocalizeMeaning,
+        '$localize tagged messages should contain a custom id matching the pattern /^stable$/ on ' +
+          "'undefined'. See more at https://angular.dev/guide/i18n/prepare#i18n-metadata-for-translation",
+        '$localize tagged messages should contain a custom id matching the pattern /^stable$/ on ' +
+          "'wrong'. See more at https://angular.dev/guide/i18n/prepare#i18n-metadata-for-translation",
       ]);
     } finally {
       rmSync(tempDir, { recursive: true, force: true });

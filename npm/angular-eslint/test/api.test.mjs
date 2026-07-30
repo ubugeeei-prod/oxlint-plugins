@@ -16,6 +16,12 @@ const noInputRenameFixture = JSON.parse(
 const preferSignalsFixture = JSON.parse(
   readFileSync(new URL('./fixtures/prefer-signals-v22.1.0.json', import.meta.url), 'utf8'),
 );
+const requireLocalizeMetadataFixture = JSON.parse(
+  readFileSync(
+    new URL('./fixtures/require-localize-metadata-v22.1.0.json', import.meta.url),
+    'utf8',
+  ),
+);
 
 const expectedRuleNames = [
   'component-class-suffix',
@@ -123,6 +129,7 @@ describe('angular-eslint native API', () => {
               'directive-selector',
               'no-input-prefix',
               'pipe-prefix',
+              'require-localize-metadata',
             ].includes(ruleName),
         )
         .sort(),
@@ -835,6 +842,155 @@ declare function createTypedSignal(): Signal<boolean>;
       scanAngularEslint(`class Test { value = signal(`, 'fixture.ts', {
         ruleNames: ['prefer-signals'],
         options: [],
+      }),
+    ).toEqual([]);
+  });
+});
+
+describe('require-localize-metadata native API', () => {
+  it('pins every authored angular-eslint v22.1.0 case deterministically', () => {
+    expect(requireLocalizeMetadataFixture.metadata).toEqual({
+      package: '@angular-eslint/eslint-plugin',
+      version: '22.1.0',
+      sourceCommit: 'a666e1b45c9782d1ac2066fd55ec0127d0580950',
+      sourceTag: 'v22.1.0',
+      sourcePath: 'packages/eslint-plugin/tests/rules/require-localize-metadata/cases.ts',
+      sourceSha256: '532a9e3c1d93294fd7245b183eab26098217f6971c3fa1fddb230dc5cc904faa',
+      capture: 'every authored valid and invalid semantic case exactly once',
+      counts: {
+        valid: 13,
+        invalid: 15,
+        diagnostics: 16,
+      },
+    });
+  });
+
+  it.each(requireLocalizeMetadataFixture.valid)(
+    'accepts upstream require-localize-metadata valid case: $name',
+    ({ code, options }) => {
+      expect(
+        scanAngularEslint(code, 'fixture.ts', {
+          ruleNames: ['require-localize-metadata'],
+          options,
+        }),
+      ).toEqual([]);
+    },
+  );
+
+  it.each(requireLocalizeMetadataFixture.invalid)(
+    'matches upstream require-localize-metadata diagnostic: $name',
+    ({ code, errors, options }) => {
+      expect(
+        scanAngularEslint(code, 'fixture.ts', {
+          ruleNames: ['require-localize-metadata'],
+          options,
+        }),
+      ).toEqual(
+        errors.map((error) => ({
+          ruleName: 'require-localize-metadata',
+          messageId: error.messageId,
+          data: Object.entries(error.data).map(([key, value]) => ({ key, value })),
+          loc: {
+            startLine: error.line,
+            startColumn: error.column - 1,
+            endLine: error.endLine,
+            endColumn: error.endColumn - 1,
+          },
+        })),
+      );
+    },
+  );
+
+  it('keeps every requirement independently disabled by default', () => {
+    const source = '$localize`Hello`;';
+    expect(
+      scanAngularEslint(source, 'fixture.ts', {
+        ruleNames: ['require-localize-metadata'],
+        options: [],
+      }),
+    ).toEqual([]);
+    expect(
+      [{ requireDescription: true }, { requireMeaning: true }, { requireCustomId: true }].map(
+        (option) =>
+          scanAngularEslint(source, 'fixture.ts', {
+            ruleNames: ['require-localize-metadata'],
+            options: [option],
+          })[0].messageId,
+      ),
+    ).toEqual(['requireLocalizeDescription', 'requireLocalizeMeaning', 'requireLocalizeCustomId']);
+  });
+
+  it('preserves report order, pattern data, first-quasi parsing, and identifier tags', () => {
+    const source = [
+      '$localize`Hello`;',
+      '$localize`:meaning|description@@wrong:${value}`;',
+      'i18n.$localize`Hello`;',
+      '($localize)`:meaning|description@@stable:Hello`;',
+    ].join('\n');
+    const diagnostics = scanAngularEslint(source, 'fixture.ts', {
+      ruleNames: ['require-localize-metadata'],
+      options: [
+        {
+          requireDescription: true,
+          requireMeaning: true,
+          requireCustomId: '^stable$',
+        },
+      ],
+    });
+    expect(
+      diagnostics.map(({ messageId, data, loc }) => ({
+        messageId,
+        data,
+        line: loc.startLine,
+      })),
+    ).toEqual([
+      { messageId: 'requireLocalizeDescription', data: [], line: 1 },
+      { messageId: 'requireLocalizeMeaning', data: [], line: 1 },
+      {
+        messageId: 'requireLocalizeCustomId',
+        data: [
+          {
+            key: 'patternMessage',
+            value: " matching the pattern /^stable$/ on 'undefined'",
+          },
+        ],
+        line: 1,
+      },
+      {
+        messageId: 'requireLocalizeCustomId',
+        data: [
+          {
+            key: 'patternMessage',
+            value: " matching the pattern /^stable$/ on 'wrong'",
+          },
+        ],
+        line: 2,
+      },
+    ]);
+  });
+
+  it('preserves UTF-16 ESTree TemplateElement locations and fails closed on malformed syntax', () => {
+    const [diagnostic] = scanAngularEslint(
+      "const marker = '😀'; $localize`Hello ${name}`;",
+      'fixture.ts',
+      {
+        ruleNames: ['require-localize-metadata'],
+        options: [{ requireMeaning: true }],
+      },
+    );
+    expect(diagnostic).toMatchObject({
+      messageId: 'requireLocalizeMeaning',
+      loc: {
+        startLine: 1,
+        startColumn: 30,
+        endLine: 1,
+        endColumn: 39,
+      },
+    });
+    expect(
+      scanAngularEslint('const text = $localize`unterminated', 'fixture.ts', {
+        ruleNames: ['require-localize-metadata'],
+        options: [{ requireMeaning: true }],
       }),
     ).toEqual([]);
   });

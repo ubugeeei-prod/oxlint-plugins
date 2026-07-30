@@ -65,7 +65,11 @@ fn scans_representative_rules() {
         .filter(|rule_name| {
             !matches!(
                 *rule_name,
-                "component-selector" | "directive-selector" | "no-input-prefix" | "pipe-prefix"
+                "component-selector"
+                    | "directive-selector"
+                    | "no-input-prefix"
+                    | "pipe-prefix"
+                    | "require-localize-metadata"
             )
         })
         .collect();
