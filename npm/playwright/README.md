@@ -29,6 +29,30 @@ Exact names match direct calls and terminal member identifiers such as
 syntax. Assertions inside nested callbacks and `test.step()` count toward their
 containing test, matching upstream ancestry behavior.
 
+## Lowercase title options
+
+`prefer-lowercase-title` implements the complete upstream v2.11.0 option and
+autofix contract:
+
+```json
+{
+  "rules": {
+    "playwright/prefer-lowercase-title": [
+      "error",
+      {
+        "allowedPrefixes": ["GET", "POST"],
+        "ignore": ["test.describe"],
+        "ignoreTopLevelDescribe": true
+      }
+    ]
+  }
+}
+```
+
+It checks static string and template titles for `test`, `test.describe`, global
+aliases, named import aliases, and `test.extend()` aliases. Fixes lowercase the
+first UTF-16 code unit with JavaScript-compatible behavior.
+
 ## Numeric threshold options
 
 The numeric threshold rules implement the complete upstream v2.10.4 option
@@ -96,8 +120,11 @@ The direct API accepts the same option values:
 const { scanPlaywright } = require('@oxlint-plugins/oxlint-plugin-playwright/api');
 
 scanPlaywright('page.getByTestId("submit")', 'fixture.spec.ts', {
+  allowedPrefixes: ['GET', 'POST'],
   assertFunctionNames: ['assertCustomCondition'],
   assertFunctionPatterns: ['^verify.*'],
+  ignore: ['test.describe'],
+  ignoreTopLevelDescribe: true,
   maxExpects: 5,
   maxNestedDescribe: 5,
   maxTopLevelDescribes: 2,

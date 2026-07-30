@@ -27,8 +27,11 @@ mod napi_abi {
     #[napi(object)]
     #[derive(Clone, Debug, Default)]
     pub struct PlaywrightScanOptions {
+        pub allowed_prefixes: Option<Vec<String>>,
         pub assert_function_names: Option<Vec<String>>,
         pub assert_function_patterns: Option<Vec<String>>,
+        pub ignore: Option<Vec<String>>,
+        pub ignore_top_level_describe: Option<bool>,
         pub restricted_locators: Option<Vec<PlaywrightRestriction>>,
         pub restricted_matchers: Option<Vec<PlaywrightRestriction>>,
         pub restricted_roles: Option<Vec<PlaywrightRestriction>>,
@@ -146,8 +149,11 @@ mod napi_abi {
         let valid_title = compact_valid_title(options.valid_title);
         let valid_test_tags = compact_valid_test_tags(options.valid_test_tags);
         let core_options = core::PlaywrightOptions {
+            allowed_title_prefixes: compact_strings(options.allowed_prefixes),
             assert_function_names: compact_strings(options.assert_function_names),
             assert_function_patterns: compact_strings(options.assert_function_patterns),
+            lowercase_title_ignored_methods: compact_strings(options.ignore),
+            ignore_top_level_describe: options.ignore_top_level_describe.unwrap_or(false),
             restricted_locators: compact_restrictions(options.restricted_locators),
             restricted_matchers: compact_restrictions(options.restricted_matchers),
             restricted_roles: compact_restrictions(options.restricted_roles),

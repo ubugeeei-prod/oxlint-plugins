@@ -95,7 +95,6 @@ impl<'a> Scanner<'a> {
             "prefer-locator",
             r#"page\.(click|dblclick|fill|press|selectOption)\s*\("#,
         );
-        self.check_regex("prefer-lowercase-title", r#"test\s*\(\s*['"][A-Z]"#);
         self.check_regex(
             "prefer-native-locators",
             r#"page\.locator\s*\(\s*['"](?:text=|\[aria-label=|\[data-testid=)"#,

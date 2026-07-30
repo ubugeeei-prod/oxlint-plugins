@@ -69,6 +69,7 @@
     "port:tests:perfectionist:sort-array-includes": "node tools/tasks/sync-perfectionist-sort-array-includes-options-tests.ts",
     "port:tests:perfectionist:sort-exports": "node tools/tasks/sync-perfectionist-sort-exports-options-tests.ts",
     "port:tests:playwright:expect-expect": "node tools/tasks/sync-playwright-expect-expect-tests.ts",
+    "port:tests:playwright:prefer-lowercase-title": "node tools/tasks/sync-playwright-prefer-lowercase-title-tests.ts",
     "port:tests:playwright:restricted": "node tools/tasks/sync-playwright-restricted-tests.ts",
     "port:tests:playwright:patterns": "node tools/tasks/sync-playwright-pattern-tests.ts",
     "port:tests:playwright:thresholds": "node tools/tasks/sync-playwright-threshold-tests.ts",

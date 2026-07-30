@@ -18,9 +18,12 @@ function scanPlaywright(sourceText, filename = 'file.spec.ts', options = {}) {
   }
 
   const diagnostics = native.scanPlaywright(sourceText, filename, {
+    allowedPrefixes: stringList(options.allowedPrefixes),
     assertFunctionNames: stringList(options.assertFunctionNames),
     assertFunctionPatterns: regexList(options.assertFunctionPatterns),
     expectAliases: stringList(options.expectAliases),
+    ignore: stringList(options.ignore),
+    ignoreTopLevelDescribe: options.ignoreTopLevelDescribe === true,
     testAliases: stringList(options.testAliases),
     maxExpects: integerOption(options.maxExpects, 'maxExpects', 1),
     maxNestedDescribe: integerOption(options.maxNestedDescribe, 'maxNestedDescribe', 0),
@@ -32,19 +35,7 @@ function scanPlaywright(sourceText, filename = 'file.spec.ts', options = {}) {
     validTestTags: validTestTagsOptions(options.validTestTags),
   });
   const byteToUtf16 = createByteToUtf16Mapper(sourceText);
-  return diagnostics.map((diagnostic) => {
-    if (!diagnostic.fix) {
-      return diagnostic;
-    }
-    return {
-      ...diagnostic,
-      fix: {
-        ...diagnostic.fix,
-        start: byteToUtf16(diagnostic.fix.start),
-        end: byteToUtf16(diagnostic.fix.end),
-      },
-    };
-  });
+  return diagnostics.map((diagnostic) => mapDiagnosticFix(diagnostic, byteToUtf16));
 }
 
 function validTitleOptions(value) {
@@ -197,6 +188,20 @@ function booleanOr(value, fallback) {
   return typeof value === 'boolean' ? value : fallback;
 }
 
+function mapDiagnosticFix(diagnostic, byteToUtf16) {
+  if (!diagnostic.fix) {
+    return diagnostic;
+  }
+  return {
+    ...diagnostic,
+    fix: {
+      start: byteToUtf16(diagnostic.fix.start),
+      end: byteToUtf16(diagnostic.fix.end),
+      replacement: diagnostic.fix.replacement,
+    },
+  };
+}
+
 function createByteToUtf16Mapper(sourceText) {
   const nonAsciiSpans = [];
   let byteOffset = 0;
@@ -204,7 +209,9 @@ function createByteToUtf16Mapper(sourceText) {
 
   while (utf16Offset < sourceText.length) {
     const codePoint = sourceText.codePointAt(utf16Offset);
-    if (codePoint === undefined) break;
+    if (codePoint === undefined) {
+      break;
+    }
     const utf16Length = codePoint > 0xffff ? 2 : 1;
     const byteLength = utf8ByteLength(codePoint);
     const byteEnd = byteOffset + byteLength;
@@ -224,25 +231,25 @@ function createByteToUtf16Mapper(sourceText) {
   if (nonAsciiSpans.length === 0) {
     return (offset) => clampOffset(offset, sourceText.length);
   }
+  const totalBytes = byteOffset;
   return (offset) => {
-    const clampedByteOffset = clampOffset(offset, byteOffset);
+    const clamped = clampOffset(offset, totalBytes);
     let low = 0;
     let high = nonAsciiSpans.length;
     while (low < high) {
       const mid = Math.floor((low + high) / 2);
-      if (nonAsciiSpans[mid].byteEnd <= clampedByteOffset) low = mid + 1;
-      else high = mid;
+      if (nonAsciiSpans[mid].byteEnd <= clamped) {
+        low = mid + 1;
+      } else {
+        high = mid;
+      }
     }
-    const nextSpan = nonAsciiSpans[low];
-    if (
-      nextSpan &&
-      clampedByteOffset >= nextSpan.byteStart &&
-      clampedByteOffset < nextSpan.byteEnd
-    ) {
-      return nextSpan.utf16Start;
+    const next = nonAsciiSpans[low];
+    if (next && clamped >= next.byteStart && clamped < next.byteEnd) {
+      return next.utf16Start;
     }
     const delta = nonAsciiSpans[low - 1]?.deltaAfter ?? 0;
-    return clampOffset(clampedByteOffset - delta, sourceText.length);
+    return clampOffset(clamped - delta, sourceText.length);
   };
 }
 
@@ -253,9 +260,9 @@ function utf8ByteLength(codePoint) {
   return 4;
 }
 
-function clampOffset(offset, max) {
+function clampOffset(offset, maximum) {
   if (!Number.isFinite(offset) || offset <= 0) return 0;
-  if (offset >= max) return max;
+  if (offset >= maximum) return maximum;
   return Math.trunc(offset);
 }
 

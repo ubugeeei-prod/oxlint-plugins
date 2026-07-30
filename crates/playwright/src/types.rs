@@ -11,8 +11,11 @@ pub struct Restriction {
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct PlaywrightOptions {
+    pub allowed_title_prefixes: SmallVec<[CompactString; 4]>,
     pub assert_function_names: SmallVec<[CompactString; 4]>,
     pub assert_function_patterns: SmallVec<[CompactString; 4]>,
+    pub lowercase_title_ignored_methods: SmallVec<[CompactString; 4]>,
+    pub ignore_top_level_describe: bool,
     pub restricted_locators: SmallVec<[Restriction; 8]>,
     pub restricted_matchers: SmallVec<[Restriction; 8]>,
     pub restricted_roles: SmallVec<[Restriction; 8]>,
@@ -79,8 +82,11 @@ pub struct TagPattern {
 impl Default for PlaywrightOptions {
     fn default() -> Self {
         Self {
+            allowed_title_prefixes: SmallVec::new(),
             assert_function_names: SmallVec::new(),
             assert_function_patterns: SmallVec::new(),
+            lowercase_title_ignored_methods: SmallVec::new(),
+            ignore_top_level_describe: false,
             restricted_locators: SmallVec::new(),
             restricted_matchers: SmallVec::new(),
             restricted_roles: SmallVec::new(),
@@ -114,7 +120,9 @@ pub struct Diagnostic {
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct DiagnosticFix {
+    /// UTF-8 byte offset into the source text.
     pub start: u32,
+    /// UTF-8 byte offset into the source text.
     pub end: u32,
     pub replacement: CompactString,
 }

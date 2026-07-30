@@ -22,6 +22,7 @@ const thresholdRules = new Set([
   'max-nested-describe',
   'require-top-level-describe',
 ]);
+const optionAwareTitleRules = new Set(['prefer-lowercase-title']);
 
 const sharedGlobals = Object.freeze({
   expect: false,
@@ -141,6 +142,7 @@ function createLegacyRecommendedConfig() {
 function createPlaywrightRule(ruleName) {
   const specializedMeta =
     expectExpectRuleMeta(ruleName) ??
+    preferLowercaseTitleRuleMeta(ruleName) ??
     restrictedRuleMeta(ruleName) ??
     patternRuleMeta(ruleName) ??
     thresholdRuleMeta(ruleName);
@@ -198,7 +200,9 @@ function diagnosticsForRule(context, ruleName) {
         ? ruleScanOptions(context, ruleName)
         : thresholdRules.has(ruleName)
           ? thresholdScanOptions(context, ruleName)
-          : undefined;
+          : optionAwareTitleRules.has(ruleName)
+            ? preferLowercaseTitleScanOptions(context)
+            : undefined;
   return diagnosticsForContext(context, options).filter(
     (diagnostic) => diagnostic.ruleName === ruleName,
   );
@@ -272,6 +276,18 @@ function expectExpectScanOptions(context) {
     assertFunctionNames: configured.assertFunctionNames,
     assertFunctionPatterns: configured.assertFunctionPatterns,
     ...(Array.isArray(expectAliases) ? { expectAliases } : {}),
+    ...(Array.isArray(testAliases) ? { testAliases } : {}),
+  };
+}
+
+function preferLowercaseTitleScanOptions(context) {
+  const options = Array.isArray(context.options) ? context.options : [];
+  const configured = options[0] && typeof options[0] === 'object' ? options[0] : {};
+  const testAliases = context.settings?.playwright?.globalAliases?.test;
+  return {
+    allowedPrefixes: configured.allowedPrefixes,
+    ignore: configured.ignore,
+    ignoreTopLevelDescribe: configured.ignoreTopLevelDescribe,
     ...(Array.isArray(testAliases) ? { testAliases } : {}),
   };
 }
@@ -425,6 +441,43 @@ function expectExpectRuleMeta(ruleName) {
       },
     ],
     url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/expect-expect.md',
+  };
+}
+
+function preferLowercaseTitleRuleMeta(ruleName) {
+  if (ruleName !== 'prefer-lowercase-title') {
+    return null;
+  }
+  return {
+    description: 'Enforce lowercase test names',
+    messages: {
+      unexpectedLowercase: '`{{method}}`s should begin with lowercase',
+    },
+    schema: [
+      {
+        additionalProperties: false,
+        properties: {
+          allowedPrefixes: {
+            additionalItems: false,
+            items: { type: 'string' },
+            type: 'array',
+          },
+          ignore: {
+            additionalItems: false,
+            items: {
+              enum: ['test.describe', 'test'],
+            },
+            type: 'array',
+          },
+          ignoreTopLevelDescribe: {
+            default: false,
+            type: 'boolean',
+          },
+        },
+        type: 'object',
+      },
+    ],
+    url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/prefer-lowercase-title.md',
   };
 }
 

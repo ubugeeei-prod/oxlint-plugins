@@ -1,0 +1,1106 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-playwright",
+    "version": "2.11.0",
+    "sourceCommit": "b6d3e5dac73c8aad4d5e62a933105579c319655f",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-playwright-prefer-lowercase-title-tests.ts",
+    "sourceFiles": [
+      "src/rules/prefer-lowercase-title.ts",
+      "src/rules/prefer-lowercase-title.test.ts",
+      "docs/rules/prefer-lowercase-title.md"
+    ],
+    "sourceHashes": {
+      "src/rules/prefer-lowercase-title.ts": "351bf97eb91d65da36f4e1bd079b399c786f621c06421d49f34c3c78b8246769",
+      "src/rules/prefer-lowercase-title.test.ts": "eae061c77c8c796bacb80e77e7add65344671e77bad521232516c9958fbde3a9",
+      "docs/rules/prefer-lowercase-title.md": "1fb0cf8238204964071adb4dbc5aa9be6200aafa3321e287573f99cf9b33738d"
+    },
+    "previousVersionAudit": {
+      "version": "2.10.4",
+      "sourceCommit": "894c0ec261763bb1e073b276c70bbf88b4ebad39",
+      "changedFiles": []
+    },
+    "inventory": {
+      "suites": 5,
+      "valid": 55,
+      "invalid": 27,
+      "diagnostics": 28,
+      "fixable": 27
+    }
+  },
+  "rule": "prefer-lowercase-title",
+  "suites": [
+    {
+      "name": "prefer-lowercase-title",
+      "valid": [
+        {
+          "code": "randomFunction()",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "foo.bar()",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test('foo Bar', () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test(`foo`, () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test(\"<Foo/>\", () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test(\"123 foo\", () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test(\"42\", () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test(``, () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test(\"\", () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test(42, () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test.fixme('foo', () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test.skip('foo', () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test.only('foo Bar', () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test[\"fixme\"](\"foo\", () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test[\"skip\"](`foo`, () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test.describe()",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test.describe('foo Bar', () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test.describe(`foo`, () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test[\"describe\"](\"<Foo/>\", () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test[`describe`](\"123 foo\", () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test.describe(\"42\", () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test.describe(``)",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test.describe(\"\")",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test.describe(42)",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test.describe.skip('foo Bar', () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test.describe.skip(`foo`, () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test.describe.fixme('foo', () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test.describe.only('foo', () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test.describe.parallel.skip('foo Bar', () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test.describe.parallel.skip(`foo`, () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test.describe.parallel.fixme('foo', () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test.describe.parallel.only('foo Bar Baz', () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test.describe.serial.skip('foo', () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test.describe[`serial`].fixme('foo', () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test.describe['serial'].only('foo', () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "import { test as custom } from '@playwright/test';\ncustom(\"foo\", () => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        }
+      ],
+      "invalid": [
+        {
+          "code": "test('Foo',  () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedLowercase",
+              "data": {
+                "method": "test"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 5,
+                "endLine": 1,
+                "endColumn": 10
+              }
+            }
+          ],
+          "expectedOutput": "test('foo',  () => {})"
+        },
+        {
+          "code": "test(`Foo bar`,  () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedLowercase",
+              "data": {
+                "method": "test"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 5,
+                "endLine": 1,
+                "endColumn": 14
+              }
+            }
+          ],
+          "expectedOutput": "test(`foo bar`,  () => {})"
+        },
+        {
+          "code": "test.skip('Foo Bar',  () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedLowercase",
+              "data": {
+                "method": "test"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 10,
+                "endLine": 1,
+                "endColumn": 19
+              }
+            }
+          ],
+          "expectedOutput": "test.skip('foo Bar',  () => {})"
+        },
+        {
+          "code": "test.skip(`Foo`,  () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedLowercase",
+              "data": {
+                "method": "test"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 10,
+                "endLine": 1,
+                "endColumn": 15
+              }
+            }
+          ],
+          "expectedOutput": "test.skip(`foo`,  () => {})"
+        },
+        {
+          "code": "test['fixme']('Foo',  () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedLowercase",
+              "data": {
+                "method": "test"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 14,
+                "endLine": 1,
+                "endColumn": 19
+              }
+            }
+          ],
+          "expectedOutput": "test['fixme']('foo',  () => {})"
+        },
+        {
+          "code": "test[`only`](`Foo`,  () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedLowercase",
+              "data": {
+                "method": "test"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 13,
+                "endLine": 1,
+                "endColumn": 18
+              }
+            }
+          ],
+          "expectedOutput": "test[`only`](`foo`,  () => {})"
+        },
+        {
+          "code": "test.describe('Foo bar',  () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedLowercase",
+              "data": {
+                "method": "test.describe"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 14,
+                "endLine": 1,
+                "endColumn": 23
+              }
+            }
+          ],
+          "expectedOutput": "test.describe('foo bar',  () => {})"
+        },
+        {
+          "code": "test[`describe`](`Foo Bar`,  () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedLowercase",
+              "data": {
+                "method": "test.describe"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 17,
+                "endLine": 1,
+                "endColumn": 26
+              }
+            }
+          ],
+          "expectedOutput": "test[`describe`](`foo Bar`,  () => {})"
+        },
+        {
+          "code": "test.describe.skip('Foo',  () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedLowercase",
+              "data": {
+                "method": "test.describe"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 19,
+                "endLine": 1,
+                "endColumn": 24
+              }
+            }
+          ],
+          "expectedOutput": "test.describe.skip('foo',  () => {})"
+        },
+        {
+          "code": "test.describe.fixme('Foo',  () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedLowercase",
+              "data": {
+                "method": "test.describe"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 20,
+                "endLine": 1,
+                "endColumn": 25
+              }
+            }
+          ],
+          "expectedOutput": "test.describe.fixme('foo',  () => {})"
+        },
+        {
+          "code": "test[`describe`][\"only\"](\"Foo\",  () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedLowercase",
+              "data": {
+                "method": "test.describe"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 25,
+                "endLine": 1,
+                "endColumn": 30
+              }
+            }
+          ],
+          "expectedOutput": "test[`describe`][\"only\"](\"foo\",  () => {})"
+        },
+        {
+          "code": "test.describe.parallel.skip('Foo',  () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedLowercase",
+              "data": {
+                "method": "test.describe"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 28,
+                "endLine": 1,
+                "endColumn": 33
+              }
+            }
+          ],
+          "expectedOutput": "test.describe.parallel.skip('foo',  () => {})"
+        },
+        {
+          "code": "test.describe.parallel.fixme(`Foo`,  () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedLowercase",
+              "data": {
+                "method": "test.describe"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 29,
+                "endLine": 1,
+                "endColumn": 34
+              }
+            }
+          ],
+          "expectedOutput": "test.describe.parallel.fixme(`foo`,  () => {})"
+        },
+        {
+          "code": "test.describe.parallel.only(\"Foo\",  () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedLowercase",
+              "data": {
+                "method": "test.describe"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 28,
+                "endLine": 1,
+                "endColumn": 33
+              }
+            }
+          ],
+          "expectedOutput": "test.describe.parallel.only(\"foo\",  () => {})"
+        },
+        {
+          "code": "test.describe.serial.skip('Foo',  () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedLowercase",
+              "data": {
+                "method": "test.describe"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 26,
+                "endLine": 1,
+                "endColumn": 31
+              }
+            }
+          ],
+          "expectedOutput": "test.describe.serial.skip('foo',  () => {})"
+        },
+        {
+          "code": "test.describe.serial.fixme(`Foo`,  () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedLowercase",
+              "data": {
+                "method": "test.describe"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 27,
+                "endLine": 1,
+                "endColumn": 32
+              }
+            }
+          ],
+          "expectedOutput": "test.describe.serial.fixme(`foo`,  () => {})"
+        },
+        {
+          "code": "test.describe.serial.only(\"Foo\",  () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedLowercase",
+              "data": {
+                "method": "test.describe"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 26,
+                "endLine": 1,
+                "endColumn": 31
+              }
+            }
+          ],
+          "expectedOutput": "test.describe.serial.only(\"foo\",  () => {})"
+        },
+        {
+          "code": "it('Foo',  () => {})",
+          "options": [],
+          "settings": {
+            "playwright": {
+              "globalAliases": {
+                "test": ["it"]
+              }
+            }
+          },
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedLowercase",
+              "data": {
+                "method": "test"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 3,
+                "endLine": 1,
+                "endColumn": 8
+              }
+            }
+          ],
+          "expectedOutput": "it('foo',  () => {})"
+        },
+        {
+          "code": "it.describe('Foo',  () => {})",
+          "options": [],
+          "settings": {
+            "playwright": {
+              "globalAliases": {
+                "test": ["it"]
+              }
+            }
+          },
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedLowercase",
+              "data": {
+                "method": "test.describe"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 12,
+                "endLine": 1,
+                "endColumn": 17
+              }
+            }
+          ],
+          "expectedOutput": "it.describe('foo',  () => {})"
+        },
+        {
+          "code": "const custom = test.extend({});\ncustom('Foo',  () => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedLowercase",
+              "data": {
+                "method": "test"
+              },
+              "loc": {
+                "startLine": 2,
+                "startColumn": 7,
+                "endLine": 2,
+                "endColumn": 12
+              }
+            }
+          ],
+          "expectedOutput": "const custom = test.extend({});\ncustom('foo',  () => {});"
+        },
+        {
+          "code": "const custom = test.extend({});\ncustom.describe('Foo',  () => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedLowercase",
+              "data": {
+                "method": "test.describe"
+              },
+              "loc": {
+                "startLine": 2,
+                "startColumn": 16,
+                "endLine": 2,
+                "endColumn": 21
+              }
+            }
+          ],
+          "expectedOutput": "const custom = test.extend({});\ncustom.describe('foo',  () => {});"
+        },
+        {
+          "code": "import { test as custom } from '@playwright/test';\ncustom('Foo',  () => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedLowercase",
+              "data": {
+                "method": "test"
+              },
+              "loc": {
+                "startLine": 2,
+                "startColumn": 7,
+                "endLine": 2,
+                "endColumn": 12
+              }
+            }
+          ],
+          "expectedOutput": "import { test as custom } from '@playwright/test';\ncustom('foo',  () => {});"
+        }
+      ]
+    },
+    {
+      "name": "prefer-lowercase-title with ignore=test.describe",
+      "valid": [
+        {
+          "code": "test.describe('Foo', () => {})",
+          "options": [
+            {
+              "ignore": ["test.describe"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test.describe.parallel(`Foo`, () => {})",
+          "options": [
+            {
+              "ignore": ["test.describe"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test.describe.skip(`Foo`, () => {})",
+          "options": [
+            {
+              "ignore": ["test.describe"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        }
+      ],
+      "invalid": [
+        {
+          "code": "test('Foo', () => {})",
+          "options": [
+            {
+              "ignore": ["test.describe"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedLowercase",
+              "data": {
+                "method": "test"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 5,
+                "endLine": 1,
+                "endColumn": 10
+              }
+            }
+          ],
+          "expectedOutput": "test('foo', () => {})"
+        }
+      ]
+    },
+    {
+      "name": "prefer-lowercase-title with ignore=test",
+      "valid": [
+        {
+          "code": "test('Foo', () => {})",
+          "options": [
+            {
+              "ignore": ["test"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test(`Foo`, () => {})",
+          "options": [
+            {
+              "ignore": ["test"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test.only(`Foo`, () => {})",
+          "options": [
+            {
+              "ignore": ["test"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        }
+      ],
+      "invalid": [
+        {
+          "code": "test.describe('Foo', () => {})",
+          "options": [
+            {
+              "ignore": ["test"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedLowercase",
+              "data": {
+                "method": "test.describe"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 14,
+                "endLine": 1,
+                "endColumn": 19
+              }
+            }
+          ],
+          "expectedOutput": "test.describe('foo', () => {})"
+        }
+      ]
+    },
+    {
+      "name": "prefer-lowercase-title with allowedPrefixes",
+      "valid": [
+        {
+          "code": "test('GET /live', () => {})",
+          "options": [
+            {
+              "allowedPrefixes": ["GET"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test(\"POST /live\", () => {})",
+          "options": [
+            {
+              "allowedPrefixes": ["GET", "POST"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test(`PATCH /live`, () => {})",
+          "options": [
+            {
+              "allowedPrefixes": ["GET", "PATCH"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test(\"TODO: implement\", () => {})",
+          "options": [
+            {
+              "allowedPrefixes": ["TODO"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        }
+      ],
+      "invalid": [
+        {
+          "code": "test(`POST /live`, () => {})",
+          "options": [
+            {
+              "allowedPrefixes": ["GET"]
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedLowercase",
+              "data": {
+                "method": "test"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 5,
+                "endLine": 1,
+                "endColumn": 17
+              }
+            }
+          ],
+          "expectedOutput": "test(`pOST /live`, () => {})"
+        }
+      ]
+    },
+    {
+      "name": "prefer-lowercase-title with ignoreTopLevelDescribe",
+      "valid": [
+        {
+          "code": "test(\"already lower\", () => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test.describe(\"already lower\", () => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "describe(\"MyClass\", () => {});",
+          "options": [
+            {
+              "ignoreTopLevelDescribe": true
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "test.describe('MyClass', () => {\n  test.describe('#myMethod', () => {\n    test('does things', () => {});\n  });\n});",
+          "options": [
+            {
+              "ignoreTopLevelDescribe": true
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "it(\"already lower\", () => {});",
+          "options": [],
+          "settings": {
+            "playwright": {
+              "globalAliases": {
+                "test": ["it"]
+              }
+            }
+          },
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "it.describe(\"already lower\", () => {});",
+          "options": [],
+          "settings": {
+            "playwright": {
+              "globalAliases": {
+                "test": ["it"]
+              }
+            }
+          },
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "const custom = test.extend({});\ncustom(\"already lower\", () => {});",
+          "options": [
+            {
+              "ignoreTopLevelDescribe": true
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "const custom = test.extend({});\ncustom.describe(\"already lower\", () => {});",
+          "options": [
+            {
+              "ignoreTopLevelDescribe": true
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        },
+        {
+          "code": "import { test as custom } from '@playwright/test';\ncustom(\"already lower\", () => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [],
+          "expectedOutput": null
+        }
+      ],
+      "invalid": [
+        {
+          "code": "test(\"Works!\", () => {});",
+          "options": [
+            {
+              "ignoreTopLevelDescribe": true
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedLowercase",
+              "data": {
+                "method": "test"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 5,
+                "endLine": 1,
+                "endColumn": 13
+              }
+            }
+          ],
+          "expectedOutput": "test(\"works!\", () => {});"
+        },
+        {
+          "code": "test.describe('MyClass', () => {\n  test.describe('MyMethod', () => {\n    test('Does things', () => {});\n  });\n});",
+          "options": [
+            {
+              "ignoreTopLevelDescribe": true
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedLowercase",
+              "data": {
+                "method": "test.describe"
+              },
+              "loc": {
+                "startLine": 2,
+                "startColumn": 16,
+                "endLine": 2,
+                "endColumn": 26
+              }
+            },
+            {
+              "messageId": "unexpectedLowercase",
+              "data": {
+                "method": "test"
+              },
+              "loc": {
+                "startLine": 3,
+                "startColumn": 9,
+                "endLine": 3,
+                "endColumn": 22
+              }
+            }
+          ],
+          "expectedOutput": "test.describe('MyClass', () => {\n  test.describe('myMethod', () => {\n    test('does things', () => {});\n  });\n});"
+        }
+      ]
+    }
+  ]
+}

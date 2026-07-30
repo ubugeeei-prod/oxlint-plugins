@@ -28,7 +28,7 @@ export type PlaywrightDiagnostic = {
     start: number;
     end: number;
     replacement: string;
-  };
+  } | null;
 };
 
 export type PlaywrightRestrictedLocator =
@@ -46,8 +46,11 @@ export type PlaywrightRestrictedRole =
     };
 
 export type PlaywrightScanOptions = {
+  allowedPrefixes?: string[];
   assertFunctionNames?: string[];
   assertFunctionPatterns?: string[];
+  ignore?: Array<'test.describe' | 'test'>;
+  ignoreTopLevelDescribe?: boolean;
   noRestrictedLocators?: PlaywrightRestrictedLocator[];
   noRestrictedMatchers?: Record<string, string | null>;
   noRestrictedRoles?: PlaywrightRestrictedRole[];

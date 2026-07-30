@@ -2,6 +2,7 @@
 
 mod expect_expect;
 mod patterns;
+mod prefer_lowercase_title;
 mod restricted;
 mod scanner;
 mod thresholds;
@@ -17,6 +18,7 @@ use oxlint_plugins_carton::SmallVec;
 
 use crate::expect_expect::scan_expect_expect;
 use crate::patterns::scan_pattern_rules;
+use crate::prefer_lowercase_title::scan_prefer_lowercase_title;
 use crate::restricted::scan_restricted_rules;
 use crate::scanner::Scanner;
 use crate::thresholds::scan_threshold_rules;
@@ -116,6 +118,13 @@ pub fn scan_playwright_with_options(
         diagnostics: SmallVec::new(),
     };
     scan_expect_expect(
+        &parser_return.program,
+        source_text,
+        &scanner.line_index,
+        options,
+        &mut scanner.diagnostics,
+    );
+    scan_prefer_lowercase_title(
         &parser_return.program,
         source_text,
         &scanner.line_index,
