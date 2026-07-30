@@ -140,7 +140,10 @@ function createLegacyRecommendedConfig() {
 
 function createPlaywrightRule(ruleName) {
   const specializedMeta =
-    restrictedRuleMeta(ruleName) ?? patternRuleMeta(ruleName) ?? thresholdRuleMeta(ruleName);
+    expectExpectRuleMeta(ruleName) ??
+    restrictedRuleMeta(ruleName) ??
+    patternRuleMeta(ruleName) ??
+    thresholdRuleMeta(ruleName);
   return {
     meta: {
       type: ruleType(ruleName),
@@ -149,7 +152,7 @@ function createPlaywrightRule(ruleName) {
           specializedMeta?.description ?? `enforce playwright ${ruleName.replaceAll('-', ' ')}`,
         category: 'Best Practices',
         recommended: recommendedRuleConfig[`playwright/${ruleName}`] !== undefined,
-        url: `${DOCS_BASE}/${ruleName}.md`,
+        url: specializedMeta?.url ?? `${DOCS_BASE}/${ruleName}.md`,
       },
       fixable: fixableRule(ruleName) ? 'code' : undefined,
       messages: specializedMeta?.messages ?? {
@@ -189,11 +192,13 @@ function fixableRule(ruleName) {
 
 function diagnosticsForRule(context, ruleName) {
   const options =
-    restrictedRules.has(ruleName) || patternRules.has(ruleName)
-      ? ruleScanOptions(context, ruleName)
-      : thresholdRules.has(ruleName)
-        ? thresholdScanOptions(context, ruleName)
-        : undefined;
+    ruleName === 'expect-expect'
+      ? expectExpectScanOptions(context)
+      : restrictedRules.has(ruleName) || patternRules.has(ruleName)
+        ? ruleScanOptions(context, ruleName)
+        : thresholdRules.has(ruleName)
+          ? thresholdScanOptions(context, ruleName)
+          : undefined;
   return diagnosticsForContext(context, options).filter(
     (diagnostic) => diagnostic.ruleName === ruleName,
   );
@@ -256,6 +261,19 @@ function sourceTextForContext(context) {
     return sourceCode.text;
   }
   return '';
+}
+
+function expectExpectScanOptions(context) {
+  const options = Array.isArray(context.options) ? context.options : [];
+  const configured = options[0] && typeof options[0] === 'object' ? options[0] : {};
+  const expectAliases = context.settings?.playwright?.globalAliases?.expect;
+  const testAliases = context.settings?.playwright?.globalAliases?.test;
+  return {
+    assertFunctionNames: configured.assertFunctionNames,
+    assertFunctionPatterns: configured.assertFunctionPatterns,
+    ...(Array.isArray(expectAliases) ? { expectAliases } : {}),
+    ...(Array.isArray(testAliases) ? { testAliases } : {}),
+  };
 }
 
 function thresholdScanOptions(context, ruleName) {
@@ -378,6 +396,35 @@ function tagListSchema() {
       ],
     },
     type: 'array',
+  };
+}
+
+function expectExpectRuleMeta(ruleName) {
+  if (ruleName !== 'expect-expect') {
+    return null;
+  }
+  return {
+    description: 'Enforce assertion to be made in a test body',
+    messages: {
+      noAssertions: 'Test has no assertions',
+    },
+    schema: [
+      {
+        additionalProperties: false,
+        properties: {
+          assertFunctionNames: {
+            items: [{ type: 'string' }],
+            type: 'array',
+          },
+          assertFunctionPatterns: {
+            items: [{ type: 'string' }],
+            type: 'array',
+          },
+        },
+        type: 'object',
+      },
+    ],
+    url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/expect-expect.md',
   };
 }
 

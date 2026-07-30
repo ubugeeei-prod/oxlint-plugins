@@ -1,5 +1,6 @@
 #![doc = "Rust implementation of eslint-plugin-playwright rule logic."]
 
+mod expect_expect;
 mod patterns;
 mod restricted;
 mod scanner;
@@ -14,6 +15,7 @@ use oxc_parser::Parser;
 use oxc_span::SourceType;
 use oxlint_plugins_carton::SmallVec;
 
+use crate::expect_expect::scan_expect_expect;
 use crate::patterns::scan_pattern_rules;
 use crate::restricted::scan_restricted_rules;
 use crate::scanner::Scanner;
@@ -113,6 +115,13 @@ pub fn scan_playwright_with_options(
         line_index: LineIndex::new(source_text),
         diagnostics: SmallVec::new(),
     };
+    scan_expect_expect(
+        &parser_return.program,
+        source_text,
+        &scanner.line_index,
+        options,
+        &mut scanner.diagnostics,
+    );
     scanner.scan();
     scan_pattern_rules(
         &parser_return.program,

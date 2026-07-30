@@ -153,6 +153,7 @@ const expectedRestrictedMessages = {
   'valid-title': '{{ functionName }} should not have an empty title',
 };
 const expectedThresholdMessages = {
+  'expect-expect': 'Test has no assertions',
   'max-expects': 'Too many assertion calls ({{ count }}) - maximum allowed is {{ max }}',
   'max-nested-describe':
     'Maximum describe call depth exceeded ({{ depth }}). Maximum allowed is {{ max }}.',

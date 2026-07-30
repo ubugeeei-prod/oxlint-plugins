@@ -585,6 +585,156 @@ fn threshold_locations_use_utf16_and_malformed_sources_fail_closed() {
     assert!(scan_playwright_with_options("test(\"broken", "fixture.spec.ts", &options).is_empty());
 }
 
+#[test]
+fn expect_expect_reports_each_unasserted_test_at_the_exact_callee() {
+    let source = concat!(
+        "test(\"plain\", () => {});\n",
+        "test.skip(\"skipped\", () => {});\n",
+        "test(\"asserted\", () => expect(true).toBeDefined());\n",
+        "test.slow(\"asserted\", () => test.expect(true).toBeDefined());\n",
+    );
+    let diagnostics = expect_expect_diagnostics(source, &PlaywrightOptions::default());
+
+    assert_eq!(diagnostics.len(), 2);
+    assert_eq!(diagnostics[0].message_id, "noAssertions");
+    assert_eq!(
+        (
+            diagnostics[0].loc.start_line,
+            diagnostics[0].loc.start_column,
+            diagnostics[0].loc.end_column,
+        ),
+        (1, 0, 4)
+    );
+    assert_eq!(
+        (
+            diagnostics[1].loc.start_line,
+            diagnostics[1].loc.start_column,
+            diagnostics[1].loc.end_column,
+        ),
+        (2, 0, 9)
+    );
+    assert_eq!(diagnostics[0].data, crate::DiagnosticData::default());
+}
+
+#[test]
+fn expect_expect_matches_custom_terminal_names_and_patterns() {
+    let source = concat!(
+        "test(\"direct\", () => assertCustomCondition());\n",
+        "test(\"member\", () => page.assertCustomCondition());\n",
+        "test(\"computed identifier\", () => page[assertCustomCondition]());\n",
+        "test(\"computed string\", () => page[\"assertCustomCondition\"]());\n",
+        "test(\"nonterminal\", () => page.assertCustomCondition.factory());\n",
+        "test(\"pattern\", () => verifyElementVisible());\n",
+        "test(\"suffix\", () => anotherAssertion());\n",
+        "test(\"lookahead\", () => ensureElement());\n",
+        "test(\"backreference\", () => checkcheck());\n",
+    );
+    let options = PlaywrightOptions {
+        assert_function_names: [CompactString::from("assertCustomCondition")]
+            .into_iter()
+            .collect(),
+        assert_function_patterns: [
+            CompactString::from("^verify.*"),
+            CompactString::from(".*Assertion$"),
+            CompactString::from("^ensure(?=Element)"),
+            CompactString::from(r"^(check)\1$"),
+        ]
+        .into_iter()
+        .collect(),
+        ..PlaywrightOptions::default()
+    };
+    let diagnostics = expect_expect_diagnostics(source, &options);
+
+    assert_eq!(diagnostics.len(), 2);
+    assert_eq!(diagnostics[0].loc.start_line, 4);
+    assert_eq!(diagnostics[1].loc.start_line, 5);
+}
+
+#[test]
+fn expect_expect_supports_global_import_and_chained_extend_aliases() {
+    let source = concat!(
+        "import { test as scenario, expect as assuming } from \"another-runner\";\n",
+        "const later = custom.extend({});\n",
+        "const custom = scenario.extend({}).extend({});\n",
+        "scenario(\"import\", () => assuming(true).toBeDefined());\n",
+        "later(\"extended\", () => expect(true).toBeDefined());\n",
+        "it(\"global\", () => verify(true).toBeDefined());\n",
+    );
+    let options = PlaywrightOptions {
+        expect_aliases: [CompactString::from("verify")].into_iter().collect(),
+        test_aliases: [CompactString::from("it")].into_iter().collect(),
+        ..PlaywrightOptions::default()
+    };
+
+    assert!(expect_expect_diagnostics(source, &options).is_empty());
+}
+
+#[test]
+fn expect_expect_preserves_upstream_outermost_nested_test_behavior() {
+    let source = concat!(
+        "test(\"outer\", () => {\n",
+        "  test(\"inner\", () => {\n",
+        "    expect(true).toBeDefined();\n",
+        "  });\n",
+        "});\n",
+    );
+    let diagnostics = expect_expect_diagnostics(source, &PlaywrightOptions::default());
+
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].loc.start_line, 2);
+    assert_eq!(diagnostics[0].loc.start_column, 2);
+    assert_eq!(diagnostics[0].loc.end_column, 6);
+}
+
+#[test]
+fn expect_expect_counts_step_and_nested_callback_assertions_but_isolates_siblings() {
+    let source = concat!(
+        "test.describe.configure({ mode: \"parallel\" });\n",
+        "test.skip(true);\n",
+        "test(\"step\", async () => {\n",
+        "  await test.step(\"inside\", async () => expect(true).toBeDefined());\n",
+        "});\n",
+        "test(\"callback\", () => Promise.resolve().then(() => expect(true).toBeDefined()));\n",
+        "test(\"empty sibling\", () => {});\n",
+    );
+    let diagnostics = expect_expect_diagnostics(source, &PlaywrightOptions::default());
+
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].loc.start_line, 7);
+}
+
+#[test]
+fn expect_expect_uses_utf16_locations_and_malformed_sources_fail_closed() {
+    let source = concat!(
+        "const marker = \"🧪\";\n",
+        "test(\"empty 🧪\", () => {});\n",
+    );
+    let diagnostics = expect_expect_diagnostics(source, &PlaywrightOptions::default());
+
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].loc.start_line, 2);
+    assert_eq!(diagnostics[0].loc.start_column, 0);
+    assert_eq!(diagnostics[0].loc.end_column, 4);
+    assert!(
+        scan_playwright_with_options(
+            "test(\"broken",
+            "fixture.spec.ts",
+            &PlaywrightOptions::default(),
+        )
+        .is_empty()
+    );
+}
+
+fn expect_expect_diagnostics(
+    source: &str,
+    options: &PlaywrightOptions,
+) -> SmallVec<[crate::Diagnostic; 8]> {
+    scan_playwright_with_options(source, "fixture.spec.ts", options)
+        .into_iter()
+        .filter(|diagnostic| diagnostic.rule_name == "expect-expect")
+        .collect()
+}
+
 fn threshold_diagnostics(
     source: &str,
     options: &PlaywrightOptions,

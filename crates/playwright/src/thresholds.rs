@@ -266,13 +266,13 @@ impl ThresholdVisitor<'_, '_, '_, '_> {
 }
 
 #[derive(Clone, Copy)]
-enum PlaywrightCall {
+pub(crate) enum PlaywrightCall {
     Describe,
     Hook,
     Test,
 }
 
-fn classify_call(
+pub(crate) fn classify_call(
     call: &CallExpression<'_>,
     test_names: &[CompactString],
 ) -> Option<PlaywrightCall> {
@@ -335,7 +335,7 @@ fn valid_describe_tail(tail: &[&str]) -> bool {
     )
 }
 
-fn is_expect_assertion(
+pub(crate) fn is_expect_assertion(
     call: &CallExpression<'_>,
     expect_names: &[CompactString],
     test_names: &[CompactString],

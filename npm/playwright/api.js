@@ -18,6 +18,8 @@ function scanPlaywright(sourceText, filename = 'file.spec.ts', options = {}) {
   }
 
   const diagnostics = native.scanPlaywright(sourceText, filename, {
+    assertFunctionNames: stringList(options.assertFunctionNames),
+    assertFunctionPatterns: regexList(options.assertFunctionPatterns),
     expectAliases: stringList(options.expectAliases),
     testAliases: stringList(options.testAliases),
     maxExpects: integerOption(options.maxExpects, 'maxExpects', 1),
@@ -119,6 +121,13 @@ function tagPatterns(values) {
       ];
     }
     return [];
+  });
+}
+
+function regexList(values) {
+  return stringList(values).map((value) => {
+    new RegExp(value);
+    return value;
   });
 }
 

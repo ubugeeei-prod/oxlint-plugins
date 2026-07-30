@@ -5,6 +5,30 @@ Rust-backed Oxlint plugin port of `eslint-plugin-playwright` v2.10.4.
 This package exposes the `playwright` plugin, recommended configs, and a native
 API for scanning Playwright test source through the Rust implementation.
 
+## Assertion function options
+
+`expect-expect` accepts the complete upstream v2.10.4 assertion-function
+contract:
+
+```json
+{
+  "rules": {
+    "playwright/expect-expect": [
+      "error",
+      {
+        "assertFunctionNames": ["assertCustomCondition"],
+        "assertFunctionPatterns": ["^assert.*", "^verify.*"]
+      }
+    ]
+  }
+}
+```
+
+Exact names match direct calls and terminal member identifiers such as
+`page.assertCustomCondition()`. Patterns use JavaScript regular-expression
+syntax. Assertions inside nested callbacks and `test.step()` count toward their
+containing test, matching upstream ancestry behavior.
+
 ## Numeric threshold options
 
 The numeric threshold rules implement the complete upstream v2.10.4 option
@@ -72,6 +96,8 @@ The direct API accepts the same option values:
 const { scanPlaywright } = require('@oxlint-plugins/oxlint-plugin-playwright/api');
 
 scanPlaywright('page.getByTestId("submit")', 'fixture.spec.ts', {
+  assertFunctionNames: ['assertCustomCondition'],
+  assertFunctionPatterns: ['^verify.*'],
   maxExpects: 5,
   maxNestedDescribe: 5,
   maxTopLevelDescribes: 2,

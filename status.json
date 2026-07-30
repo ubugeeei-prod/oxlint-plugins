@@ -4259,7 +4259,7 @@
           "lsp": true,
           "oxlintIntegration": true
         },
-        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/expect-expect; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+        "notes": "Rust/Oxc AST port of eslint-plugin-playwright/expect-expect with complete v2.10.4 assertFunctionNames and assertFunctionPatterns options, pinned authored fixtures, exact locations, direct API coverage, and Oxlint jsPlugins integration."
       },
       {
         "name": "max-expects",

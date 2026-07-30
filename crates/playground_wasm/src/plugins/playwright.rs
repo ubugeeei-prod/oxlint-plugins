@@ -157,4 +157,30 @@ mod tests {
             (4, 40, 4, 57)
         );
     }
+
+    #[test]
+    fn preserves_expect_expect_message_location_and_empty_data() {
+        let filter = EnabledFilter::parse(r#"{"playwright":["expect-expect"]}"#);
+        let mut diagnostics = Vec::new();
+        scan(
+            "\"🧪\"; test(\"empty\", () => {});\n",
+            "fixture.ts",
+            &filter,
+            &mut diagnostics,
+        );
+
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].rule, "expect-expect");
+        assert_eq!(diagnostics[0].message_id, "noAssertions");
+        assert!(diagnostics[0].data.is_empty());
+        assert_eq!(
+            (
+                diagnostics[0].start_line,
+                diagnostics[0].start_column,
+                diagnostics[0].end_line,
+                diagnostics[0].end_column,
+            ),
+            (1, 6, 1, 10)
+        );
+    }
 }

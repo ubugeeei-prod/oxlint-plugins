@@ -11,6 +11,8 @@ pub struct Restriction {
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct PlaywrightOptions {
+    pub assert_function_names: SmallVec<[CompactString; 4]>,
+    pub assert_function_patterns: SmallVec<[CompactString; 4]>,
     pub restricted_locators: SmallVec<[Restriction; 8]>,
     pub restricted_matchers: SmallVec<[Restriction; 8]>,
     pub restricted_roles: SmallVec<[Restriction; 8]>,
@@ -77,6 +79,8 @@ pub struct TagPattern {
 impl Default for PlaywrightOptions {
     fn default() -> Self {
         Self {
+            assert_function_names: SmallVec::new(),
+            assert_function_patterns: SmallVec::new(),
             restricted_locators: SmallVec::new(),
             restricted_matchers: SmallVec::new(),
             restricted_roles: SmallVec::new(),

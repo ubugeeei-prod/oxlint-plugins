@@ -1,0 +1,406 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-playwright",
+    "version": "2.10.4",
+    "sourceCommit": "894c0ec261763bb1e073b276c70bbf88b4ebad39",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-playwright-expect-expect-tests.ts",
+    "sourceFiles": [
+      "src/rules/expect-expect.ts",
+      "src/rules/expect-expect.test.ts",
+      "docs/rules/expect-expect.md"
+    ],
+    "sourceHashes": {
+      "src/rules/expect-expect.ts": "110a10377a4185fd95330efd0c098e9475ddfed98f7da9ef276b5654e3958112",
+      "src/rules/expect-expect.test.ts": "2515bb44c8c914a229d34bed3dff38669361dc8f1c6332a82598f4a32f0df092",
+      "docs/rules/expect-expect.md": "7b4613f0c991066aab1a861a06b475d15686f8a0ec1ee068264ec7c4bc2de97e"
+    },
+    "inventory": {
+      "valid": 32,
+      "invalid": 8,
+      "diagnostics": 8
+    }
+  },
+  "suite": {
+    "rule": "expect-expect",
+    "valid": [
+      {
+        "code": "foo();",
+        "options": [],
+        "settings": null,
+        "expectedDiagnostics": []
+      },
+      {
+        "code": "[\"bar\"]();",
+        "options": [],
+        "settings": null,
+        "expectedDiagnostics": []
+      },
+      {
+        "code": "testing(\"will test something eventually\", () => {})",
+        "options": [],
+        "settings": null,
+        "expectedDiagnostics": []
+      },
+      {
+        "code": "test(\"should pass\", () => expect(true).toBeDefined())",
+        "options": [],
+        "settings": null,
+        "expectedDiagnostics": []
+      },
+      {
+        "code": "test(\"should pass\", () => test.expect(true).toBeDefined())",
+        "options": [],
+        "settings": null,
+        "expectedDiagnostics": []
+      },
+      {
+        "code": "test.slow(\"should pass\", () => expect(true).toBeDefined())",
+        "options": [],
+        "settings": null,
+        "expectedDiagnostics": []
+      },
+      {
+        "code": "test.skip(\"should pass\", () => expect(true).toBeDefined())",
+        "options": [],
+        "settings": null,
+        "expectedDiagnostics": []
+      },
+      {
+        "code": "test.describe.configure({ mode: \"parallel\" })",
+        "options": [],
+        "settings": null,
+        "expectedDiagnostics": []
+      },
+      {
+        "code": "test.info()",
+        "options": [],
+        "settings": null,
+        "expectedDiagnostics": []
+      },
+      {
+        "code": "test.use({ locale: \"en-US\" })",
+        "options": [],
+        "settings": null,
+        "expectedDiagnostics": []
+      },
+      {
+        "code": "test.skip();",
+        "options": [],
+        "settings": null,
+        "expectedDiagnostics": []
+      },
+      {
+        "code": "test.skip(true);",
+        "options": [],
+        "settings": null,
+        "expectedDiagnostics": []
+      },
+      {
+        "code": "test.skip(browserName === \"Chrome\", \"This feature is skipped on Chrome\")",
+        "options": [],
+        "settings": null,
+        "expectedDiagnostics": []
+      },
+      {
+        "code": "test.skip(({ browserName }) => browserName === \"Chrome\");",
+        "options": [],
+        "settings": null,
+        "expectedDiagnostics": []
+      },
+      {
+        "code": "test.skip(\"foo\", () => { expect(true).toBeDefined(); })",
+        "options": [],
+        "settings": null,
+        "expectedDiagnostics": []
+      },
+      {
+        "code": "test.slow();",
+        "options": [],
+        "settings": null,
+        "expectedDiagnostics": []
+      },
+      {
+        "code": "test.slow(true);",
+        "options": [],
+        "settings": null,
+        "expectedDiagnostics": []
+      },
+      {
+        "code": "test.slow(browserName === \"webkit\", \"This feature is slow on Mac\")",
+        "options": [],
+        "settings": null,
+        "expectedDiagnostics": []
+      },
+      {
+        "code": "test.slow(({ browserName }) => browserName === \"Chrome\");",
+        "options": [],
+        "settings": null,
+        "expectedDiagnostics": []
+      },
+      {
+        "code": "test.slow(\"foo\", () => { expect(true).toBeDefined(); })",
+        "options": [],
+        "settings": null,
+        "expectedDiagnostics": []
+      },
+      {
+        "code": "test('steps', async ({ page }) => {\n  await test.step('first tab', async () => {\n    await expect(page.getByText('Hello')).toBeVisible();\n  });\n});",
+        "options": [],
+        "settings": null,
+        "expectedDiagnostics": []
+      },
+      {
+        "code": "test.only('steps', async ({ page }) => {\n  await test.step('first tab', async () => {\n    await expect(page.getByText('Hello')).toBeVisible();\n  });\n});",
+        "options": [],
+        "settings": null,
+        "expectedDiagnostics": []
+      },
+      {
+        "code": "test.only('steps', async ({ page }) => {\n  await test.step.skip('first tab', async () => {\n    await expect(page.getByText('Hello')).toBeVisible();\n  });\n});",
+        "options": [],
+        "settings": null,
+        "expectedDiagnostics": []
+      },
+      {
+        "code": "test('should fail', async ({ page }) => {\n  await assertCustomCondition(page)\n})",
+        "options": [
+          {
+            "assertFunctionNames": ["assertCustomCondition"]
+          }
+        ],
+        "settings": null,
+        "expectedDiagnostics": []
+      },
+      {
+        "code": "test('should fail', async ({ myPage, page }) => {\n  await myPage.assertCustomCondition(page)\n})",
+        "options": [
+          {
+            "assertFunctionNames": ["assertCustomCondition"]
+          }
+        ],
+        "settings": null,
+        "expectedDiagnostics": []
+      },
+      {
+        "code": "test('should pass', async ({ page }) => {\n  await verifyElementVisible(page.locator('button'))\n})",
+        "options": [
+          {
+            "assertFunctionPatterns": ["^verify.*"]
+          }
+        ],
+        "settings": null,
+        "expectedDiagnostics": []
+      },
+      {
+        "code": "test('should pass', async ({ page }) => {\n  await page.checkTextContent('Hello')\n  await validateUserLoggedIn(page)\n})",
+        "options": [
+          {
+            "assertFunctionPatterns": ["^check.*", "^validate.*"]
+          }
+        ],
+        "settings": null,
+        "expectedDiagnostics": []
+      },
+      {
+        "code": "test('should pass', async ({ page }) => {\n  await myCustomAssert(page)\n  await anotherAssertion(true)\n})",
+        "options": [
+          {
+            "assertFunctionNames": ["myCustomAssert"],
+            "assertFunctionPatterns": [".*Assertion$"]
+          }
+        ],
+        "settings": null,
+        "expectedDiagnostics": []
+      },
+      {
+        "code": "it(\"should pass\", () => expect(true).toBeDefined())",
+        "options": [],
+        "settings": {
+          "playwright": {
+            "globalAliases": {
+              "test": ["it"]
+            }
+          }
+        },
+        "expectedDiagnostics": []
+      },
+      {
+        "code": "const custom = test.extend({});\ncustom(\"should pass\", () => expect(true).toBeDefined());",
+        "options": [],
+        "settings": null,
+        "expectedDiagnostics": []
+      },
+      {
+        "code": "test(\"should pass\", () => assert(true).toBeDefined())",
+        "options": [],
+        "settings": {
+          "playwright": {
+            "globalAliases": {
+              "expect": ["assert"]
+            }
+          }
+        },
+        "expectedDiagnostics": []
+      },
+      {
+        "code": "import { test as custom } from '@playwright/test';\ncustom(\"should pass\", () => expect(true).toBeDefined());",
+        "options": [],
+        "settings": null,
+        "expectedDiagnostics": []
+      }
+    ],
+    "invalid": [
+      {
+        "code": "test(\"should fail\", () => {});",
+        "options": [],
+        "settings": null,
+        "expectedDiagnostics": [
+          {
+            "messageId": "noAssertions",
+            "data": {},
+            "loc": {
+              "startLine": 1,
+              "startColumn": 0,
+              "endLine": 1,
+              "endColumn": 4
+            }
+          }
+        ]
+      },
+      {
+        "code": "test.skip(\"should fail\", () => {});",
+        "options": [],
+        "settings": null,
+        "expectedDiagnostics": [
+          {
+            "messageId": "noAssertions",
+            "data": {},
+            "loc": {
+              "startLine": 1,
+              "startColumn": 0,
+              "endLine": 1,
+              "endColumn": 9
+            }
+          }
+        ]
+      },
+      {
+        "code": "test('should fail', async ({ page }) => {\n  await assertCustomCondition(page)\n})",
+        "options": [],
+        "settings": null,
+        "expectedDiagnostics": [
+          {
+            "messageId": "noAssertions",
+            "data": {},
+            "loc": {
+              "startLine": 1,
+              "startColumn": 0,
+              "endLine": 1,
+              "endColumn": 4
+            }
+          }
+        ]
+      },
+      {
+        "code": "test('should fail', async ({ page }) => {\n  await assertCustomCondition(page)\n})",
+        "options": [
+          {
+            "assertFunctionNames": ["wayComplexCustomCondition"]
+          }
+        ],
+        "settings": null,
+        "expectedDiagnostics": [
+          {
+            "messageId": "noAssertions",
+            "data": {},
+            "loc": {
+              "startLine": 1,
+              "startColumn": 0,
+              "endLine": 1,
+              "endColumn": 4
+            }
+          }
+        ]
+      },
+      {
+        "code": "test('should fail', async ({ page }) => {\n  await assertCustomCondition(page)\n})",
+        "options": [
+          {
+            "assertFunctionPatterns": ["^verify.*", "^check.*"]
+          }
+        ],
+        "settings": null,
+        "expectedDiagnostics": [
+          {
+            "messageId": "noAssertions",
+            "data": {},
+            "loc": {
+              "startLine": 1,
+              "startColumn": 0,
+              "endLine": 1,
+              "endColumn": 4
+            }
+          }
+        ]
+      },
+      {
+        "code": "it(\"should pass\", () => hi(true).toBeDefined())",
+        "options": [],
+        "settings": {
+          "playwright": {
+            "globalAliases": {
+              "test": ["it"]
+            }
+          }
+        },
+        "expectedDiagnostics": [
+          {
+            "messageId": "noAssertions",
+            "data": {},
+            "loc": {
+              "startLine": 1,
+              "startColumn": 0,
+              "endLine": 1,
+              "endColumn": 2
+            }
+          }
+        ]
+      },
+      {
+        "code": "const custom = test.extend({});\ncustom(\"should fail\", () => {});",
+        "options": [],
+        "settings": null,
+        "expectedDiagnostics": [
+          {
+            "messageId": "noAssertions",
+            "data": {},
+            "loc": {
+              "startLine": 2,
+              "startColumn": 0,
+              "endLine": 2,
+              "endColumn": 6
+            }
+          }
+        ]
+      },
+      {
+        "code": "import { test as custom } from '@playwright/test';\ncustom(\"should fail\", () => {});",
+        "options": [],
+        "settings": null,
+        "expectedDiagnostics": [
+          {
+            "messageId": "noAssertions",
+            "data": {},
+            "loc": {
+              "startLine": 2,
+              "startColumn": 0,
+              "endLine": 2,
+              "endColumn": 6
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
