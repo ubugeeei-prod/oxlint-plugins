@@ -1,7 +1,7 @@
 //! Diagnostic types and line indexing for the perfectionist port.
 
 use oxc_span::Span;
-use oxlint_plugins_carton::SmallVec;
+use oxlint_plugins_carton::{CompactString, SmallVec};
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct DiagnosticLoc {
@@ -16,6 +16,30 @@ pub struct Diagnostic {
     pub rule_name: &'static str,
     pub message_id: &'static str,
     pub loc: DiagnosticLoc,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct RuleDiagnosticData {
+    pub left: CompactString,
+    pub right: CompactString,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct RuleDiagnosticFix {
+    /// UTF-16 source offset expected by ESLint/Oxlint fixers.
+    pub start: u32,
+    /// UTF-16 source offset expected by ESLint/Oxlint fixers.
+    pub end: u32,
+    pub replacement: CompactString,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct RuleDiagnostic {
+    pub rule_name: &'static str,
+    pub message_id: &'static str,
+    pub data: RuleDiagnosticData,
+    pub loc: DiagnosticLoc,
+    pub fix: RuleDiagnosticFix,
 }
 
 pub(crate) struct LineIndex {
@@ -43,6 +67,12 @@ impl LineIndex {
             end_line,
             end_column,
         }
+    }
+
+    pub(crate) fn utf16_offset(source_text: &str, byte_offset: u32) -> u32 {
+        let byte_offset = (byte_offset as usize).min(source_text.len());
+        let units = source_text[..byte_offset].encode_utf16().count();
+        u32::try_from(units).unwrap_or(u32::MAX)
     }
 
     fn position_for_offset(&self, source_text: &str, offset: u32) -> (u32, u32) {

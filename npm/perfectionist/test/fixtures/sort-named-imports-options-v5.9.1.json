@@ -1,0 +1,1349 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-perfectionist",
+    "version": "5.9.1",
+    "sourceCommit": "b35e8e4caf0c8d350cf386e504241f21827dd60b",
+    "sourceHashes": {
+      "rules/sort-named-imports.ts": "ef0f575cb4aca0248120e8eb831748b2fb7a170e2e2220b8cdee66f1c2740ae6",
+      "rules/sort-named-imports/sort-named-import.ts": "3e35c4b385cab6e07acac20e2ee4f5049e3cfc1fb05403ac0158cd360e4b3415",
+      "test/rules/sort-named-imports.test.ts": "a5fe43752e460a2d29432e01e01a21aaa92bf9bc6d5193840dc593c6767ddeee"
+    },
+    "license": "MIT",
+    "eslintVersion": "9.39.2",
+    "typescriptEslintParserVersion": "8.60.0",
+    "capturePolicy": "Curated exact parity for the supported scalar comparator option subset; grouping, partition, newline, and conditional options are intentionally excluded.",
+    "tool": "tools/tasks/sync-perfectionist-sort-named-imports-options-tests.ts",
+    "inventory": {
+      "valid": 23,
+      "invalid": 28,
+      "diagnostics": 41,
+      "total": 51
+    }
+  },
+  "cases": [
+    {
+      "name": "default alphabetical order",
+      "code": "import { AAA, BB, C } from 'module'",
+      "options": [],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "default alphabetical inversion",
+      "code": "import { BB, AAA, C } from 'module'",
+      "options": [],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedImportsOrder",
+          "message": "Expected \"AAA\" to come before \"BB\".",
+          "data": {
+            "right": "AAA",
+            "left": "BB"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 14,
+            "endLine": 1,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [9, 16],
+            "text": "AAA, BB"
+          }
+        }
+      ],
+      "output": "import { AAA, BB, C } from 'module'"
+    },
+    {
+      "name": "default complete reversal",
+      "code": "import { C, BB, AAA } from 'module'",
+      "options": [],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedImportsOrder",
+          "message": "Expected \"BB\" to come before \"C\".",
+          "data": {
+            "right": "BB",
+            "left": "C"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 13,
+            "endLine": 1,
+            "endColumn": 15
+          },
+          "fix": {
+            "range": [9, 19],
+            "text": "AAA, BB, C"
+          }
+        },
+        {
+          "messageId": "unexpectedNamedImportsOrder",
+          "message": "Expected \"AAA\" to come before \"BB\".",
+          "data": {
+            "right": "AAA",
+            "left": "BB"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 17,
+            "endLine": 1,
+            "endColumn": 20
+          },
+          "fix": {
+            "range": [9, 19],
+            "text": "AAA, BB, C"
+          }
+        }
+      ],
+      "output": "import { AAA, BB, C } from 'module'"
+    },
+    {
+      "name": "multiline alphabetical order",
+      "code": "import {\n  AAAA,\n  BBB,\n  CC,\n  D,\n} from 'module'",
+      "options": [],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "multiline alphabetical inversion",
+      "code": "import {\n  AAAA,\n  CC,\n  BBB,\n  D,\n} from 'module'",
+      "options": [],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedImportsOrder",
+          "message": "Expected \"BBB\" to come before \"CC\".",
+          "data": {
+            "right": "BBB",
+            "left": "CC"
+          },
+          "loc": {
+            "startLine": 4,
+            "startColumn": 3,
+            "endLine": 4,
+            "endColumn": 6
+          },
+          "fix": {
+            "range": [19, 28],
+            "text": "BBB,\n  CC"
+          }
+        }
+      ],
+      "output": "import {\n  AAAA,\n  BBB,\n  CC,\n  D,\n} from 'module'"
+    },
+    {
+      "name": "default ignores default import",
+      "code": "import Default, { A, B } from 'module'",
+      "options": [],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "default sorts by local alias",
+      "code": "import { c as A, b as B, a as C } from 'module'",
+      "options": [],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "default local alias inversion",
+      "code": "import { a as C, b as B, c as A } from 'module'",
+      "options": [],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedImportsOrder",
+          "message": "Expected \"B\" to come before \"C\".",
+          "data": {
+            "right": "B",
+            "left": "C"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 18,
+            "endLine": 1,
+            "endColumn": 24
+          },
+          "fix": {
+            "range": [9, 31],
+            "text": "c as A, b as B, a as C"
+          }
+        },
+        {
+          "messageId": "unexpectedNamedImportsOrder",
+          "message": "Expected \"A\" to come before \"B\".",
+          "data": {
+            "right": "A",
+            "left": "B"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 26,
+            "endLine": 1,
+            "endColumn": 32
+          },
+          "fix": {
+            "range": [9, 31],
+            "text": "c as A, b as B, a as C"
+          }
+        }
+      ],
+      "output": "import { c as A, b as B, a as C } from 'module'"
+    },
+    {
+      "name": "ignoreAlias original names",
+      "code": "import { A as C, B as B, C as A } from 'module'",
+      "options": [
+        {
+          "ignoreAlias": true
+        }
+      ],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "ignoreAlias inversion",
+      "code": "import { C as A, B as B, A as C } from 'module'",
+      "options": [
+        {
+          "ignoreAlias": true
+        }
+      ],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedImportsOrder",
+          "message": "Expected \"B\" to come before \"C\".",
+          "data": {
+            "right": "B",
+            "left": "C"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 18,
+            "endLine": 1,
+            "endColumn": 24
+          },
+          "fix": {
+            "range": [9, 31],
+            "text": "A as C, B as B, C as A"
+          }
+        },
+        {
+          "messageId": "unexpectedNamedImportsOrder",
+          "message": "Expected \"A\" to come before \"B\".",
+          "data": {
+            "right": "A",
+            "left": "B"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 26,
+            "endLine": 1,
+            "endColumn": 32
+          },
+          "fix": {
+            "range": [9, 31],
+            "text": "A as C, B as B, C as A"
+          }
+        }
+      ],
+      "output": "import { A as C, B as B, C as A } from 'module'"
+    },
+    {
+      "name": "ignoreCase stable equivalent aliases",
+      "code": "import { b as a, a as A } from 'module'",
+      "options": [],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "case-sensitive lowercase before uppercase",
+      "code": "import { b as a, a as A } from 'module'",
+      "options": [
+        {
+          "ignoreCase": false
+        }
+      ],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "case-sensitive inversion",
+      "code": "import { a as A, b as a } from 'module'",
+      "options": [
+        {
+          "ignoreCase": false
+        }
+      ],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedImportsOrder",
+          "message": "Expected \"a\" to come before \"A\".",
+          "data": {
+            "right": "a",
+            "left": "A"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 18,
+            "endLine": 1,
+            "endColumn": 24
+          },
+          "fix": {
+            "range": [9, 23],
+            "text": "b as a, a as A"
+          }
+        }
+      ],
+      "output": "import { b as a, a as A } from 'module'"
+    },
+    {
+      "name": "alphabetical descending",
+      "code": "import { C, BB, AAA } from 'module'",
+      "options": [
+        {
+          "order": "desc"
+        }
+      ],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "alphabetical descending inversion",
+      "code": "import { AAA, BB, C } from 'module'",
+      "options": [
+        {
+          "order": "desc"
+        }
+      ],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedImportsOrder",
+          "message": "Expected \"BB\" to come before \"AAA\".",
+          "data": {
+            "right": "BB",
+            "left": "AAA"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 15,
+            "endLine": 1,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [9, 19],
+            "text": "C, BB, AAA"
+          }
+        },
+        {
+          "messageId": "unexpectedNamedImportsOrder",
+          "message": "Expected \"C\" to come before \"BB\".",
+          "data": {
+            "right": "C",
+            "left": "BB"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 19,
+            "endLine": 1,
+            "endColumn": 20
+          },
+          "fix": {
+            "range": [9, 19],
+            "text": "C, BB, AAA"
+          }
+        }
+      ],
+      "output": "import { C, BB, AAA } from 'module'"
+    },
+    {
+      "name": "natural numeric order",
+      "code": "import { item1, item2, item10 } from 'module'",
+      "options": [
+        {
+          "type": "natural"
+        }
+      ],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "natural numeric inversion",
+      "code": "import { item10, item2, item1 } from 'module'",
+      "options": [
+        {
+          "type": "natural"
+        }
+      ],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedImportsOrder",
+          "message": "Expected \"item2\" to come before \"item10\".",
+          "data": {
+            "right": "item2",
+            "left": "item10"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 18,
+            "endLine": 1,
+            "endColumn": 23
+          },
+          "fix": {
+            "range": [9, 29],
+            "text": "item1, item2, item10"
+          }
+        },
+        {
+          "messageId": "unexpectedNamedImportsOrder",
+          "message": "Expected \"item1\" to come before \"item2\".",
+          "data": {
+            "right": "item1",
+            "left": "item2"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 25,
+            "endLine": 1,
+            "endColumn": 30
+          },
+          "fix": {
+            "range": [9, 29],
+            "text": "item1, item2, item10"
+          }
+        }
+      ],
+      "output": "import { item1, item2, item10 } from 'module'"
+    },
+    {
+      "name": "natural leading zero order",
+      "code": "import { item01, item1, item2 } from 'module'",
+      "options": [
+        {
+          "type": "natural"
+        }
+      ],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "natural leading zero inversion",
+      "code": "import { item2, item1, item01 } from 'module'",
+      "options": [
+        {
+          "type": "natural"
+        }
+      ],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedImportsOrder",
+          "message": "Expected \"item1\" to come before \"item2\".",
+          "data": {
+            "right": "item1",
+            "left": "item2"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 17,
+            "endLine": 1,
+            "endColumn": 22
+          },
+          "fix": {
+            "range": [9, 29],
+            "text": "item01, item1, item2"
+          }
+        },
+        {
+          "messageId": "unexpectedNamedImportsOrder",
+          "message": "Expected \"item01\" to come before \"item1\".",
+          "data": {
+            "right": "item01",
+            "left": "item1"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 24,
+            "endLine": 1,
+            "endColumn": 30
+          },
+          "fix": {
+            "range": [9, 29],
+            "text": "item01, item1, item2"
+          }
+        }
+      ],
+      "output": "import { item01, item1, item2 } from 'module'"
+    },
+    {
+      "name": "natural descending inversion",
+      "code": "import { item1, item2, item10 } from 'module'",
+      "options": [
+        {
+          "type": "natural",
+          "order": "desc"
+        }
+      ],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedImportsOrder",
+          "message": "Expected \"item2\" to come before \"item1\".",
+          "data": {
+            "right": "item2",
+            "left": "item1"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 17,
+            "endLine": 1,
+            "endColumn": 22
+          },
+          "fix": {
+            "range": [9, 29],
+            "text": "item10, item2, item1"
+          }
+        },
+        {
+          "messageId": "unexpectedNamedImportsOrder",
+          "message": "Expected \"item10\" to come before \"item2\".",
+          "data": {
+            "right": "item10",
+            "left": "item2"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 24,
+            "endLine": 1,
+            "endColumn": 30
+          },
+          "fix": {
+            "range": [9, 29],
+            "text": "item10, item2, item1"
+          }
+        }
+      ],
+      "output": "import { item10, item2, item1 } from 'module'"
+    },
+    {
+      "name": "line length descending",
+      "code": "import { AAA, BB, C } from 'module'",
+      "options": [
+        {
+          "type": "line-length",
+          "order": "desc"
+        }
+      ],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "line length descending inversion",
+      "code": "import { C, AAA, BB } from 'module'",
+      "options": [
+        {
+          "type": "line-length",
+          "order": "desc"
+        }
+      ],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedImportsOrder",
+          "message": "Expected \"AAA\" to come before \"C\".",
+          "data": {
+            "right": "AAA",
+            "left": "C"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 13,
+            "endLine": 1,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [9, 19],
+            "text": "AAA, BB, C"
+          }
+        }
+      ],
+      "output": "import { AAA, BB, C } from 'module'"
+    },
+    {
+      "name": "line length ascending",
+      "code": "import { C, BB, AAA } from 'module'",
+      "options": [
+        {
+          "type": "line-length",
+          "order": "asc"
+        }
+      ],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "line length counts alias source",
+      "code": "import { long as A, B } from 'module'",
+      "options": [
+        {
+          "type": "line-length",
+          "order": "asc"
+        }
+      ],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedImportsOrder",
+          "message": "Expected \"B\" to come before \"A\".",
+          "data": {
+            "right": "B",
+            "left": "A"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 21,
+            "endLine": 1,
+            "endColumn": 22
+          },
+          "fix": {
+            "range": [9, 21],
+            "text": "B, long as A"
+          }
+        }
+      ],
+      "output": "import { B, long as A } from 'module'"
+    },
+    {
+      "name": "custom reverse alphabet",
+      "code": "import { c, b, a } from 'module'",
+      "options": [
+        {
+          "type": "custom",
+          "alphabet": "cba"
+        }
+      ],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "custom reverse alphabet inversion",
+      "code": "import { a, b, c } from 'module'",
+      "options": [
+        {
+          "type": "custom",
+          "alphabet": "cba"
+        }
+      ],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedImportsOrder",
+          "message": "Expected \"b\" to come before \"a\".",
+          "data": {
+            "right": "b",
+            "left": "a"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 13,
+            "endLine": 1,
+            "endColumn": 14
+          },
+          "fix": {
+            "range": [9, 16],
+            "text": "c, b, a"
+          }
+        },
+        {
+          "messageId": "unexpectedNamedImportsOrder",
+          "message": "Expected \"c\" to come before \"b\".",
+          "data": {
+            "right": "c",
+            "left": "b"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 16,
+            "endLine": 1,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [9, 16],
+            "text": "c, b, a"
+          }
+        }
+      ],
+      "output": "import { c, b, a } from 'module'"
+    },
+    {
+      "name": "custom unknown characters remain stable",
+      "code": "import { x, y, z } from 'module'",
+      "options": [
+        {
+          "type": "custom",
+          "alphabet": "abc"
+        }
+      ],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "custom unknown characters compare length",
+      "code": "import { xx, y, zzz } from 'module'",
+      "options": [
+        {
+          "type": "custom",
+          "alphabet": "abc"
+        }
+      ],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedImportsOrder",
+          "message": "Expected \"y\" to come before \"xx\".",
+          "data": {
+            "right": "y",
+            "left": "xx"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 14,
+            "endLine": 1,
+            "endColumn": 15
+          },
+          "fix": {
+            "range": [9, 14],
+            "text": "y, xx"
+          }
+        }
+      ],
+      "output": "import { y, xx, zzz } from 'module'"
+    },
+    {
+      "name": "custom descending inversion",
+      "code": "import { c, b, a } from 'module'",
+      "options": [
+        {
+          "type": "custom",
+          "alphabet": "abc",
+          "order": "desc"
+        }
+      ],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "unsorted preserves arbitrary order",
+      "code": "import { c, a, b } from 'module'",
+      "options": [
+        {
+          "type": "unsorted"
+        }
+      ],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "unsorted ignores configured fallback",
+      "code": "import { c, a, b } from 'module'",
+      "options": [
+        {
+          "type": "unsorted",
+          "fallbackSort": {
+            "type": "alphabetical"
+          }
+        }
+      ],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "special characters keep identifier punctuation",
+      "code": "import { _a, $a, a } from 'module'",
+      "options": [],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "special characters trim",
+      "code": "import { _a, b, _c } from 'module'",
+      "options": [
+        {
+          "specialCharacters": "trim"
+        }
+      ],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "special characters trim inversion",
+      "code": "import { _b, a, _c } from 'module'",
+      "options": [
+        {
+          "specialCharacters": "trim"
+        }
+      ],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedImportsOrder",
+          "message": "Expected \"a\" to come before \"_b\".",
+          "data": {
+            "right": "a",
+            "left": "_b"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 14,
+            "endLine": 1,
+            "endColumn": 15
+          },
+          "fix": {
+            "range": [9, 14],
+            "text": "a, _b"
+          }
+        }
+      ],
+      "output": "import { a, _b, _c } from 'module'"
+    },
+    {
+      "name": "special characters remove stable equality",
+      "code": "import { ab, a_b } from 'module'",
+      "options": [
+        {
+          "specialCharacters": "remove"
+        }
+      ],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "Chinese locale order",
+      "code": "import { 你好, 世界, a, A, b, B } from 'module'",
+      "options": [
+        {
+          "locales": "zh-CN"
+        }
+      ],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "Chinese locale inversion",
+      "code": "import { b, B, a, A, 世界, 你好 } from 'module'",
+      "options": [
+        {
+          "locales": "zh-CN"
+        }
+      ],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedImportsOrder",
+          "message": "Expected \"a\" to come before \"B\".",
+          "data": {
+            "right": "a",
+            "left": "B"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 16,
+            "endLine": 1,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [9, 27],
+            "text": "你好, 世界, a, A, b, B"
+          }
+        },
+        {
+          "messageId": "unexpectedNamedImportsOrder",
+          "message": "Expected \"世界\" to come before \"A\".",
+          "data": {
+            "right": "世界",
+            "left": "A"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 22,
+            "endLine": 1,
+            "endColumn": 24
+          },
+          "fix": {
+            "range": [9, 27],
+            "text": "你好, 世界, a, A, b, B"
+          }
+        },
+        {
+          "messageId": "unexpectedNamedImportsOrder",
+          "message": "Expected \"你好\" to come before \"世界\".",
+          "data": {
+            "right": "你好",
+            "left": "世界"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 26,
+            "endLine": 1,
+            "endColumn": 28
+          },
+          "fix": {
+            "range": [9, 27],
+            "text": "你好, 世界, a, A, b, B"
+          }
+        }
+      ],
+      "output": "import { 你好, 世界, a, A, b, B } from 'module'"
+    },
+    {
+      "name": "locale preference array",
+      "code": "import { 你好, 世界, a, A, b, B } from 'module'",
+      "options": [
+        {
+          "locales": ["zh-CN", "en-US"]
+        }
+      ],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "Swedish locale inversion",
+      "code": "import { ä, å, z, a } from 'module'",
+      "options": [
+        {
+          "locales": "sv"
+        }
+      ],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedImportsOrder",
+          "message": "Expected \"å\" to come before \"ä\".",
+          "data": {
+            "right": "å",
+            "left": "ä"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 13,
+            "endLine": 1,
+            "endColumn": 14
+          },
+          "fix": {
+            "range": [9, 19],
+            "text": "a, z, å, ä"
+          }
+        },
+        {
+          "messageId": "unexpectedNamedImportsOrder",
+          "message": "Expected \"z\" to come before \"å\".",
+          "data": {
+            "right": "z",
+            "left": "å"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 16,
+            "endLine": 1,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [9, 19],
+            "text": "a, z, å, ä"
+          }
+        },
+        {
+          "messageId": "unexpectedNamedImportsOrder",
+          "message": "Expected \"a\" to come before \"z\".",
+          "data": {
+            "right": "a",
+            "left": "z"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 19,
+            "endLine": 1,
+            "endColumn": 20
+          },
+          "fix": {
+            "range": [9, 19],
+            "text": "a, z, å, ä"
+          }
+        }
+      ],
+      "output": "import { a, z, å, ä } from 'module'"
+    },
+    {
+      "name": "fallback resolves case-insensitive tie",
+      "code": "import { bb as a, a as A } from 'module'",
+      "options": [
+        {
+          "fallbackSort": {
+            "type": "line-length",
+            "order": "asc"
+          }
+        }
+      ],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedImportsOrder",
+          "message": "Expected \"A\" to come before \"a\".",
+          "data": {
+            "right": "A",
+            "left": "a"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 19,
+            "endLine": 1,
+            "endColumn": 25
+          },
+          "fix": {
+            "range": [9, 24],
+            "text": "a as A, bb as a"
+          }
+        }
+      ],
+      "output": "import { a as A, bb as a } from 'module'"
+    },
+    {
+      "name": "fallback descending resolves line-length tie",
+      "code": "import { c, a, b } from 'module'",
+      "options": [
+        {
+          "type": "line-length",
+          "order": "asc",
+          "fallbackSort": {
+            "type": "alphabetical",
+            "order": "desc"
+          }
+        }
+      ],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedImportsOrder",
+          "message": "Expected \"b\" to come before \"a\".",
+          "data": {
+            "right": "b",
+            "left": "a"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 16,
+            "endLine": 1,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [12, 16],
+            "text": "b, a"
+          }
+        }
+      ],
+      "output": "import { c, b, a } from 'module'"
+    },
+    {
+      "name": "type-only import",
+      "code": "import type { A, B } from 'module'",
+      "filename": "fixture.ts",
+      "options": [],
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "type specifier inversion",
+      "code": "import { type B, type A } from 'module'",
+      "filename": "fixture.ts",
+      "options": [],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedImportsOrder",
+          "message": "Expected \"A\" to come before \"B\".",
+          "data": {
+            "right": "A",
+            "left": "B"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 18,
+            "endLine": 1,
+            "endColumn": 24
+          },
+          "fix": {
+            "range": [9, 23],
+            "text": "type A, type B"
+          }
+        }
+      ],
+      "output": "import { type A, type B } from 'module'"
+    },
+    {
+      "name": "arbitrary string import inversion",
+      "code": "import { \"B\" as b, \"A\" as a } from 'module'",
+      "options": [
+        {
+          "ignoreAlias": true
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedImportsOrder",
+          "message": "Expected \"A\" to come before \"B\".",
+          "data": {
+            "right": "A",
+            "left": "B"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 20,
+            "endLine": 1,
+            "endColumn": 28
+          },
+          "fix": {
+            "range": [9, 27],
+            "text": "\"A\" as a, \"B\" as b"
+          }
+        }
+      ],
+      "output": "import { \"A\" as a, \"B\" as b } from 'module'"
+    },
+    {
+      "name": "multiple declarations",
+      "code": "import { B, A } from 'one';\nimport { D, C } from 'two';",
+      "options": [],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedImportsOrder",
+          "message": "Expected \"A\" to come before \"B\".",
+          "data": {
+            "right": "A",
+            "left": "B"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 13,
+            "endLine": 1,
+            "endColumn": 14
+          },
+          "fix": {
+            "range": [9, 13],
+            "text": "A, B"
+          }
+        },
+        {
+          "messageId": "unexpectedNamedImportsOrder",
+          "message": "Expected \"C\" to come before \"D\".",
+          "data": {
+            "right": "C",
+            "left": "D"
+          },
+          "loc": {
+            "startLine": 2,
+            "startColumn": 13,
+            "endLine": 2,
+            "endColumn": 14
+          },
+          "fix": {
+            "range": [37, 41],
+            "text": "C, D"
+          }
+        }
+      ],
+      "output": "import { A, B } from 'one';\nimport { C, D } from 'two';"
+    },
+    {
+      "name": "CRLF multiline inversion",
+      "code": "import {\r\n  B,\r\n  A,\r\n} from 'module';",
+      "options": [],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedImportsOrder",
+          "message": "Expected \"A\" to come before \"B\".",
+          "data": {
+            "right": "A",
+            "left": "B"
+          },
+          "loc": {
+            "startLine": 3,
+            "startColumn": 3,
+            "endLine": 3,
+            "endColumn": 4
+          },
+          "fix": {
+            "range": [12, 19],
+            "text": "A,\r\n  B"
+          }
+        }
+      ],
+      "output": "import {\r\n  A,\r\n  B,\r\n} from 'module';"
+    },
+    {
+      "name": "UTF-16 prefix keeps fix offsets",
+      "code": "'😀';\nimport { B, A } from 'module';",
+      "options": [],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedImportsOrder",
+          "message": "Expected \"A\" to come before \"B\".",
+          "data": {
+            "right": "A",
+            "left": "B"
+          },
+          "loc": {
+            "startLine": 2,
+            "startColumn": 13,
+            "endLine": 2,
+            "endColumn": 14
+          },
+          "fix": {
+            "range": [15, 19],
+            "text": "A, B"
+          }
+        }
+      ],
+      "output": "'😀';\nimport { A, B } from 'module';"
+    },
+    {
+      "name": "inline trailing comma inversion",
+      "code": "import { B, A, } from 'module';",
+      "options": [],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedImportsOrder",
+          "message": "Expected \"A\" to come before \"B\".",
+          "data": {
+            "right": "A",
+            "left": "B"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 13,
+            "endLine": 1,
+            "endColumn": 14
+          },
+          "fix": {
+            "range": [9, 13],
+            "text": "A, B"
+          }
+        }
+      ],
+      "output": "import { A, B, } from 'module';"
+    },
+    {
+      "name": "multiline without trailing comma",
+      "code": "import {\n  B,\n  A\n} from 'module';",
+      "options": [],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedImportsOrder",
+          "message": "Expected \"A\" to come before \"B\".",
+          "data": {
+            "right": "A",
+            "left": "B"
+          },
+          "loc": {
+            "startLine": 3,
+            "startColumn": 3,
+            "endLine": 3,
+            "endColumn": 4
+          },
+          "fix": {
+            "range": [11, 17],
+            "text": "A,\n  B"
+          }
+        }
+      ],
+      "output": "import {\n  A,\n  B\n} from 'module';"
+    },
+    {
+      "name": "leading comments move with imports",
+      "code": "import {\n  // B docs\n  B,\n  // A docs\n  A,\n} from 'module';",
+      "options": [],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedImportsOrder",
+          "message": "Expected \"A\" to come before \"B\".",
+          "data": {
+            "right": "A",
+            "left": "B"
+          },
+          "loc": {
+            "startLine": 5,
+            "startColumn": 3,
+            "endLine": 5,
+            "endColumn": 4
+          },
+          "fix": {
+            "range": [11, 41],
+            "text": "// A docs\n  A,\n  // B docs\n  B"
+          }
+        }
+      ],
+      "output": "import {\n  // A docs\n  A,\n  // B docs\n  B,\n} from 'module';"
+    },
+    {
+      "name": "trailing comments stay attached to slots",
+      "code": "import {\n  B, // first\n  A, // second\n} from 'module';",
+      "options": [],
+      "filename": "fixture.tsx",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedImportsOrder",
+          "message": "Expected \"A\" to come before \"B\".",
+          "data": {
+            "right": "A",
+            "left": "B"
+          },
+          "loc": {
+            "startLine": 3,
+            "startColumn": 3,
+            "endLine": 3,
+            "endColumn": 4
+          },
+          "fix": {
+            "range": [11, 37],
+            "text": "A, // second\n  B, // first"
+          }
+        }
+      ],
+      "output": "import {\n  A, // second\n  B, // first\n} from 'module';"
+    }
+  ]
+}

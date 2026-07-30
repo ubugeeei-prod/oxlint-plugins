@@ -2,6 +2,8 @@
 
 mod helpers;
 mod scanner;
+mod sort_named_imports;
+mod sort_options;
 mod types;
 
 #[cfg(test)]
@@ -15,7 +17,9 @@ use oxlint_plugins_carton::SmallVec;
 use crate::scanner::Scanner;
 use crate::types::LineIndex;
 
-pub use crate::types::{Diagnostic, DiagnosticLoc};
+pub use crate::types::{
+    Diagnostic, DiagnosticLoc, RuleDiagnostic, RuleDiagnosticData, RuleDiagnosticFix,
+};
 
 pub const RULE_NAMES: [&str; 23] = [
     "sort-array-includes",
@@ -64,4 +68,29 @@ pub fn scan_perfectionist(source_text: &str, filename: &str) -> SmallVec<[Diagno
     };
     scanner.scan();
     scanner.diagnostics
+}
+
+pub fn scan_perfectionist_rule(
+    source_text: &str,
+    filename: &str,
+    rule_name: &str,
+    options: &serde_json::Value,
+) -> SmallVec<[RuleDiagnostic; 8]> {
+    if rule_name != "sort-named-imports" {
+        return SmallVec::new();
+    }
+    let allocator = Allocator::default();
+    let source_type = SourceType::from_path(filename)
+        .unwrap_or_else(|_| SourceType::tsx())
+        .with_module(true);
+    let parser_return = Parser::new(&allocator, source_text, source_type).parse();
+    if !parser_return.errors.is_empty() {
+        return SmallVec::new();
+    }
+    sort_named_imports::check(
+        source_text,
+        &parser_return.program.body,
+        &parser_return.program.comments,
+        options,
+    )
 }
