@@ -1,7 +1,7 @@
 {
   "__generated": {
     "source": "eslint-plugin-regexp",
-    "version": "3.1.0",
+    "version": "3.1.1",
     "sourceFile": "tests/lib/rules/letter-case.ts",
     "snapshotFile": "tests/lib/rules/__snapshots__/letter-case.ts.eslintsnap",
     "license": "MIT",

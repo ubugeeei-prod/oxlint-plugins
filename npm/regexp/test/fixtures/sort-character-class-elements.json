@@ -1,7 +1,7 @@
 {
   "__generated": {
     "source": "eslint-plugin-regexp",
-    "version": "3.1.0",
+    "version": "3.1.1",
     "sourceFile": "tests/lib/rules/sort-character-class-elements.ts",
     "snapshotFile": "tests/lib/rules/__snapshots__/sort-character-class-elements.ts.eslintsnap",
     "license": "MIT",

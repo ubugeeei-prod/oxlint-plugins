@@ -1,7 +1,7 @@
 {
   "__generated": {
     "source": "eslint-plugin-regexp",
-    "version": "3.1.0",
+    "version": "3.1.1",
     "sourceFile": "tests/lib/rules/prefer-character-class.ts",
     "snapshotFile": "tests/lib/rules/__snapshots__/prefer-character-class.ts.eslintsnap",
     "license": "MIT",

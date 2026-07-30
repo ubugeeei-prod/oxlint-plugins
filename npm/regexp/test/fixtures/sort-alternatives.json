@@ -1,7 +1,7 @@
 {
   "__generated": {
     "source": "eslint-plugin-regexp",
-    "version": "3.1.0",
+    "version": "3.1.1",
     "sourceFile": "tests/lib/rules/sort-alternatives.ts",
     "snapshotFile": "tests/lib/rules/__snapshots__/sort-alternatives.ts.eslintsnap",
     "license": "MIT",

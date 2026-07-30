@@ -1,7 +1,7 @@
 {
   "__generated": {
     "source": "eslint-plugin-regexp",
-    "version": "3.1.0",
+    "version": "3.1.1",
     "sourceFile": "tests/lib/rules/no-unused-capturing-group.ts",
     "snapshotFile": "tests/lib/rules/__snapshots__/no-unused-capturing-group.ts.eslintsnap",
     "license": "MIT",
@@ -73,6 +73,12 @@
     },
     {
       "code": "\n        const matches = [...('2000-12-31 2000-12-31'.matchAll(/(\\d{4})-(\\d{2})-(\\d{2})/g))]\n        "
+    },
+    {
+      "code": "\n        console.log('asd'.matchAll(/as(d)/gu).toArray())\n        "
+    },
+    {
+      "code": "\n        const bs = 'abc_abc'.matchAll(/a(b)/g).toArray().map(m => m[1])\n        "
     },
     {
       "code": "\n        const bs = [...'abc_abc'.matchAll(/a(b)/g)].map(m => m[1])\n        "

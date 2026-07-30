@@ -1,7 +1,7 @@
 {
   "__generated": {
     "source": "eslint-plugin-regexp",
-    "version": "3.1.0",
+    "version": "3.1.1",
     "sourceFile": "tests/lib/rules/prefer-named-capture-group.ts",
     "snapshotFile": "tests/lib/rules/__snapshots__/prefer-named-capture-group.ts.eslintsnap",
     "license": "MIT",

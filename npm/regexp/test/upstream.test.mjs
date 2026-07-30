@@ -52,6 +52,35 @@ console.log(
     `${counts.off} quarantined (off)`,
 );
 
+describe('pinned eslint-plugin-regexp fixture inventory', () => {
+  it('pins every generated fixture to v3.1.1', () => {
+    expect(fixtureFiles).toHaveLength(82);
+    for (const file of fixtureFiles) {
+      const fixture = JSON.parse(readFileSync(join(FIXTURES_DIR, file), 'utf8'));
+      expect(fixture.__generated, file).toMatchObject({
+        source: 'eslint-plugin-regexp',
+        version: '3.1.1',
+        license: 'MIT',
+        tool: 'tools/tasks/sync-regexp-tests.ts',
+      });
+    }
+  });
+
+  it('captures both v3.1.1 matchAll toArray valid regressions', () => {
+    const fixture = JSON.parse(
+      readFileSync(join(FIXTURES_DIR, 'no-unused-capturing-group.json'), 'utf8'),
+    );
+    const validSources = fixture.valid.map((testCase) => testCase.code);
+
+    expect(validSources).toContainEqual(
+      expect.stringContaining("console.log('asd'.matchAll(/as(d)/gu).toArray())"),
+    );
+    expect(validSources).toContainEqual(
+      expect.stringContaining("const bs = 'abc_abc'.matchAll(/a(b)/g).toArray().map(m => m[1])"),
+    );
+  });
+});
+
 for (const file of fixtureFiles) {
   const rule = file.replace(/\.json$/, '');
   const fixture = JSON.parse(readFileSync(join(FIXTURES_DIR, file), 'utf8'));

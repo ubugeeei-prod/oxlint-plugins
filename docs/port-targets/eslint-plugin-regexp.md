@@ -5,8 +5,8 @@
 | | |
 |---|---|
 | Upstream repo | https://github.com/ota-meshi/eslint-plugin-regexp |
-| Submodule | `upstream/eslint-plugin-regexp` @ `v3.1.0` |
-| Baseline npm version | `3.1.0` |
+| Submodule | `upstream/eslint-plugin-regexp` @ `v3.1.1` |
+| Baseline npm version | `3.1.1` |
 | License | MIT |
 | Oxlint native support | none — port target |
 | Rules to port | 82 |
