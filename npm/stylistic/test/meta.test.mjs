@@ -48,6 +48,7 @@ describe('stylistic plugin meta contract', () => {
           'jsx-closing-bracket-location',
           'jsx-curly-spacing',
           'jsx-first-prop-new-line',
+          'jsx-newline',
           'jsx-quotes',
           'no-confusing-arrow',
           'no-extra-parens',
@@ -185,6 +186,25 @@ describe('stylistic plugin meta contract', () => {
       messages: {
         propOnNewLine: 'Property should be placed on a new line',
         propOnSameLine: 'Property should be placed on the same line as the component declaration',
+      },
+      schema: { type: 'array' },
+    });
+  });
+
+  it('preserves the stable jsx-newline metadata contract', () => {
+    expect(plugin.rules['jsx-newline'].meta).toMatchObject({
+      type: 'layout',
+      docs: {
+        description: 'Require or prevent a new line after jsx elements and expressions.',
+        recommended: false,
+        requiresTypeChecking: false,
+      },
+      fixable: 'code',
+      hasSuggestions: true,
+      messages: {
+        require: 'JSX element should start in a new line',
+        prevent: 'JSX element should not start in a new line',
+        allowMultilines: 'Multiline JSX elements should start in a new line',
       },
       schema: { type: 'array' },
     });

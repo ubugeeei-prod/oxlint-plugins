@@ -1644,4 +1644,37 @@ describe('stylistic native API', () => {
       },
     ]);
   });
+
+  it('runs jsx-newline with exact UTF-8 ranges and whitespace replacement fixes', () => {
+    const source = 'const marker = "😀"; const view = <外><内 />\n<次 /></外>;';
+    const childStart = Buffer.byteLength(source.slice(0, source.indexOf('<次')));
+    const childEnd = childStart + Buffer.byteLength('<次 />');
+    const whitespaceStart = Buffer.byteLength(source.slice(0, source.indexOf('\n<次')));
+    const whitespaceEnd = Buffer.byteLength(source.slice(0, source.indexOf('<次')));
+    const diagnostics = runNativeStylisticLint(source, {
+      filename: 'fixture.tsx',
+      rules: [{ name: 'jsx-newline', options: [] }],
+    });
+
+    expect(diagnostics).toEqual([
+      {
+        ruleName: 'jsx-newline',
+        messageId: 'require',
+        message: 'JSX element should start in a new line',
+        range: { start: childStart, end: childEnd },
+        suggestions: [
+          {
+            messageId: 'require',
+            message: 'JSX element should start in a new line',
+            fixes: [
+              {
+                range: { start: whitespaceStart, end: whitespaceEnd },
+                replacementText: '\n\n',
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+  });
 });

@@ -61,6 +61,10 @@ through the JavaScript plugin.
 Its fixes preserve TypeScript generic component arguments and match upstream's
 raw replacement boundaries.
 
+`jsx-newline` follows the pinned stable JSX/TSX contract for required and
+prevented newlines between adjacent elements and expressions, including the
+`allowMultilines` option and comment-preserving fixes.
+
 ## JS API
 
 ```js
@@ -82,6 +86,6 @@ bindings.
 Most rule scanning logic is derived from `corsa-oxlint/stylistic` in
 [`ubugeeei-prod/corsa-bind`](https://github.com/ubugeeei-prod/corsa-bind)
 v0.43.0 (MIT). Additional stable ports, including `jsx-first-prop-new-line`,
-`jsx-quotes`, `jsx-curly-newline`, and `semi`, follow
+`jsx-newline`, `jsx-quotes`, `jsx-curly-newline`, and `semi`, follow
 [`@stylistic/eslint-plugin`](https://github.com/eslint-stylistic/eslint-stylistic)
 v5.10.0 (MIT).
