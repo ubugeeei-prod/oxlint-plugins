@@ -1,0 +1,1471 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-playwright",
+    "version": "2.10.4",
+    "sourceCommit": "894c0ec261763bb1e073b276c70bbf88b4ebad39",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-playwright-restricted-tests.ts",
+    "sourceFiles": [
+      "src/rules/no-restricted-locators.ts",
+      "src/rules/no-restricted-locators.test.ts",
+      "src/rules/no-restricted-matchers.ts",
+      "src/rules/no-restricted-matchers.test.ts",
+      "src/rules/no-restricted-roles.ts",
+      "src/rules/no-restricted-roles.test.ts"
+    ],
+    "sourceHashes": {
+      "src/rules/no-restricted-locators.ts": "af178bba1c720c60192ca10a31c0d9cb15a1ab49c4c54294db109365923f1784",
+      "src/rules/no-restricted-locators.test.ts": "eacd9eaa6593b840467d2be6a0ed926b67402dbc98acdeeca19a0ae6018b28cc",
+      "src/rules/no-restricted-matchers.ts": "8160ced6694d28062ae621287a959178813a3924c28d21787404bd83838df6ef",
+      "src/rules/no-restricted-matchers.test.ts": "951c1eb5c95d666f69f2339a6da21e4a9b63f50749028307bc65210342f471bf",
+      "src/rules/no-restricted-roles.ts": "b5fc1ad9d033620282e65950b012d7324d8eab60ba51df441111f07fce042afb",
+      "src/rules/no-restricted-roles.test.ts": "f91987b72b3432cb56a4f74032d1bf7ad1e98669b5ab9f2095cf3e1133d65abb"
+    },
+    "inventory": {
+      "suites": [
+        {
+          "rule": "no-restricted-locators",
+          "valid": 12,
+          "invalid": 15,
+          "diagnostics": 17
+        },
+        {
+          "rule": "no-restricted-matchers",
+          "valid": 20,
+          "invalid": 13,
+          "diagnostics": 13
+        },
+        {
+          "rule": "no-restricted-roles",
+          "valid": 16,
+          "invalid": 18,
+          "diagnostics": 20
+        }
+      ],
+      "valid": 48,
+      "invalid": 46,
+      "diagnostics": 50
+    }
+  },
+  "suites": [
+    {
+      "rule": "no-restricted-locators",
+      "valid": [
+        {
+          "code": "test('test', async () => { await page.getByTestId(\"button\") })",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('test', async () => { await page.getByTitle(\"tooltip\") })",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('test', async () => { await page.getByTestId(\"button\") })",
+          "options": [[]],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('test', async () => { await page.getByTestId(\"button\") })",
+          "options": [["getByTitle"]],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('test', async () => { await page.getByTitle(\"tooltip\") })",
+          "options": [["getByTestId"]],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('test', async () => { await page.getByRole(\"button\") })",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('test', async () => { await page.getByText(\"Submit\") })",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('test', async () => { await page.getByLabel(\"Email\") })",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('test', async () => { await page.locator(\".btn\") })",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('test', async () => { await page.click() })",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('test', async () => { const section = page.getByRole(\"section\"); section.getByRole(\"button\") })",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('test', async () => { const button = page.getByRole(\"button\", { name: \"common button\" }); page.locator(button) })",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        }
+      ],
+      "invalid": [
+        {
+          "code": "test('test', async () => { await page.getByTestId(\"button\") })",
+          "options": [["getByTestId"]],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "method": "getByTestId"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 33,
+                "endLine": 1,
+                "endColumn": 59
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('test', async () => { await this.page.getByTestId(\"button\") })",
+          "options": [["getByTestId"]],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "method": "getByTestId"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 33,
+                "endLine": 1,
+                "endColumn": 64
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('test', async () => { await page[\"getByTestId\"](\"button\") })",
+          "options": [["getByTestId"]],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "method": "getByTestId"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 33,
+                "endLine": 1,
+                "endColumn": 62
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('test', async () => { await page[`getByTestId`](\"button\") })",
+          "options": [["getByTestId"]],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "method": "getByTestId"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 33,
+                "endLine": 1,
+                "endColumn": 62
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('test', async () => { await frame.getByTestId(\"button\") })",
+          "options": [["getByTestId"]],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "method": "getByTestId"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 33,
+                "endLine": 1,
+                "endColumn": 60
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('test', async () => { await page.getByTestId(\"btn\"); await page.getByTitle(\"tip\") })",
+          "options": [["getByTestId", "getByTitle"]],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "method": "getByTestId"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 33,
+                "endLine": 1,
+                "endColumn": 56
+              }
+            },
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "method": "getByTitle"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 64,
+                "endLine": 1,
+                "endColumn": 86
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('test', async () => { await page.getByTestId(\"button\") })",
+          "options": [
+            [
+              {
+                "type": "getByTestId"
+              }
+            ]
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "method": "getByTestId"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 33,
+                "endLine": 1,
+                "endColumn": 59
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('test', async () => { await page.getByTestId(\"button\") })",
+          "options": [
+            [
+              {
+                "message": "Prefer getByRole or getByLabel instead",
+                "type": "getByTestId"
+              }
+            ]
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restrictedWithMessage",
+              "data": {
+                "message": "Prefer getByRole or getByLabel instead",
+                "method": "getByTestId"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 33,
+                "endLine": 1,
+                "endColumn": 59
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('test', async () => { await page.getByTestId(\"btn\"); await page.getByTitle(\"tip\") })",
+          "options": [
+            [
+              "getByTestId",
+              {
+                "message": "Prefer getByRole or getByLabel instead",
+                "type": "getByTitle"
+              }
+            ]
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "method": "getByTestId"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 33,
+                "endLine": 1,
+                "endColumn": 56
+              }
+            },
+            {
+              "messageId": "restrictedWithMessage",
+              "data": {
+                "message": "Prefer getByRole or getByLabel instead",
+                "method": "getByTitle"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 64,
+                "endLine": 1,
+                "endColumn": 86
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('test', async () => { await page.getByAltText(\"logo\") })",
+          "options": [["getByAltText"]],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "method": "getByAltText"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 33,
+                "endLine": 1,
+                "endColumn": 58
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('test', async () => { await page.getByPlaceholder(\"Email\") })",
+          "options": [["getByPlaceholder"]],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "method": "getByPlaceholder"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 33,
+                "endLine": 1,
+                "endColumn": 63
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('test', async () => { await page.getByLabel(\"Email\") })",
+          "options": [["getByLabel"]],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "method": "getByLabel"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 33,
+                "endLine": 1,
+                "endColumn": 57
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('test', async () => { await page.getByRole(\"button\") })",
+          "options": [["getByRole"]],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "method": "getByRole"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 33,
+                "endLine": 1,
+                "endColumn": 57
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('test', async () => { await page.getByText(\"Submit\") })",
+          "options": [["getByText"]],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "method": "getByText"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 33,
+                "endLine": 1,
+                "endColumn": 57
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('test', async () => { page.getByRole(\"section\").getByTestId(\"btn\") })",
+          "options": [["getByTestId"]],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "method": "getByTestId"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 27,
+                "endLine": 1,
+                "endColumn": 71
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rule": "no-restricted-matchers",
+      "valid": [
+        {
+          "code": "expect(a)",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "expect(a).toBe()",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "expect(a).not.toContain()",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "expect(a).toHaveText()",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "expect(a).toThrow()",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "expect.soft(a)",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "expect.soft(a).toHaveText()",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "expect.poll(() => true).toThrow()",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "expect[\"soft\"](a).toHaveText()",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "expect[`poll`](() => true).toThrow()",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "expect(a).toBe(b)",
+          "options": [
+            {
+              "not.toBe": null
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "expect.soft(a).toBe(b)",
+          "options": [
+            {
+              "not.toBe": null
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "expect.poll(() => true).toBe(b)",
+          "options": [
+            {
+              "not.toBe": null
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "expect[\"soft\"](a)[\"toBe\"](b)",
+          "options": [
+            {
+              "not.toBe": null
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "expect[`poll`](() => true)[`toBe`](b)",
+          "options": [
+            {
+              "not.toBe": null
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "expect(a).toHaveKnot(b)",
+          "options": [
+            {
+              "not": null
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "expect(a).nothing(b)",
+          "options": [
+            {
+              "not": null
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "assert(a).nothing(b)",
+          "options": [
+            {
+              "not": null
+            }
+          ],
+          "settings": {
+            "playwright": {
+              "globalAliases": {
+                "expect": ["assert"]
+              }
+            }
+          },
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "const custom = test.extend({});\ncustom(\"foo\", () => {\n  expect(a).toHaveText();\n});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "import { expect as assuming } from '@playwright/test';\nassuming(something).toBe(something);",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        }
+      ],
+      "invalid": [
+        {
+          "code": "expect(a).toBe(b)",
+          "options": [
+            {
+              "toBe": null
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "restriction": "toBe"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 10,
+                "endLine": 1,
+                "endColumn": 14
+              }
+            }
+          ]
+        },
+        {
+          "code": "expect.soft(a).toBe(b)",
+          "options": [
+            {
+              "toBe": null
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "restriction": "toBe"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 15,
+                "endLine": 1,
+                "endColumn": 19
+              }
+            }
+          ]
+        },
+        {
+          "code": "expect[\"poll\"](() => a)[\"toBe\"](b)",
+          "options": [
+            {
+              "toBe": null
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "restriction": "toBe"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 24,
+                "endLine": 1,
+                "endColumn": 30
+              }
+            }
+          ]
+        },
+        {
+          "code": "expect(a).not.toBe()",
+          "options": [
+            {
+              "not": null
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "restriction": "not"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 10,
+                "endLine": 1,
+                "endColumn": 13
+              }
+            }
+          ]
+        },
+        {
+          "code": "expect(a).not.toBeTruthy()",
+          "options": [
+            {
+              "not.toBeTruthy": null
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "restriction": "not.toBeTruthy"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 10,
+                "endLine": 1,
+                "endColumn": 24
+              }
+            }
+          ]
+        },
+        {
+          "code": "expect[`soft`](a)[`not`][\"toBe\"]()",
+          "options": [
+            {
+              "not": null
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "restriction": "not"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 18,
+                "endLine": 1,
+                "endColumn": 23
+              }
+            }
+          ]
+        },
+        {
+          "code": "expect.poll(() => true).not.toBeTruthy()",
+          "options": [
+            {
+              "not.toBeTruthy": null
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "restriction": "not.toBeTruthy"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 24,
+                "endLine": 1,
+                "endColumn": 38
+              }
+            }
+          ]
+        },
+        {
+          "code": "expect(a).toBe(b)",
+          "options": [
+            {
+              "toBe": "Prefer `toStrictEqual` instead"
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restrictedWithMessage",
+              "data": {
+                "message": "Prefer `toStrictEqual` instead",
+                "restriction": "toBe"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 10,
+                "endLine": 1,
+                "endColumn": 14
+              }
+            }
+          ]
+        },
+        {
+          "code": "expect(foo).not.toHaveText('bar')",
+          "options": [
+            {
+              "not.toHaveText": "Use not.toContainText instead"
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restrictedWithMessage",
+              "data": {
+                "message": "Use not.toContainText instead",
+                "restriction": "not.toHaveText"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 12,
+                "endLine": 1,
+                "endColumn": 26
+              }
+            }
+          ]
+        },
+        {
+          "code": "assert(a).toBe(b)",
+          "options": [
+            {
+              "toBe": null
+            }
+          ],
+          "settings": {
+            "playwright": {
+              "globalAliases": {
+                "expect": ["assert"]
+              }
+            }
+          },
+          "expectedDiagnostics": [
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "restriction": "toBe"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 10,
+                "endLine": 1,
+                "endColumn": 14
+              }
+            }
+          ]
+        },
+        {
+          "code": "const custom = test.extend({});\ncustom(\"foo\", () => {\n  expect(a).toBe(b);\n});",
+          "options": [
+            {
+              "toBe": null
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "restriction": "toBe"
+              },
+              "loc": {
+                "startLine": 3,
+                "startColumn": 12,
+                "endLine": 3,
+                "endColumn": 16
+              }
+            }
+          ]
+        },
+        {
+          "code": "import { expect as assuming } from '@playwright/test';\nassuming(a).toBe(b);",
+          "options": [
+            {
+              "toBe": null
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "restriction": "toBe"
+              },
+              "loc": {
+                "startLine": 2,
+                "startColumn": 12,
+                "endLine": 2,
+                "endColumn": 16
+              }
+            }
+          ]
+        },
+        {
+          "code": "expect(a).resolves.toBe(b)",
+          "options": [
+            {
+              "resolves.toBe": "Use a different approach"
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restrictedWithMessage",
+              "data": {
+                "message": "Use a different approach",
+                "restriction": "resolves.toBe"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 10,
+                "endLine": 1,
+                "endColumn": 23
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rule": "no-restricted-roles",
+      "valid": [
+        {
+          "code": "test('test', async () => { await page.getByRole(\"button\") })",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('test', async () => { await page.getByRole(\"progressbar\") })",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('test', async () => { await page.getByRole(\"progressbar\") })",
+          "options": [[]],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('test', async () => { await page.getByRole(\"button\") })",
+          "options": [["progressbar"]],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('test', async () => { await page.getByRole(\"heading\") })",
+          "options": [["progressbar"]],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('test', async () => { await page.getByRole(\"link\") })",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('test', async () => { await page.getByRole(\"textbox\") })",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('test', async () => { await page.getByRole(\"checkbox\") })",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('test', async () => { await page.getByTestId(\"progressbar\") })",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('test', async () => { await page.getByText(\"Loading...\") })",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('test', async () => { await page.locator(\"[role=progressbar]\") })",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('test', async () => { const section = page.getByRole(\"region\"); section.getByRole(\"button\") })",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('test', async () => { await dialog.getByRole(\"button\") })",
+          "options": [["progressbar"]],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('test', async () => { await table.getByRole(\"button\", { name: \"Submit\" }) })",
+          "options": [["progressbar"]],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('test', async () => { await page.locator(\".foo\").getByRole(\"button\") })",
+          "options": [["progressbar"]],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('test', async () => { const role = \"progressbar\"; await page.getByRole(role) })",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        }
+      ],
+      "invalid": [
+        {
+          "code": "test('test', async () => { await page.getByRole(\"progressbar\") })",
+          "options": [["progressbar"]],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "role": "progressbar"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 33,
+                "endLine": 1,
+                "endColumn": 62
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('test', async () => { await this.page.getByRole(\"progressbar\") })",
+          "options": [["progressbar"]],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "role": "progressbar"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 33,
+                "endLine": 1,
+                "endColumn": 67
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('test', async () => { await page[\"getByRole\"](\"progressbar\") })",
+          "options": [["progressbar"]],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "role": "progressbar"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 33,
+                "endLine": 1,
+                "endColumn": 65
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('test', async () => { await page[`getByRole`](\"progressbar\") })",
+          "options": [["progressbar"]],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "role": "progressbar"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 33,
+                "endLine": 1,
+                "endColumn": 65
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('test', async () => { await frame.getByRole(\"progressbar\") })",
+          "options": [["progressbar"]],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "role": "progressbar"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 33,
+                "endLine": 1,
+                "endColumn": 63
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('test', async () => { await page.getByRole(\"progressbar\"); await page.getByRole(\"alert\") })",
+          "options": [["progressbar", "alert"]],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "role": "progressbar"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 33,
+                "endLine": 1,
+                "endColumn": 62
+              }
+            },
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "role": "alert"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 70,
+                "endLine": 1,
+                "endColumn": 93
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('test', async () => { await page.getByRole(\"progressbar\") })",
+          "options": [
+            [
+              {
+                "role": "progressbar"
+              }
+            ]
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "role": "progressbar"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 33,
+                "endLine": 1,
+                "endColumn": 62
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('test', async () => { await page.getByRole(\"progressbar\") })",
+          "options": [
+            [
+              {
+                "message": "Progressbar assertions are flaky. Assert on the actual content change instead.",
+                "role": "progressbar"
+              }
+            ]
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restrictedWithMessage",
+              "data": {
+                "message": "Progressbar assertions are flaky. Assert on the actual content change instead.",
+                "role": "progressbar"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 33,
+                "endLine": 1,
+                "endColumn": 62
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('test', async () => { await page.getByRole(\"progressbar\"); await page.getByRole(\"alert\") })",
+          "options": [
+            [
+              "progressbar",
+              {
+                "message": "Prefer asserting on specific content",
+                "role": "alert"
+              }
+            ]
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "role": "progressbar"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 33,
+                "endLine": 1,
+                "endColumn": 62
+              }
+            },
+            {
+              "messageId": "restrictedWithMessage",
+              "data": {
+                "message": "Prefer asserting on specific content",
+                "role": "alert"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 70,
+                "endLine": 1,
+                "endColumn": 93
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('test', async () => { await page.getByRole(\"alert\") })",
+          "options": [["alert"]],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "role": "alert"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 33,
+                "endLine": 1,
+                "endColumn": 56
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('test', async () => { await page.getByRole(\"status\") })",
+          "options": [["status"]],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "role": "status"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 33,
+                "endLine": 1,
+                "endColumn": 57
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('test', async () => { await page.getByRole(\"img\") })",
+          "options": [["img"]],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "role": "img"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 33,
+                "endLine": 1,
+                "endColumn": 54
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('test', async () => { await page.getByRole(\"progressbar\", { name: \"Loading\" }) })",
+          "options": [["progressbar"]],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "role": "progressbar"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 33,
+                "endLine": 1,
+                "endColumn": 83
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('test', async () => { page.getByRole(`button`) })",
+          "options": [["button"]],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "role": "button"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 27,
+                "endLine": 1,
+                "endColumn": 51
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('test', async () => { await dialog.getByRole(\"progressbar\") })",
+          "options": [["progressbar"]],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "role": "progressbar"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 33,
+                "endLine": 1,
+                "endColumn": 64
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('test', async () => { await table.getByRole(\"progressbar\", { name: \"Loading\" }) })",
+          "options": [["progressbar"]],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "role": "progressbar"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 33,
+                "endLine": 1,
+                "endColumn": 84
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('test', async () => { await page.locator(\".foo\").getByRole(\"progressbar\") })",
+          "options": [["progressbar"]],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "role": "progressbar"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 33,
+                "endLine": 1,
+                "endColumn": 78
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('test', async () => { await page.getByRole(\"region\").getByRole(\"progressbar\") })",
+          "options": [["progressbar"]],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "restricted",
+              "data": {
+                "message": "",
+                "role": "progressbar"
+              },
+              "loc": {
+                "startLine": 1,
+                "startColumn": 33,
+                "endLine": 1,
+                "endColumn": 82
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,7 +1,21 @@
 //! Diagnostic types and line indexing for the playwright port.
 
 use oxc_span::Span;
-use oxlint_plugins_carton::SmallVec;
+use oxlint_plugins_carton::{CompactString, SmallVec};
+
+#[derive(Clone, Debug, Default, Eq, PartialEq)]
+pub struct Restriction {
+    pub value: CompactString,
+    pub message: Option<CompactString>,
+}
+
+#[derive(Clone, Debug, Default, Eq, PartialEq)]
+pub struct PlaywrightOptions {
+    pub restricted_locators: SmallVec<[Restriction; 8]>,
+    pub restricted_matchers: SmallVec<[Restriction; 8]>,
+    pub restricted_roles: SmallVec<[Restriction; 8]>,
+    pub expect_aliases: SmallVec<[CompactString; 4]>,
+}
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct DiagnosticLoc {
@@ -15,7 +29,16 @@ pub struct DiagnosticLoc {
 pub struct Diagnostic {
     pub rule_name: &'static str,
     pub message_id: &'static str,
+    pub data: DiagnosticData,
     pub loc: DiagnosticLoc,
+}
+
+#[derive(Clone, Debug, Default, Eq, PartialEq)]
+pub struct DiagnosticData {
+    pub message: CompactString,
+    pub method: Option<CompactString>,
+    pub restriction: Option<CompactString>,
+    pub role: Option<CompactString>,
 }
 
 pub(crate) struct LineIndex {

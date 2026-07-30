@@ -136,9 +136,13 @@ describe('playwright native API', () => {
   });
 
   it('scans representative Playwright patterns for every rule', () => {
-    const diagnostics = scanPlaywright(representativeSource, 'fixture.spec.ts');
+    const diagnostics = scanPlaywright(representativeSource, 'fixture.spec.ts', {
+      noRestrictedLocators: ['getByText'],
+      noRestrictedMatchers: { toBeTruthy: null },
+      noRestrictedRoles: ['button'],
+    });
 
-    expect(diagnostics.map((diagnostic) => diagnostic.ruleName).sort()).toEqual(
+    expect([...new Set(diagnostics.map((diagnostic) => diagnostic.ruleName))].sort()).toEqual(
       [...expectedRuleNames].sort(),
     );
   });

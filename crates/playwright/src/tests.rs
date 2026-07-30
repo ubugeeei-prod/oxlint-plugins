@@ -1,6 +1,9 @@
-use oxlint_plugins_carton::SmallVec;
+use oxlint_plugins_carton::{CompactString, SmallVec};
 
-use crate::{RULE_NAMES, implemented_playwright_rule_names, scan_playwright};
+use crate::{
+    PlaywrightOptions, RULE_NAMES, Restriction, implemented_playwright_rule_names, scan_playwright,
+    scan_playwright_with_options,
+};
 
 const REPRESENTATIVE_SOURCE: &str = r#"
 test("one", async ({ page }) => { await expect(page).toBeTruthy(); });
@@ -81,13 +84,144 @@ fn exposes_all_rule_names() {
 
 #[test]
 fn scans_representative_rules() {
-    let diagnostics = scan_playwright(REPRESENTATIVE_SOURCE, "fixture.spec.ts");
+    let diagnostics = scan_playwright_with_options(
+        REPRESENTATIVE_SOURCE,
+        "fixture.spec.ts",
+        &representative_options(),
+    );
     let mut actual: SmallVec<[&str; 64]> = diagnostics
         .iter()
         .map(|diagnostic| diagnostic.rule_name)
         .collect();
     let mut expected: SmallVec<[&str; 64]> = RULE_NAMES.into_iter().collect();
     actual.sort_unstable();
+    actual.dedup();
     expected.sort_unstable();
     assert_eq!(actual, expected);
+}
+
+#[test]
+fn restricted_rules_honor_lists_custom_messages_and_exact_utf16_ranges() {
+    let source = concat!(
+        "const café = page.getByText(\"Submit\");\n",
+        "expect(café).not.toBeTruthy();\n",
+        "page.getByRole(`progressbar`, { name: \"Loading\" });\n",
+    );
+    let options = PlaywrightOptions {
+        restricted_locators: [restriction("getByText", None)].into_iter().collect(),
+        restricted_matchers: [restriction(
+            "not.toBeTruthy",
+            Some("Prefer a positive assertion"),
+        )]
+        .into_iter()
+        .collect(),
+        restricted_roles: [restriction(
+            "progressbar",
+            Some("Assert the loaded content"),
+        )]
+        .into_iter()
+        .collect(),
+        expect_aliases: Default::default(),
+    };
+
+    let diagnostics = scan_playwright_with_options(source, "fixture.ts", &options);
+    let restricted = diagnostics
+        .iter()
+        .filter(|diagnostic| diagnostic.rule_name.starts_with("no-restricted-"))
+        .collect::<SmallVec<[_; 4]>>();
+
+    assert_eq!(restricted.len(), 3);
+    assert_eq!(restricted[0].rule_name, "no-restricted-locators");
+    assert_eq!(restricted[0].message_id, "restricted");
+    assert_eq!(restricted[0].data.method.as_deref(), Some("getByText"));
+    assert_eq!(restricted[0].loc.start_column, 13);
+    assert_eq!(restricted[0].loc.end_column, 37);
+
+    assert_eq!(restricted[1].rule_name, "no-restricted-matchers");
+    assert_eq!(restricted[1].message_id, "restrictedWithMessage");
+    assert_eq!(restricted[1].data.message, "Prefer a positive assertion");
+    assert_eq!(restricted[1].loc.start_column, 13);
+    assert_eq!(restricted[1].loc.end_column, 27);
+
+    assert_eq!(restricted[2].rule_name, "no-restricted-roles");
+    assert_eq!(restricted[2].message_id, "restrictedWithMessage");
+    assert_eq!(restricted[2].data.role.as_deref(), Some("progressbar"));
+    assert_eq!(restricted[2].loc.start_column, 0);
+    assert_eq!(restricted[2].loc.end_column, 50);
+}
+
+#[test]
+fn restricted_rules_support_computed_names_aliases_and_last_duplicate_wins() {
+    let source = concat!(
+        "page[\"getByTestId\"](\"button\");\n",
+        "assuming(value)[`not`][\"toBe\"]();\n",
+        "page[`getByRole`](role);\n",
+        "import { expect as assuming } from \"@playwright/test\";\n",
+    );
+    let options = PlaywrightOptions {
+        restricted_locators: [
+            restriction("getByTestId", Some("old")),
+            restriction("getByTestId", Some("Use a role")),
+        ]
+        .into_iter()
+        .collect(),
+        restricted_matchers: [
+            restriction("not", None),
+            restriction("not.toBe", Some("Use a positive matcher")),
+        ]
+        .into_iter()
+        .collect(),
+        restricted_roles: [restriction("button", None)].into_iter().collect(),
+        expect_aliases: Default::default(),
+    };
+
+    let diagnostics = scan_playwright_with_options(source, "fixture.ts", &options);
+    let restricted = diagnostics
+        .iter()
+        .filter(|diagnostic| diagnostic.rule_name.starts_with("no-restricted-"))
+        .collect::<SmallVec<[_; 4]>>();
+
+    assert_eq!(restricted.len(), 3);
+    assert_eq!(restricted[0].data.message, "Use a role");
+    assert_eq!(restricted[1].data.restriction.as_deref(), Some("not"));
+    assert_eq!(restricted[2].data.restriction.as_deref(), Some("not.toBe"));
+    assert!(
+        restricted
+            .iter()
+            .all(|diagnostic| diagnostic.rule_name != "no-restricted-roles")
+    );
+}
+
+#[test]
+fn restricted_rules_are_inert_without_options_and_on_parse_errors() {
+    let source = concat!(
+        "page.getByText(\"Forbidden\");\n",
+        "expect(value).toBeTruthy();\n",
+        "page.getByRole(\"button\");\n",
+    );
+    assert!(
+        scan_playwright(source, "fixture.ts")
+            .iter()
+            .all(|diagnostic| !diagnostic.rule_name.starts_with("no-restricted-"))
+    );
+    assert!(
+        scan_playwright_with_options("page.getByText(", "fixture.ts", &representative_options(),)
+            .is_empty()
+    );
+}
+
+fn representative_options() -> PlaywrightOptions {
+    PlaywrightOptions {
+        restricted_locators: [restriction("getByText", None)].into_iter().collect(),
+        restricted_matchers: [restriction("toBeTruthy", None)].into_iter().collect(),
+        restricted_roles: [restriction("button", None)].into_iter().collect(),
+        expect_aliases: Default::default(),
+    }
+}
+
+fn restriction(value: &str, message: Option<&str>) -> Restriction {
+    Restriction {
+        value: CompactString::from(value),
+        message: message.map(CompactString::from),
+    }
 }
