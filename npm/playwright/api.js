@@ -20,6 +20,9 @@ function scanPlaywright(sourceText, filename = 'file.spec.ts', options = {}) {
   const diagnostics = native.scanPlaywright(sourceText, filename, {
     expectAliases: stringList(options.expectAliases),
     testAliases: stringList(options.testAliases),
+    maxExpects: integerOption(options.maxExpects, 'maxExpects', 1),
+    maxNestedDescribe: integerOption(options.maxNestedDescribe, 'maxNestedDescribe', 0),
+    maxTopLevelDescribes: numberOption(options.maxTopLevelDescribes, 'maxTopLevelDescribes', 1),
     restrictedLocators: listRestrictions(options.noRestrictedLocators, 'type'),
     restrictedMatchers: matcherRestrictions(options.noRestrictedMatchers),
     restrictedRoles: listRestrictions(options.noRestrictedRoles, 'role'),
@@ -117,6 +120,26 @@ function tagPatterns(values) {
     }
     return [];
   });
+}
+
+function integerOption(value, name, minimum) {
+  if (value === undefined) {
+    return undefined;
+  }
+  if (!Number.isInteger(value) || value < minimum) {
+    throw new TypeError(`${name} must be an integer greater than or equal to ${minimum}.`);
+  }
+  return value;
+}
+
+function numberOption(value, name, minimum) {
+  if (value === undefined) {
+    return undefined;
+  }
+  if (typeof value !== 'number' || !Number.isFinite(value) || value < minimum) {
+    throw new TypeError(`${name} must be a finite number greater than or equal to ${minimum}.`);
+  }
+  return value;
 }
 
 function listRestrictions(values, key) {

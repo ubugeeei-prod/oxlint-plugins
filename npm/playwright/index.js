@@ -17,6 +17,11 @@ const restrictedRules = new Set([
   'no-restricted-roles',
 ]);
 const patternRules = new Set(['valid-test-tags', 'valid-title']);
+const thresholdRules = new Set([
+  'max-expects',
+  'max-nested-describe',
+  'require-top-level-describe',
+]);
 
 const sharedGlobals = Object.freeze({
   expect: false,
@@ -134,24 +139,23 @@ function createLegacyRecommendedConfig() {
 }
 
 function createPlaywrightRule(ruleName) {
-  const restrictedMeta = restrictedRuleMeta(ruleName);
-  const patternMeta = patternRuleMeta(ruleName);
-  const exactMeta = restrictedMeta ?? patternMeta;
+  const specializedMeta =
+    restrictedRuleMeta(ruleName) ?? patternRuleMeta(ruleName) ?? thresholdRuleMeta(ruleName);
   return {
     meta: {
       type: ruleType(ruleName),
       docs: {
         description:
-          exactMeta?.description ?? `enforce playwright ${ruleName.replaceAll('-', ' ')}`,
+          specializedMeta?.description ?? `enforce playwright ${ruleName.replaceAll('-', ' ')}`,
         category: 'Best Practices',
         recommended: recommendedRuleConfig[`playwright/${ruleName}`] !== undefined,
         url: `${DOCS_BASE}/${ruleName}.md`,
       },
       fixable: fixableRule(ruleName) ? 'code' : undefined,
-      messages: exactMeta?.messages ?? {
+      messages: specializedMeta?.messages ?? {
         unexpected: 'Unexpected Playwright pattern.',
       },
-      schema: exactMeta?.schema ?? [],
+      schema: specializedMeta?.schema ?? [],
     },
     createOnce(context) {
       return {
@@ -187,7 +191,9 @@ function diagnosticsForRule(context, ruleName) {
   const options =
     restrictedRules.has(ruleName) || patternRules.has(ruleName)
       ? ruleScanOptions(context, ruleName)
-      : undefined;
+      : thresholdRules.has(ruleName)
+        ? thresholdScanOptions(context, ruleName)
+        : undefined;
   return diagnosticsForContext(context, options).filter(
     (diagnostic) => diagnostic.ruleName === ruleName,
   );
@@ -250,6 +256,22 @@ function sourceTextForContext(context) {
     return sourceCode.text;
   }
   return '';
+}
+
+function thresholdScanOptions(context, ruleName) {
+  const options = Array.isArray(context.options) ? context.options : [];
+  const configured = options[0] && typeof options[0] === 'object' ? options[0] : {};
+  const expectAliases = context.settings?.playwright?.globalAliases?.expect;
+  const testAliases = context.settings?.playwright?.globalAliases?.test;
+  return {
+    ...(ruleName === 'max-expects' ? { maxExpects: configured.max } : {}),
+    ...(ruleName === 'max-nested-describe' ? { maxNestedDescribe: configured.max } : {}),
+    ...(ruleName === 'require-top-level-describe'
+      ? { maxTopLevelDescribes: configured.maxTopLevelDescribes }
+      : {}),
+    ...(Array.isArray(expectAliases) ? { expectAliases } : {}),
+    ...(Array.isArray(testAliases) ? { testAliases } : {}),
+  };
 }
 
 function ruleScanOptions(context, ruleName) {
@@ -356,6 +378,55 @@ function tagListSchema() {
       ],
     },
     type: 'array',
+  };
+}
+
+function thresholdRuleMeta(ruleName) {
+  switch (ruleName) {
+    case 'max-expects':
+      return {
+        description: 'Enforces a maximum number assertion calls in a test body',
+        messages: {
+          exceededMaxAssertion:
+            'Too many assertion calls ({{ count }}) - maximum allowed is {{ max }}',
+        },
+        schema: [maximumSchema('max', 1, 'integer')],
+      };
+    case 'max-nested-describe':
+      return {
+        description: 'Enforces a maximum depth to nested describe calls',
+        messages: {
+          exceededMaxDepth:
+            'Maximum describe call depth exceeded ({{ depth }}). Maximum allowed is {{ max }}.',
+        },
+        schema: [maximumSchema('max', 0, 'integer')],
+      };
+    case 'require-top-level-describe':
+      return {
+        description: 'Require test cases and hooks to be inside a `test.describe` block',
+        messages: {
+          tooManyDescribes:
+            'There should not be more than {{amount}} describe{{s}} at the top level',
+          unexpectedHook: 'All hooks must be wrapped in a describe block.',
+          unexpectedTest: 'All test cases must be wrapped in a describe block.',
+        },
+        schema: [maximumSchema('maxTopLevelDescribes', 1, 'number')],
+      };
+    default:
+      return null;
+  }
+}
+
+function maximumSchema(property, minimum, type) {
+  return {
+    additionalProperties: false,
+    properties: {
+      [property]: {
+        minimum,
+        type,
+      },
+    },
+    type: 'object',
   };
 }
 

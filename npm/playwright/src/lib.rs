@@ -34,6 +34,9 @@ mod napi_abi {
         pub test_aliases: Option<Vec<String>>,
         pub valid_title: Option<PlaywrightValidTitleOptions>,
         pub valid_test_tags: Option<PlaywrightValidTestTagsOptions>,
+        pub max_expects: Option<u32>,
+        pub max_nested_describe: Option<u32>,
+        pub max_top_level_describes: Option<f64>,
     }
 
     #[napi(object)]
@@ -109,6 +112,10 @@ mod napi_abi {
     #[derive(Clone, Debug)]
     pub struct DiagnosticData {
         pub message: String,
+        pub amount: Option<String>,
+        pub count: Option<String>,
+        pub depth: Option<String>,
+        pub max: Option<String>,
         pub method: Option<String>,
         pub restriction: Option<String>,
         pub role: Option<String>,
@@ -116,6 +123,7 @@ mod napi_abi {
         pub pattern: Option<String>,
         pub tag: Option<String>,
         pub word: Option<String>,
+        pub s: Option<String>,
     }
 
     #[napi]
@@ -153,6 +161,11 @@ mod napi_abi {
                 .collect(),
             valid_title,
             valid_test_tags,
+            max_expects: options.max_expects.filter(|max| *max >= 1).unwrap_or(5),
+            max_nested_describe: options.max_nested_describe.unwrap_or(5),
+            max_top_level_describes: options
+                .max_top_level_describes
+                .filter(|max| max.is_finite() && *max >= 1.0),
         };
         core::scan_playwright_with_options(&source_text, &filename, &core_options)
             .into_iter()
@@ -161,6 +174,10 @@ mod napi_abi {
                 message_id: diagnostic.message_id.to_owned(),
                 data: DiagnosticData {
                     message: diagnostic.data.message.into_string(),
+                    amount: diagnostic.data.amount.map(CompactString::into_string),
+                    count: diagnostic.data.count.map(CompactString::into_string),
+                    depth: diagnostic.data.depth.map(CompactString::into_string),
+                    max: diagnostic.data.max.map(CompactString::into_string),
                     method: diagnostic.data.method.map(CompactString::into_string),
                     restriction: diagnostic.data.restriction.map(CompactString::into_string),
                     role: diagnostic.data.role.map(CompactString::into_string),
@@ -171,6 +188,7 @@ mod napi_abi {
                     pattern: diagnostic.data.pattern.map(CompactString::into_string),
                     tag: diagnostic.data.tag.map(CompactString::into_string),
                     word: diagnostic.data.word.map(CompactString::into_string),
+                    s: diagnostic.data.s.map(CompactString::into_string),
                 },
                 loc: DiagnosticLoc {
                     start_line: diagnostic.loc.start_line,

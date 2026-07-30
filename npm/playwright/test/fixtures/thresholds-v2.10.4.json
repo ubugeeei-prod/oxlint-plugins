@@ -1,0 +1,1244 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-playwright",
+    "version": "2.10.4",
+    "sourceCommit": "894c0ec261763bb1e073b276c70bbf88b4ebad39",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-playwright-threshold-tests.ts",
+    "sourceFiles": [
+      "src/rules/max-expects.ts",
+      "src/rules/max-expects.test.ts",
+      "src/rules/max-nested-describe.ts",
+      "src/rules/max-nested-describe.test.ts",
+      "src/rules/require-top-level-describe.ts",
+      "src/rules/require-top-level-describe.test.ts"
+    ],
+    "sourceHashes": {
+      "src/rules/max-expects.ts": "9c16dc4afd83190d3e7ac4d6a39b3d5db1f49197cfcab633595096135afc2e52",
+      "src/rules/max-expects.test.ts": "d23bcc58ca31bd844483633379d8ef50ced8522eb43f1ccc67b2d7e4ed7e8e1f",
+      "src/rules/max-nested-describe.ts": "206f049fa6c8ca9bf322887951a06c15d6f37f479a9dc5175f942545587670db",
+      "src/rules/max-nested-describe.test.ts": "9c4d910c765b46350bc8ee1d505f072277a74dc2b1d27bc71db0fe0c6d9cb31d",
+      "src/rules/require-top-level-describe.ts": "824cc4ba387ba422ba89c89e1d1ed59b6212e4fbaa6f8f454b61123bdf31e1ea",
+      "src/rules/require-top-level-describe.test.ts": "e14d9378906100095b665fb470467e1762c23814633fc3638fddc5c0cb813a22"
+    },
+    "inventory": {
+      "suites": 3,
+      "valid": 58,
+      "invalid": 42,
+      "diagnostics": 45
+    }
+  },
+  "suites": [
+    {
+      "rule": "max-expects",
+      "valid": [
+        {
+          "code": "test('should pass')",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('should pass', () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.skip('should pass', () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('should pass', function () {\n  expect(true).toBeDefined();\n});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('should pass', () => {\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('should pass', () => {\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  // expect(true).toBeDefined();\n});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('should pass', async () => {\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('should pass', async () => {\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toEqual(expect.any(Boolean));\n});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "describe('test', () => {\n  test('should pass', () => {\n    expect(true).toBeDefined();\n    expect(true).toBeDefined();\n    expect(true).toBeDefined();\n    expect(true).toBeDefined();\n    expect(true).toBeDefined();\n  });\n});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.each(['should', 'pass'], () => {\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('should pass', () => {\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n});\ntest('should pass', () => {\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "function myHelper() {\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n};\n\ntest('should pass', () => {\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "function myHelper1() {\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n};\n\ntest('should pass', () => {\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n});\n\nfunction myHelper2() {\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n};",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('should pass', () => {\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n});\n\nfunction myHelper() {\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n};",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "const myHelper1 = () => {\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n};\n\ntest('should pass', function() {\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n});\n\nconst myHelper2 = function() {\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n};",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('should pass', () => {\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n});",
+          "options": [
+            {
+              "max": 10
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "it('should pass')",
+          "options": [],
+          "settings": {
+            "playwright": {
+              "globalAliases": {
+                "test": ["it"]
+              }
+            }
+          },
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "const custom = test.extend({});\ncustom('should pass');",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "const custom = test.extend({});\ncustom('should pass', () => {\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "import { test as custom, expect as assuming } from '@playwright/test';\ncustom('should pass', () => {\n  assuming(true).toBeDefined();\n  assuming(true).toBeDefined();\n  assuming(true).toBeDefined();\n});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        }
+      ],
+      "invalid": [
+        {
+          "code": "test('should not pass', function () {\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "exceededMaxAssertion",
+              "data": {},
+              "loc": {
+                "startLine": 7,
+                "startColumn": 2
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('should not pass', async () => {\n  await test.step('part 1', async () => {\n    expect(true).toBeDefined();\n    expect(true).toBeDefined();\n    expect(true).toBeDefined();\n  })\n\n  await test.step('part 1', async () => {\n    expect(true).toBeDefined();\n    expect(true).toBeDefined();\n    expect(true).toBeDefined();\n  })\n});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "exceededMaxAssertion",
+              "data": {},
+              "loc": {
+                "startLine": 11,
+                "startColumn": 4
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('should not pass', () => {\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "exceededMaxAssertion",
+              "data": {},
+              "loc": {
+                "startLine": 7,
+                "startColumn": 2
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('should not pass', () => {\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n});\ntest('should not pass', () => {\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "exceededMaxAssertion",
+              "data": {},
+              "loc": {
+                "startLine": 7,
+                "startColumn": 2
+              }
+            },
+            {
+              "messageId": "exceededMaxAssertion",
+              "data": {},
+              "loc": {
+                "startLine": 15,
+                "startColumn": 2
+              }
+            }
+          ]
+        },
+        {
+          "code": "describe('test', () => {\n  test('should not pass', () => {\n    expect(true).toBeDefined();\n    expect(true).toBeDefined();\n    expect(true).toBeDefined();\n    expect(true).toBeDefined();\n    expect(true).toBeDefined();\n    expect(true).toBeDefined();\n  });\n});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "exceededMaxAssertion",
+              "data": {},
+              "loc": {
+                "startLine": 8,
+                "startColumn": 4
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('should not pass', () => {\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n});",
+          "options": [
+            {
+              "max": 1
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "exceededMaxAssertion",
+              "data": {},
+              "loc": {
+                "startLine": 3,
+                "startColumn": 2
+              }
+            }
+          ]
+        },
+        {
+          "code": "it('should not pass', function () {\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n});",
+          "options": [],
+          "settings": {
+            "playwright": {
+              "globalAliases": {
+                "test": ["it"]
+              }
+            }
+          },
+          "expectedDiagnostics": [
+            {
+              "messageId": "exceededMaxAssertion",
+              "data": {},
+              "loc": {
+                "startLine": 7,
+                "startColumn": 2
+              }
+            }
+          ]
+        },
+        {
+          "code": "const custom = test.extend({});\ncustom('should not pass', function () {\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n  expect(true).toBeDefined();\n});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "exceededMaxAssertion",
+              "data": {},
+              "loc": {
+                "startLine": 8,
+                "startColumn": 2
+              }
+            }
+          ]
+        },
+        {
+          "code": "import { test as custom, expect as assuming } from '@playwright/test';\ncustom('should not pass', function () {\n  assuming(true).toBeDefined();\n  assuming(true).toBeDefined();\n  assuming(true).toBeDefined();\n  assuming(true).toBeDefined();\n  assuming(true).toBeDefined();\n  assuming(true).toBeDefined();\n});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "exceededMaxAssertion",
+              "data": {},
+              "loc": {
+                "startLine": 8,
+                "startColumn": 2
+              }
+            }
+          ]
+        },
+        {
+          "code": "test('test', () => {\n  expect.soft(1).toBe(1)\n  expect.soft(2).toBe(2)\n  expect.soft(3).toBe(3)\n  expect.soft(4).toBe(4)\n  expect.soft(5).toBe(5)\n  expect.soft(6).toBe(6)\n})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "exceededMaxAssertion",
+              "data": {}
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rule": "max-nested-describe",
+      "valid": [
+        {
+          "code": "test.describe(\"describe tests\", () => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.describe.only(\"describe focus tests\", () => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.describe.serial.only(\"describe serial focus tests\", () => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.describe.serial.skip(\"describe serial focus tests\", () => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.describe.parallel.fixme(\"describe serial focus tests\", () => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test('foo', function () {\n  expect(true).toBe(true);\n});\ntest('bar', () => {\n  expect(true).toBe(true);\n});",
+          "options": [
+            {
+              "max": 0
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.describe('foo', function() {\n  test.describe('bar', function () {\n    test.describe('baz', function () {\n      test.describe('qux', function () {\n        test.describe('quxx', function () {\n          test('should get something', () => {\n            expect(getSomething()).toBe('Something');\n          });\n        });\n      });\n    });\n  });\n});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.describe('foo', () => {\n  test.describe('bar', () => {\n    test.describe('baz', () => {\n      test.describe('qux', () => {\n        test('foo', () => {\n          expect(someCall().property).toBe(true);\n        });\n        test('bar', () => {\n          expect(universe.answer).toBe(42);\n        });\n      });\n      test.describe('quxx', () => {\n        test('baz', () => {\n          expect(2 + 2).toEqual(4);\n        });\n      });\n    });\n  });\n});",
+          "options": [
+            {
+              "max": 4
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.describe('foo', () => {\n  test.describe.only('bar', () => {\n    test.describe.skip('baz', () => {\n      test('something', async () => {\n        expect('something').toBe('something');\n      });\n    });\n  });\n});",
+          "options": [
+            {
+              "max": 3
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "describe('foo', () => {\n  describe.only('bar', () => {\n    describe.skip('baz', () => {\n      test('something', async () => {\n        expect('something').toBe('something');\n      });\n    });\n  });\n});",
+          "options": [
+            {
+              "max": 3
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "it.describe('foo', () => {\n  it.describe.only('bar', () => {\n    it.describe.skip('baz', () => {\n      it('something', async () => {\n        expect('something').toBe('something');\n      });\n    });\n  });\n});",
+          "options": [
+            {
+              "max": 3
+            }
+          ],
+          "settings": {
+            "playwright": {
+              "globalAliases": {
+                "test": ["it"]
+              }
+            }
+          },
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "const custom = test.extend({});\ncustom.describe('foo', () => {\n  custom.describe.only('bar', () => {\n    custom.describe.skip('baz', () => {\n      custom('something', async () => {\n        expect('something').toBe('something');\n      });\n    });\n  });\n});",
+          "options": [
+            {
+              "max": 3
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "const custom = test.extend({});\ncustom('foo', function () {\n  expect(true).toBe(true);\n});",
+          "options": [
+            {
+              "max": 0
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "import { test as custom } from '@playwright/test';\ncustom('foo', function () {\n  expect(true).toBe(true);\n});",
+          "options": [
+            {
+              "max": 0
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        }
+      ],
+      "invalid": [
+        {
+          "code": "test.describe('foo', function() {\n  test.describe('bar', function () {\n    test.describe('baz', function () {\n      test.describe('qux', function () {\n        test.describe('quxx', function () {\n          test.describe('over limit', function () {\n            test('should get something', () => {\n              expect(getSomething()).toBe('Something');\n            });\n          });\n        });\n      });\n    });\n  });\n});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "exceededMaxDepth",
+              "data": {},
+              "loc": {
+                "startLine": 6,
+                "startColumn": 10,
+                "endLine": 6,
+                "endColumn": 23
+              }
+            }
+          ]
+        },
+        {
+          "code": "describe('foo', function() {\n  describe('bar', function () {\n    describe('baz', function () {\n      describe('qux', function () {\n        describe('quxx', function () {\n          describe('over limit', function () {\n            test('should get something', () => {\n              expect(getSomething()).toBe('Something');\n            });\n          });\n        });\n      });\n    });\n  });\n});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "exceededMaxDepth",
+              "data": {},
+              "loc": {
+                "startLine": 6,
+                "startColumn": 10,
+                "endLine": 6,
+                "endColumn": 18
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.describe('foo', () => {\n  test.describe('bar', () => {\n    test[\"describe\"]('baz', () => {\n      test.describe('baz1', () => {\n        test.describe('baz2', () => {\n          test[`describe`]('baz3', () => {\n            test('should get something', () => {\n              expect(getSomething()).toBe('Something');\n            });\n          });\n\n          test.describe('baz4', () => {\n            it('should get something', () => {\n              expect(getSomething()).toBe('Something');\n            });\n          });\n        });\n      });\n    });\n\n    test.describe('qux', function () {\n      test('should get something', () => {\n        expect(getSomething()).toBe('Something');\n      });\n    });\n  })\n});",
+          "options": [
+            {
+              "max": 5
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "exceededMaxDepth",
+              "data": {},
+              "loc": {
+                "startLine": 6,
+                "startColumn": 10,
+                "endLine": 6,
+                "endColumn": 26
+              }
+            },
+            {
+              "messageId": "exceededMaxDepth",
+              "data": {},
+              "loc": {
+                "startLine": 12,
+                "startColumn": 10,
+                "endLine": 12,
+                "endColumn": 23
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.describe.only('foo', function() {\n  test.describe('bar', function() {\n    test.describe('baz', function() {\n      test.describe('qux', function() {\n        test.describe('quux', function() {\n          test.describe.only('quuz', function() { });\n        });\n      });\n    });\n  });\n});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "exceededMaxDepth",
+              "data": {},
+              "loc": {
+                "startLine": 6,
+                "startColumn": 10,
+                "endLine": 6,
+                "endColumn": 28
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.describe.serial.only('foo', function() {\n  test.describe('bar', function() {\n    test.describe('baz', function() {\n      test.describe('qux', function() {\n        test.describe('quux', function() {\n          test.describe('quuz', function() { });\n        });\n      });\n    });\n  });\n});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "exceededMaxDepth",
+              "data": {},
+              "loc": {
+                "startLine": 6,
+                "startColumn": 10,
+                "endLine": 6,
+                "endColumn": 23
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.describe('qux', () => {\n  test('should get something', () => {\n    expect(getSomething()).toBe('Something');\n  });\n});",
+          "options": [
+            {
+              "max": 0
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "exceededMaxDepth",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 0,
+                "endLine": 1,
+                "endColumn": 13
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.describe('foo', () => {\n  test.describe('bar', () => {\n    test.describe('baz', () => {\n      test(\"test1\", () => {\n        expect(true).toBe(true);\n      });\n      test(\"test2\", () => {\n        expect(true).toBe(true);\n      });\n    });\n  });\n});",
+          "options": [
+            {
+              "max": 2
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "exceededMaxDepth",
+              "data": {},
+              "loc": {
+                "startLine": 3,
+                "startColumn": 4,
+                "endLine": 3,
+                "endColumn": 17
+              }
+            }
+          ]
+        },
+        {
+          "code": "it.describe('foo', function() {\n  it.describe('bar', function () {\n    it.describe('baz', function () {\n      it.describe('qux', function () {\n        it.describe('quxx', function () {\n          it.describe('over limit', function () {\n            it('should get something', () => {\n              expect(getSomething()).toBe('Something');\n            });\n          });\n        });\n      });\n    });\n  });\n});",
+          "options": [],
+          "settings": {
+            "playwright": {
+              "globalAliases": {
+                "test": ["it"]
+              }
+            }
+          },
+          "expectedDiagnostics": [
+            {
+              "messageId": "exceededMaxDepth",
+              "data": {},
+              "loc": {
+                "startLine": 6,
+                "startColumn": 10,
+                "endLine": 6,
+                "endColumn": 21
+              }
+            }
+          ]
+        },
+        {
+          "code": "const custom = test.extend({});\ncustom.describe('qux', () => {\n  custom('should get something', () => {\n    expect(getSomething()).toBe('Something');\n  });\n});",
+          "options": [
+            {
+              "max": 0
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "exceededMaxDepth",
+              "data": {},
+              "loc": {
+                "startLine": 2,
+                "startColumn": 0,
+                "endLine": 2,
+                "endColumn": 15
+              }
+            }
+          ]
+        },
+        {
+          "code": "import { test as custom } from '@playwright/test';\ncustom.describe('qux', () => {\n  custom('should get something', () => {\n    expect(getSomething()).toBe('Something');\n  });\n});",
+          "options": [
+            {
+              "max": 0
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "exceededMaxDepth",
+              "data": {},
+              "loc": {
+                "startLine": 2,
+                "startColumn": 0,
+                "endLine": 2,
+                "endColumn": 15
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rule": "require-top-level-describe",
+      "valid": [
+        {
+          "code": "foo()",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.info()",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.use({ locale: \"en-US\" })",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.skip(({ browserName }) => browserName === \"Chrome\");",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.skip();",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.skip(true);",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.skip(browserName === \"Chrome\", \"This feature is skipped on Chrome\")",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.slow(({ browserName }) => browserName === \"Chrome\");",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.slow();",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.slow(browserName === \"webkit\", \"This feature is slow on Mac\")",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.describe.configure({ mode: \"parallel\" })",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.describe(\"suite\", () => { test(\"foo\") });",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.describe.only(\"suite\", () => { test.beforeAll(\"my beforeAll\") });",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.describe.parallel(\"suite\", () => { test.beforeEach(\"my beforeAll\") });",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.describe.serial(\"suite\", () => { test.afterAll(\"my afterAll\") });",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.describe.parallel.fixme(\"suite\", () => { test.afterEach(\"my afterEach\") });",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.describe(\"suite\", () => {\n  test.beforeEach(\"a\", () => {});\n  test.describe(\"b\", () => {});\n  test(\"c\", () => {})\n});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.describe(\"suite\", () => {\n  test(\"foo\", () => {})\n  test.describe(\"another suite\", () => {});\n  test(\"my other test\", () => {})\n});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.describe('one', () => {});\ntest.describe('two', () => {});\ntest.describe('three', () => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.describe(\"suite\", () => {\n  test(\"foo\", { tag: [\"@slow\"] }, () => {})\n  test.describe(\"another suite\", { tag: [\"@slow\"] }, () => {});\n  test(\"my other test\", () => {})\n});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "test.describe('one', () => {\n  test.describe('two', () => {});\n  test.describe('three', () => {});\n});",
+          "options": [
+            {
+              "maxTopLevelDescribes": 1
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "it.info()",
+          "options": [],
+          "settings": {
+            "playwright": {
+              "globalAliases": {
+                "test": ["it"]
+              }
+            }
+          },
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "const custom = test.extend({});\ncustom.describe(\"suite\", () => { custom(\"foo\") });",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        },
+        {
+          "code": "import { test as custom } from '@playwright/test';\ncustom.describe(\"suite\", () => { custom(\"foo\") });",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": []
+        }
+      ],
+      "invalid": [
+        {
+          "code": "test.beforeAll(() => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedHook",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 0,
+                "endLine": 1,
+                "endColumn": 14
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.beforeEach(() => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedHook",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 0,
+                "endLine": 1,
+                "endColumn": 15
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.afterAll(() => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedHook",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 0,
+                "endLine": 1,
+                "endColumn": 13
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.afterEach(() => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedHook",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 0,
+                "endLine": 1,
+                "endColumn": 14
+              }
+            }
+          ]
+        },
+        {
+          "code": "test[\"afterEach\"](() => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedHook",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 0,
+                "endLine": 1,
+                "endColumn": 17
+              }
+            }
+          ]
+        },
+        {
+          "code": "test[`afterEach`](() => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedHook",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 0,
+                "endLine": 1,
+                "endColumn": 17
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.describe(\"suite\", () => {});\ntest.afterAll(() => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedHook",
+              "data": {},
+              "loc": {
+                "startLine": 2,
+                "startColumn": 0,
+                "endLine": 2,
+                "endColumn": 13
+              }
+            }
+          ]
+        },
+        {
+          "code": "test(\"foo\", () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedTest",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 0,
+                "endLine": 1,
+                "endColumn": 4
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.skip(\"foo\", () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedTest",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 0,
+                "endLine": 1,
+                "endColumn": 9
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.fixme(\"foo\", () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedTest",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 0,
+                "endLine": 1,
+                "endColumn": 10
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.only(\"foo\", () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedTest",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 0,
+                "endLine": 1,
+                "endColumn": 9
+              }
+            }
+          ]
+        },
+        {
+          "code": "test[\"only\"](\"foo\", () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedTest",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 0,
+                "endLine": 1,
+                "endColumn": 12
+              }
+            }
+          ]
+        },
+        {
+          "code": "test[`only`](\"foo\", () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedTest",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 0,
+                "endLine": 1,
+                "endColumn": 12
+              }
+            }
+          ]
+        },
+        {
+          "code": "test(\"foo\", { tag: [\"@fast\"] }, () => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedTest",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 0,
+                "endLine": 1,
+                "endColumn": 4
+              }
+            }
+          ]
+        },
+        {
+          "code": "test(\"foo\", () => {})\ntest.describe(\"suite\", () => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedTest",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 0,
+                "endLine": 1,
+                "endColumn": 4
+              }
+            }
+          ]
+        },
+        {
+          "code": "test(\"foo\", () => {})\ntest.describe(\"suite\", () => {\n  test(\"bar\", () => {})\n});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedTest",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 0,
+                "endLine": 1,
+                "endColumn": 4
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.describe('one', () => {});\ntest.describe.only('two', () => {});\ntest.describe.parallel('three', () => {});",
+          "options": [
+            {
+              "maxTopLevelDescribes": 2
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "tooManyDescribes",
+              "data": {
+                "amount": 2,
+                "s": "s"
+              },
+              "loc": {
+                "startLine": 3,
+                "startColumn": 0,
+                "endLine": 3,
+                "endColumn": 22
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.describe('one', () => {\n  test.describe('one (nested)', () => {});\n  test.describe('two (nested)', () => {});\n});\n\ntest[\"describe\"].only('two', () => {\n  test.describe('one (nested)', () => {});\n  test.describe.serial.only('two (nested)', () => {});\n  test.describe.fixme('three (nested)', () => {});\n});\n\ntest[`describe`][`fixme`]('three', () => {\n  test.describe('one (nested)', () => {});\n  test.describe.serial('two (nested)', () => {});\n  test.describe.parallel('three (nested)', () => {});\n});",
+          "options": [
+            {
+              "maxTopLevelDescribes": 2
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "tooManyDescribes",
+              "data": {
+                "amount": 2,
+                "s": "s"
+              },
+              "loc": {
+                "startLine": 12,
+                "startColumn": 0,
+                "endLine": 12,
+                "endColumn": 25
+              }
+            }
+          ]
+        },
+        {
+          "code": "test.describe('one', () => {});\ntest.describe.fixme.only('two', () => {});\ntest.describe.fixme('three', () => {});",
+          "options": [
+            {
+              "maxTopLevelDescribes": 1
+            }
+          ],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "tooManyDescribes",
+              "data": {
+                "amount": 1,
+                "s": ""
+              },
+              "loc": {
+                "startLine": 2,
+                "startColumn": 0,
+                "endLine": 2,
+                "endColumn": 24
+              }
+            },
+            {
+              "messageId": "tooManyDescribes",
+              "data": {
+                "amount": 1,
+                "s": ""
+              },
+              "loc": {
+                "startLine": 3,
+                "startColumn": 0,
+                "endLine": 3,
+                "endColumn": 19
+              }
+            }
+          ]
+        },
+        {
+          "code": "it.beforeAll(() => {})",
+          "options": [],
+          "settings": {
+            "playwright": {
+              "globalAliases": {
+                "test": ["it"]
+              }
+            }
+          },
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedHook",
+              "data": {},
+              "loc": {
+                "startLine": 1,
+                "startColumn": 0,
+                "endLine": 1,
+                "endColumn": 12
+              }
+            }
+          ]
+        },
+        {
+          "code": "const custom = test.extend({});\ncustom.beforeAll(() => {})",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedHook",
+              "data": {},
+              "loc": {
+                "startLine": 2,
+                "startColumn": 0,
+                "endLine": 2,
+                "endColumn": 16
+              }
+            }
+          ]
+        },
+        {
+          "code": "import { test as custom } from '@playwright/test';\ncustom(\"foo\", () => {});",
+          "options": [],
+          "settings": null,
+          "expectedDiagnostics": [
+            {
+              "messageId": "unexpectedTest",
+              "data": {},
+              "loc": {
+                "startLine": 2,
+                "startColumn": 0,
+                "endLine": 2,
+                "endColumn": 6
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

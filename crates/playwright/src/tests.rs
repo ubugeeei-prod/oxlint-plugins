@@ -12,7 +12,7 @@ test("two", async ({ page }) => { await page.click("button"); });
 test("without assertions", async ({ page }) => { await page.click("button"); });
 test("x", async ({ page }) => { await page.click("button"); });
 test("many", () => { expect(a).toBe(1); expect(b).toBe(2); expect(c).toBe(3); });
-test.describe("outer", () => { test.describe("inner", () => {}); });
+test.describe("1", () => { test.describe("2", () => { test.describe("3", () => { test.describe("4", () => { test.describe("5", () => { test.describe("6", () => {}); }); }); }); }); });
 page.click("button");
 // test("commented", () => {});
 test("conditional expect", () => { if (ready) { expect(value).toBe(1); } });
@@ -376,6 +376,224 @@ fn pattern_rules_resolve_every_test_alias_form_and_ignore_malformed_input() {
             .all(|diagnostic| diagnostic.message_id == "duplicatePrefix")
     );
     assert!(scan_playwright_with_options("test(\"", "fixture.spec.ts", &options).is_empty());
+}
+
+#[test]
+fn max_expects_reports_every_excess_assertion_with_exact_data_and_locations() {
+    let source = concat!(
+        "test(\"case\", () => {\n",
+        "  expect(1).toBe(1);\n",
+        "  expect.soft(2).toBe(2);\n",
+        "  expect(3).toBe(3);\n",
+        "});\n",
+    );
+    let options = PlaywrightOptions {
+        max_expects: 1,
+        ..PlaywrightOptions::default()
+    };
+    let diagnostics = threshold_diagnostics(source, &options, "max-expects");
+
+    assert_eq!(diagnostics.len(), 2);
+    assert_eq!(diagnostics[0].message_id, "exceededMaxAssertion");
+    assert_eq!(diagnostics[0].data.count.as_deref(), Some("2"));
+    assert_eq!(diagnostics[0].data.max.as_deref(), Some("1"));
+    assert_eq!(
+        diagnostics[0].loc,
+        crate::DiagnosticLoc {
+            start_line: 3,
+            start_column: 2,
+            end_line: 3,
+            end_column: 24,
+        }
+    );
+    assert_eq!(diagnostics[1].data.count.as_deref(), Some("3"));
+    assert_eq!(diagnostics[1].loc.start_line, 4);
+    assert_eq!(diagnostics[1].loc.start_column, 2);
+    assert_eq!(diagnostics[1].loc.end_column, 19);
+}
+
+#[test]
+fn max_expects_matches_test_and_non_test_function_reset_boundaries() {
+    let source = concat!(
+        "test(\"first\", () => {\n",
+        "  test.step(\"one\", () => { expect(1).toBe(1); });\n",
+        "  test.step(\"two\", () => { expect(2).toBe(2); });\n",
+        "});\n",
+        "test(\"second\", () => { expect(3).toBe(3); expect(4).toBe(4); });\n",
+        "const helper = () => { expect(5).toBe(5); expect(6).toBe(6); };\n",
+    );
+    let options = PlaywrightOptions {
+        max_expects: 1,
+        ..PlaywrightOptions::default()
+    };
+    let diagnostics = threshold_diagnostics(source, &options, "max-expects");
+
+    assert_eq!(diagnostics.len(), 3);
+    assert_eq!(
+        diagnostics
+            .iter()
+            .map(|diagnostic| diagnostic.data.count.as_deref())
+            .collect::<SmallVec<[_; 4]>>()
+            .as_slice(),
+        &[Some("2"), Some("2"), Some("2")]
+    );
+    assert_eq!(
+        diagnostics
+            .iter()
+            .map(|diagnostic| diagnostic.loc.start_line)
+            .collect::<SmallVec<[_; 4]>>()
+            .as_slice(),
+        &[3, 5, 6]
+    );
+}
+
+#[test]
+fn max_nested_describe_tracks_real_ast_nesting_computed_names_and_siblings() {
+    let source = concat!(
+        "test.describe(\"outer\", () => {\n",
+        "  test[\"describe\"](\"inner\", () => {});\n",
+        "  test[`describe`](\"sibling\", () => {});\n",
+        "});\n",
+    );
+    let options = PlaywrightOptions {
+        max_nested_describe: 1,
+        ..PlaywrightOptions::default()
+    };
+    let diagnostics = threshold_diagnostics(source, &options, "max-nested-describe");
+
+    assert_eq!(diagnostics.len(), 2);
+    assert_eq!(
+        diagnostics
+            .iter()
+            .map(|diagnostic| diagnostic.data.depth.as_deref())
+            .collect::<SmallVec<[_; 4]>>()
+            .as_slice(),
+        &[Some("2"), Some("2")]
+    );
+    assert!(diagnostics.iter().all(|diagnostic| {
+        diagnostic.message_id == "exceededMaxDepth" && diagnostic.data.max.as_deref() == Some("1")
+    }));
+    assert_eq!(diagnostics[0].loc.start_column, 2);
+    assert_eq!(diagnostics[0].loc.end_column, 18);
+    assert_eq!(diagnostics[1].loc.start_line, 3);
+    assert_eq!(diagnostics[1].loc.end_column, 18);
+}
+
+#[test]
+fn require_top_level_describe_ignores_configs_and_reports_hooks_tests_and_limits() {
+    let source = concat!(
+        "test.skip(true);\n",
+        "test.describe.configure({ mode: \"parallel\" });\n",
+        "test.beforeEach(() => {});\n",
+        "test(\"top\", () => {});\n",
+        "test.describe(\"one\", () => { test(\"inside\", () => {}); });\n",
+        "test.describe.only(\"two\", () => {});\n",
+        "test.describe.parallel(\"three\", () => {});\n",
+    );
+    let options = PlaywrightOptions {
+        max_top_level_describes: Some(1.5),
+        ..PlaywrightOptions::default()
+    };
+    let diagnostics = threshold_diagnostics(source, &options, "require-top-level-describe");
+
+    assert_eq!(
+        diagnostics
+            .iter()
+            .map(|diagnostic| diagnostic.message_id)
+            .collect::<SmallVec<[_; 8]>>()
+            .as_slice(),
+        &[
+            "unexpectedHook",
+            "unexpectedTest",
+            "tooManyDescribes",
+            "tooManyDescribes",
+        ]
+    );
+    assert_eq!(diagnostics[0].loc.start_line, 3);
+    assert_eq!(diagnostics[0].loc.end_column, 15);
+    assert_eq!(diagnostics[1].loc.start_line, 4);
+    assert_eq!(diagnostics[1].loc.end_column, 4);
+    for diagnostic in &diagnostics[2..] {
+        assert_eq!(diagnostic.data.amount.as_deref(), Some("1.5"));
+        assert_eq!(diagnostic.data.s.as_deref(), Some("s"));
+    }
+}
+
+#[test]
+fn threshold_rules_support_import_global_and_extend_aliases() {
+    let source = concat!(
+        "import { test as scenario, expect as assuming } from \"@playwright/test\";\n",
+        "const custom = scenario.extend({});\n",
+        "it(\"global\", () => { verify(1).toBe(1); verify(2).toBe(2); });\n",
+        "scenario.describe(\"outer\", () => { custom.describe(\"inner\", () => {}); });\n",
+        "custom.beforeAll(() => {});\n",
+        "assuming(1).toBe(1);\n",
+    );
+    let options = PlaywrightOptions {
+        expect_aliases: [CompactString::from("verify")].into_iter().collect(),
+        test_aliases: [CompactString::from("it")].into_iter().collect(),
+        max_expects: 1,
+        max_nested_describe: 1,
+        ..PlaywrightOptions::default()
+    };
+    let diagnostics = scan_playwright_with_options(source, "fixture.spec.ts", &options);
+
+    assert_eq!(
+        diagnostics
+            .iter()
+            .filter(|diagnostic| diagnostic.rule_name == "max-expects")
+            .count(),
+        1
+    );
+    assert_eq!(
+        diagnostics
+            .iter()
+            .filter(|diagnostic| diagnostic.rule_name == "max-nested-describe")
+            .count(),
+        1
+    );
+    assert_eq!(
+        diagnostics
+            .iter()
+            .filter(|diagnostic| diagnostic.rule_name == "require-top-level-describe")
+            .map(|diagnostic| diagnostic.message_id)
+            .collect::<SmallVec<[_; 4]>>()
+            .as_slice(),
+        &["unexpectedTest", "unexpectedHook"]
+    );
+}
+
+#[test]
+fn threshold_locations_use_utf16_and_malformed_sources_fail_closed() {
+    let source = concat!(
+        "const marker = \"🧪\";\n",
+        "test(\"case\", () => {\n",
+        "  expect(1).toBe(1);\n",
+        "  expect(2).toBe(2);\n",
+        "});\n",
+    );
+    let options = PlaywrightOptions {
+        max_expects: 1,
+        ..PlaywrightOptions::default()
+    };
+    let diagnostics = threshold_diagnostics(source, &options, "max-expects");
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].loc.start_line, 4);
+    assert_eq!(diagnostics[0].loc.start_column, 2);
+    assert_eq!(diagnostics[0].loc.end_column, 19);
+
+    assert!(scan_playwright_with_options("test(\"broken", "fixture.spec.ts", &options).is_empty());
+}
+
+fn threshold_diagnostics(
+    source: &str,
+    options: &PlaywrightOptions,
+    rule_name: &str,
+) -> SmallVec<[crate::Diagnostic; 8]> {
+    scan_playwright_with_options(source, "fixture.spec.ts", options)
+        .into_iter()
+        .filter(|diagnostic| diagnostic.rule_name == rule_name)
+        .collect()
 }
 
 fn representative_options() -> PlaywrightOptions {

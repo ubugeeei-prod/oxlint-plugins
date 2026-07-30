@@ -69,7 +69,7 @@ test("two", async ({ page }) => { await page.click("button"); });
 test("without assertions", async ({ page }) => { await page.click("button"); });
 test("x", async ({ page }) => { await page.click("button"); });
 test("many", () => { expect(a).toBe(1); expect(b).toBe(2); expect(c).toBe(3); });
-test.describe("outer", () => { test.describe("inner", () => {}); });
+test.describe("1", () => { test.describe("2", () => { test.describe("3", () => { test.describe("4", () => { test.describe("5", () => { test.describe("6", () => {}); }); }); }); }); });
 page.click("button");
 // test("commented", () => {});
 test("conditional expect", () => { if (ready) { expect(value).toBe(1); } });

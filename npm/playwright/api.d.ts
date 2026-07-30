@@ -10,6 +10,10 @@ export type PlaywrightDiagnostic = {
   messageId: string;
   data: {
     message: string;
+    amount?: string;
+    count?: string;
+    depth?: string;
+    max?: string;
     method?: string;
     restriction?: string;
     role?: string;
@@ -17,6 +21,7 @@ export type PlaywrightDiagnostic = {
     pattern?: string;
     tag?: string;
     word?: string;
+    s?: string;
   };
   loc: PlaywrightDiagnosticLoc;
   fix?: {
@@ -48,6 +53,9 @@ export type PlaywrightScanOptions = {
   testAliases?: string[];
   validTitle?: PlaywrightValidTitleOptions;
   validTestTags?: PlaywrightValidTestTagsOptions;
+  maxExpects?: number;
+  maxNestedDescribe?: number;
+  maxTopLevelDescribes?: number;
 };
 
 export type PlaywrightTitlePattern =

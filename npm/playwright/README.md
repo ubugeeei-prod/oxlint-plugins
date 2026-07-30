@@ -5,6 +5,27 @@ Rust-backed Oxlint plugin port of `eslint-plugin-playwright` v2.10.4.
 This package exposes the `playwright` plugin, recommended configs, and a native
 API for scanning Playwright test source through the Rust implementation.
 
+## Numeric threshold options
+
+The numeric threshold rules implement the complete upstream v2.10.4 option
+contracts:
+
+```json
+{
+  "rules": {
+    "playwright/max-expects": ["error", { "max": 5 }],
+    "playwright/max-nested-describe": ["error", { "max": 5 }],
+    "playwright/require-top-level-describe": ["error", { "maxTopLevelDescribes": 2 }]
+  }
+}
+```
+
+`max-expects` counts Playwright assertion calls per test callback while
+preserving upstream nested-callback reset behavior. `max-nested-describe`
+measures actual AST nesting, and `require-top-level-describe` rejects top-level
+tests and hooks with an optional top-level describe limit. Imported aliases,
+`test.extend()` aliases, and `settings.playwright.globalAliases` are supported.
+
 ## Restricted rule options
 
 The option-bearing `no-restricted-locators`, `no-restricted-matchers`, and
@@ -51,6 +72,11 @@ The direct API accepts the same option values:
 const { scanPlaywright } = require('@oxlint-plugins/oxlint-plugin-playwright/api');
 
 scanPlaywright('page.getByTestId("submit")', 'fixture.spec.ts', {
+  maxExpects: 5,
+  maxNestedDescribe: 5,
+  maxTopLevelDescribes: 2,
+  testAliases: ['it'],
+  expectAliases: ['verify'],
   noRestrictedLocators: ['getByTestId'],
 });
 ```
