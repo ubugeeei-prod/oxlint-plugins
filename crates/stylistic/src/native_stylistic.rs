@@ -24,6 +24,7 @@ mod jsx_curly_newline;
 mod jsx_curly_spacing;
 mod jsx_first_prop_new_line;
 mod jsx_function_call_newline;
+mod jsx_max_props_per_line;
 mod jsx_newline;
 mod jsx_quotes;
 mod jsx_rules;
@@ -683,6 +684,8 @@ const JSX_CHILD_ELEMENT_SPACING_MESSAGES: &[(&str, &str)] = &[
 ];
 const JSX_FUNCTION_CALL_NEWLINE_MESSAGES: &[(&str, &str)] =
     &[("missingLineBreak", "Missing line break around JSX")];
+const JSX_MAX_PROPS_PER_LINE_MESSAGES: &[(&str, &str)] =
+    &[("newLine", "Prop `{{prop}}` must be placed on a new line")];
 const JSX_NEWLINE_MESSAGES: &[(&str, &str)] = &[
     ("require", "JSX element should start in a new line"),
     ("prevent", "JSX element should not start in a new line"),
@@ -1222,6 +1225,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         messages: JSX_FUNCTION_CALL_NEWLINE_MESSAGES,
     },
     StylisticRuleDefinition {
+        name: "jsx-max-props-per-line",
+        docs_description: "Enforce maximum of props on a single line in JSX",
+        messages: JSX_MAX_PROPS_PER_LINE_MESSAGES,
+    },
+    StylisticRuleDefinition {
         name: "jsx-newline",
         docs_description: "Require or prevent a new line after jsx elements and expressions.",
         messages: JSX_NEWLINE_MESSAGES,
@@ -1461,6 +1469,12 @@ pub fn run_stylistic_lint(
                     &mut diagnostics,
                 )
             }
+            "jsx-max-props-per-line" => jsx_max_props_per_line::check_jsx_max_props_per_line(
+                source_text,
+                config.filename.as_deref(),
+                &rule.options,
+                &mut diagnostics,
+            ),
             "jsx-newline" => jsx_newline::check_jsx_newline(
                 source_text,
                 config.filename.as_deref(),

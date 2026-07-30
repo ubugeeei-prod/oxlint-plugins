@@ -57,6 +57,7 @@ function createStylisticRule(ruleName) {
               'jsx-closing-bracket-location',
               'jsx-curly-spacing',
               'jsx-first-prop-new-line',
+              'jsx-max-props-per-line',
               'jsx-newline',
               'jsx-quotes',
               'no-confusing-arrow',
