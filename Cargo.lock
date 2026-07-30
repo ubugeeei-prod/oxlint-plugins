@@ -1204,6 +1204,7 @@ dependencies = [
  "napi",
  "napi-build",
  "napi-derive",
+ "oxlint-plugins-_carton",
  "oxlint-plugins-playwright",
 ]
 
@@ -1474,6 +1475,8 @@ name = "oxlint-plugins-playwright"
 version = "0.0.0"
 dependencies = [
  "oxc_allocator",
+ "oxc_ast",
+ "oxc_ast_visit",
  "oxc_parser",
  "oxc_span",
  "oxlint-plugins-_carton",

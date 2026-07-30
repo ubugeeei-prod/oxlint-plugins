@@ -1,5 +1,6 @@
 #![doc = "Rust implementation of eslint-plugin-playwright rule logic."]
 
+mod restricted;
 mod scanner;
 mod types;
 
@@ -11,10 +12,11 @@ use oxc_parser::Parser;
 use oxc_span::SourceType;
 use oxlint_plugins_carton::SmallVec;
 
+use crate::restricted::scan_restricted_rules;
 use crate::scanner::Scanner;
 use crate::types::LineIndex;
 
-pub use crate::types::{Diagnostic, DiagnosticLoc};
+pub use crate::types::{Diagnostic, DiagnosticData, DiagnosticLoc, PlaywrightOptions, Restriction};
 
 pub const RULE_NAMES: [&str; 58] = [
     "consistent-spacing-between-blocks",
@@ -82,6 +84,14 @@ pub fn implemented_playwright_rule_names() -> &'static [&'static str] {
 }
 
 pub fn scan_playwright(source_text: &str, filename: &str) -> SmallVec<[Diagnostic; 64]> {
+    scan_playwright_with_options(source_text, filename, &PlaywrightOptions::default())
+}
+
+pub fn scan_playwright_with_options(
+    source_text: &str,
+    filename: &str,
+    options: &PlaywrightOptions,
+) -> SmallVec<[Diagnostic; 64]> {
     let allocator = Allocator::default();
     let source_type = SourceType::from_path(filename)
         .unwrap_or_else(|_| SourceType::tsx())
@@ -97,5 +107,12 @@ pub fn scan_playwright(source_text: &str, filename: &str) -> SmallVec<[Diagnosti
         diagnostics: SmallVec::new(),
     };
     scanner.scan();
+    scan_restricted_rules(
+        &parser_return.program,
+        source_text,
+        &scanner.line_index,
+        options,
+        &mut scanner.diagnostics,
+    );
     scanner.diagnostics
 }

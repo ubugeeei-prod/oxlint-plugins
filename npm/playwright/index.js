@@ -11,7 +11,7 @@ const PLUGIN_NAME = 'playwright';
 const DOCS_BASE = 'https://github.com/mskelton/eslint-plugin-playwright/blob/main/docs/rules';
 const diagnosticsCache = new WeakMap();
 const implementedRuleNames = Object.freeze(implementedPlaywrightRuleNames());
-const optionRequiredRules = new Set([
+const restrictedRules = new Set([
   'no-restricted-locators',
   'no-restricted-matchers',
   'no-restricted-roles',
@@ -133,24 +133,22 @@ function createLegacyRecommendedConfig() {
 }
 
 function createPlaywrightRule(ruleName) {
+  const restrictedMeta = restrictedRuleMeta(ruleName);
   return {
     meta: {
       type: ruleType(ruleName),
       docs: {
-        description: `enforce playwright ${ruleName.replaceAll('-', ' ')}`,
+        description:
+          restrictedMeta?.description ?? `enforce playwright ${ruleName.replaceAll('-', ' ')}`,
         category: 'Best Practices',
         recommended: recommendedRuleConfig[`playwright/${ruleName}`] !== undefined,
         url: `${DOCS_BASE}/${ruleName}.md`,
       },
       fixable: fixableRule(ruleName) ? 'code' : undefined,
-      messages: {
+      messages: restrictedMeta?.messages ?? {
         unexpected: 'Unexpected Playwright pattern.',
       },
-      // The core does not honor upstream option values (it has no options
-      // struct). Declare no schema so configured options surface as an error
-      // rather than being silently dropped. The `no-restricted-*` rules need
-      // real options support to function; tracked for implementation.
-      schema: [],
+      schema: restrictedMeta?.schema ?? [],
     },
     createOnce(context) {
       return {
@@ -182,32 +180,39 @@ function fixableRule(ruleName) {
 }
 
 function diagnosticsForRule(context, ruleName) {
-  if (optionRequiredRules.has(ruleName) && !hasConfiguredOptions(context.options)) {
-    return [];
-  }
-
-  return diagnosticsForContext(context).filter((diagnostic) => diagnostic.ruleName === ruleName);
+  const options = restrictedRules.has(ruleName)
+    ? restrictedScanOptions(context, ruleName)
+    : undefined;
+  return diagnosticsForContext(context, options).filter(
+    (diagnostic) => diagnostic.ruleName === ruleName,
+  );
 }
 
-function diagnosticsForContext(context) {
+function diagnosticsForContext(context, options) {
   const sourceCode = context.sourceCode || {};
   const sourceText = sourceTextForContext(context);
   const filename = typeof context.filename === 'string' ? context.filename : 'file.spec.ts';
+  const optionsKey = JSON.stringify(options ?? null);
   let cached = diagnosticsCache.get(sourceCode);
 
-  if (cached && cached.sourceText === sourceText && cached.filename === filename) {
-    return cached.diagnostics;
+  if (!cached || cached.sourceText !== sourceText || cached.filename !== filename) {
+    cached = { sourceText, filename, diagnosticsByOptions: new Map() };
+    diagnosticsCache.set(sourceCode, cached);
+  }
+  const existing = cached.diagnosticsByOptions.get(optionsKey);
+  if (existing) {
+    return existing;
   }
 
-  const diagnostics = scanPlaywright(sourceText, filename);
-  cached = { sourceText, filename, diagnostics };
-  diagnosticsCache.set(sourceCode, cached);
+  const diagnostics = scanPlaywright(sourceText, filename, options);
+  cached.diagnosticsByOptions.set(optionsKey, diagnostics);
   return diagnostics;
 }
 
 function reportDiagnostic(context, diagnostic) {
   context.report({
     messageId: diagnostic.messageId,
+    data: diagnostic.data,
     loc: {
       start: {
         line: diagnostic.loc.startLine,
@@ -232,14 +237,76 @@ function sourceTextForContext(context) {
   return '';
 }
 
-function hasConfiguredOptions(options) {
-  return (
-    Array.isArray(options) &&
-    options.some((option) => {
-      if (Array.isArray(option)) return option.length > 0;
-      return option && typeof option === 'object' && Object.keys(option).length > 0;
-    })
-  );
+function restrictedScanOptions(context, ruleName) {
+  const options = Array.isArray(context.options) ? context.options : [];
+  const expectAliases = context.settings?.playwright?.globalAliases?.expect;
+  return {
+    ...(ruleName === 'no-restricted-locators' ? { noRestrictedLocators: options[0] } : {}),
+    ...(ruleName === 'no-restricted-matchers' ? { noRestrictedMatchers: options[0] } : {}),
+    ...(ruleName === 'no-restricted-roles' ? { noRestrictedRoles: options[0] } : {}),
+    ...(Array.isArray(expectAliases) ? { expectAliases } : {}),
+  };
+}
+
+function restrictedRuleMeta(ruleName) {
+  switch (ruleName) {
+    case 'no-restricted-locators':
+      return {
+        description: 'Disallows the usage of specific locator methods',
+        messages: {
+          restricted: 'Usage of `{{method}}` is disallowed',
+          restrictedWithMessage: '{{message}}',
+        },
+        schema: [restrictedListSchema('type')],
+      };
+    case 'no-restricted-matchers':
+      return {
+        description: 'Disallow specific matchers & modifiers',
+        messages: {
+          restricted: 'Use of `{{restriction}}` is disallowed',
+          restrictedWithMessage: '{{message}}',
+        },
+        schema: [
+          {
+            additionalProperties: {
+              type: ['string', 'null'],
+            },
+            type: 'object',
+          },
+        ],
+      };
+    case 'no-restricted-roles':
+      return {
+        description: 'Disallows the usage of specific roles in getByRole()',
+        messages: {
+          restricted: 'Usage of role `{{role}}` in getByRole() is disallowed',
+          restrictedWithMessage: '{{message}}',
+        },
+        schema: [restrictedListSchema('role')],
+      };
+    default:
+      return null;
+  }
+}
+
+function restrictedListSchema(requiredProperty) {
+  return {
+    items: {
+      oneOf: [
+        { type: 'string' },
+        {
+          additionalProperties: false,
+          properties: {
+            message: { type: 'string' },
+            [requiredProperty]: { type: 'string' },
+          },
+          required: [requiredProperty],
+          type: 'object',
+        },
+      ],
+    },
+    type: 'array',
+  };
 }
 
 module.exports = plugin;

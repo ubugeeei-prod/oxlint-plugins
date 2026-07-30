@@ -15,6 +15,7 @@ name = "oxlint_plugin_playwright"
 [dependencies]
 napi.workspace = true
 napi-derive.workspace = true
+oxlint-plugins-carton.workspace = true
 oxlint-plugins-playwright.workspace = true
 
 [build-dependencies]

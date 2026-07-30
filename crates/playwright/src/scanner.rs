@@ -4,7 +4,7 @@ use oxc_span::Span;
 use oxlint_plugins_carton::SmallVec;
 use regex::Regex;
 
-use crate::types::{Diagnostic, LineIndex};
+use crate::types::{Diagnostic, DiagnosticData, LineIndex};
 
 pub(crate) struct Scanner<'a> {
     pub(crate) source_text: &'a str,
@@ -67,15 +67,6 @@ impl<'a> Scanner<'a> {
         self.check_regex("no-nth-methods", r#"\.(first|last|nth)\s*\("#);
         self.check_regex("no-page-pause", r#"page\.pause\s*\("#);
         self.check_regex("no-raw-locators", r#"page\.locator\s*\(\s*['"][^'"]+['"]"#);
-        self.check_regex(
-            "no-restricted-locators",
-            r#"\.getByText\s*\(\s*['"]Forbidden['"]"#,
-        );
-        self.check_regex("no-restricted-matchers", r#"\.toBeTruthy\s*\("#);
-        self.check_regex(
-            "no-restricted-roles",
-            r#"\.getByRole\s*\(\s*['"]button['"]"#,
-        );
         self.check_regex("no-skipped-test", r#"\btest\.skip\s*\("#);
         self.check_regex("no-slowed-test", r#"\btest\.slow\s*\("#);
         self.check_regex("no-standalone-expect", r#"(?m)^\s*expect\s*\("#);
@@ -220,6 +211,7 @@ impl<'a> Scanner<'a> {
         self.diagnostics.push(Diagnostic {
             rule_name,
             message_id: "unexpected",
+            data: DiagnosticData::default(),
             loc: self.line_index.loc_for_span(self.source_text, span),
         });
     }

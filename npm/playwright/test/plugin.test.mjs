@@ -141,6 +141,11 @@ const invalidCases = [
   ['valid-test-tags', 'test("@bad tag", () => {});\n'],
   ['valid-title', 'test("", () => {});\n'],
 ];
+const expectedRestrictedMessages = {
+  'no-restricted-locators': 'Usage of `{{method}}` is disallowed',
+  'no-restricted-matchers': 'Use of `{{restriction}}` is disallowed',
+  'no-restricted-roles': 'Usage of role `{{role}}` in getByRole() is disallowed',
+};
 
 function runRule(ruleName, sourceText, options = [], filename = 'fixture.spec.ts') {
   const reports = [];
@@ -194,7 +199,7 @@ describe('playwright plugin adapter', () => {
 
     expect(reports).toHaveLength(1);
     expect(plugin.rules[ruleName].meta.messages[reports[0].messageId]).toBe(
-      'Unexpected Playwright pattern.',
+      expectedRestrictedMessages[ruleName] ?? 'Unexpected Playwright pattern.',
     );
   });
 

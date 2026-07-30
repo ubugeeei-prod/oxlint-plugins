@@ -4242,7 +4242,7 @@
           "lsp": false,
           "oxlintIntegration": true
         },
-        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/no-restricted-locators; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+        "notes": "Option-aware Oxc AST port of eslint-plugin-playwright/no-restricted-locators v2.10.4. It honors string/object restriction lists, custom messages, duplicate last-wins semantics, dot/string/template-computed members, nested locator chains, exact UTF-16 CallExpression ranges, NAPI/direct API forwarding, and real Oxlint TSX execution. A reproducible pinned fixture replays all 12 valid and 15 invalid upstream authored cases with 17 exact ordered diagnostics."
       },
       {
         "name": "no-restricted-matchers",
@@ -4258,7 +4258,7 @@
           "lsp": false,
           "oxlintIntegration": true
         },
-        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/no-restricted-matchers; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+        "notes": "Option-aware Oxc AST port of eslint-plugin-playwright/no-restricted-matchers v2.10.4. It honors matcher/modifier chain maps, null/default and custom messages, dot/string/template-computed members, expect.soft/poll, configured global aliases and named Playwright expect imports, exact property-chain UTF-16 ranges, NAPI/direct API forwarding, and real Oxlint TSX execution. A reproducible pinned fixture replays all 20 valid and 13 invalid upstream authored cases with 13 exact diagnostics."
       },
       {
         "name": "no-restricted-roles",
@@ -4274,7 +4274,7 @@
           "lsp": false,
           "oxlintIntegration": true
         },
-        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/no-restricted-roles; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+        "notes": "Option-aware Oxc AST port of eslint-plugin-playwright/no-restricted-roles v2.10.4. It honors string/object role lists, custom messages, duplicate last-wins semantics, static string/template roles, dot/string/template-computed getByRole calls, nested locator chains, exact UTF-16 CallExpression ranges, NAPI/direct API forwarding, and real Oxlint TSX execution. A reproducible pinned fixture replays all 16 valid and 18 invalid upstream authored cases with 20 exact ordered diagnostics."
       },
       {
         "name": "no-skipped-test",
