@@ -713,8 +713,8 @@
       "repo": "https://github.com/ota-meshi/eslint-plugin-astro",
       "submodule": "upstream/eslint-plugin-astro",
       "packageSubdir": ".",
-      "baselineVersion": "2.1.1",
-      "pinnedRef": "v2.1.1",
+      "baselineVersion": "3.0.1",
+      "pinnedRef": "v3.0.1",
       "license": "MIT",
       "monorepo": false,
       "expectedRuleCount": 20,
@@ -725,7 +725,7 @@
         "exclude": ["index.ts"]
       },
       "docsUrlTemplate": "https://ota-meshi.github.io/eslint-plugin-astro/rules/{rule}/",
-      "notes": "Lints .astro files via astro-eslint-parser; full parity depends on that parser (cf. eslint-plugin-svelte / eslint-plugin-vue, which are excluded, and @unocss/eslint-plugin)."
+      "notes": "Lints .astro files via astro-eslint-parser. Frontmatter-only rules can be ported by segmenting raw .astro source and parsing TypeScript with Oxc; full template parity still depends on Astro-aware parsing. React rules are outside this target because Oxc covers React separately."
     }
   ]
 }

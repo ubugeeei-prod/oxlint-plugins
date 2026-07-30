@@ -5,13 +5,13 @@
 | | |
 |---|---|
 | Upstream repo | https://github.com/ota-meshi/eslint-plugin-astro |
-| Submodule | `upstream/eslint-plugin-astro` @ `v2.1.1` |
-| Baseline npm version | `2.1.1` |
+| Submodule | `upstream/eslint-plugin-astro` @ `v3.0.1` |
+| Baseline npm version | `3.0.1` |
 | License | MIT |
 | Oxlint native support | none — port target |
 | Rules to port | 20 |
 
-> Lints .astro files via astro-eslint-parser; full parity depends on that parser (cf. eslint-plugin-svelte / eslint-plugin-vue, which are excluded, and @unocss/eslint-plugin).
+> Lints .astro files via astro-eslint-parser. Frontmatter-only rules can be ported by segmenting raw .astro source and parsing TypeScript with Oxc; full template parity still depends on Astro-aware parsing. React rules are outside this target because Oxc covers React separately.
 
 ## Rules
 

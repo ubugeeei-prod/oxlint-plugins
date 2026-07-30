@@ -21,6 +21,7 @@ pub(super) fn push(
 }
 
 mod angular_eslint;
+mod astro;
 mod cypress;
 mod e18e;
 mod eslint_comments;
@@ -45,6 +46,7 @@ mod unused_imports;
 /// e.g., the JSON plugin never runs against a `.js` file.
 #[derive(Clone, Copy)]
 enum Language {
+    Astro,
     JavaScript,
     Json,
     Markdown,
@@ -54,6 +56,7 @@ enum Language {
 impl Language {
     fn as_str(self) -> &'static str {
         match self {
+            Self::Astro => "astro",
             Self::JavaScript => "javascript",
             Self::Json => "json",
             Self::Markdown => "markdown",
@@ -64,6 +67,7 @@ impl Language {
     /// Whether a file with the given extension should be linted by this language.
     fn matches_extension(self, ext: &str) -> bool {
         match self {
+            Self::Astro => ext == "astro",
             Self::JavaScript => matches!(
                 ext,
                 "js" | "cjs" | "mjs" | "jsx" | "ts" | "cts" | "mts" | "tsx"
@@ -83,6 +87,7 @@ type InfoFn = fn() -> PluginInfo;
 type ScanFn = fn(&str, &str, &EnabledFilter, &mut Vec<PlaygroundDiagnostic>);
 
 const REGISTRY: &[(&str, Language, InfoFn, ScanFn)] = &[
+    (astro::PLUGIN, Language::Astro, astro::info, astro::scan),
     (
         angular_eslint::PLUGIN,
         Language::JavaScript,
@@ -262,6 +267,7 @@ fn extension(filename: &str) -> &str {
 pub fn language_for_filename(filename: &str) -> &'static str {
     let ext = extension(filename).to_ascii_lowercase();
     for language in [
+        Language::Astro,
         Language::JavaScript,
         Language::Json,
         Language::Markdown,

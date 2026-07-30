@@ -5259,7 +5259,7 @@
       "id": "eslint-plugin-astro",
       "npm": "eslint-plugin-astro",
       "repo": "https://github.com/ota-meshi/eslint-plugin-astro",
-      "baselineVersion": "2.1.1",
+      "baselineVersion": "3.0.1",
       "license": "MIT",
       "ruleCount": 20,
       "rules": [

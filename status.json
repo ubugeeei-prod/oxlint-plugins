@@ -1426,6 +1426,343 @@
     ]
   },
   {
+    "packageName": "@oxlint-plugins/oxlint-plugin-astro",
+    "directory": "npm/astro",
+    "version": "0.0.0",
+    "published": false,
+    "publishedVersion": null,
+    "upstream": {
+      "package": "eslint-plugin-astro",
+      "version": "3.0.1",
+      "repository": "https://github.com/ota-meshi/eslint-plugin-astro",
+      "license": "MIT"
+    },
+    "status": "in-progress",
+    "typeAware": false,
+    "rules": [
+      {
+        "name": "missing-client-only-directive-value",
+        "status": "pending",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": false,
+        "napi": false,
+        "tests": {
+          "insta": false,
+          "vitest": false,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Pending port of upstream rule missing-client-only-directive-value."
+      },
+      {
+        "name": "no-conflict-set-directives",
+        "status": "pending",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": false,
+        "napi": false,
+        "tests": {
+          "insta": false,
+          "vitest": false,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Pending port of upstream rule no-conflict-set-directives."
+      },
+      {
+        "name": "no-deprecated-astro-canonicalurl",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc frontmatter port synced to the authored eslint-plugin-astro v3.0.1 fixtures. Covers global-reference shadowing, malformed input, Unicode/UTF-16 locations, rule selection, the NAPI/API adapter, real Oxlint .astro integration, and the playground."
+      },
+      {
+        "name": "no-deprecated-astro-fetchcontent",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc frontmatter port synced to the authored eslint-plugin-astro v3.0.1 input, errors, and fixed output. Covers global-reference shadowing, computed access, UTF-8 byte to UTF-16 fix mapping, malformed input, NAPI/API, real Oxlint .astro fix integration, and the playground."
+      },
+      {
+        "name": "no-deprecated-astro-resolve",
+        "status": "pending",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": false,
+        "napi": false,
+        "tests": {
+          "insta": false,
+          "vitest": false,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Pending port of upstream rule no-deprecated-astro-resolve."
+      },
+      {
+        "name": "no-deprecated-getentrybyslug",
+        "status": "ported",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": true,
+        "napi": true,
+        "tests": {
+          "insta": false,
+          "vitest": true,
+          "lsp": false,
+          "oxlintIntegration": true
+        },
+        "notes": "Rust/Oxc frontmatter port synced to the authored eslint-plugin-astro v3.0.1 fixtures. Covers aliases, type-only imports, wrong sources, malformed input, rule selection, NAPI/API, real Oxlint .astro integration, and the playground."
+      },
+      {
+        "name": "no-exports-from-components",
+        "status": "pending",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": false,
+        "napi": false,
+        "tests": {
+          "insta": false,
+          "vitest": false,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Pending port of upstream rule no-exports-from-components."
+      },
+      {
+        "name": "no-omitted-end-tags",
+        "status": "pending",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": false,
+        "napi": false,
+        "tests": {
+          "insta": false,
+          "vitest": false,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Pending port of upstream rule no-omitted-end-tags."
+      },
+      {
+        "name": "no-prerender-export-outside-pages",
+        "status": "pending",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": false,
+        "napi": false,
+        "tests": {
+          "insta": false,
+          "vitest": false,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Pending port of upstream rule no-prerender-export-outside-pages."
+      },
+      {
+        "name": "no-set-html-directive",
+        "status": "pending",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": false,
+        "napi": false,
+        "tests": {
+          "insta": false,
+          "vitest": false,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Pending port of upstream rule no-set-html-directive."
+      },
+      {
+        "name": "no-set-text-directive",
+        "status": "pending",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": false,
+        "napi": false,
+        "tests": {
+          "insta": false,
+          "vitest": false,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Pending port of upstream rule no-set-text-directive."
+      },
+      {
+        "name": "no-unsafe-inline-scripts",
+        "status": "pending",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": false,
+        "napi": false,
+        "tests": {
+          "insta": false,
+          "vitest": false,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Pending port of upstream rule no-unsafe-inline-scripts."
+      },
+      {
+        "name": "no-unused-css-selector",
+        "status": "pending",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": false,
+        "napi": false,
+        "tests": {
+          "insta": false,
+          "vitest": false,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Pending port of upstream rule no-unused-css-selector."
+      },
+      {
+        "name": "no-unused-define-vars-in-style",
+        "status": "pending",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": false,
+        "napi": false,
+        "tests": {
+          "insta": false,
+          "vitest": false,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Pending port of upstream rule no-unused-define-vars-in-style."
+      },
+      {
+        "name": "prefer-class-list-directive",
+        "status": "pending",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": false,
+        "napi": false,
+        "tests": {
+          "insta": false,
+          "vitest": false,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Pending port of upstream rule prefer-class-list-directive."
+      },
+      {
+        "name": "prefer-object-class-list",
+        "status": "pending",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": false,
+        "napi": false,
+        "tests": {
+          "insta": false,
+          "vitest": false,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Pending port of upstream rule prefer-object-class-list."
+      },
+      {
+        "name": "prefer-split-class-list",
+        "status": "pending",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": false,
+        "napi": false,
+        "tests": {
+          "insta": false,
+          "vitest": false,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Pending port of upstream rule prefer-split-class-list."
+      },
+      {
+        "name": "semi",
+        "status": "pending",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": false,
+        "napi": false,
+        "tests": {
+          "insta": false,
+          "vitest": false,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Pending port of upstream rule semi."
+      },
+      {
+        "name": "sort-attributes",
+        "status": "pending",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": false,
+        "napi": false,
+        "tests": {
+          "insta": false,
+          "vitest": false,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Pending port of upstream rule sort-attributes."
+      },
+      {
+        "name": "valid-compile",
+        "status": "pending",
+        "published": false,
+        "oxlintBuiltin": false,
+        "typeAware": false,
+        "rustCore": false,
+        "napi": false,
+        "tests": {
+          "insta": false,
+          "vitest": false,
+          "lsp": false,
+          "oxlintIntegration": false
+        },
+        "notes": "Pending port of upstream rule valid-compile."
+      }
+    ]
+  },
+  {
     "packageName": "@oxlint-plugins/oxlint-plugin-cypress",
     "directory": "npm/cypress",
     "version": "0.0.0",

@@ -15,6 +15,11 @@ const packages: PackageToPack[] = [
     requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
   },
   {
+    name: '@oxlint-plugins/oxlint-plugin-astro',
+    dir: 'npm/astro',
+    requiredFiles: ['index.js', 'api.js', 'api.d.ts', 'native.js', 'native.d.ts'],
+  },
+  {
     name: '@oxlint-plugins/oxlint-plugin-type-aware',
     dir: 'npm/type-aware',
     requiredFiles: ['dist/index.mjs', 'dist/index.d.mts'],

@@ -46,7 +46,7 @@ pub fn stylistic_rule_metas() -> String {
     plugins::stylistic_rule_metas()
 }
 
-/// Returns the source language for `filename` (`javascript`, `json`, `markdown`,
+/// Returns the source language for `filename` (`astro`, `javascript`, `json`, `markdown`,
 /// or `""`), so the UI's editor and the rule scoping use one extension map.
 #[wasm_bindgen]
 pub fn language_for_filename(filename: &str) -> String {
