@@ -1,6 +1,7 @@
 #![doc = "Rust implementation of @angular-eslint/eslint-plugin rule logic."]
 
 mod scanner;
+mod selector;
 mod types;
 
 #[cfg(test)]
@@ -9,12 +10,25 @@ mod tests;
 use oxc_allocator::Allocator;
 use oxc_parser::Parser;
 use oxc_span::SourceType;
-use oxlint_plugins_carton::SmallVec;
+use oxlint_plugins_carton::{CompactString, SmallVec};
+use serde_json::Value;
 
 use crate::scanner::Scanner;
 use crate::types::LineIndex;
 
-pub use crate::types::{Diagnostic, DiagnosticLoc};
+pub use crate::types::{Diagnostic, DiagnosticDatum, DiagnosticLoc};
+
+#[derive(Clone, Debug, Default)]
+pub struct ScanOptions {
+    pub rule_names: SmallVec<[CompactString; 4]>,
+    pub options: Value,
+}
+
+impl ScanOptions {
+    pub(crate) fn is_enabled(&self, rule_name: &str) -> bool {
+        self.rule_names.is_empty() || self.rule_names.iter().any(|name| name == rule_name)
+    }
+}
 
 pub const RULE_NAMES: [&str; 48] = [
     "component-class-suffix",
@@ -72,6 +86,14 @@ pub fn implemented_angular_eslint_rule_names() -> &'static [&'static str] {
 }
 
 pub fn scan_angular_eslint(source_text: &str, filename: &str) -> SmallVec<[Diagnostic; 64]> {
+    scan_angular_eslint_with_options(source_text, filename, &ScanOptions::default())
+}
+
+pub fn scan_angular_eslint_with_options(
+    source_text: &str,
+    filename: &str,
+    options: &ScanOptions,
+) -> SmallVec<[Diagnostic; 64]> {
     let allocator = Allocator::default();
     let source_type = SourceType::from_path(filename)
         .unwrap_or_else(|_| SourceType::tsx())
@@ -84,8 +106,9 @@ pub fn scan_angular_eslint(source_text: &str, filename: &str) -> SmallVec<[Diagn
     let mut scanner = Scanner {
         source_text,
         line_index: LineIndex::new(source_text),
+        options,
         diagnostics: SmallVec::new(),
     };
-    scanner.scan();
+    scanner.scan(&parser_return.program);
     scanner.diagnostics
 }

@@ -1,7 +1,8 @@
 //! NAPI boundary for the angular-eslint oxlint plugin.
 
 pub use napi_abi::{
-    Diagnostic, DiagnosticLoc, implemented_angular_eslint_rule_names, scan_angular_eslint,
+    AngularEslintScanOptions, Diagnostic, DiagnosticDatum, DiagnosticLoc,
+    implemented_angular_eslint_rule_names, scan_angular_eslint,
 };
 
 #[allow(
@@ -12,6 +13,20 @@ pub use napi_abi::{
 mod napi_abi {
     use napi_derive::napi;
     use oxlint_plugins_angular_eslint as core;
+
+    #[napi(object)]
+    #[derive(Clone, Debug, Default)]
+    pub struct AngularEslintScanOptions {
+        pub rule_names: Option<Vec<String>>,
+        pub options: Option<serde_json::Value>,
+    }
+
+    #[napi(object)]
+    #[derive(Clone, Debug)]
+    pub struct DiagnosticDatum {
+        pub key: String,
+        pub value: String,
+    }
 
     #[napi(object)]
     #[derive(Clone, Debug)]
@@ -27,6 +42,7 @@ mod napi_abi {
     pub struct Diagnostic {
         pub rule_name: String,
         pub message_id: String,
+        pub data: Vec<DiagnosticDatum>,
         pub loc: DiagnosticLoc,
     }
 
@@ -39,12 +55,33 @@ mod napi_abi {
     }
 
     #[napi]
-    pub fn scan_angular_eslint(source_text: String, filename: String) -> Vec<Diagnostic> {
-        core::scan_angular_eslint(&source_text, &filename)
+    pub fn scan_angular_eslint(
+        source_text: String,
+        filename: String,
+        options: AngularEslintScanOptions,
+    ) -> Vec<Diagnostic> {
+        let core_options = core::ScanOptions {
+            rule_names: options
+                .rule_names
+                .unwrap_or_default()
+                .into_iter()
+                .map(Into::into)
+                .collect(),
+            options: options.options.unwrap_or(serde_json::Value::Null),
+        };
+        core::scan_angular_eslint_with_options(&source_text, &filename, &core_options)
             .into_iter()
             .map(|diagnostic| Diagnostic {
                 rule_name: diagnostic.rule_name.to_owned(),
                 message_id: diagnostic.message_id.to_owned(),
+                data: diagnostic
+                    .data
+                    .into_iter()
+                    .map(|datum| DiagnosticDatum {
+                        key: datum.key.into_string(),
+                        value: datum.value.into_string(),
+                    })
+                    .collect(),
                 loc: DiagnosticLoc {
                     start_line: diagnostic.loc.start_line,
                     start_column: diagnostic.loc.start_column,

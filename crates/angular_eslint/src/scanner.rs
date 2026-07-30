@@ -1,27 +1,27 @@
 //! Regex-driven scanner for the angular-eslint port.
 
+use oxc_ast::ast::Program;
+use oxc_ast_visit::Visit;
 use oxc_span::Span;
 use oxlint_plugins_carton::SmallVec;
 use regex::Regex;
 
+use crate::ScanOptions;
 use crate::types::{Diagnostic, LineIndex};
 
 pub(crate) struct Scanner<'a> {
     pub(crate) source_text: &'a str,
     pub(crate) line_index: LineIndex,
+    pub(crate) options: &'a ScanOptions,
     pub(crate) diagnostics: SmallVec<[Diagnostic; 64]>,
 }
 
 impl<'a> Scanner<'a> {
-    pub(crate) fn scan(&mut self) {
+    pub(crate) fn scan(&mut self, program: &Program<'a>) {
         self.check_class_suffix("component-class-suffix", "@Component", "Component");
         self.check_regex(
             "component-max-inline-declarations",
             r#"(?s)template\s*:\s*`[^`]*\n[^`]*\n[^`]*`"#,
-        );
-        self.check_regex(
-            "component-selector",
-            r#"(?s)@Component\s*\(\s*\{[^}]*selector\s*:\s*['"][A-Z]"#,
         );
         self.check_regex(
             "computed-must-return",
@@ -37,10 +37,6 @@ impl<'a> Scanner<'a> {
             r#"class\s+\w+\s*\{[^}]*\bngOnInit\s*\("#,
         );
         self.check_class_suffix("directive-class-suffix", "@Directive", "Directive");
-        self.check_regex(
-            "directive-selector",
-            r#"(?s)@Directive\s*\(\s*\{[^}]*selector\s*:\s*['"][A-Z]"#,
-        );
         self.check_regex(
             "no-async-lifecycle-method",
             r#"async\s+ng(OnInit|OnDestroy|AfterViewInit|OnChanges)\s*\("#,
@@ -137,9 +133,13 @@ impl<'a> Scanner<'a> {
             "use-pipe-transform-interface",
             r#"@Pipe\s*\([^)]*\)\s*class\s+PlainPipe\s*\{[^}]*transform\s*\("#,
         );
+        self.visit_program(program);
     }
 
     fn check_contains(&mut self, rule_name: &'static str, needle: &str) {
+        if !self.options.is_enabled(rule_name) {
+            return;
+        }
         if self.has_reported(rule_name) {
             return;
         }
@@ -152,6 +152,9 @@ impl<'a> Scanner<'a> {
     }
 
     fn check_class_suffix(&mut self, rule_name: &'static str, decorator: &str, suffix: &str) {
+        if !self.options.is_enabled(rule_name) {
+            return;
+        }
         if self.has_reported(rule_name) {
             return;
         }
@@ -176,6 +179,9 @@ impl<'a> Scanner<'a> {
     }
 
     fn check_regex(&mut self, rule_name: &'static str, pattern: &str) {
+        if !self.options.is_enabled(rule_name) {
+            return;
+        }
         if self.has_reported(rule_name) {
             return;
         }
@@ -200,6 +206,7 @@ impl<'a> Scanner<'a> {
         self.diagnostics.push(Diagnostic {
             rule_name,
             message_id: "unexpected",
+            data: SmallVec::new(),
             loc: self.line_index.loc_for_span(self.source_text, span),
         });
     }

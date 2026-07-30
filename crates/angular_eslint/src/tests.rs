@@ -59,7 +59,10 @@ fn scans_representative_rules() {
         .iter()
         .map(|diagnostic| diagnostic.rule_name)
         .collect();
-    let mut expected: SmallVec<[&str; 64]> = RULE_NAMES.into_iter().collect();
+    let mut expected: SmallVec<[&str; 64]> = RULE_NAMES
+        .into_iter()
+        .filter(|rule_name| !matches!(*rule_name, "component-selector" | "directive-selector"))
+        .collect();
     actual.sort_unstable();
     expected.sort_unstable();
     assert_eq!(actual, expected);

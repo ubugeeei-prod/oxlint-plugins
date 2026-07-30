@@ -29,7 +29,11 @@ pub fn scan(
         if !filter.rule_enabled(PLUGIN, diagnostic.rule_name) {
             continue;
         }
-        let data: BTreeMap<String, String> = BTreeMap::new();
+        let data: BTreeMap<String, String> = diagnostic
+            .data
+            .into_iter()
+            .map(|datum| (datum.key.into_string(), datum.value.into_string()))
+            .collect();
         out.push(PlaygroundDiagnostic {
             plugin: PLUGIN,
             rule: diagnostic.rule_name.to_owned(),

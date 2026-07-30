@@ -68,13 +68,11 @@ const invalidCases = [
     'component-max-inline-declarations',
     '@Component({ template: `a\nb\nc` }) class AppComponent {}\n',
   ],
-  ['component-selector', '@Component({ selector: "BadSelector" }) class AppComponent {}\n'],
   ['computed-must-return', 'const total = computed(() => { totalSignal(); });\n'],
   ['consistent-component-styles', '@Component({ styleUrls: ["./x.css"] }) class AppComponent {}\n'],
   ['contextual-decorator', '@Input() class WrongContext {}\n'],
   ['contextual-lifecycle', 'class Plain { ngOnInit() {} }\n'],
   ['directive-class-suffix', '@Directive({ selector: "[x]" }) class Highlight {}\n'],
-  ['directive-selector', '@Directive({ selector: "BadDirective" }) class HighlightDirective {}\n'],
   ['no-async-lifecycle-method', 'class Life { async ngOnInit() {} }\n'],
   ['no-attribute-decorator', 'class Attr { constructor(@Attribute("role") role: string) {} }\n'],
   ['no-developer-preview', 'afterNextRender(() => {});\n'],
@@ -131,7 +129,7 @@ const invalidCases = [
   ['use-pipe-transform-interface', '@Pipe({ name: "plain" }) class PlainPipe { transform() {} }\n'],
 ];
 
-function runRule(ruleName, sourceText, filename = 'fixture.ts') {
+function runRule(ruleName, sourceText, options = [], filename = 'fixture.ts') {
   const reports = [];
   const sourceCode = {
     text: sourceText,
@@ -141,7 +139,7 @@ function runRule(ruleName, sourceText, filename = 'fixture.ts') {
   };
   const visitor = plugin.rules[ruleName].createOnce({
     filename,
-    options: [],
+    options,
     sourceCode,
     report(descriptor) {
       reports.push(descriptor);
@@ -183,6 +181,138 @@ describe('angular-eslint plugin adapter', () => {
     );
   });
 
+  it('exposes the complete selector schemas and messages', () => {
+    for (const ruleName of ['component-selector', 'directive-selector']) {
+      const { meta } = plugin.rules[ruleName];
+      expect(meta.schema).toHaveLength(1);
+      expect(meta.schema[0].oneOf).toHaveLength(2);
+      expect(meta.schema[0].oneOf[0]).toMatchObject({
+        type: 'object',
+        required: ['type', 'style'],
+        additionalProperties: false,
+      });
+      expect(meta.messages).toMatchObject({
+        prefixFailure: expect.stringContaining('{{prefix}}'),
+        styleFailure: expect.stringContaining('{{style}}'),
+        typeFailure: expect.stringContaining('{{type}}'),
+        selectorAfterPrefixFailure: expect.stringContaining('{{prefix}}'),
+      });
+    }
+    expect(plugin.rules['component-selector'].meta.messages).toMatchObject({
+      styleAndPrefixFailure: expect.stringContaining('{{style}}'),
+      shadowDomEncapsulatedStyleFailure: expect.stringContaining('ShadowDom'),
+    });
+  });
+
+  it.each([
+    [
+      'component-selector',
+      '@Component({ selector: "app-user-card" }) class UserCard {}',
+      [{ type: 'element', prefix: 'app', style: 'kebab-case' }],
+    ],
+    [
+      'component-selector',
+      '@Component({ selector: "[appUserCard]" }) class UserCard {}',
+      [{ type: 'attribute', prefix: 'app', style: 'camelCase' }],
+    ],
+    [
+      'component-selector',
+      '@Component({ selector: "lib-user-card" }) class UserCard {}',
+      [
+        [
+          { type: 'element', prefix: ['app', 'lib'], style: 'kebab-case' },
+          { type: 'attribute', prefix: 'app', style: 'camelCase' },
+        ],
+      ],
+    ],
+    [
+      'component-selector',
+      '@Component({ selector: "app-user-card", encapsulation: ViewEncapsulation.ShadowDom }) class UserCard {}',
+      [{ type: 'element', prefix: 'app', style: 'camelCase' }],
+    ],
+    [
+      'directive-selector',
+      '@Directive({ selector: "[appHighlight]" }) class HighlightDirective {}',
+      [{ type: 'attribute', prefix: 'app', style: 'camelCase' }],
+    ],
+    [
+      'directive-selector',
+      '@Directive({ selector: "[lib-highlight]" }) class HighlightDirective {}',
+      [{ type: 'attribute', prefix: ['app', 'lib'], style: 'kebab-case' }],
+    ],
+  ])('accepts configured %s selectors through createOnce', (ruleName, code, options) => {
+    expect(runRule(ruleName, code, options)).toEqual([]);
+  });
+
+  it.each([
+    [
+      'component-selector',
+      '@Component({ selector: "wrong-name" }) class UserCard {}',
+      [{ type: 'element', prefix: 'app', style: 'kebab-case' }],
+      'prefixFailure',
+      { prefix: '"app"' },
+    ],
+    [
+      'component-selector',
+      '@Component({ selector: "appUserCard" }) class UserCard {}',
+      [{ type: 'element', prefix: 'app', style: 'kebab-case' }],
+      'styleAndPrefixFailure',
+      { style: 'kebab-case', prefix: '"app"' },
+    ],
+    [
+      'component-selector',
+      '@Component({ selector: "[appUserCard]" }) class UserCard {}',
+      [{ type: 'element', prefix: 'app', style: 'camelCase' }],
+      'typeFailure',
+      { type: 'element' },
+    ],
+    [
+      'component-selector',
+      '@Component({ selector: "app" }) class UserCard {}',
+      [{ type: 'element', prefix: 'app', style: 'kebab-case' }],
+      'selectorAfterPrefixFailure',
+      { prefix: '"app"' },
+    ],
+    [
+      'component-selector',
+      '@Component({ selector: "appUserCard", encapsulation: ViewEncapsulation.ShadowDom }) class UserCard {}',
+      [{ type: 'element', prefix: 'app', style: 'camelCase' }],
+      'shadowDomEncapsulatedStyleFailure',
+      {},
+    ],
+    [
+      'directive-selector',
+      '@Directive({ selector: "[wrongHighlight]" }) class HighlightDirective {}',
+      [{ type: 'attribute', prefix: ['app', 'lib'], style: 'camelCase' }],
+      'prefixFailure',
+      { prefix: '"app" or "lib"' },
+    ],
+    [
+      'directive-selector',
+      '@Directive({ selector: "[app-highlight]" }) class HighlightDirective {}',
+      [{ type: 'attribute', prefix: 'app', style: 'camelCase' }],
+      'styleFailure',
+      { style: 'camelCase' },
+    ],
+  ])(
+    'reports configured %s selector failures through createOnce',
+    (ruleName, code, options, messageId, data) => {
+      expect(runRule(ruleName, code, options)).toMatchObject([{ messageId, data }]);
+    },
+  );
+
+  it('does not run option-required selector rules without options', () => {
+    expect(
+      runRule('component-selector', '@Component({ selector: "WrongSelector" }) class UserCard {}'),
+    ).toEqual([]);
+    expect(
+      runRule(
+        'directive-selector',
+        '@Directive({ selector: "WrongSelector" }) class HighlightDirective {}',
+      ),
+    ).toEqual([]);
+  });
+
   it('loads through oxlint jsPlugins', () => {
     const tempDir = mkdtempSync(join(tmpdir(), 'oxlint-angular-eslint-'));
     try {
@@ -219,6 +349,55 @@ describe('angular-eslint plugin adapter', () => {
       expect(result.stderr).toBe('');
       expect(payload.diagnostics).toHaveLength(1);
       expect(payload.diagnostics[0].message).toBe('Unexpected Angular pattern.');
+    } finally {
+      rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('honors selector options through real oxlint jsPlugins', () => {
+    const tempDir = mkdtempSync(join(tmpdir(), 'oxlint-angular-selector-'));
+    try {
+      writeFileSync(
+        join(tempDir, 'fixture.ts'),
+        '@Component({ selector: "wrong-name" }) class AppComponent {}\n',
+      );
+      writeFileSync(
+        join(tempDir, 'oxlint.config.jsonc'),
+        JSON.stringify({
+          jsPlugins: [
+            {
+              name: '@angular-eslint',
+              specifier: join(packageRoot, 'index.js'),
+            },
+          ],
+          rules: {
+            '@angular-eslint/component-selector': [
+              'error',
+              { type: 'element', prefix: ['app', 'lib'], style: 'kebab-case' },
+            ],
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        findOxlintCli(),
+        ['--config', 'oxlint.config.jsonc', '--quiet', '--format', 'json', 'fixture.ts'],
+        {
+          cwd: tempDir,
+          encoding: 'utf8',
+        },
+      );
+      const payload = JSON.parse(result.stdout);
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      expect(payload.diagnostics).toMatchObject([
+        {
+          code: '@angular-eslint(component-selector)',
+          message:
+            'The selector should start with one of these prefixes: "app" or "lib" (https://angular.dev/style-guide#choosing-component-selectors)',
+        },
+      ]);
     } finally {
       rmSync(tempDir, { recursive: true, force: true });
     }
