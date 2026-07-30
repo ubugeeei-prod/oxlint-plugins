@@ -15,6 +15,7 @@ const PLUGIN_NAME = 'perfectionist';
 const DOCS_BASE = 'https://perfectionist.dev/rules';
 const diagnosticsCache = new WeakMap();
 const implementedRuleNames = Object.freeze(implementedPerfectionistRuleNames());
+const configuredRuleNames = new Set(['sort-named-exports', 'sort-named-imports']);
 const recommendedRuleNames = Object.freeze(
   implementedRuleNames.filter((ruleName) => ruleName !== 'sort-arrays'),
 );
@@ -72,7 +73,7 @@ function recommendedRules(options) {
   return Object.fromEntries(
     recommendedRuleNames.map((ruleName) => [
       `${PLUGIN_NAME}/${ruleName}`,
-      ruleName === 'sort-named-imports' ? ['error', options] : 'error',
+      configuredRuleNames.has(ruleName) ? ['error', options] : 'error',
     ]),
   );
 }
@@ -88,8 +89,8 @@ function createPerfectionistRule(ruleName) {
         url: `${DOCS_BASE}/${ruleName}`,
       },
       fixable: 'code',
-      messages:
-        ruleName === 'sort-named-imports'
+      messages: configuredRuleNames.has(ruleName)
+        ? ruleName === 'sort-named-imports'
           ? {
               unexpectedNamedImportsOrder: 'Expected "{{right}}" to come before "{{left}}".',
               unexpectedNamedImportsGroupOrder:
@@ -99,8 +100,16 @@ function createPerfectionistRule(ruleName) {
                 'Missed spacing between "{{left}}" and "{{right}}".',
             }
           : {
-              unexpected: 'Expected sorted order.',
-            },
+              unexpectedNamedExportsOrder: 'Expected "{{right}}" to come before "{{left}}".',
+              unexpectedNamedExportsGroupOrder:
+                'Expected "{{right}}" ({{rightGroup}}) to come before "{{left}}" ({{leftGroup}}).',
+              extraSpacingBetweenNamedExports: 'Extra spacing between "{{left}}" and "{{right}}".',
+              missedSpacingBetweenNamedExports:
+                'Missed spacing between "{{left}}" and "{{right}}".',
+            }
+        : {
+            unexpected: 'Expected sorted order.',
+          },
       schema: schemaForRule(ruleName),
     },
     createOnce(context) {
@@ -116,7 +125,7 @@ function createPerfectionistRule(ruleName) {
 }
 
 function diagnosticsForRule(context, ruleName) {
-  if (ruleName === 'sort-named-imports') {
+  if (configuredRuleNames.has(ruleName)) {
     return configuredDiagnosticsForRule(context, ruleName);
   }
   return diagnosticsForContext(context).filter((diagnostic) => diagnostic.ruleName === ruleName);
@@ -191,9 +200,10 @@ function reportDiagnostic(context, diagnostic) {
 }
 
 function schemaForRule(ruleName) {
-  if (ruleName !== 'sort-named-imports') {
+  if (!configuredRuleNames.has(ruleName)) {
     return [];
   }
+  const selector = ruleName === 'sort-named-imports' ? 'import' : 'export';
   const sortType = {
     type: 'string',
     enum: ['subgroup-order', 'alphabetical', 'natural', 'line-length', 'custom', 'unsorted'],
@@ -257,7 +267,7 @@ function schemaForRule(ruleName) {
       type: 'array',
       items: { type: 'string', enum: ['value', 'type'] },
     },
-    selector: { type: 'string', enum: ['import'] },
+    selector: { type: 'string', enum: [selector] },
   };
   const groups = {
     type: 'array',

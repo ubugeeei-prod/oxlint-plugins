@@ -61,6 +61,10 @@ fn configured(source: &str, options: serde_json::Value) -> SmallVec<[RuleDiagnos
     scan_perfectionist_rule(source, "fixture.ts", "sort-named-imports", &options)
 }
 
+fn configured_exports(source: &str, options: serde_json::Value) -> SmallVec<[RuleDiagnostic; 8]> {
+    scan_perfectionist_rule(source, "fixture.ts", "sort-named-exports", &options)
+}
+
 #[test]
 fn sorts_predefined_type_and_value_groups() {
     let diagnostics = configured(
@@ -262,4 +266,150 @@ fn keeps_utf16_offsets_for_unicode_group_fixes() {
     assert_eq!(diagnostics[0].fix.start, 15);
     assert_eq!(diagnostics[0].fix.end, 26);
     assert_eq!(diagnostics[0].fix.replacement, "api, 你好, 世界");
+}
+
+#[test]
+fn sorts_named_exports_by_exported_alias_and_original_name() {
+    let by_alias = configured_exports("export { a as C, b as B, c as A } from 'pkg';", json!([]));
+    assert_eq!(by_alias.len(), 2);
+    assert_eq!(by_alias[0].data.left, "C");
+    assert_eq!(by_alias[0].data.right, "B");
+    assert_eq!(by_alias[0].fix.replacement, "c as A, b as B, a as C");
+
+    let by_original = configured_exports(
+        "export { c as A, b as B, a as C } from 'pkg';",
+        json!([{ "ignoreAlias": true }]),
+    );
+    assert_eq!(by_original.len(), 2);
+    assert_eq!(by_original[0].data.left, "c");
+    assert_eq!(by_original[0].data.right, "b");
+    assert_eq!(by_original[0].fix.replacement, "a as C, b as B, c as A");
+}
+
+#[test]
+fn sorts_named_export_predefined_and_custom_groups() {
+    let diagnostics = configured_exports(
+        "export { value, type ApiType, type Other } from 'pkg';",
+        json!([{
+            "customGroups": [{
+                "groupName": "api",
+                "modifiers": ["type"],
+                "selector": "export",
+                "elementNamePattern": "^Api"
+            }],
+            "groups": ["api", "type-export", "unknown"]
+        }]),
+    );
+
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(
+        diagnostics[0].message_id,
+        "unexpectedNamedExportsGroupOrder"
+    );
+    assert_eq!(diagnostics[0].data.right, "ApiType");
+    assert_eq!(diagnostics[0].data.right_group.as_deref(), Some("api"));
+    assert_eq!(
+        diagnostics[0].fix.replacement,
+        "type ApiType, type Other, value"
+    );
+}
+
+#[test]
+fn applies_named_export_partition_and_newline_policies() {
+    let diagnostics = configured_exports(
+        "export {\n  D,\n  A,\n\n  C,\n  // Part\n  B,\n  A2,\n} from 'pkg';",
+        json!([{
+            "partitionByNewLine": true,
+            "partitionByComment": "^Part",
+            "newlinesInside": 0
+        }]),
+    );
+
+    assert_eq!(diagnostics.len(), 2);
+    assert_eq!(diagnostics[0].data.left, "D");
+    assert_eq!(diagnostics[0].data.right, "A");
+    assert_eq!(diagnostics[1].data.left, "B");
+    assert_eq!(diagnostics[1].data.right, "A2");
+}
+
+#[test]
+fn selects_named_export_conditional_configuration() {
+    let diagnostics = configured_exports(
+        "export { b, g, r } from 'pkg';",
+        json!([
+            {
+                "type": "unsorted",
+                "useConfigurationIf": { "allNamesMatchPattern": "^foo" }
+            },
+            {
+                "customGroups": [
+                    { "groupName": "r", "elementNamePattern": "^r$" },
+                    { "groupName": "g", "elementNamePattern": "^g$" },
+                    { "groupName": "b", "elementNamePattern": "^b$" }
+                ],
+                "groups": ["r", "g", "b"],
+                "useConfigurationIf": {
+                    "matchesAstSelector": "ExportNamedDeclaration",
+                    "allNamesMatchPattern": "^[rgb]$"
+                }
+            }
+        ]),
+    );
+
+    assert_eq!(diagnostics.len(), 2);
+    assert!(
+        diagnostics
+            .iter()
+            .all(|diagnostic| diagnostic.message_id == "unexpectedNamedExportsGroupOrder")
+    );
+    assert_eq!(diagnostics[0].fix.replacement, "r, g, b");
+}
+
+#[test]
+fn keeps_utf16_offsets_for_unicode_named_export_fixes() {
+    let source = "'😀';\nexport { 世界, 你好, api } from '模块';";
+    let diagnostics = configured_exports(
+        source,
+        json!([{
+            "locales": "zh-CN",
+            "customGroups": [{ "groupName": "api", "elementNamePattern": "^api$" }],
+            "groups": ["api", "unknown"]
+        }]),
+    );
+
+    assert_eq!(diagnostics.len(), 2);
+    assert_eq!(diagnostics[0].fix.start, 15);
+    assert_eq!(diagnostics[0].fix.end, 26);
+    assert_eq!(diagnostics[0].fix.replacement, "api, 你好, 世界");
+}
+
+#[test]
+fn named_export_rule_selection_and_malformed_sources_fail_closed() {
+    assert!(
+        scan_perfectionist_rule(
+            "export { b, a };",
+            "fixture.ts",
+            "sort-named-imports",
+            &json!([])
+        )
+        .is_empty()
+    );
+    assert!(
+        scan_perfectionist_rule(
+            "export { b,",
+            "fixture.ts",
+            "sort-named-exports",
+            &json!([])
+        )
+        .is_empty()
+    );
+    assert!(
+        scan_perfectionist_rule(
+            "export { a };",
+            "fixture.ts",
+            "sort-named-exports",
+            &json!([])
+        )
+        .is_empty()
+    );
 }
