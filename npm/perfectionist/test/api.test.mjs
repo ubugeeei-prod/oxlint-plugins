@@ -150,6 +150,39 @@ describe('perfectionist native API', () => {
     });
   });
 
+  it('returns exact Set groups, CRLF locations, and UTF-16 fixes', () => {
+    const source = `'😀';\r\nnew Set(['世界', 'api']);`;
+    const [diagnostic] = scanPerfectionistRule(source, 'fixture.ts', 'sort-sets', [
+      {
+        customGroups: [{ groupName: 'api', elementNamePattern: '^api$' }],
+        groups: ['api', 'unknown'],
+        locales: 'zh-CN',
+      },
+    ]);
+
+    expect(diagnostic).toEqual({
+      ruleName: 'sort-sets',
+      messageId: 'unexpectedSetsGroupOrder',
+      data: {
+        left: '世界',
+        right: 'api',
+        leftGroup: 'unknown',
+        rightGroup: 'api',
+      },
+      loc: {
+        startLine: 2,
+        startColumn: 15,
+        endLine: 2,
+        endColumn: 20,
+      },
+      fix: {
+        start: 16,
+        end: 27,
+        replacement: `'api', '世界'`,
+      },
+    });
+  });
+
   it('returns exact named-export data and UTF-16 fix offsets', () => {
     const source = `'😀';\r\nexport { item2, item10 } from "pkg";\r\n`;
     const [diagnostic] = scanPerfectionistRule(source, 'fixture.ts', 'sort-named-exports', [

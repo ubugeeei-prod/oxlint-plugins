@@ -9,7 +9,7 @@
 
 use oxc_ast::{
     Comment,
-    ast::{Argument, ArrayExpressionElement, CallExpression, Expression, Program},
+    ast::{Argument, ArrayExpressionElement, CallExpression, Expression, NewExpression, Program},
 };
 use oxc_ast_visit::{Visit, walk};
 use oxc_span::{GetSpan, Span};
@@ -40,10 +40,30 @@ pub(crate) fn check<'ast>(
     comments: &[Comment],
     raw_options: &Value,
 ) -> SmallVec<[RuleDiagnostic; 8]> {
-    let mut visitor = ArrayIncludesVisitor {
+    check_with_target(
+        source_text,
+        program,
+        comments,
+        raw_options,
+        CONTRACT,
+        ArrayRuleTarget::Includes,
+    )
+}
+
+pub(crate) fn check_with_target<'ast>(
+    source_text: &'ast str,
+    program: &Program<'ast>,
+    comments: &[Comment],
+    raw_options: &Value,
+    contract: RuleContract,
+    target: ArrayRuleTarget,
+) -> SmallVec<[RuleDiagnostic; 8]> {
+    let mut visitor = ArrayRuleVisitor {
         source_text,
         comments,
         raw_options,
+        contract,
+        target,
         lines: LineIndex::new(source_text),
         diagnostics: SmallVec::new(),
     };
@@ -54,22 +74,39 @@ pub(crate) fn check<'ast>(
     visitor.diagnostics
 }
 
-struct ArrayIncludesVisitor<'source, 'options> {
+#[derive(Clone, Copy, Eq, PartialEq)]
+pub(crate) enum ArrayRuleTarget {
+    Includes,
+    Sets,
+}
+
+struct ArrayRuleVisitor<'source, 'options> {
     source_text: &'source str,
     comments: &'source [Comment],
     raw_options: &'options Value,
+    contract: RuleContract,
+    target: ArrayRuleTarget,
     lines: LineIndex,
     diagnostics: SmallVec<[RuleDiagnostic; 8]>,
 }
 
-impl<'ast> Visit<'ast> for ArrayIncludesVisitor<'ast, '_> {
+impl<'ast> Visit<'ast> for ArrayRuleVisitor<'ast, '_> {
     fn visit_call_expression(&mut self, call: &CallExpression<'ast>) {
-        self.check_call(call);
+        if self.target == ArrayRuleTarget::Includes {
+            self.check_call(call);
+        }
         walk::walk_call_expression(self, call);
+    }
+
+    fn visit_new_expression(&mut self, expression: &NewExpression<'ast>) {
+        if self.target == ArrayRuleTarget::Sets {
+            self.check_set(expression);
+        }
+        walk::walk_new_expression(self, expression);
     }
 }
 
-impl<'ast> ArrayIncludesVisitor<'ast, '_> {
+impl<'ast> ArrayRuleVisitor<'ast, '_> {
     fn check_call(&mut self, call: &CallExpression<'ast>) {
         let Expression::StaticMemberExpression(member) = call.callee.get_inner_expression() else {
             return;
@@ -108,6 +145,66 @@ impl<'ast> ArrayIncludesVisitor<'ast, '_> {
                     "NewExpression",
                     expression.span.end.saturating_sub(1),
                     expression
+                        .arguments
+                        .iter()
+                        .map(|argument| match argument {
+                            Argument::SpreadElement(spread) => ArrayItem::Barrier(spread.span),
+                            argument => argument
+                                .as_expression()
+                                .map_or(ArrayItem::Barrier(argument.span()), ArrayItem::Expression),
+                        })
+                        .collect(),
+                );
+            }
+            _ => {}
+        }
+    }
+
+    fn check_set(&mut self, expression: &NewExpression<'ast>) {
+        if !matches!(
+            expression.callee.get_inner_expression(),
+            Expression::Identifier(identifier) if identifier.name == "Set"
+        ) {
+            return;
+        }
+        let Some(argument) = expression
+            .arguments
+            .first()
+            .and_then(Argument::as_expression)
+        else {
+            return;
+        };
+
+        match argument.get_inner_expression() {
+            Expression::ArrayExpression(array) => self.check_array(
+                "ArrayExpression",
+                array.span.end.saturating_sub(1),
+                array
+                    .elements
+                    .iter()
+                    .map(|element| match element {
+                        ArrayExpressionElement::SpreadElement(spread) => {
+                            ArrayItem::Barrier(spread.span)
+                        }
+                        ArrayExpressionElement::Elision(elision) => {
+                            ArrayItem::Barrier(elision.span)
+                        }
+                        element => element
+                            .as_expression()
+                            .map_or(ArrayItem::Barrier(element.span()), ArrayItem::Expression),
+                    })
+                    .collect(),
+            ),
+            Expression::NewExpression(array)
+                if matches!(
+                    array.callee.get_inner_expression(),
+                    Expression::Identifier(identifier) if identifier.name == "Array"
+                ) =>
+            {
+                self.check_array(
+                    "NewExpression",
+                    array.span.end.saturating_sub(1),
+                    array
                         .arguments
                         .iter()
                         .map(|argument| match argument {
@@ -170,7 +267,7 @@ impl<'ast> ArrayIncludesVisitor<'ast, '_> {
             self.comments,
             options,
             &mut nodes,
-            CONTRACT,
+            self.contract,
             &self.lines,
             &mut self.diagnostics,
         );
@@ -199,7 +296,7 @@ impl<'ast> ArrayIncludesVisitor<'ast, '_> {
         let source = source_for_span(self.source_text, Span::new(source_start, source_end))?;
         let node_source = source_for_span(self.source_text, span)?;
         let name = expression_name(self.source_text, expression);
-        let group = compute_group(options, name.as_str(), &[], CONTRACT.selector);
+        let group = compute_group(options, name.as_str(), &[], self.contract.selector);
         let group_index = options.group_index(group.as_str());
         Some(SortableNode {
             span,
@@ -212,7 +309,12 @@ impl<'ast> ArrayIncludesVisitor<'ast, '_> {
             group,
             group_index,
             partition_id: 0,
-            is_disabled: is_rule_disabled(self.source_text, self.comments, span, CONTRACT.rule),
+            is_disabled: is_rule_disabled(
+                self.source_text,
+                self.comments,
+                span,
+                self.contract.rule,
+            ),
             is_ignored: false,
             preserve_order_in_group: false,
             is_type_import: false,

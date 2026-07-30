@@ -4160,9 +4160,9 @@
           "insta": false,
           "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-perfectionist/sort-sets with focused Set entry ordering coverage."
+        "notes": "Full Rust/Oxc AST port of eslint-plugin-perfectionist/sort-sets v5.10.0 options, diagnostics, fixes, comments, partitions, conditional configuration, settings, and UTF-16 locations. Pinned 213-case authored fixture plus Rust, NAPI, plugin, and real Oxlint regression coverage; React/JSX/TSX is intentionally excluded."
       },
       {
         "name": "sort-switch-case",

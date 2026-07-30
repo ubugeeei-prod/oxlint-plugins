@@ -39,14 +39,23 @@ type CapturedCase = {
 
 const ROOT = process.cwd();
 const capturesArrayIncludes = process.argv.includes('--sort-array-includes');
-const RULE = capturesArrayIncludes ? 'sort-array-includes' : 'sort-imports';
-const PINNED_COMMIT = capturesArrayIncludes
+const capturesSets = process.argv.includes('--sort-sets');
+if (capturesArrayIncludes && capturesSets) {
+  throw new Error('Choose only one Perfectionist array rule to capture.');
+}
+const capturesV510ArrayRule = capturesArrayIncludes || capturesSets;
+const RULE = capturesArrayIncludes
+  ? 'sort-array-includes'
+  : capturesSets
+    ? 'sort-sets'
+    : 'sort-imports';
+const PINNED_COMMIT = capturesV510ArrayRule
   ? '84aa039c46522f82a61ad43cf676afc92dd64704'
   : 'b35e8e4caf0c8d350cf386e504241f21827dd60b';
-const PINNED_REF = capturesArrayIncludes ? 'v5.10.0' : 'v5.9.1';
-const TARGET_VERSION = capturesArrayIncludes ? '5.10.0' : '5.9.1';
-const ESLINT_VERSION = capturesArrayIncludes ? '10.6.0' : '9.39.2';
-const TYPESCRIPT_ESLINT_VERSION = capturesArrayIncludes ? '8.62.1' : '8.60.0';
+const PINNED_REF = capturesV510ArrayRule ? 'v5.10.0' : 'v5.9.1';
+const TARGET_VERSION = capturesV510ArrayRule ? '5.10.0' : '5.9.1';
+const ESLINT_VERSION = capturesV510ArrayRule ? '10.6.0' : '9.39.2';
+const TYPESCRIPT_ESLINT_VERSION = capturesV510ArrayRule ? '8.62.1' : '8.60.0';
 const SOURCE_HASHES: Readonly<Record<string, string>> = capturesArrayIncludes
   ? {
       'rules/sort-array-includes.ts':
@@ -60,13 +69,25 @@ const SOURCE_HASHES: Readonly<Record<string, string>> = capturesArrayIncludes
       'test/rules/sort-array-includes.test.ts':
         'c6f8a4dea072ce3d1fc2af72430e7247551bd81870077bde12d5ad7bbb67e534',
     }
-  : {
-      'rules/sort-imports.ts': 'c5102c424e0364b0e9ce7681b41d9d3543d3a76b9227b3fea70371a4e83efa05',
-      'rules/sort-imports/types.ts':
-        '81aa65e9d8f085fa7e8479ea9a5e98c1c2e180450632e484494a1d64395ebffe',
-      'test/rules/sort-imports.test.ts':
-        '8065552b1ccf4d8110524ee48cdc5ee4ab701302d5316a0e2eef9c55ada249ab',
-    };
+  : capturesSets
+    ? {
+        'rules/sort-sets.ts': 'd069d550677d062a5c1d488a5a38e426bdf76ac681a3e2598e99d09016ad21fe',
+        'rules/sort-sets/types.ts':
+          '927bfce114499a6e224415245e952a6eaa43c052dfd78b827bd7d8d085e7a098',
+        'rules/sort-arrays/types.ts':
+          '9aa7faafdb1f2262aa32798623ebd6507b5a80f2ad6fa66446d66bb722bba582',
+        'rules/sort-arrays/sort-array.ts':
+          'c65199dd2f5b56ae5302368f3e4fda46849f98641415bd77cf8d56a36ab0d60a',
+        'test/rules/sort-sets.test.ts':
+          '44b4daf3d881e4a8ae80af1dc2d1ea92c405170c0cdda03c613577171b6215bd',
+      }
+    : {
+        'rules/sort-imports.ts': 'c5102c424e0364b0e9ce7681b41d9d3543d3a76b9227b3fea70371a4e83efa05',
+        'rules/sort-imports/types.ts':
+          '81aa65e9d8f085fa7e8479ea9a5e98c1c2e180450632e484494a1d64395ebffe',
+        'test/rules/sort-imports.test.ts':
+          '8065552b1ccf4d8110524ee48cdc5ee4ab701302d5316a0e2eef9c55ada249ab',
+      };
 
 const manifest = JSON.parse(
   readFileSync(join(ROOT, 'tools', 'port-targets.json'), 'utf8'),
@@ -88,7 +109,7 @@ if (!existsSync(join(submodule, '.git'))) {
 const actualCommit = execFileSync('git', ['-C', submodule, 'rev-parse', 'HEAD'], {
   encoding: 'utf8',
 }).trim();
-const sourceCommit = capturesArrayIncludes
+const sourceCommit = capturesV510ArrayRule
   ? execFileSync('git', ['-C', submodule, 'rev-parse', PINNED_REF], {
       encoding: 'utf8',
     }).trim()
@@ -99,7 +120,7 @@ if (sourceCommit !== PINNED_COMMIT) {
 for (const [sourceFile, expectedHash] of Object.entries(SOURCE_HASHES)) {
   const actualHash = createHash('sha256')
     .update(
-      capturesArrayIncludes
+      capturesV510ArrayRule
         ? execFileSync('git', ['-C', submodule, 'show', `${PINNED_REF}:${sourceFile}`])
         : readFileSync(join(submodule, sourceFile)),
     )
@@ -112,7 +133,7 @@ for (const [sourceFile, expectedHash] of Object.entries(SOURCE_HASHES)) {
 const runnerDirectory = mkdtempSync(join(tmpdir(), 'perfectionist-sort-imports-'));
 try {
   const authoredTestPath = `test/rules/${RULE}.test.ts`;
-  const completeAuthoredSource = capturesArrayIncludes
+  const completeAuthoredSource = capturesV510ArrayRule
     ? execFileSync('git', ['-C', submodule, 'show', `${PINNED_REF}:${authoredTestPath}`], {
         encoding: 'utf8',
       })
@@ -153,7 +174,7 @@ try {
   const authoredCases = JSON.parse(
     readFileSync(join(runnerDirectory, 'authored-cases.json'), 'utf8'),
   ) as CapturedCase[];
-  if (capturesArrayIncludes) {
+  if (capturesV510ArrayRule) {
     const forbiddenCases = authoredCases.filter(
       (testCase) =>
         /\.(?:jsx|tsx)$/u.test(testCase.filename) ||
@@ -213,15 +234,17 @@ try {
       license: plugin.license,
       eslintVersion: ESLINT_VERSION,
       typescriptEslintParserVersion: TYPESCRIPT_ESLINT_VERSION,
-      capturePolicy: capturesArrayIncludes
+      capturePolicy: capturesV510ArrayRule
         ? `Every authored valid and invalid ${RULE} case is captured; React-specific and JSX/TSX syntax is rejected. Authored valid cases remain diagnostic-free; invalid cases are replayed against the published v${TARGET_VERSION} rule for exact diagnostics and fixes.`
         : 'Every authored valid and invalid sort-imports case is captured; none exercises React-specific or JSX/TSX syntax. Authored valid cases remain diagnostic-free; invalid cases are replayed against the published v5.9.1 rule for exact diagnostics and fixes.',
-      authoredCases: capturesArrayIncludes
+      authoredCases: capturesV510ArrayRule
         ? `upstream/eslint-plugin-perfectionist/${authoredTestPath}@${PINNED_REF}`
         : `upstream/eslint-plugin-perfectionist/${authoredTestPath}`,
       tool: capturesArrayIncludes
         ? 'sync-perfectionist-sort-array-includes-options-tests.ts'
-        : basename(import.meta.filename),
+        : capturesSets
+          ? 'sync-perfectionist-sort-sets-options-tests.ts'
+          : basename(import.meta.filename),
       inventory: {
         valid,
         invalid,

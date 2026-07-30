@@ -131,6 +131,7 @@ describe('perfectionist plugin adapter', () => {
         'sort-imports',
         'sort-named-exports',
         'sort-named-imports',
+        'sort-sets',
       ].includes(ruleName)
         ? 'Expected "{{right}}" to come before "{{left}}".'
         : 'Expected sorted order.',
@@ -184,6 +185,29 @@ describe('perfectionist plugin adapter', () => {
       'modifiers',
     );
     expect(schema.properties.useConfigurationIf.properties).toHaveProperty('matchesAstSelector');
+    expect(schema.properties.useConfigurationIf).not.toHaveProperty('minProperties');
+  });
+
+  it('reuses the complete v5.10.0 array schema with Set-specific messages', () => {
+    const arrayRule = plugin.rules['sort-array-includes'];
+    const setRule = plugin.rules['sort-sets'];
+    const schema = setRule.meta.schema.items;
+
+    expect(setRule.meta.type).toBe('suggestion');
+    expect(setRule.meta.schema).toEqual(arrayRule.meta.schema);
+    expect(Object.keys(setRule.meta.messages).sort()).toEqual([
+      'extraSpacingBetweenSetsMembers',
+      'missedSpacingBetweenSetsMembers',
+      'unexpectedSetsGroupOrder',
+      'unexpectedSetsOrder',
+    ]);
+    expect(schema.properties.customGroups.items.oneOf[0].properties.selector.enum).toEqual([
+      'literal',
+    ]);
+    expect(schema.properties.customGroups.items.oneOf[0].properties).not.toHaveProperty(
+      'modifiers',
+    );
+    expect(schema.properties).not.toHaveProperty('ignoreAlias');
     expect(schema.properties.useConfigurationIf).not.toHaveProperty('minProperties');
   });
 
@@ -360,6 +384,7 @@ describe('perfectionist plugin adapter', () => {
       'error',
       { type: 'natural', order: 'asc' },
     ]);
+    expect(rules['perfectionist/sort-sets']).toEqual(['error', { type: 'natural', order: 'asc' }]);
   });
 
   it('merges settings and isolates sort-array-includes options and cache entries', () => {
@@ -398,6 +423,35 @@ describe('perfectionist plugin adapter', () => {
         { perfectionist: { type: 'natural', order: 'asc' } },
       ),
     ).toHaveLength(1);
+  });
+
+  it('merges settings across conditional Set options and isolates cache entries', () => {
+    const source = `new Set(['item2', 'item10'])`;
+    const conditionalOptions = [
+      {
+        type: 'unsorted',
+        useConfigurationIf: { allNamesMatchPattern: '^does-not-match$' },
+      },
+      { useConfigurationIf: { matchesAstSelector: 'ArrayExpression' } },
+    ];
+    const settings = { perfectionist: { type: 'natural', order: 'asc' } };
+
+    expect(runRule('sort-sets', source, 'fixture.ts', conditionalOptions, settings)).toEqual([]);
+    expect(
+      runRule(
+        'sort-sets',
+        `new Set(['item10', 'item2'])`,
+        'fixture.ts',
+        conditionalOptions,
+        settings,
+      ),
+    ).toHaveLength(1);
+    expect(
+      runRule('sort-sets', source, 'fixture.ts', [{ type: 'natural', order: 'desc' }]),
+    ).toHaveLength(1);
+    expect(runRule('sort-sets', source, 'fixture.ts', [{ type: 'natural', order: 'asc' }])).toEqual(
+      [],
+    );
   });
 
   it('merges global perfectionist settings with explicit sort-imports options', () => {
@@ -528,6 +582,66 @@ describe('perfectionist plugin adapter', () => {
       expect(fixed.status).toBe(0);
       expect(fixed.stderr).toBe('');
       expect(readFileSync(fixturePath, 'utf8')).toBe(`['a', 'b'].includes(value);\n`);
+    } finally {
+      rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('loads Set groups and fixes through real oxlint without JSX/TSX parsing', () => {
+    const tempDir = mkdtempSync(join(tmpdir(), 'oxlint-perfectionist-sets-'));
+    try {
+      const fixturePath = join(tempDir, 'fixture.ts');
+      writeFileSync(fixturePath, `new Set(['b', 'a']);\n`);
+      writeFileSync(
+        join(tempDir, 'oxlint.config.jsonc'),
+        JSON.stringify({
+          jsPlugins: [
+            {
+              name: 'perfectionist',
+              specifier: join(packageRoot, 'index.js'),
+            },
+          ],
+          rules: {
+            'perfectionist/sort-sets': [
+              'error',
+              {
+                customGroups: [{ groupName: 'a', elementNamePattern: '^a$' }],
+                groups: ['a', 'literal'],
+              },
+            ],
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        findOxlintCli(),
+        ['--config', 'oxlint.config.jsonc', '--quiet', '--format', 'json', 'fixture.ts'],
+        {
+          cwd: tempDir,
+          encoding: 'utf8',
+        },
+      );
+      const payload = JSON.parse(result.stdout);
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      expect(payload.diagnostics).toHaveLength(1);
+      expect(payload.diagnostics[0]).toMatchObject({
+        code: 'perfectionist(sort-sets)',
+        message: 'Expected "a" (a) to come before "b" (literal).',
+      });
+
+      const fixed = spawnSync(
+        findOxlintCli(),
+        ['--config', 'oxlint.config.jsonc', '--fix', 'fixture.ts'],
+        {
+          cwd: tempDir,
+          encoding: 'utf8',
+        },
+      );
+      expect(fixed.status).toBe(0);
+      expect(fixed.stderr).toBe('');
+      expect(readFileSync(fixturePath, 'utf8')).toBe(`new Set(['a', 'b']);\n`);
     } finally {
       rmSync(tempDir, { recursive: true, force: true });
     }

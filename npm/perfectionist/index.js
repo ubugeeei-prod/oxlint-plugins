@@ -15,12 +15,14 @@ const PLUGIN_NAME = 'perfectionist';
 const DOCS_BASE = 'https://perfectionist.dev/rules';
 const diagnosticsCache = new WeakMap();
 const implementedRuleNames = Object.freeze(implementedPerfectionistRuleNames());
+const configuredArrayRuleNames = new Set(['sort-array-includes', 'sort-sets']);
 const configuredRuleNames = new Set([
   'sort-array-includes',
   'sort-exports',
   'sort-imports',
   'sort-named-exports',
   'sort-named-imports',
+  'sort-sets',
 ]);
 const recommendedRuleNames = Object.freeze(
   implementedRuleNames.filter((ruleName) => ruleName !== 'sort-arrays'),
@@ -87,7 +89,7 @@ function recommendedRules(options) {
 function createPerfectionistRule(ruleName) {
   return {
     meta: {
-      type: ruleName === 'sort-array-includes' ? 'suggestion' : 'layout',
+      type: configuredArrayRuleNames.has(ruleName) ? 'suggestion' : 'layout',
       docs: {
         description: `enforce sorted ${ruleName.replace(/^sort-/, '').replaceAll('-', ' ')}`,
         category: 'Stylistic Issues',
@@ -106,48 +108,59 @@ function createPerfectionistRule(ruleName) {
               missedSpacingBetweenArrayIncludesMembers:
                 'Missed spacing between "{{left}}" and "{{right}}".',
             }
-          : ruleName === 'sort-imports'
+          : ruleName === 'sort-sets'
             ? {
-                unexpectedImportsOrder: 'Expected "{{right}}" to come before "{{left}}".',
-                unexpectedImportsGroupOrder:
+                unexpectedSetsOrder: 'Expected "{{right}}" to come before "{{left}}".',
+                unexpectedSetsGroupOrder:
                   'Expected "{{right}}" ({{rightGroup}}) to come before "{{left}}" ({{leftGroup}}).',
-                unexpectedImportsDependencyOrder:
-                  'Expected dependency "{{right}}" to come before "{{nodeDependentOnRight}}".',
-                extraSpacingBetweenImports: 'Extra spacing between "{{left}}" and "{{right}}".',
-                missedSpacingBetweenImports: 'Missed spacing between "{{left}}" and "{{right}}".',
-                missedCommentAboveImport:
-                  'Missed comment "{{missedCommentAbove}}" above "{{right}}".',
+                extraSpacingBetweenSetsMembers: 'Extra spacing between "{{left}}" and "{{right}}".',
+                missedSpacingBetweenSetsMembers:
+                  'Missed spacing between "{{left}}" and "{{right}}".',
               }
-            : ruleName === 'sort-named-imports'
+            : ruleName === 'sort-imports'
               ? {
-                  unexpectedNamedImportsOrder: 'Expected "{{right}}" to come before "{{left}}".',
-                  unexpectedNamedImportsGroupOrder:
+                  unexpectedImportsOrder: 'Expected "{{right}}" to come before "{{left}}".',
+                  unexpectedImportsGroupOrder:
                     'Expected "{{right}}" ({{rightGroup}}) to come before "{{left}}" ({{leftGroup}}).',
-                  extraSpacingBetweenNamedImports:
-                    'Extra spacing between "{{left}}" and "{{right}}".',
-                  missedSpacingBetweenNamedImports:
-                    'Missed spacing between "{{left}}" and "{{right}}".',
+                  unexpectedImportsDependencyOrder:
+                    'Expected dependency "{{right}}" to come before "{{nodeDependentOnRight}}".',
+                  extraSpacingBetweenImports: 'Extra spacing between "{{left}}" and "{{right}}".',
+                  missedSpacingBetweenImports: 'Missed spacing between "{{left}}" and "{{right}}".',
+                  missedCommentAboveImport:
+                    'Missed comment "{{missedCommentAbove}}" above "{{right}}".',
                 }
-              : ruleName === 'sort-named-exports'
+              : ruleName === 'sort-named-imports'
                 ? {
-                    unexpectedNamedExportsOrder: 'Expected "{{right}}" to come before "{{left}}".',
-                    unexpectedNamedExportsGroupOrder:
+                    unexpectedNamedImportsOrder: 'Expected "{{right}}" to come before "{{left}}".',
+                    unexpectedNamedImportsGroupOrder:
                       'Expected "{{right}}" ({{rightGroup}}) to come before "{{left}}" ({{leftGroup}}).',
-                    extraSpacingBetweenNamedExports:
+                    extraSpacingBetweenNamedImports:
                       'Extra spacing between "{{left}}" and "{{right}}".',
-                    missedSpacingBetweenNamedExports:
+                    missedSpacingBetweenNamedImports:
                       'Missed spacing between "{{left}}" and "{{right}}".',
                   }
-                : {
-                    unexpectedExportsOrder: 'Expected "{{right}}" to come before "{{left}}".',
-                    unexpectedExportsGroupOrder:
-                      'Expected "{{right}}" ({{rightGroup}}) to come before "{{left}}" ({{leftGroup}}).',
-                    extraSpacingBetweenExports: 'Extra spacing between "{{left}}" and "{{right}}".',
-                    missedSpacingBetweenExports:
-                      'Missed spacing between "{{left}}" and "{{right}}".',
-                    missedCommentAboveExport:
-                      'Missed comment "{{missedCommentAbove}}" above "{{right}}".',
-                  }
+                : ruleName === 'sort-named-exports'
+                  ? {
+                      unexpectedNamedExportsOrder:
+                        'Expected "{{right}}" to come before "{{left}}".',
+                      unexpectedNamedExportsGroupOrder:
+                        'Expected "{{right}}" ({{rightGroup}}) to come before "{{left}}" ({{leftGroup}}).',
+                      extraSpacingBetweenNamedExports:
+                        'Extra spacing between "{{left}}" and "{{right}}".',
+                      missedSpacingBetweenNamedExports:
+                        'Missed spacing between "{{left}}" and "{{right}}".',
+                    }
+                  : {
+                      unexpectedExportsOrder: 'Expected "{{right}}" to come before "{{left}}".',
+                      unexpectedExportsGroupOrder:
+                        'Expected "{{right}}" ({{rightGroup}}) to come before "{{left}}" ({{leftGroup}}).',
+                      extraSpacingBetweenExports:
+                        'Extra spacing between "{{left}}" and "{{right}}".',
+                      missedSpacingBetweenExports:
+                        'Missed spacing between "{{left}}" and "{{right}}".',
+                      missedCommentAboveExport:
+                        'Missed comment "{{missedCommentAbove}}" above "{{right}}".',
+                    }
         : {
             unexpected: 'Expected sorted order.',
           },
@@ -178,7 +191,7 @@ function configuredDiagnosticsForRule(context, ruleName) {
   const filename = typeof context.filename === 'string' ? context.filename : 'file.tsx';
   let options = Array.isArray(context.options) ? context.options : [];
   if (
-    ruleName === 'sort-array-includes' ||
+    configuredArrayRuleNames.has(ruleName) ||
     ruleName === 'sort-exports' ||
     ruleName === 'sort-imports'
   ) {
@@ -262,9 +275,9 @@ function schemaForRule(ruleName) {
   if (!configuredRuleNames.has(ruleName)) {
     return [];
   }
-  const sortsArrayIncludes = ruleName === 'sort-array-includes';
+  const sortsArrayRule = configuredArrayRuleNames.has(ruleName);
   const selector =
-    ruleName === 'sort-named-imports' ? 'import' : sortsArrayIncludes ? 'literal' : 'export';
+    ruleName === 'sort-named-imports' ? 'import' : sortsArrayRule ? 'literal' : 'export';
   const sortsExportDeclarations = ruleName === 'sort-exports';
   const sortsImportDeclarations = ruleName === 'sort-imports';
   const sortType = {
@@ -335,7 +348,7 @@ function schemaForRule(ruleName) {
   };
   const customMatch = {
     elementNamePattern: regex,
-    ...(sortsArrayIncludes
+    ...(sortsArrayRule
       ? {}
       : {
           modifiers: {
@@ -496,7 +509,7 @@ function schemaForRule(ruleName) {
       },
       alphabet: { type: 'string' },
       fallbackSort,
-      ...(!sortsArrayIncludes && !sortsExportDeclarations && !sortsImportDeclarations
+      ...(!sortsArrayRule && !sortsExportDeclarations && !sortsImportDeclarations
         ? { ignoreAlias: { type: 'boolean' } }
         : {}),
       groups,
@@ -532,14 +545,14 @@ function schemaForRule(ruleName) {
                   allNamesMatchPattern: regex,
                   matchesAstSelector: { type: 'string' },
                 },
-                ...(sortsArrayIncludes ? {} : { minProperties: 1 }),
+                ...(sortsArrayRule ? {} : { minProperties: 1 }),
                 additionalProperties: false,
               },
             }),
     },
     additionalProperties: false,
   };
-  return sortsArrayIncludes
+  return sortsArrayRule
     ? {
         items: optionSchema,
         uniqueItems: true,
