@@ -72,7 +72,8 @@
     "prepack": "pnpm run build"
   },
   "dependencies": {
-    "@oxlint/plugins": "catalog:"
+    "@oxlint/plugins": "catalog:",
+    "@stylistic/eslint-plugin": "5.10.0"
   },
   "napi": {
     "binaryName": "oxlint_plugin_stylistic",

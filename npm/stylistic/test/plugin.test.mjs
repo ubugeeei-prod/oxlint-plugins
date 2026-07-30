@@ -4,6 +4,7 @@ import { dirname, join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
+import { Linter } from 'eslint';
 import { describe, expect, it } from 'vitest';
 
 import plugin from '../index.js';
@@ -23,6 +24,7 @@ const multilineTernaryFixture = JSON.parse(
 const stylisticRuleFixtures = [
   ['exp-list-style', 'const value = [ 1 ];\n', [], ['shouldNotSpacing', 'shouldNotSpacing']],
   ['eol-last', 'const x = 1;', [], ['missing']],
+  ['indent', 'if (value) {\nuse();\n}\n', [2], ['wrongIndentation']],
   ['linebreak-style', 'const x = 1;\r\n', ['unix'], ['expectedUnix']],
   ['no-multiple-empty-lines', 'const a = 1;\n\n\nconst b = 2;\n', [{ max: 1 }], ['tooMany']],
   ['no-mixed-spaces-and-tabs', 'function f() {\n\t return 1;\n}\n', [], ['mixedSpacesAndTabs']],
@@ -229,6 +231,17 @@ function runRule(ruleName, sourceText, options, settings) {
     },
   };
   const rule = plugin.rules[ruleName];
+  if (typeof rule.createOnce !== 'function') {
+    return new Linter()
+      .verify(sourceText, [
+        {
+          plugins: { stylistic: { rules: { [ruleName]: rule } } },
+          ...(settings ? { settings } : {}),
+          rules: { [`stylistic/${ruleName}`]: ['error', ...(options ?? [])] },
+        },
+      ])
+      .filter((message) => message.ruleId === `stylistic/${ruleName}`);
+  }
   const visitor = rule.createOnce({
     options: options ?? [],
     sourceCode,

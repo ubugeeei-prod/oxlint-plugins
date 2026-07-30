@@ -69,7 +69,11 @@ describe('stylistic plugin meta contract', () => {
     expect(typeof rule.meta.hasSuggestions).toBe('boolean');
     expect(typeof rule.meta.messages).toBe('object');
     expect(rule.meta.messages).not.toBeNull();
-    expect(rule.meta.schema).toEqual({ type: 'array' });
+    if (ruleName === 'indent') {
+      expect(rule.meta.schema).toHaveLength(2);
+    } else {
+      expect(rule.meta.schema).toEqual({ type: 'array' });
+    }
   });
 
   it.each(ruleNames)('rule %s declares at least one message', (ruleName) => {
@@ -85,6 +89,10 @@ describe('stylistic plugin meta contract', () => {
     'rule %s exposes a createOnce factory returning a Program listener',
     (ruleName) => {
       const rule = plugin.rules[ruleName];
+      if (ruleName === 'indent') {
+        expect(typeof rule.create).toBe('function');
+        return;
+      }
       expect(typeof rule.createOnce).toBe('function');
 
       const context = {
