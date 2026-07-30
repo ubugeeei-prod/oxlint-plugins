@@ -401,6 +401,36 @@ describe('stylistic plugin meta contract', () => {
     });
   });
 
+  it('preserves the deprecated jsx-indent metadata contract', () => {
+    expect(plugin.rules['jsx-indent'].meta).toMatchObject({
+      type: 'layout',
+      docs: {
+        description: 'Enforce JSX indentation. Deprecated, use `indent` rule instead.',
+        recommended: false,
+        requiresTypeChecking: false,
+      },
+      fixable: 'whitespace',
+      hasSuggestions: true,
+      messages: {
+        wrongIndent:
+          'Expected indentation of {{needed}} {{type}} {{characters}} but found {{gotten}}.',
+      },
+      schema: { type: 'array' },
+      deprecated: {
+        message: 'The rule was replaced with a more general rule.',
+        deprecatedSince: '5.0.0',
+        replacedBy: [
+          {
+            rule: {
+              name: 'indent',
+              url: 'https://eslint.style/rules/indent',
+            },
+          },
+        ],
+      },
+    });
+  });
+
   it('preserves the stable lines-around-comment message catalog', () => {
     expect(plugin.rules['lines-around-comment'].meta.messages).toMatchObject({
       before: 'Expected line before comment.',

@@ -30,6 +30,7 @@ describe('stylistic native API', () => {
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'jsx-function-call-newline',
     );
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('jsx-indent');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('jsx-indent-props');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'jsx-props-no-multi-spaces',
@@ -228,6 +229,49 @@ describe('stylistic native API', () => {
               {
                 range: { start: missingStart, end: missingStart + 'text'.length },
                 replacementText: '{"text"}',
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+  });
+
+  it('runs jsx-indent with exact UTF-8 byte ranges, data, and CRLF fixes', () => {
+    const source =
+      'const 日本語 = "😀";\r\nconst view = (\r\n  <App>\r\n  <Child />\r\n  </App>\r\n);';
+    const childStart = Buffer.byteLength(source.slice(0, source.indexOf('<Child')));
+    const childEnd = Buffer.byteLength(
+      source.slice(0, source.indexOf('<Child') + '<Child />'.length),
+    );
+    const lineStart = Buffer.byteLength(
+      source.slice(0, source.lastIndexOf('\r\n', source.indexOf('<Child')) + 2),
+    );
+    const diagnostics = runNativeStylisticLint(source, {
+      filename: 'fixture.tsx',
+      rules: [{ name: 'jsx-indent', options: [2] }],
+    });
+
+    expect(diagnostics).toEqual([
+      {
+        ruleName: 'jsx-indent',
+        messageId: 'wrongIndent',
+        message: 'Expected indentation of 4 space characters but found 2.',
+        data: {
+          needed: '4',
+          type: 'space',
+          characters: 'characters',
+          gotten: '2',
+        },
+        range: { start: childStart, end: childEnd },
+        suggestions: [
+          {
+            messageId: 'wrongIndent',
+            message: 'Expected indentation of 4 space characters but found 2.',
+            fixes: [
+              {
+                range: { start: lineStart, end: childStart },
+                replacementText: '    ',
               },
             ],
           },

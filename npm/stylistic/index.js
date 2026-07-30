@@ -93,6 +93,22 @@ function createStylisticRule(ruleName) {
             },
           }
         : {}),
+      ...(ruleName === 'jsx-indent'
+        ? {
+            deprecated: {
+              message: 'The rule was replaced with a more general rule.',
+              deprecatedSince: '5.0.0',
+              replacedBy: [
+                {
+                  rule: {
+                    name: 'indent',
+                    url: 'https://eslint.style/rules/indent',
+                  },
+                },
+              ],
+            },
+          }
+        : {}),
     },
     createOnce(context) {
       return {

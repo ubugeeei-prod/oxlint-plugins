@@ -105,7 +105,7 @@ Most rule scanning logic is derived from `corsa-oxlint/stylistic` in
 [`ubugeeei-prod/corsa-bind`](https://github.com/ubugeeei-prod/corsa-bind)
 v0.43.0 (MIT). Additional stable ports, including `jsx-first-prop-new-line`,
 `jsx-newline`, `jsx-pascal-case`, `jsx-quotes`, `jsx-curly-brace-presence`,
-`jsx-curly-newline`, `jsx-props-no-multi-spaces`, `jsx-sort-props`,
+`jsx-curly-newline`, `jsx-indent`, `jsx-props-no-multi-spaces`, `jsx-sort-props`,
 `jsx-wrap-multilines`, and
 `semi`, follow
 [`@stylistic/eslint-plugin`](https://github.com/eslint-stylistic/eslint-stylistic)
