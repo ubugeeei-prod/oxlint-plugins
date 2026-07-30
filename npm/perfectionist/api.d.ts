@@ -9,7 +9,22 @@ export type PerfectionistDiagnostic = {
   ruleName: string;
   messageId: string;
   loc: PerfectionistDiagnosticLoc;
+  data?: {
+    left: string;
+    right: string;
+  };
+  fix?: {
+    start: number;
+    end: number;
+    replacement: string;
+  };
 };
 
 export function implementedPerfectionistRuleNames(): string[];
 export function scanPerfectionist(sourceText: string, filename?: string): PerfectionistDiagnostic[];
+export function scanPerfectionistRule(
+  sourceText: string,
+  filename?: string,
+  ruleName?: string,
+  options?: unknown[],
+): PerfectionistDiagnostic[];

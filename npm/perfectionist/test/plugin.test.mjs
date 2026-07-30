@@ -1,4 +1,4 @@
-import { existsSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -66,7 +66,7 @@ const invalidCases = [
   ['sort-variable-declarations', 'const b = 1, a = 2;'],
 ];
 
-function runRule(ruleName, sourceText, filename = 'fixture.tsx') {
+function runRule(ruleName, sourceText, filename = 'fixture.tsx', options = []) {
   const reports = [];
   const sourceCode = {
     text: sourceText,
@@ -77,7 +77,7 @@ function runRule(ruleName, sourceText, filename = 'fixture.tsx') {
   const rule = plugin.rules[ruleName];
   const visitor = rule.createOnce({
     filename,
-    options: [],
+    options,
     sourceCode,
     report(descriptor) {
       reports.push(descriptor);
@@ -120,14 +120,58 @@ describe('perfectionist plugin adapter', () => {
 
     expect(reports).toHaveLength(1);
     expect(plugin.rules[ruleName].meta.messages[reports[0].messageId]).toBe(
-      'Expected sorted order.',
+      ruleName === 'sort-named-imports'
+        ? 'Expected "{{right}}" to come before "{{left}}".'
+        : 'Expected sorted order.',
     );
   });
 
-  it('loads through oxlint jsPlugins', () => {
+  it('declares only the implemented scalar option schema', () => {
+    const schema = plugin.rules['sort-named-imports'].meta.schema;
+
+    expect(schema).toHaveLength(1);
+    expect(Object.keys(schema[0].properties).sort()).toEqual([
+      'alphabet',
+      'fallbackSort',
+      'ignoreAlias',
+      'ignoreCase',
+      'locales',
+      'order',
+      'specialCharacters',
+      'type',
+    ]);
+    expect(schema[0].additionalProperties).toBe(false);
+    expect(schema[0].properties.locales).toEqual({
+      oneOf: [
+        { type: 'string' },
+        {
+          type: 'array',
+          items: { type: 'string' },
+        },
+      ],
+    });
+    expect(schema[0].properties.fallbackSort).toMatchObject({
+      required: ['type'],
+      additionalProperties: false,
+    });
+    expect(plugin.rules['sort-imports'].meta.schema).toEqual([]);
+  });
+
+  it('threads recommended comparator options only into sort-named-imports', () => {
+    const rules = plugin.configs['recommended-natural'].rules;
+
+    expect(rules['perfectionist/sort-named-imports']).toEqual([
+      'error',
+      { type: 'natural', order: 'asc' },
+    ]);
+    expect(rules['perfectionist/sort-imports']).toBe('error');
+  });
+
+  it('loads configured options and fixes through real oxlint jsPlugins', () => {
     const tempDir = mkdtempSync(join(tmpdir(), 'oxlint-perfectionist-'));
     try {
-      writeFileSync(join(tempDir, 'fixture.ts'), 'import { b, a } from "pkg";\n');
+      const fixturePath = join(tempDir, 'fixture.ts');
+      writeFileSync(fixturePath, 'import { item2, item10 } from "pkg";\n');
       writeFileSync(
         join(tempDir, 'oxlint.config.jsonc'),
         JSON.stringify({
@@ -138,7 +182,7 @@ describe('perfectionist plugin adapter', () => {
             },
           ],
           rules: {
-            'perfectionist/sort-named-imports': 'error',
+            'perfectionist/sort-named-imports': ['error', { type: 'natural', order: 'desc' }],
           },
         }),
       );
@@ -156,7 +200,22 @@ describe('perfectionist plugin adapter', () => {
       expect(result.status).toBe(1);
       expect(result.stderr).toBe('');
       expect(payload.diagnostics).toHaveLength(1);
-      expect(payload.diagnostics[0].message).toBe('Expected sorted order.');
+      expect(payload.diagnostics[0]).toMatchObject({
+        code: 'perfectionist(sort-named-imports)',
+        message: 'Expected "item10" to come before "item2".',
+      });
+
+      const fixed = spawnSync(
+        findOxlintCli(),
+        ['--config', 'oxlint.config.jsonc', '--fix', 'fixture.ts'],
+        {
+          cwd: tempDir,
+          encoding: 'utf8',
+        },
+      );
+      expect(fixed.status).toBe(0);
+      expect(fixed.stderr).toBe('');
+      expect(readFileSync(fixturePath, 'utf8')).toBe('import { item10, item2 } from "pkg";\n');
     } finally {
       rmSync(tempDir, { recursive: true, force: true });
     }

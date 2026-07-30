@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
-import { implementedPerfectionistRuleNames, scanPerfectionist } from '../api.js';
+import {
+  implementedPerfectionistRuleNames,
+  scanPerfectionist,
+  scanPerfectionistRule,
+} from '../api.js';
 
 const expectedRuleNames = [
   'sort-array-includes',
@@ -82,5 +86,52 @@ describe('perfectionist native API', () => {
         endLine: 1,
       },
     });
+  });
+
+  it('returns exact configured data and UTF-16 fix offsets', () => {
+    const source = `'😀';\r\nimport { item2, item10 } from "pkg";\r\n`;
+    const [diagnostic] = scanPerfectionistRule(source, 'fixture.ts', 'sort-named-imports', [
+      { type: 'natural', order: 'desc' },
+    ]);
+    const start = source.indexOf('item2');
+    const end = source.indexOf('item10') + 'item10'.length;
+
+    expect(diagnostic).toEqual({
+      ruleName: 'sort-named-imports',
+      messageId: 'unexpectedNamedImportsOrder',
+      data: {
+        left: 'item2',
+        right: 'item10',
+      },
+      loc: {
+        startLine: 2,
+        startColumn: 16,
+        endLine: 2,
+        endColumn: 22,
+      },
+      fix: {
+        start,
+        end,
+        replacement: 'item10, item2',
+      },
+    });
+  });
+
+  it('isolates configured scanning to its implemented rule', () => {
+    expect(
+      scanPerfectionistRule('import { b, a } from "pkg";', 'fixture.ts', 'sort-objects', [
+        { order: 'desc' },
+      ]),
+    ).toEqual([]);
+  });
+
+  it('validates public API scalar arguments', () => {
+    expect(() => scanPerfectionistRule(null)).toThrowError('sourceText must be a string.');
+    expect(() => scanPerfectionistRule('import {} from "pkg";', null)).toThrowError(
+      'filename must be a string.',
+    );
+    expect(() => scanPerfectionistRule('import {} from "pkg";', 'fixture.ts', null)).toThrowError(
+      'ruleName must be a string.',
+    );
   });
 });
