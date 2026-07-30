@@ -1,0 +1,3152 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-perfectionist",
+    "version": "5.9.1",
+    "sourceCommit": "b35e8e4caf0c8d350cf386e504241f21827dd60b",
+    "sourceHashes": {
+      "rules/sort-named-exports.ts": "8fab71ff2def798b8c5d96d6871125bae80a67e7de6e76ecf15475863b61655e",
+      "rules/sort-named-exports/sort-named-export.ts": "a6016b975724ee115a23467044096934c8b059076ba5e15bc691d920763a7b4d",
+      "test/rules/sort-named-exports.test.ts": "af2674f97668787725ea7971db7c847e517865218eda4bb24c1e99584f53ec4c"
+    },
+    "license": "MIT",
+    "eslintVersion": "9.39.2",
+    "typescriptEslintParserVersion": "8.60.0",
+    "capturePolicy": "Authored named-specifier matrix replayed for export scalar comparators, groups, custom groups, partitions, newline policies, and conditional configuration.",
+    "authoredCases": "npm/perfectionist/test/fixtures/sort-named-imports-options-v5.9.1.json inputs",
+    "tool": "tools/tasks/sync-perfectionist-sort-named-exports-options-tests.ts",
+    "inventory": {
+      "valid": 30,
+      "invalid": 65,
+      "diagnostics": 95,
+      "total": 95
+    }
+  },
+  "cases": [
+    {
+      "name": "default alphabetical order",
+      "code": "export { AAA, BB, C } from 'module'",
+      "options": [],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "default alphabetical inversion",
+      "code": "export { BB, AAA, C } from 'module'",
+      "options": [],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"AAA\" to come before \"BB\".",
+          "data": {
+            "right": "AAA",
+            "left": "BB"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 14,
+            "endLine": 1,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [9, 16],
+            "text": "AAA, BB"
+          }
+        }
+      ],
+      "output": "export { AAA, BB, C } from 'module'"
+    },
+    {
+      "name": "default complete reversal",
+      "code": "export { C, BB, AAA } from 'module'",
+      "options": [],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"BB\" to come before \"C\".",
+          "data": {
+            "right": "BB",
+            "left": "C"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 13,
+            "endLine": 1,
+            "endColumn": 15
+          },
+          "fix": {
+            "range": [9, 19],
+            "text": "AAA, BB, C"
+          }
+        },
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"AAA\" to come before \"BB\".",
+          "data": {
+            "right": "AAA",
+            "left": "BB"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 17,
+            "endLine": 1,
+            "endColumn": 20
+          },
+          "fix": {
+            "range": [9, 19],
+            "text": "AAA, BB, C"
+          }
+        }
+      ],
+      "output": "export { AAA, BB, C } from 'module'"
+    },
+    {
+      "name": "multiline alphabetical order",
+      "code": "export {\n  AAAA,\n  BBB,\n  CC,\n  D,\n} from 'module'",
+      "options": [],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "multiline alphabetical inversion",
+      "code": "export {\n  AAAA,\n  CC,\n  BBB,\n  D,\n} from 'module'",
+      "options": [],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"BBB\" to come before \"CC\".",
+          "data": {
+            "right": "BBB",
+            "left": "CC"
+          },
+          "loc": {
+            "startLine": 4,
+            "startColumn": 3,
+            "endLine": 4,
+            "endColumn": 6
+          },
+          "fix": {
+            "range": [19, 28],
+            "text": "BBB,\n  CC"
+          }
+        }
+      ],
+      "output": "export {\n  AAAA,\n  BBB,\n  CC,\n  D,\n} from 'module'"
+    },
+    {
+      "name": "default ignores default export",
+      "code": "export { A, B } from 'module'",
+      "options": [],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "default sorts by local alias",
+      "code": "export { c as A, b as B, a as C } from 'module'",
+      "options": [],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "default local alias inversion",
+      "code": "export { a as C, b as B, c as A } from 'module'",
+      "options": [],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"B\" to come before \"C\".",
+          "data": {
+            "right": "B",
+            "left": "C"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 18,
+            "endLine": 1,
+            "endColumn": 24
+          },
+          "fix": {
+            "range": [9, 31],
+            "text": "c as A, b as B, a as C"
+          }
+        },
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"A\" to come before \"B\".",
+          "data": {
+            "right": "A",
+            "left": "B"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 26,
+            "endLine": 1,
+            "endColumn": 32
+          },
+          "fix": {
+            "range": [9, 31],
+            "text": "c as A, b as B, a as C"
+          }
+        }
+      ],
+      "output": "export { c as A, b as B, a as C } from 'module'"
+    },
+    {
+      "name": "ignoreAlias original names",
+      "code": "export { A as C, B as B, C as A } from 'module'",
+      "options": [
+        {
+          "ignoreAlias": true
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "ignoreAlias inversion",
+      "code": "export { C as A, B as B, A as C } from 'module'",
+      "options": [
+        {
+          "ignoreAlias": true
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"B\" to come before \"C\".",
+          "data": {
+            "right": "B",
+            "left": "C"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 18,
+            "endLine": 1,
+            "endColumn": 24
+          },
+          "fix": {
+            "range": [9, 31],
+            "text": "A as C, B as B, C as A"
+          }
+        },
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"A\" to come before \"B\".",
+          "data": {
+            "right": "A",
+            "left": "B"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 26,
+            "endLine": 1,
+            "endColumn": 32
+          },
+          "fix": {
+            "range": [9, 31],
+            "text": "A as C, B as B, C as A"
+          }
+        }
+      ],
+      "output": "export { A as C, B as B, C as A } from 'module'"
+    },
+    {
+      "name": "ignoreCase stable equivalent aliases",
+      "code": "export { b as a, a as A } from 'module'",
+      "options": [],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "case-sensitive lowercase before uppercase",
+      "code": "export { b as a, a as A } from 'module'",
+      "options": [
+        {
+          "ignoreCase": false
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "case-sensitive inversion",
+      "code": "export { a as A, b as a } from 'module'",
+      "options": [
+        {
+          "ignoreCase": false
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"a\" to come before \"A\".",
+          "data": {
+            "right": "a",
+            "left": "A"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 18,
+            "endLine": 1,
+            "endColumn": 24
+          },
+          "fix": {
+            "range": [9, 23],
+            "text": "b as a, a as A"
+          }
+        }
+      ],
+      "output": "export { b as a, a as A } from 'module'"
+    },
+    {
+      "name": "alphabetical descending",
+      "code": "export { C, BB, AAA } from 'module'",
+      "options": [
+        {
+          "order": "desc"
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "alphabetical descending inversion",
+      "code": "export { AAA, BB, C } from 'module'",
+      "options": [
+        {
+          "order": "desc"
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"BB\" to come before \"AAA\".",
+          "data": {
+            "right": "BB",
+            "left": "AAA"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 15,
+            "endLine": 1,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [9, 19],
+            "text": "C, BB, AAA"
+          }
+        },
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"C\" to come before \"BB\".",
+          "data": {
+            "right": "C",
+            "left": "BB"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 19,
+            "endLine": 1,
+            "endColumn": 20
+          },
+          "fix": {
+            "range": [9, 19],
+            "text": "C, BB, AAA"
+          }
+        }
+      ],
+      "output": "export { C, BB, AAA } from 'module'"
+    },
+    {
+      "name": "natural numeric order",
+      "code": "export { item1, item2, item10 } from 'module'",
+      "options": [
+        {
+          "type": "natural"
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "natural numeric inversion",
+      "code": "export { item10, item2, item1 } from 'module'",
+      "options": [
+        {
+          "type": "natural"
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"item2\" to come before \"item10\".",
+          "data": {
+            "right": "item2",
+            "left": "item10"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 18,
+            "endLine": 1,
+            "endColumn": 23
+          },
+          "fix": {
+            "range": [9, 29],
+            "text": "item1, item2, item10"
+          }
+        },
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"item1\" to come before \"item2\".",
+          "data": {
+            "right": "item1",
+            "left": "item2"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 25,
+            "endLine": 1,
+            "endColumn": 30
+          },
+          "fix": {
+            "range": [9, 29],
+            "text": "item1, item2, item10"
+          }
+        }
+      ],
+      "output": "export { item1, item2, item10 } from 'module'"
+    },
+    {
+      "name": "natural leading zero order",
+      "code": "export { item01, item1, item2 } from 'module'",
+      "options": [
+        {
+          "type": "natural"
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "natural leading zero inversion",
+      "code": "export { item2, item1, item01 } from 'module'",
+      "options": [
+        {
+          "type": "natural"
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"item1\" to come before \"item2\".",
+          "data": {
+            "right": "item1",
+            "left": "item2"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 17,
+            "endLine": 1,
+            "endColumn": 22
+          },
+          "fix": {
+            "range": [9, 29],
+            "text": "item01, item1, item2"
+          }
+        },
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"item01\" to come before \"item1\".",
+          "data": {
+            "right": "item01",
+            "left": "item1"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 24,
+            "endLine": 1,
+            "endColumn": 30
+          },
+          "fix": {
+            "range": [9, 29],
+            "text": "item01, item1, item2"
+          }
+        }
+      ],
+      "output": "export { item01, item1, item2 } from 'module'"
+    },
+    {
+      "name": "natural descending inversion",
+      "code": "export { item1, item2, item10 } from 'module'",
+      "options": [
+        {
+          "type": "natural",
+          "order": "desc"
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"item2\" to come before \"item1\".",
+          "data": {
+            "right": "item2",
+            "left": "item1"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 17,
+            "endLine": 1,
+            "endColumn": 22
+          },
+          "fix": {
+            "range": [9, 29],
+            "text": "item10, item2, item1"
+          }
+        },
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"item10\" to come before \"item2\".",
+          "data": {
+            "right": "item10",
+            "left": "item2"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 24,
+            "endLine": 1,
+            "endColumn": 30
+          },
+          "fix": {
+            "range": [9, 29],
+            "text": "item10, item2, item1"
+          }
+        }
+      ],
+      "output": "export { item10, item2, item1 } from 'module'"
+    },
+    {
+      "name": "line length descending",
+      "code": "export { AAA, BB, C } from 'module'",
+      "options": [
+        {
+          "type": "line-length",
+          "order": "desc"
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "line length descending inversion",
+      "code": "export { C, AAA, BB } from 'module'",
+      "options": [
+        {
+          "type": "line-length",
+          "order": "desc"
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"AAA\" to come before \"C\".",
+          "data": {
+            "right": "AAA",
+            "left": "C"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 13,
+            "endLine": 1,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [9, 19],
+            "text": "AAA, BB, C"
+          }
+        }
+      ],
+      "output": "export { AAA, BB, C } from 'module'"
+    },
+    {
+      "name": "line length ascending",
+      "code": "export { C, BB, AAA } from 'module'",
+      "options": [
+        {
+          "type": "line-length",
+          "order": "asc"
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "line length counts alias source",
+      "code": "export { long as A, B } from 'module'",
+      "options": [
+        {
+          "type": "line-length",
+          "order": "asc"
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"B\" to come before \"A\".",
+          "data": {
+            "right": "B",
+            "left": "A"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 21,
+            "endLine": 1,
+            "endColumn": 22
+          },
+          "fix": {
+            "range": [9, 21],
+            "text": "B, long as A"
+          }
+        }
+      ],
+      "output": "export { B, long as A } from 'module'"
+    },
+    {
+      "name": "custom reverse alphabet",
+      "code": "export { c, b, a } from 'module'",
+      "options": [
+        {
+          "type": "custom",
+          "alphabet": "cba"
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "custom reverse alphabet inversion",
+      "code": "export { a, b, c } from 'module'",
+      "options": [
+        {
+          "type": "custom",
+          "alphabet": "cba"
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"b\" to come before \"a\".",
+          "data": {
+            "right": "b",
+            "left": "a"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 13,
+            "endLine": 1,
+            "endColumn": 14
+          },
+          "fix": {
+            "range": [9, 16],
+            "text": "c, b, a"
+          }
+        },
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"c\" to come before \"b\".",
+          "data": {
+            "right": "c",
+            "left": "b"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 16,
+            "endLine": 1,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [9, 16],
+            "text": "c, b, a"
+          }
+        }
+      ],
+      "output": "export { c, b, a } from 'module'"
+    },
+    {
+      "name": "custom unknown characters remain stable",
+      "code": "export { x, y, z } from 'module'",
+      "options": [
+        {
+          "type": "custom",
+          "alphabet": "abc"
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "custom unknown characters compare length",
+      "code": "export { xx, y, zzz } from 'module'",
+      "options": [
+        {
+          "type": "custom",
+          "alphabet": "abc"
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"y\" to come before \"xx\".",
+          "data": {
+            "right": "y",
+            "left": "xx"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 14,
+            "endLine": 1,
+            "endColumn": 15
+          },
+          "fix": {
+            "range": [9, 14],
+            "text": "y, xx"
+          }
+        }
+      ],
+      "output": "export { y, xx, zzz } from 'module'"
+    },
+    {
+      "name": "custom descending inversion",
+      "code": "export { c, b, a } from 'module'",
+      "options": [
+        {
+          "type": "custom",
+          "alphabet": "abc",
+          "order": "desc"
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "unsorted preserves arbitrary order",
+      "code": "export { c, a, b } from 'module'",
+      "options": [
+        {
+          "type": "unsorted"
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "unsorted ignores configured fallback",
+      "code": "export { c, a, b } from 'module'",
+      "options": [
+        {
+          "type": "unsorted",
+          "fallbackSort": {
+            "type": "alphabetical"
+          }
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "special characters keep identifier punctuation",
+      "code": "export { _a, $a, a } from 'module'",
+      "options": [],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "special characters trim",
+      "code": "export { _a, b, _c } from 'module'",
+      "options": [
+        {
+          "specialCharacters": "trim"
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "special characters trim inversion",
+      "code": "export { _b, a, _c } from 'module'",
+      "options": [
+        {
+          "specialCharacters": "trim"
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"a\" to come before \"_b\".",
+          "data": {
+            "right": "a",
+            "left": "_b"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 14,
+            "endLine": 1,
+            "endColumn": 15
+          },
+          "fix": {
+            "range": [9, 14],
+            "text": "a, _b"
+          }
+        }
+      ],
+      "output": "export { a, _b, _c } from 'module'"
+    },
+    {
+      "name": "special characters remove stable equality",
+      "code": "export { ab, a_b } from 'module'",
+      "options": [
+        {
+          "specialCharacters": "remove"
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "Chinese locale order",
+      "code": "export { 你好, 世界, a, A, b, B } from 'module'",
+      "options": [
+        {
+          "locales": "zh-CN"
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "Chinese locale inversion",
+      "code": "export { b, B, a, A, 世界, 你好 } from 'module'",
+      "options": [
+        {
+          "locales": "zh-CN"
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"a\" to come before \"B\".",
+          "data": {
+            "right": "a",
+            "left": "B"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 16,
+            "endLine": 1,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [9, 27],
+            "text": "你好, 世界, a, A, b, B"
+          }
+        },
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"世界\" to come before \"A\".",
+          "data": {
+            "right": "世界",
+            "left": "A"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 22,
+            "endLine": 1,
+            "endColumn": 24
+          },
+          "fix": {
+            "range": [9, 27],
+            "text": "你好, 世界, a, A, b, B"
+          }
+        },
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"你好\" to come before \"世界\".",
+          "data": {
+            "right": "你好",
+            "left": "世界"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 26,
+            "endLine": 1,
+            "endColumn": 28
+          },
+          "fix": {
+            "range": [9, 27],
+            "text": "你好, 世界, a, A, b, B"
+          }
+        }
+      ],
+      "output": "export { 你好, 世界, a, A, b, B } from 'module'"
+    },
+    {
+      "name": "locale preference array",
+      "code": "export { 你好, 世界, a, A, b, B } from 'module'",
+      "options": [
+        {
+          "locales": ["zh-CN", "en-US"]
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "Swedish locale inversion",
+      "code": "export { ä, å, z, a } from 'module'",
+      "options": [
+        {
+          "locales": "sv"
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"å\" to come before \"ä\".",
+          "data": {
+            "right": "å",
+            "left": "ä"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 13,
+            "endLine": 1,
+            "endColumn": 14
+          },
+          "fix": {
+            "range": [9, 19],
+            "text": "a, z, å, ä"
+          }
+        },
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"z\" to come before \"å\".",
+          "data": {
+            "right": "z",
+            "left": "å"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 16,
+            "endLine": 1,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [9, 19],
+            "text": "a, z, å, ä"
+          }
+        },
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"a\" to come before \"z\".",
+          "data": {
+            "right": "a",
+            "left": "z"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 19,
+            "endLine": 1,
+            "endColumn": 20
+          },
+          "fix": {
+            "range": [9, 19],
+            "text": "a, z, å, ä"
+          }
+        }
+      ],
+      "output": "export { a, z, å, ä } from 'module'"
+    },
+    {
+      "name": "fallback resolves case-insensitive tie",
+      "code": "export { bb as a, a as A } from 'module'",
+      "options": [
+        {
+          "fallbackSort": {
+            "type": "line-length",
+            "order": "asc"
+          }
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"A\" to come before \"a\".",
+          "data": {
+            "right": "A",
+            "left": "a"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 19,
+            "endLine": 1,
+            "endColumn": 25
+          },
+          "fix": {
+            "range": [9, 24],
+            "text": "a as A, bb as a"
+          }
+        }
+      ],
+      "output": "export { a as A, bb as a } from 'module'"
+    },
+    {
+      "name": "fallback descending resolves line-length tie",
+      "code": "export { c, a, b } from 'module'",
+      "options": [
+        {
+          "type": "line-length",
+          "order": "asc",
+          "fallbackSort": {
+            "type": "alphabetical",
+            "order": "desc"
+          }
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"b\" to come before \"a\".",
+          "data": {
+            "right": "b",
+            "left": "a"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 16,
+            "endLine": 1,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [12, 16],
+            "text": "b, a"
+          }
+        }
+      ],
+      "output": "export { c, b, a } from 'module'"
+    },
+    {
+      "name": "type-only export",
+      "code": "export type { A, B } from 'module'",
+      "options": [],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "type specifier inversion",
+      "code": "export { type B, type A } from 'module'",
+      "options": [],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"A\" to come before \"B\".",
+          "data": {
+            "right": "A",
+            "left": "B"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 18,
+            "endLine": 1,
+            "endColumn": 24
+          },
+          "fix": {
+            "range": [9, 23],
+            "text": "type A, type B"
+          }
+        }
+      ],
+      "output": "export { type A, type B } from 'module'"
+    },
+    {
+      "name": "arbitrary string export inversion",
+      "code": "export { \"B\" as b, \"A\" as a } from 'module'",
+      "options": [
+        {
+          "ignoreAlias": true
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"A\" to come before \"B\".",
+          "data": {
+            "right": "A",
+            "left": "B"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 20,
+            "endLine": 1,
+            "endColumn": 28
+          },
+          "fix": {
+            "range": [9, 27],
+            "text": "\"A\" as a, \"B\" as b"
+          }
+        }
+      ],
+      "output": "export { \"A\" as a, \"B\" as b } from 'module'"
+    },
+    {
+      "name": "multiple declarations",
+      "code": "export { B, A } from 'one';\nexport { D, C } from 'two';",
+      "options": [],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"A\" to come before \"B\".",
+          "data": {
+            "right": "A",
+            "left": "B"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 13,
+            "endLine": 1,
+            "endColumn": 14
+          },
+          "fix": {
+            "range": [9, 13],
+            "text": "A, B"
+          }
+        },
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"C\" to come before \"D\".",
+          "data": {
+            "right": "C",
+            "left": "D"
+          },
+          "loc": {
+            "startLine": 2,
+            "startColumn": 13,
+            "endLine": 2,
+            "endColumn": 14
+          },
+          "fix": {
+            "range": [37, 41],
+            "text": "C, D"
+          }
+        }
+      ],
+      "output": "export { A, B } from 'one';\nexport { C, D } from 'two';"
+    },
+    {
+      "name": "CRLF multiline inversion",
+      "code": "export {\r\n  B,\r\n  A,\r\n} from 'module';",
+      "options": [],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"A\" to come before \"B\".",
+          "data": {
+            "right": "A",
+            "left": "B"
+          },
+          "loc": {
+            "startLine": 3,
+            "startColumn": 3,
+            "endLine": 3,
+            "endColumn": 4
+          },
+          "fix": {
+            "range": [12, 19],
+            "text": "A,\r\n  B"
+          }
+        }
+      ],
+      "output": "export {\r\n  A,\r\n  B,\r\n} from 'module';"
+    },
+    {
+      "name": "UTF-16 prefix keeps fix offsets",
+      "code": "'😀';\nexport { B, A } from 'module';",
+      "options": [],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"A\" to come before \"B\".",
+          "data": {
+            "right": "A",
+            "left": "B"
+          },
+          "loc": {
+            "startLine": 2,
+            "startColumn": 13,
+            "endLine": 2,
+            "endColumn": 14
+          },
+          "fix": {
+            "range": [15, 19],
+            "text": "A, B"
+          }
+        }
+      ],
+      "output": "'😀';\nexport { A, B } from 'module';"
+    },
+    {
+      "name": "inline trailing comma inversion",
+      "code": "export { B, A, } from 'module';",
+      "options": [],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"A\" to come before \"B\".",
+          "data": {
+            "right": "A",
+            "left": "B"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 13,
+            "endLine": 1,
+            "endColumn": 14
+          },
+          "fix": {
+            "range": [9, 13],
+            "text": "A, B"
+          }
+        }
+      ],
+      "output": "export { A, B, } from 'module';"
+    },
+    {
+      "name": "multiline without trailing comma",
+      "code": "export {\n  B,\n  A\n} from 'module';",
+      "options": [],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"A\" to come before \"B\".",
+          "data": {
+            "right": "A",
+            "left": "B"
+          },
+          "loc": {
+            "startLine": 3,
+            "startColumn": 3,
+            "endLine": 3,
+            "endColumn": 4
+          },
+          "fix": {
+            "range": [11, 17],
+            "text": "A,\n  B"
+          }
+        }
+      ],
+      "output": "export {\n  A,\n  B\n} from 'module';"
+    },
+    {
+      "name": "leading comments move with exports",
+      "code": "export {\n  // B docs\n  B,\n  // A docs\n  A,\n} from 'module';",
+      "options": [],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"A\" to come before \"B\".",
+          "data": {
+            "right": "A",
+            "left": "B"
+          },
+          "loc": {
+            "startLine": 5,
+            "startColumn": 3,
+            "endLine": 5,
+            "endColumn": 4
+          },
+          "fix": {
+            "range": [11, 41],
+            "text": "// A docs\n  A,\n  // B docs\n  B"
+          }
+        }
+      ],
+      "output": "export {\n  // A docs\n  A,\n  // B docs\n  B,\n} from 'module';"
+    },
+    {
+      "name": "trailing comments stay attached to slots",
+      "code": "export {\n  B, // first\n  A, // second\n} from 'module';",
+      "options": [],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"A\" to come before \"B\".",
+          "data": {
+            "right": "A",
+            "left": "B"
+          },
+          "loc": {
+            "startLine": 3,
+            "startColumn": 3,
+            "endLine": 3,
+            "endColumn": 4
+          },
+          "fix": {
+            "range": [11, 37],
+            "text": "A, // second\n  B, // first"
+          }
+        }
+      ],
+      "output": "export {\n  A, // second\n  B, // first\n} from 'module';"
+    },
+    {
+      "name": "predefined type group before unknown",
+      "code": "export {\n  value,\n  type Type,\n} from 'module';",
+      "options": [
+        {
+          "groups": ["type-export", "unknown"]
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsGroupOrder",
+          "message": "Expected \"Type\" (type-export) to come before \"value\" (unknown).",
+          "data": {
+            "right": "Type",
+            "rightGroup": "type-export",
+            "left": "value",
+            "leftGroup": "unknown"
+          },
+          "loc": {
+            "startLine": 3,
+            "startColumn": 3,
+            "endLine": 3,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [11, 29],
+            "text": "type Type,\n  value"
+          }
+        }
+      ],
+      "output": "export {\n  type Type,\n  value,\n} from 'module';"
+    },
+    {
+      "name": "predefined unknown before type group",
+      "code": "export {\n  type Type,\n  value,\n} from 'module';",
+      "options": [
+        {
+          "groups": ["unknown", "type-export"]
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsGroupOrder",
+          "message": "Expected \"value\" (unknown) to come before \"Type\" (type-export).",
+          "data": {
+            "right": "value",
+            "rightGroup": "unknown",
+            "left": "Type",
+            "leftGroup": "type-export"
+          },
+          "loc": {
+            "startLine": 3,
+            "startColumn": 3,
+            "endLine": 3,
+            "endColumn": 8
+          },
+          "fix": {
+            "range": [11, 29],
+            "text": "value,\n  type Type"
+          }
+        }
+      ],
+      "output": "export {\n  value,\n  type Type,\n} from 'module';"
+    },
+    {
+      "name": "declaration type exports use type group",
+      "code": "export type {\n  B,\n  A,\n} from 'module';",
+      "options": [
+        {
+          "groups": ["type-export", "unknown"]
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"A\" to come before \"B\".",
+          "data": {
+            "right": "A",
+            "left": "B"
+          },
+          "loc": {
+            "startLine": 3,
+            "startColumn": 3,
+            "endLine": 3,
+            "endColumn": 4
+          },
+          "fix": {
+            "range": [16, 22],
+            "text": "A,\n  B"
+          }
+        }
+      ],
+      "output": "export type {\n  A,\n  B,\n} from 'module';"
+    },
+    {
+      "name": "custom element pattern orders matching group first",
+      "code": "export { zebra, alpha, apiClient } from 'module';",
+      "options": [
+        {
+          "customGroups": [
+            {
+              "groupName": "api",
+              "elementNamePattern": "^api"
+            }
+          ],
+          "groups": ["api", "unknown"]
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"alpha\" to come before \"zebra\".",
+          "data": {
+            "right": "alpha",
+            "left": "zebra"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 17,
+            "endLine": 1,
+            "endColumn": 22
+          },
+          "fix": {
+            "range": [9, 32],
+            "text": "apiClient, alpha, zebra"
+          }
+        },
+        {
+          "messageId": "unexpectedNamedExportsGroupOrder",
+          "message": "Expected \"apiClient\" (api) to come before \"alpha\" (unknown).",
+          "data": {
+            "right": "apiClient",
+            "rightGroup": "api",
+            "left": "alpha",
+            "leftGroup": "unknown"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 24,
+            "endLine": 1,
+            "endColumn": 33
+          },
+          "fix": {
+            "range": [9, 32],
+            "text": "apiClient, alpha, zebra"
+          }
+        }
+      ],
+      "output": "export { apiClient, alpha, zebra } from 'module';"
+    },
+    {
+      "name": "custom regex flags and alias name",
+      "code": "export { zed, source as APIClient } from 'module';",
+      "options": [
+        {
+          "customGroups": [
+            {
+              "groupName": "api",
+              "elementNamePattern": {
+                "pattern": "^api",
+                "flags": "i"
+              }
+            }
+          ],
+          "groups": ["api", "unknown"]
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsGroupOrder",
+          "message": "Expected \"APIClient\" (api) to come before \"zed\" (unknown).",
+          "data": {
+            "right": "APIClient",
+            "rightGroup": "api",
+            "left": "zed",
+            "leftGroup": "unknown"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 15,
+            "endLine": 1,
+            "endColumn": 34
+          },
+          "fix": {
+            "range": [9, 33],
+            "text": "source as APIClient, zed"
+          }
+        }
+      ],
+      "output": "export { source as APIClient, zed } from 'module';"
+    },
+    {
+      "name": "custom regex pattern array",
+      "code": "export { zebra, beta, alpha } from 'module';",
+      "options": [
+        {
+          "customGroups": [
+            {
+              "groupName": "letters",
+              "elementNamePattern": ["^alpha$", "^beta$"]
+            }
+          ],
+          "groups": ["letters", "unknown"]
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsGroupOrder",
+          "message": "Expected \"beta\" (letters) to come before \"zebra\" (unknown).",
+          "data": {
+            "right": "beta",
+            "rightGroup": "letters",
+            "left": "zebra",
+            "leftGroup": "unknown"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 17,
+            "endLine": 1,
+            "endColumn": 21
+          },
+          "fix": {
+            "range": [9, 27],
+            "text": "alpha, beta, zebra"
+          }
+        },
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"alpha\" to come before \"beta\".",
+          "data": {
+            "right": "alpha",
+            "left": "beta"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 23,
+            "endLine": 1,
+            "endColumn": 28
+          },
+          "fix": {
+            "range": [9, 27],
+            "text": "alpha, beta, zebra"
+          }
+        }
+      ],
+      "output": "export { alpha, beta, zebra } from 'module';"
+    },
+    {
+      "name": "custom type modifier",
+      "code": "export { value, type Zebra, type Alpha } from 'module';",
+      "options": [
+        {
+          "customGroups": [
+            {
+              "groupName": "types",
+              "modifiers": ["type"]
+            }
+          ],
+          "groups": ["types", "unknown"]
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsGroupOrder",
+          "message": "Expected \"Zebra\" (types) to come before \"value\" (unknown).",
+          "data": {
+            "right": "Zebra",
+            "rightGroup": "types",
+            "left": "value",
+            "leftGroup": "unknown"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 17,
+            "endLine": 1,
+            "endColumn": 27
+          },
+          "fix": {
+            "range": [9, 38],
+            "text": "type Alpha, type Zebra, value"
+          }
+        },
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"Alpha\" to come before \"Zebra\".",
+          "data": {
+            "right": "Alpha",
+            "left": "Zebra"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 29,
+            "endLine": 1,
+            "endColumn": 39
+          },
+          "fix": {
+            "range": [9, 38],
+            "text": "type Alpha, type Zebra, value"
+          }
+        }
+      ],
+      "output": "export { type Alpha, type Zebra, value } from 'module';"
+    },
+    {
+      "name": "custom value modifier",
+      "code": "export { type Type, zebra, alpha } from 'module';",
+      "options": [
+        {
+          "customGroups": [
+            {
+              "groupName": "values",
+              "modifiers": ["value"]
+            }
+          ],
+          "groups": ["values", "unknown"]
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsGroupOrder",
+          "message": "Expected \"zebra\" (values) to come before \"Type\" (unknown).",
+          "data": {
+            "right": "zebra",
+            "rightGroup": "values",
+            "left": "Type",
+            "leftGroup": "unknown"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 21,
+            "endLine": 1,
+            "endColumn": 26
+          },
+          "fix": {
+            "range": [9, 32],
+            "text": "alpha, zebra, type Type"
+          }
+        },
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"alpha\" to come before \"zebra\".",
+          "data": {
+            "right": "alpha",
+            "left": "zebra"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 28,
+            "endLine": 1,
+            "endColumn": 33
+          },
+          "fix": {
+            "range": [9, 32],
+            "text": "alpha, zebra, type Type"
+          }
+        }
+      ],
+      "output": "export { alpha, zebra, type Type } from 'module';"
+    },
+    {
+      "name": "custom selector export",
+      "code": "export { zebra, alpha } from 'module';",
+      "options": [
+        {
+          "customGroups": [
+            {
+              "groupName": "imports",
+              "selector": "export"
+            }
+          ],
+          "groups": ["imports", "unknown"],
+          "order": "desc"
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "custom anyOf match",
+      "code": "export { type other, type FooType, fooValue } from 'module';",
+      "options": [
+        {
+          "customGroups": [
+            {
+              "groupName": "foo",
+              "anyOf": [
+                {
+                  "modifiers": ["type"],
+                  "elementNamePattern": "Foo"
+                },
+                {
+                  "elementNamePattern": "^foo"
+                }
+              ]
+            }
+          ],
+          "groups": ["foo", "unknown"]
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsGroupOrder",
+          "message": "Expected \"FooType\" (foo) to come before \"other\" (unknown).",
+          "data": {
+            "right": "FooType",
+            "rightGroup": "foo",
+            "left": "other",
+            "leftGroup": "unknown"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 22,
+            "endLine": 1,
+            "endColumn": 34
+          },
+          "fix": {
+            "range": [9, 43],
+            "text": "type FooType, fooValue, type other"
+          }
+        }
+      ],
+      "output": "export { type FooType, fooValue, type other } from 'module';"
+    },
+    {
+      "name": "custom groups ignore names absent from groups",
+      "code": "export { zebra, apiClient, alpha } from 'module';",
+      "options": [
+        {
+          "customGroups": [
+            {
+              "groupName": "api",
+              "elementNamePattern": "^api"
+            }
+          ],
+          "groups": ["unknown"]
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"apiClient\" to come before \"zebra\".",
+          "data": {
+            "right": "apiClient",
+            "left": "zebra"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 17,
+            "endLine": 1,
+            "endColumn": 26
+          },
+          "fix": {
+            "range": [9, 32],
+            "text": "alpha, apiClient, zebra"
+          }
+        },
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"alpha\" to come before \"apiClient\".",
+          "data": {
+            "right": "alpha",
+            "left": "apiClient"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 28,
+            "endLine": 1,
+            "endColumn": 33
+          },
+          "fix": {
+            "range": [9, 32],
+            "text": "alpha, apiClient, zebra"
+          }
+        }
+      ],
+      "output": "export { alpha, apiClient, zebra } from 'module';"
+    },
+    {
+      "name": "custom group line length override",
+      "code": "export { type a, type bb, type cccc, value } from 'module';",
+      "options": [
+        {
+          "customGroups": [
+            {
+              "groupName": "types",
+              "modifiers": ["type"],
+              "type": "line-length",
+              "order": "desc"
+            }
+          ],
+          "groups": ["types", "unknown"]
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"bb\" to come before \"a\".",
+          "data": {
+            "right": "bb",
+            "left": "a"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 18,
+            "endLine": 1,
+            "endColumn": 25
+          },
+          "fix": {
+            "range": [9, 35],
+            "text": "type cccc, type bb, type a"
+          }
+        },
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"cccc\" to come before \"bb\".",
+          "data": {
+            "right": "cccc",
+            "left": "bb"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 27,
+            "endLine": 1,
+            "endColumn": 36
+          },
+          "fix": {
+            "range": [9, 35],
+            "text": "type cccc, type bb, type a"
+          }
+        }
+      ],
+      "output": "export { type cccc, type bb, type a, value } from 'module';"
+    },
+    {
+      "name": "custom group unsorted preserves member order",
+      "code": "export { value, type Zebra, type Alpha } from 'module';",
+      "options": [
+        {
+          "customGroups": [
+            {
+              "groupName": "types",
+              "modifiers": ["type"],
+              "type": "unsorted"
+            }
+          ],
+          "groups": ["types", "unknown"]
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsGroupOrder",
+          "message": "Expected \"Zebra\" (types) to come before \"value\" (unknown).",
+          "data": {
+            "right": "Zebra",
+            "rightGroup": "types",
+            "left": "value",
+            "leftGroup": "unknown"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 17,
+            "endLine": 1,
+            "endColumn": 27
+          },
+          "fix": {
+            "range": [9, 38],
+            "text": "type Zebra, type Alpha, value"
+          }
+        }
+      ],
+      "output": "export { type Zebra, type Alpha, value } from 'module';"
+    },
+    {
+      "name": "group object alphabetical descending override",
+      "code": "export { alpha, beta } from 'module';",
+      "options": [
+        {
+          "type": "unsorted",
+          "groups": [
+            {
+              "group": "unknown",
+              "type": "alphabetical",
+              "order": "desc"
+            }
+          ]
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"beta\" to come before \"alpha\".",
+          "data": {
+            "right": "beta",
+            "left": "alpha"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 17,
+            "endLine": 1,
+            "endColumn": 21
+          },
+          "fix": {
+            "range": [9, 20],
+            "text": "beta, alpha"
+          }
+        }
+      ],
+      "output": "export { beta, alpha } from 'module';"
+    },
+    {
+      "name": "subgroup declaration order fallback",
+      "code": "export { beta, alpha } from 'module';",
+      "options": [
+        {
+          "customGroups": [
+            {
+              "groupName": "a",
+              "elementNamePattern": "^alpha$"
+            },
+            {
+              "groupName": "b",
+              "elementNamePattern": "^beta$"
+            }
+          ],
+          "groups": [["a", "b"], "unknown"],
+          "fallbackSort": {
+            "type": "subgroup-order"
+          }
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"alpha\" to come before \"beta\".",
+          "data": {
+            "right": "alpha",
+            "left": "beta"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 16,
+            "endLine": 1,
+            "endColumn": 21
+          },
+          "fix": {
+            "range": [9, 20],
+            "text": "alpha, beta"
+          }
+        }
+      ],
+      "output": "export { alpha, beta } from 'module';"
+    },
+    {
+      "name": "partition by newline sorts sections independently",
+      "code": "export {\n  D,\n  A,\n\n  C,\n\n  E,\n  B,\n} from 'module';",
+      "options": [
+        {
+          "partitionByNewLine": true
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"A\" to come before \"D\".",
+          "data": {
+            "right": "A",
+            "left": "D"
+          },
+          "loc": {
+            "startLine": 3,
+            "startColumn": 3,
+            "endLine": 3,
+            "endColumn": 4
+          },
+          "fix": {
+            "range": [11, 34],
+            "text": "A,\n  D,\n\n  C,\n\n  B,\n  E"
+          }
+        },
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"B\" to come before \"E\".",
+          "data": {
+            "right": "B",
+            "left": "E"
+          },
+          "loc": {
+            "startLine": 8,
+            "startColumn": 3,
+            "endLine": 8,
+            "endColumn": 4
+          },
+          "fix": {
+            "range": [11, 34],
+            "text": "A,\n  D,\n\n  C,\n\n  B,\n  E"
+          }
+        }
+      ],
+      "output": "export {\n  A,\n  D,\n\n  C,\n\n  B,\n  E,\n} from 'module';"
+    },
+    {
+      "name": "partition by any comment",
+      "code": "export {\n  B,\n  // section\n  A,\n} from 'module';",
+      "options": [
+        {
+          "partitionByComment": true
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "partition by string comment",
+      "code": "export {\n  C,\n  // Part: one\n  B,\n  // note\n  A,\n} from 'module';",
+      "options": [
+        {
+          "partitionByComment": "^Part"
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"A\" to come before \"B\".",
+          "data": {
+            "right": "A",
+            "left": "B"
+          },
+          "loc": {
+            "startLine": 6,
+            "startColumn": 3,
+            "endLine": 6,
+            "endColumn": 4
+          },
+          "fix": {
+            "range": [31, 47],
+            "text": "// note\n  A,\n  B"
+          }
+        }
+      ],
+      "output": "export {\n  C,\n  // Part: one\n  // note\n  A,\n  B,\n} from 'module';"
+    },
+    {
+      "name": "partition by comment pattern array",
+      "code": "export {\n  D,\n  /* Section */\n  C,\n  // Part: one\n  B,\n  A,\n} from 'module';",
+      "options": [
+        {
+          "partitionByComment": ["Section", "^Part"]
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"A\" to come before \"B\".",
+          "data": {
+            "right": "A",
+            "left": "B"
+          },
+          "loc": {
+            "startLine": 7,
+            "startColumn": 3,
+            "endLine": 7,
+            "endColumn": 4
+          },
+          "fix": {
+            "range": [52, 58],
+            "text": "A,\n  B"
+          }
+        }
+      ],
+      "output": "export {\n  D,\n  /* Section */\n  C,\n  // Part: one\n  A,\n  B,\n} from 'module';"
+    },
+    {
+      "name": "partition by line comments only",
+      "code": "export {\n  C,\n  /* block */\n  B,\n  // line\n  A,\n} from 'module';",
+      "options": [
+        {
+          "partitionByComment": {
+            "line": true
+          }
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"B\" to come before \"C\".",
+          "data": {
+            "right": "B",
+            "left": "C"
+          },
+          "loc": {
+            "startLine": 4,
+            "startColumn": 3,
+            "endLine": 4,
+            "endColumn": 4
+          },
+          "fix": {
+            "range": [11, 31],
+            "text": "/* block */\n  B,\n  C"
+          }
+        }
+      ],
+      "output": "export {\n  /* block */\n  B,\n  C,\n  // line\n  A,\n} from 'module';"
+    },
+    {
+      "name": "partition by block comments only",
+      "code": "export {\n  C,\n  // line\n  B,\n  /* block */\n  A,\n} from 'module';",
+      "options": [
+        {
+          "partitionByComment": {
+            "block": true
+          }
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"B\" to come before \"C\".",
+          "data": {
+            "right": "B",
+            "left": "C"
+          },
+          "loc": {
+            "startLine": 4,
+            "startColumn": 3,
+            "endLine": 4,
+            "endColumn": 4
+          },
+          "fix": {
+            "range": [11, 27],
+            "text": "// line\n  B,\n  C"
+          }
+        }
+      ],
+      "output": "export {\n  // line\n  B,\n  C,\n  /* block */\n  A,\n} from 'module';"
+    },
+    {
+      "name": "partition line and block patterns",
+      "code": "export {\n  D,\n  // LINE A\n  C,\n  /* BLOCK B */\n  B,\n  A,\n} from 'module';",
+      "options": [
+        {
+          "partitionByComment": {
+            "line": {
+              "pattern": "^ LINE",
+              "flags": "i"
+            },
+            "block": ["BLOCK"]
+          }
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"C\" to come before \"D\".",
+          "data": {
+            "right": "C",
+            "left": "D"
+          },
+          "loc": {
+            "startLine": 4,
+            "startColumn": 3,
+            "endLine": 4,
+            "endColumn": 4
+          },
+          "fix": {
+            "range": [11, 55],
+            "text": "// LINE A\n  C,\n  D,\n  /* BLOCK B */\n  A,\n  B"
+          }
+        },
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"A\" to come before \"B\".",
+          "data": {
+            "right": "A",
+            "left": "B"
+          },
+          "loc": {
+            "startLine": 7,
+            "startColumn": 3,
+            "endLine": 7,
+            "endColumn": 4
+          },
+          "fix": {
+            "range": [11, 55],
+            "text": "// LINE A\n  C,\n  D,\n  /* BLOCK B */\n  A,\n  B"
+          }
+        }
+      ],
+      "output": "export {\n  // LINE A\n  C,\n  D,\n  /* BLOCK B */\n  A,\n  B,\n} from 'module';"
+    },
+    {
+      "name": "partition preserves comments with group ordering",
+      "code": "export {\n  // Part: A\n  value,\n  type Type,\n  // Part: B\n  Zebra,\n  Alpha,\n} from 'module';",
+      "options": [
+        {
+          "partitionByComment": "^Part",
+          "groups": ["type-export", "unknown"]
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsGroupOrder",
+          "message": "Expected \"Type\" (type-export) to come before \"value\" (unknown).",
+          "data": {
+            "right": "Type",
+            "rightGroup": "type-export",
+            "left": "value",
+            "leftGroup": "unknown"
+          },
+          "loc": {
+            "startLine": 4,
+            "startColumn": 3,
+            "endLine": 4,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [24, 73],
+            "text": "type Type,\n  value,\n  // Part: B\n  Alpha,\n  Zebra"
+          }
+        },
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"Alpha\" to come before \"Zebra\".",
+          "data": {
+            "right": "Alpha",
+            "left": "Zebra"
+          },
+          "loc": {
+            "startLine": 7,
+            "startColumn": 3,
+            "endLine": 7,
+            "endColumn": 8
+          },
+          "fix": {
+            "range": [24, 73],
+            "text": "type Type,\n  value,\n  // Part: B\n  Alpha,\n  Zebra"
+          }
+        }
+      ],
+      "output": "export {\n  // Part: A\n  type Type,\n  value,\n  // Part: B\n  Alpha,\n  Zebra,\n} from 'module';"
+    },
+    {
+      "name": "zero newlines inside and between groups",
+      "code": "export {\n  api,\n\n  zebra,\n\n  alpha,\n} from 'module';",
+      "options": [
+        {
+          "customGroups": [
+            {
+              "groupName": "api",
+              "elementNamePattern": "^api$"
+            }
+          ],
+          "groups": ["api", "unknown"],
+          "newlinesBetween": 0
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSpacingBetweenNamedExports",
+          "message": "Extra spacing between \"api\" and \"zebra\".",
+          "data": {
+            "left": "api",
+            "right": "zebra"
+          },
+          "loc": {
+            "startLine": 4,
+            "startColumn": 3,
+            "endLine": 4,
+            "endColumn": 8
+          },
+          "fix": {
+            "range": [14, 34],
+            "text": ",\n  alpha,\n  zebra"
+          }
+        },
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"alpha\" to come before \"zebra\".",
+          "data": {
+            "right": "alpha",
+            "left": "zebra"
+          },
+          "loc": {
+            "startLine": 6,
+            "startColumn": 3,
+            "endLine": 6,
+            "endColumn": 8
+          },
+          "fix": {
+            "range": [14, 34],
+            "text": ",\n  alpha,\n  zebra"
+          }
+        },
+        {
+          "messageId": "extraSpacingBetweenNamedExports",
+          "message": "Extra spacing between \"zebra\" and \"alpha\".",
+          "data": {
+            "left": "zebra",
+            "right": "alpha"
+          },
+          "loc": {
+            "startLine": 6,
+            "startColumn": 3,
+            "endLine": 6,
+            "endColumn": 8
+          },
+          "fix": {
+            "range": [14, 34],
+            "text": ",\n  alpha,\n  zebra"
+          }
+        }
+      ],
+      "output": "export {\n  api,\n  alpha,\n  zebra,\n} from 'module';"
+    },
+    {
+      "name": "one newline between groups",
+      "code": "export {\n  api,\n  alpha,\n  beta,\n} from 'module';",
+      "options": [
+        {
+          "customGroups": [
+            {
+              "groupName": "api",
+              "elementNamePattern": "^api$"
+            }
+          ],
+          "groups": ["api", "unknown"],
+          "newlinesBetween": 1
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "missedSpacingBetweenNamedExports",
+          "message": "Missed spacing between \"api\" and \"alpha\".",
+          "data": {
+            "left": "api",
+            "right": "alpha"
+          },
+          "loc": {
+            "startLine": 3,
+            "startColumn": 3,
+            "endLine": 3,
+            "endColumn": 8
+          },
+          "fix": {
+            "range": [14, 18],
+            "text": ",\n\n  "
+          }
+        }
+      ],
+      "output": "export {\n  api,\n\n  alpha,\n  beta,\n} from 'module';"
+    },
+    {
+      "name": "two newlines between groups",
+      "code": "export {\n  api,\n  alpha,\n} from 'module';",
+      "options": [
+        {
+          "customGroups": [
+            {
+              "groupName": "api",
+              "elementNamePattern": "^api$"
+            }
+          ],
+          "groups": ["api", "unknown"],
+          "newlinesBetween": 2
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "missedSpacingBetweenNamedExports",
+          "message": "Missed spacing between \"api\" and \"alpha\".",
+          "data": {
+            "left": "api",
+            "right": "alpha"
+          },
+          "loc": {
+            "startLine": 3,
+            "startColumn": 3,
+            "endLine": 3,
+            "endColumn": 8
+          },
+          "fix": {
+            "range": [14, 18],
+            "text": ",\n\n\n  "
+          }
+        }
+      ],
+      "output": "export {\n  api,\n\n\n  alpha,\n} from 'module';"
+    },
+    {
+      "name": "zero newlines inside group",
+      "code": "export {\n  beta,\n\n  alpha,\n} from 'module';",
+      "options": [
+        {
+          "newlinesInside": 0
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"alpha\" to come before \"beta\".",
+          "data": {
+            "right": "alpha",
+            "left": "beta"
+          },
+          "loc": {
+            "startLine": 4,
+            "startColumn": 3,
+            "endLine": 4,
+            "endColumn": 8
+          },
+          "fix": {
+            "range": [11, 25],
+            "text": "alpha,\n  beta"
+          }
+        },
+        {
+          "messageId": "extraSpacingBetweenNamedExports",
+          "message": "Extra spacing between \"beta\" and \"alpha\".",
+          "data": {
+            "left": "beta",
+            "right": "alpha"
+          },
+          "loc": {
+            "startLine": 4,
+            "startColumn": 3,
+            "endLine": 4,
+            "endColumn": 8
+          },
+          "fix": {
+            "range": [11, 25],
+            "text": "alpha,\n  beta"
+          }
+        }
+      ],
+      "output": "export {\n  alpha,\n  beta,\n} from 'module';"
+    },
+    {
+      "name": "one newline inside custom group",
+      "code": "export {\n  alpha,\n  beta,\n} from 'module';",
+      "options": [
+        {
+          "customGroups": [
+            {
+              "groupName": "letters",
+              "elementNamePattern": ".*",
+              "newlinesInside": 1
+            }
+          ],
+          "groups": ["letters"]
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "missedSpacingBetweenNamedExports",
+          "message": "Missed spacing between \"alpha\" and \"beta\".",
+          "data": {
+            "left": "alpha",
+            "right": "beta"
+          },
+          "loc": {
+            "startLine": 3,
+            "startColumn": 3,
+            "endLine": 3,
+            "endColumn": 7
+          },
+          "fix": {
+            "range": [16, 20],
+            "text": ",\n\n  "
+          }
+        }
+      ],
+      "output": "export {\n  alpha,\n\n  beta,\n} from 'module';"
+    },
+    {
+      "name": "group object newlinesInside override",
+      "code": "export {\n  alpha,\n  beta,\n} from 'module';",
+      "options": [
+        {
+          "groups": [
+            {
+              "group": "unknown",
+              "newlinesInside": 1
+            }
+          ]
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "missedSpacingBetweenNamedExports",
+          "message": "Missed spacing between \"alpha\" and \"beta\".",
+          "data": {
+            "left": "alpha",
+            "right": "beta"
+          },
+          "loc": {
+            "startLine": 3,
+            "startColumn": 3,
+            "endLine": 3,
+            "endColumn": 7
+          },
+          "fix": {
+            "range": [16, 20],
+            "text": ",\n\n  "
+          }
+        }
+      ],
+      "output": "export {\n  alpha,\n\n  beta,\n} from 'module';"
+    },
+    {
+      "name": "inline newlinesBetween override",
+      "code": "export {\n  alpha,\n\n  beta,\n  charlie,\n} from 'module';",
+      "options": [
+        {
+          "customGroups": [
+            {
+              "groupName": "a",
+              "elementNamePattern": "^alpha$"
+            },
+            {
+              "groupName": "b",
+              "elementNamePattern": "^beta$"
+            },
+            {
+              "groupName": "c",
+              "elementNamePattern": "^charlie$"
+            }
+          ],
+          "groups": [
+            "a",
+            {
+              "newlinesBetween": 0
+            },
+            "b",
+            {
+              "newlinesBetween": 1
+            },
+            "c"
+          ],
+          "newlinesBetween": 2
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "extraSpacingBetweenNamedExports",
+          "message": "Extra spacing between \"alpha\" and \"beta\".",
+          "data": {
+            "left": "alpha",
+            "right": "beta"
+          },
+          "loc": {
+            "startLine": 4,
+            "startColumn": 3,
+            "endLine": 4,
+            "endColumn": 7
+          },
+          "fix": {
+            "range": [16, 29],
+            "text": ",\n  beta,\n\n  "
+          }
+        },
+        {
+          "messageId": "missedSpacingBetweenNamedExports",
+          "message": "Missed spacing between \"beta\" and \"charlie\".",
+          "data": {
+            "left": "beta",
+            "right": "charlie"
+          },
+          "loc": {
+            "startLine": 5,
+            "startColumn": 3,
+            "endLine": 5,
+            "endColumn": 10
+          },
+          "fix": {
+            "range": [16, 29],
+            "text": ",\n  beta,\n\n  "
+          }
+        }
+      ],
+      "output": "export {\n  alpha,\n  beta,\n\n  charlie,\n} from 'module';"
+    },
+    {
+      "name": "newlines ignore preserves spacing",
+      "code": "export {\n  alpha,\n\n\n  beta,\n} from 'module';",
+      "options": [
+        {
+          "newlinesInside": "ignore",
+          "newlinesBetween": "ignore"
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "partition newline suppresses spacing diagnostic",
+      "code": "export {\n  beta,\n\n  alpha,\n} from 'module';",
+      "options": [
+        {
+          "partitionByNewLine": true
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "spacing and ordering diagnostics combine",
+      "code": "export {\n  beta,\n\n  alpha,\n} from 'module';",
+      "options": [
+        {
+          "newlinesInside": 0
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"alpha\" to come before \"beta\".",
+          "data": {
+            "right": "alpha",
+            "left": "beta"
+          },
+          "loc": {
+            "startLine": 4,
+            "startColumn": 3,
+            "endLine": 4,
+            "endColumn": 8
+          },
+          "fix": {
+            "range": [11, 25],
+            "text": "alpha,\n  beta"
+          }
+        },
+        {
+          "messageId": "extraSpacingBetweenNamedExports",
+          "message": "Extra spacing between \"beta\" and \"alpha\".",
+          "data": {
+            "left": "beta",
+            "right": "alpha"
+          },
+          "loc": {
+            "startLine": 4,
+            "startColumn": 3,
+            "endLine": 4,
+            "endColumn": 8
+          },
+          "fix": {
+            "range": [11, 25],
+            "text": "alpha,\n  beta"
+          }
+        }
+      ],
+      "output": "export {\n  alpha,\n  beta,\n} from 'module';"
+    },
+    {
+      "name": "conditional names picks first matching option",
+      "code": "export { b, g, r } from 'module';",
+      "options": [
+        {
+          "type": "unsorted",
+          "useConfigurationIf": {
+            "allNamesMatchPattern": "^foo"
+          }
+        },
+        {
+          "customGroups": [
+            {
+              "groupName": "r",
+              "elementNamePattern": "^r$"
+            },
+            {
+              "groupName": "g",
+              "elementNamePattern": "^g$"
+            },
+            {
+              "groupName": "b",
+              "elementNamePattern": "^b$"
+            }
+          ],
+          "groups": ["r", "g", "b"],
+          "useConfigurationIf": {
+            "allNamesMatchPattern": "^[rgb]$"
+          }
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsGroupOrder",
+          "message": "Expected \"g\" (g) to come before \"b\" (b).",
+          "data": {
+            "right": "g",
+            "rightGroup": "g",
+            "left": "b",
+            "leftGroup": "b"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 13,
+            "endLine": 1,
+            "endColumn": 14
+          },
+          "fix": {
+            "range": [9, 16],
+            "text": "r, g, b"
+          }
+        },
+        {
+          "messageId": "unexpectedNamedExportsGroupOrder",
+          "message": "Expected \"r\" (r) to come before \"g\" (g).",
+          "data": {
+            "right": "r",
+            "rightGroup": "r",
+            "left": "g",
+            "leftGroup": "g"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 16,
+            "endLine": 1,
+            "endColumn": 17
+          },
+          "fix": {
+            "range": [9, 16],
+            "text": "r, g, b"
+          }
+        }
+      ],
+      "output": "export { r, g, b } from 'module';"
+    },
+    {
+      "name": "conditional names regex object and alias",
+      "code": "export { first as B, second as A } from 'module';",
+      "options": [
+        {
+          "ignoreAlias": false,
+          "useConfigurationIf": {
+            "allNamesMatchPattern": {
+              "pattern": "^[ab]$",
+              "flags": "i"
+            }
+          }
+        },
+        {
+          "type": "unsorted"
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"A\" to come before \"B\".",
+          "data": {
+            "right": "A",
+            "left": "B"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 22,
+            "endLine": 1,
+            "endColumn": 33
+          },
+          "fix": {
+            "range": [9, 32],
+            "text": "second as A, first as B"
+          }
+        }
+      ],
+      "output": "export { second as A, first as B } from 'module';"
+    },
+    {
+      "name": "conditional names ignore alias",
+      "code": "export { b as y, a as z } from 'module';",
+      "options": [
+        {
+          "ignoreAlias": true,
+          "useConfigurationIf": {
+            "allNamesMatchPattern": "^[ab]$"
+          }
+        },
+        {
+          "type": "unsorted"
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"a\" to come before \"b\".",
+          "data": {
+            "right": "a",
+            "left": "b"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 18,
+            "endLine": 1,
+            "endColumn": 24
+          },
+          "fix": {
+            "range": [9, 23],
+            "text": "a as z, b as y"
+          }
+        }
+      ],
+      "output": "export { a as z, b as y } from 'module';"
+    },
+    {
+      "name": "conditional export selector match",
+      "code": "export { beta, alpha } from 'module';",
+      "options": [
+        {
+          "type": "unsorted",
+          "useConfigurationIf": {
+            "matchesAstSelector": "ExportNamedDeclaration"
+          }
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "conditional export selector child match",
+      "code": "export { beta, alpha } from 'module';",
+      "options": [
+        {
+          "type": "unsorted",
+          "useConfigurationIf": {
+            "matchesAstSelector": "* > ExportNamedDeclaration"
+          }
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "conditional nonmatching selector falls through",
+      "code": "export { beta, alpha } from 'module';",
+      "options": [
+        {
+          "type": "unsorted",
+          "useConfigurationIf": {
+            "matchesAstSelector": "VariableDeclaration"
+          }
+        },
+        {
+          "type": "alphabetical"
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"alpha\" to come before \"beta\".",
+          "data": {
+            "right": "alpha",
+            "left": "beta"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 16,
+            "endLine": 1,
+            "endColumn": 21
+          },
+          "fix": {
+            "range": [9, 20],
+            "text": "alpha, beta"
+          }
+        }
+      ],
+      "output": "export { alpha, beta } from 'module';"
+    },
+    {
+      "name": "conditional selector and names both required",
+      "code": "export { beta, alpha } from 'module';",
+      "options": [
+        {
+          "type": "unsorted",
+          "useConfigurationIf": {
+            "matchesAstSelector": "ExportNamedDeclaration",
+            "allNamesMatchPattern": "^[ac]$"
+          }
+        },
+        {
+          "type": "alphabetical",
+          "order": "desc"
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [],
+      "output": null
+    },
+    {
+      "name": "no conditional match uses defaults",
+      "code": "export { beta, alpha } from 'module';",
+      "options": [
+        {
+          "type": "unsorted",
+          "useConfigurationIf": {
+            "allNamesMatchPattern": "^never$"
+          }
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"alpha\" to come before \"beta\".",
+          "data": {
+            "right": "alpha",
+            "left": "beta"
+          },
+          "loc": {
+            "startLine": 1,
+            "startColumn": 16,
+            "endLine": 1,
+            "endColumn": 21
+          },
+          "fix": {
+            "range": [9, 20],
+            "text": "alpha, beta"
+          }
+        }
+      ],
+      "output": "export { alpha, beta } from 'module';"
+    },
+    {
+      "name": "unicode custom group and utf16 prefix",
+      "code": "'😀';\nexport { 世界, 你好, api } from '模块';",
+      "options": [
+        {
+          "locales": "zh-CN",
+          "customGroups": [
+            {
+              "groupName": "api",
+              "elementNamePattern": "^api$"
+            }
+          ],
+          "groups": ["api", "unknown"]
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"你好\" to come before \"世界\".",
+          "data": {
+            "right": "你好",
+            "left": "世界"
+          },
+          "loc": {
+            "startLine": 2,
+            "startColumn": 14,
+            "endLine": 2,
+            "endColumn": 16
+          },
+          "fix": {
+            "range": [15, 26],
+            "text": "api, 你好, 世界"
+          }
+        },
+        {
+          "messageId": "unexpectedNamedExportsGroupOrder",
+          "message": "Expected \"api\" (api) to come before \"你好\" (unknown).",
+          "data": {
+            "right": "api",
+            "rightGroup": "api",
+            "left": "你好",
+            "leftGroup": "unknown"
+          },
+          "loc": {
+            "startLine": 2,
+            "startColumn": 18,
+            "endLine": 2,
+            "endColumn": 21
+          },
+          "fix": {
+            "range": [15, 26],
+            "text": "api, 你好, 世界"
+          }
+        }
+      ],
+      "output": "'😀';\nexport { api, 你好, 世界 } from '模块';"
+    },
+    {
+      "name": "comments move with group members",
+      "code": "export {\n  // value docs\n  value,\n  // type docs\n  type Type,\n} from 'module';",
+      "options": [
+        {
+          "groups": ["type-export", "unknown"]
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsGroupOrder",
+          "message": "Expected \"Type\" (type-export) to come before \"value\" (unknown).",
+          "data": {
+            "right": "Type",
+            "rightGroup": "type-export",
+            "left": "value",
+            "leftGroup": "unknown"
+          },
+          "loc": {
+            "startLine": 5,
+            "startColumn": 3,
+            "endLine": 5,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [11, 60],
+            "text": "// type docs\n  type Type,\n  // value docs\n  value"
+          }
+        }
+      ],
+      "output": "export {\n  // type docs\n  type Type,\n  // value docs\n  value,\n} from 'module';"
+    },
+    {
+      "name": "inline comment survives group movement and spacing",
+      "code": "export {\n  beta,\n  alpha, // alpha docs\n  type Type,\n} from 'module';",
+      "options": [
+        {
+          "groups": ["type-export", "unknown"],
+          "newlinesBetween": 1,
+          "newlinesInside": 0
+        }
+      ],
+      "filename": "fixture.ts",
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedNamedExportsOrder",
+          "message": "Expected \"alpha\" to come before \"beta\".",
+          "data": {
+            "right": "alpha",
+            "left": "beta"
+          },
+          "loc": {
+            "startLine": 3,
+            "startColumn": 3,
+            "endLine": 3,
+            "endColumn": 8
+          },
+          "fix": {
+            "range": [11, 51],
+            "text": "type Type,\n\n  alpha, // alpha docs\n  beta"
+          }
+        },
+        {
+          "messageId": "unexpectedNamedExportsGroupOrder",
+          "message": "Expected \"Type\" (type-export) to come before \"alpha\" (unknown).",
+          "data": {
+            "right": "Type",
+            "rightGroup": "type-export",
+            "left": "alpha",
+            "leftGroup": "unknown"
+          },
+          "loc": {
+            "startLine": 4,
+            "startColumn": 3,
+            "endLine": 4,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [11, 51],
+            "text": "type Type,\n\n  alpha, // alpha docs\n  beta"
+          }
+        }
+      ],
+      "output": "export {\n  type Type,\n\n  alpha, // alpha docs\n  beta,\n} from 'module';"
+    }
+  ]
+}

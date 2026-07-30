@@ -2,7 +2,7 @@
 
 mod helpers;
 mod scanner;
-mod sort_named_imports;
+mod sort_named_specifiers;
 mod sort_options;
 mod types;
 
@@ -76,9 +76,6 @@ pub fn scan_perfectionist_rule(
     rule_name: &str,
     options: &serde_json::Value,
 ) -> SmallVec<[RuleDiagnostic; 8]> {
-    if rule_name != "sort-named-imports" {
-        return SmallVec::new();
-    }
     let allocator = Allocator::default();
     let source_type = SourceType::from_path(filename)
         .unwrap_or_else(|_| SourceType::tsx())
@@ -87,10 +84,19 @@ pub fn scan_perfectionist_rule(
     if !parser_return.errors.is_empty() {
         return SmallVec::new();
     }
-    sort_named_imports::check(
-        source_text,
-        &parser_return.program.body,
-        &parser_return.program.comments,
-        options,
-    )
+    match rule_name {
+        "sort-named-imports" => sort_named_specifiers::check(
+            source_text,
+            &parser_return.program.body,
+            &parser_return.program.comments,
+            options,
+        ),
+        "sort-named-exports" => sort_named_specifiers::check_exports(
+            source_text,
+            &parser_return.program.body,
+            &parser_return.program.comments,
+            options,
+        ),
+        _ => SmallVec::new(),
+    }
 }

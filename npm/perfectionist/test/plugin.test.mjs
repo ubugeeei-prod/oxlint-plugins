@@ -120,14 +120,17 @@ describe('perfectionist plugin adapter', () => {
 
     expect(reports).toHaveLength(1);
     expect(plugin.rules[ruleName].meta.messages[reports[0].messageId]).toBe(
-      ruleName === 'sort-named-imports'
+      ['sort-named-exports', 'sort-named-imports'].includes(ruleName)
         ? 'Expected "{{right}}" to come before "{{left}}".'
         : 'Expected sorted order.',
     );
   });
 
-  it('declares the complete implemented option schema', () => {
-    const schema = plugin.rules['sort-named-imports'].meta.schema;
+  it.each([
+    ['sort-named-imports', 'import'],
+    ['sort-named-exports', 'export'],
+  ])('declares the complete implemented option schema for %s', (ruleName, selector) => {
+    const schema = plugin.rules[ruleName].meta.schema;
 
     expect(schema).toHaveLength(1);
     expect(Object.keys(schema[0].properties).sort()).toEqual([
@@ -169,6 +172,9 @@ describe('perfectionist plugin adapter', () => {
       type: 'array',
       items: { oneOf: expect.any(Array) },
     });
+    expect(schema[0].properties.customGroups.items.oneOf[0].properties.selector.enum).toEqual([
+      selector,
+    ]);
     expect(schema[0].properties.partitionByComment.oneOf).toHaveLength(5);
     expect(schema[0].properties.useConfigurationIf).toMatchObject({
       minProperties: 1,
@@ -177,10 +183,14 @@ describe('perfectionist plugin adapter', () => {
     expect(plugin.rules['sort-imports'].meta.schema).toEqual([]);
   });
 
-  it('threads recommended comparator options only into sort-named-imports', () => {
+  it('threads recommended comparator options into both named-specifier rules', () => {
     const rules = plugin.configs['recommended-natural'].rules;
 
     expect(rules['perfectionist/sort-named-imports']).toEqual([
+      'error',
+      { type: 'natural', order: 'asc' },
+    ]);
+    expect(rules['perfectionist/sort-named-exports']).toEqual([
       'error',
       { type: 'natural', order: 'asc' },
     ]);
@@ -295,6 +305,68 @@ describe('perfectionist plugin adapter', () => {
       expect(fixed.stderr).toBe('');
       expect(readFileSync(fixturePath, 'utf8')).toBe(
         'import {\n  type Type,\n\n  value,\n} from "pkg";\n',
+      );
+    } finally {
+      rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('loads named-export options and fixes through real oxlint jsPlugins', () => {
+    const tempDir = mkdtempSync(join(tmpdir(), 'oxlint-perfectionist-named-exports-'));
+    try {
+      const fixturePath = join(tempDir, 'fixture.ts');
+      writeFileSync(fixturePath, 'export { value, type Type } from "pkg";\n');
+      writeFileSync(
+        join(tempDir, 'oxlint.config.jsonc'),
+        JSON.stringify({
+          jsPlugins: [
+            {
+              name: 'perfectionist',
+              specifier: join(packageRoot, 'index.js'),
+            },
+          ],
+          rules: {
+            'perfectionist/sort-named-exports': [
+              'error',
+              {
+                groups: ['type-export', 'unknown'],
+                newlinesBetween: 1,
+              },
+            ],
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        findOxlintCli(),
+        ['--config', 'oxlint.config.jsonc', '--quiet', '--format', 'json', 'fixture.ts'],
+        {
+          cwd: tempDir,
+          encoding: 'utf8',
+        },
+      );
+      const payload = JSON.parse(result.stdout);
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      expect(payload.diagnostics).toHaveLength(1);
+      expect(payload.diagnostics[0]).toMatchObject({
+        code: 'perfectionist(sort-named-exports)',
+        message: 'Expected "Type" (type-export) to come before "value" (unknown).',
+      });
+
+      const fixed = spawnSync(
+        findOxlintCli(),
+        ['--config', 'oxlint.config.jsonc', '--fix', 'fixture.ts'],
+        {
+          cwd: tempDir,
+          encoding: 'utf8',
+        },
+      );
+      expect(fixed.status).toBe(0);
+      expect(fixed.stderr).toBe('');
+      expect(readFileSync(fixturePath, 'utf8')).toBe(
+        'export { type Type, \n\nvalue } from "pkg";\n',
       );
     } finally {
       rmSync(tempDir, { recursive: true, force: true });

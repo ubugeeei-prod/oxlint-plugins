@@ -1,10 +1,10 @@
 #![allow(
     clippy::disallowed_macros,
     clippy::disallowed_types,
-    reason = "serde_json option maps require String keys and configured group/import collections are user-sized rather than bounded rule state."
+    reason = "serde_json option maps require String keys and configured group/specifier collections are user-sized rather than bounded rule state."
 )]
 
-//! Configurable `sort-named-imports` slice pinned to Perfectionist v5.9.1.
+//! Shared configurable named-import/export engine pinned to Perfectionist v5.9.1.
 
 use std::cmp::Ordering;
 use std::sync::OnceLock;
@@ -12,8 +12,8 @@ use std::sync::OnceLock;
 use oxc_ast::{
     Comment, CommentKind,
     ast::{
-        ImportDeclaration, ImportDeclarationSpecifier, ImportOrExportKind, ImportSpecifier,
-        ModuleExportName, Statement,
+        ExportNamedDeclaration, ExportSpecifier, ImportDeclaration, ImportDeclarationSpecifier,
+        ImportOrExportKind, ImportSpecifier, ModuleExportName, Statement,
     },
 };
 use oxc_span::Span;
@@ -24,11 +24,33 @@ use serde_json::{Map, Value};
 use crate::sort_options::SortOptions;
 use crate::types::{LineIndex, RuleDiagnostic, RuleDiagnosticData, RuleDiagnosticFix};
 
-const RULE: &str = "sort-named-imports";
-const ORDER_MESSAGE_ID: &str = "unexpectedNamedImportsOrder";
-const GROUP_ORDER_MESSAGE_ID: &str = "unexpectedNamedImportsGroupOrder";
-const EXTRA_SPACING_MESSAGE_ID: &str = "extraSpacingBetweenNamedImports";
-const MISSED_SPACING_MESSAGE_ID: &str = "missedSpacingBetweenNamedImports";
+#[derive(Clone, Copy)]
+struct RuleContract {
+    rule: &'static str,
+    selector: &'static str,
+    order_message_id: &'static str,
+    group_order_message_id: &'static str,
+    extra_spacing_message_id: &'static str,
+    missed_spacing_message_id: &'static str,
+}
+
+const IMPORT_CONTRACT: RuleContract = RuleContract {
+    rule: "sort-named-imports",
+    selector: "import",
+    order_message_id: "unexpectedNamedImportsOrder",
+    group_order_message_id: "unexpectedNamedImportsGroupOrder",
+    extra_spacing_message_id: "extraSpacingBetweenNamedImports",
+    missed_spacing_message_id: "missedSpacingBetweenNamedImports",
+};
+
+const EXPORT_CONTRACT: RuleContract = RuleContract {
+    rule: "sort-named-exports",
+    selector: "export",
+    order_message_id: "unexpectedNamedExportsOrder",
+    group_order_message_id: "unexpectedNamedExportsGroupOrder",
+    extra_spacing_message_id: "extraSpacingBetweenNamedExports",
+    missed_spacing_message_id: "missedSpacingBetweenNamedExports",
+};
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 enum Newlines {
@@ -74,7 +96,7 @@ struct RuleOptions {
     newlines_inside: Newlines,
 }
 
-struct NamedImport<'a> {
+struct NamedSpecifier<'a> {
     span: Span,
     name: CompactString,
     source: &'a str,
@@ -115,9 +137,9 @@ pub(crate) fn check(
             continue;
         }
 
-        let selected = select_options(raw_options, declaration, &named_specifiers);
+        let selected = select_import_options(raw_options, declaration, &named_specifiers);
         let options = RuleOptions::from_object(selected);
-        let mut imports: SmallVec<[NamedImport<'_>; 8]> = named_specifiers
+        let mut specifiers: SmallVec<[NamedSpecifier<'_>; 8]> = named_specifiers
             .iter()
             .enumerate()
             .filter_map(|(index, specifier)| {
@@ -131,75 +153,159 @@ pub(crate) fn check(
                     specifier,
                     boundary,
                     &options,
+                    IMPORT_CONTRACT,
                 )
             })
             .collect();
-        if imports.len() < 2 {
+        if specifiers.len() < 2 {
             continue;
         }
 
-        assign_partitions(source_text, comments, &options, &mut imports);
-        let sorted_indices = sort_imports(&options, &imports);
-        let mut sorted_positions = vec![0; imports.len()];
-        for (position, &original_index) in sorted_indices.iter().enumerate() {
-            sorted_positions[original_index] = position;
-        }
-
-        let mut pending: SmallVec<[(&'static str, usize, Option<usize>); 8]> = SmallVec::new();
-        for right_index in 1..imports.len() {
-            let left_index = right_index - 1;
-            let left = &imports[left_index];
-            let right = &imports[right_index];
-
-            if sorted_positions[left_index] > sorted_positions[right_index] {
-                let message_id = if left.group_index == right.group_index {
-                    ORDER_MESSAGE_ID
-                } else {
-                    GROUP_ORDER_MESSAGE_ID
-                };
-                pending.push((message_id, right_index, Some(left_index)));
-            }
-
-            if left.partition_id == right.partition_id
-                && left.group_index <= right.group_index
-                && let Newlines::Count(expected) = newlines_between(&options, left, right)
-            {
-                let actual = empty_lines_between(source_text, left.source_end, right.source_start);
-                if actual < expected {
-                    pending.push((MISSED_SPACING_MESSAGE_ID, right_index, Some(left_index)));
-                } else if actual > expected {
-                    pending.push((EXTRA_SPACING_MESSAGE_ID, right_index, Some(left_index)));
-                }
-            }
-        }
-        if pending.is_empty() {
-            continue;
-        }
-
-        let Some(fix) = build_fix(source_text, &options, &imports, &sorted_indices) else {
-            continue;
-        };
-        for (message_id, right_index, left_index) in pending {
-            let right = &imports[right_index];
-            let left = left_index.map(|index| &imports[index]);
-            let is_group_error = message_id == GROUP_ORDER_MESSAGE_ID;
-            diagnostics.push(RuleDiagnostic {
-                rule_name: RULE,
-                message_id,
-                data: RuleDiagnosticData {
-                    left: left.map_or_else(|| CompactString::new(""), |node| node.name.clone()),
-                    right: right.name.clone(),
-                    left_group: is_group_error.then(|| {
-                        left.map_or_else(|| CompactString::new(""), |node| node.group.clone())
-                    }),
-                    right_group: is_group_error.then(|| right.group.clone()),
-                },
-                loc: lines.loc_for_span(source_text, right.span),
-                fix: fix.clone(),
-            });
-        }
+        check_specifiers(
+            source_text,
+            comments,
+            &options,
+            &mut specifiers,
+            IMPORT_CONTRACT,
+            &lines,
+            &mut diagnostics,
+        );
     }
     diagnostics
+}
+
+pub(crate) fn check_exports(
+    source_text: &str,
+    body: &[Statement<'_>],
+    comments: &[Comment],
+    raw_options: &Value,
+) -> SmallVec<[RuleDiagnostic; 8]> {
+    let lines = LineIndex::new(source_text);
+    let mut diagnostics = SmallVec::new();
+
+    for statement in body {
+        let Statement::ExportNamedDeclaration(declaration) = statement else {
+            continue;
+        };
+        if declaration.specifiers.len() < 2 {
+            continue;
+        }
+        let named_specifiers: SmallVec<[&ExportSpecifier<'_>; 8]> =
+            declaration.specifiers.iter().collect();
+        let selected = select_export_options(raw_options, declaration, &named_specifiers);
+        let options = RuleOptions::from_object(selected);
+        let mut specifiers: SmallVec<[NamedSpecifier<'_>; 8]> = named_specifiers
+            .iter()
+            .enumerate()
+            .filter_map(|(index, specifier)| {
+                let boundary = named_specifiers
+                    .get(index + 1)
+                    .map_or(declaration.span.end, |next| next.span.start);
+                named_export(
+                    source_text,
+                    comments,
+                    declaration,
+                    specifier,
+                    boundary,
+                    &options,
+                    EXPORT_CONTRACT,
+                )
+            })
+            .collect();
+        if specifiers.len() < 2 {
+            continue;
+        }
+
+        check_specifiers(
+            source_text,
+            comments,
+            &options,
+            &mut specifiers,
+            EXPORT_CONTRACT,
+            &lines,
+            &mut diagnostics,
+        );
+    }
+    diagnostics
+}
+
+fn check_specifiers(
+    source_text: &str,
+    comments: &[Comment],
+    options: &RuleOptions,
+    specifiers: &mut [NamedSpecifier<'_>],
+    contract: RuleContract,
+    lines: &LineIndex,
+    diagnostics: &mut SmallVec<[RuleDiagnostic; 8]>,
+) {
+    assign_partitions(source_text, comments, options, specifiers);
+    let sorted_indices = sort_specifiers(options, specifiers);
+    let mut sorted_positions = vec![0; specifiers.len()];
+    for (position, &original_index) in sorted_indices.iter().enumerate() {
+        sorted_positions[original_index] = position;
+    }
+
+    let mut pending: SmallVec<[(&'static str, usize, Option<usize>); 8]> = SmallVec::new();
+    for right_index in 1..specifiers.len() {
+        let left_index = right_index - 1;
+        let left = &specifiers[left_index];
+        let right = &specifiers[right_index];
+
+        if sorted_positions[left_index] > sorted_positions[right_index] {
+            let message_id = if left.group_index == right.group_index {
+                contract.order_message_id
+            } else {
+                contract.group_order_message_id
+            };
+            pending.push((message_id, right_index, Some(left_index)));
+        }
+
+        if left.partition_id == right.partition_id
+            && left.group_index <= right.group_index
+            && let Newlines::Count(expected) = newlines_between(options, left, right)
+        {
+            let actual = empty_lines_between(source_text, left.source_end, right.source_start);
+            if actual < expected {
+                pending.push((
+                    contract.missed_spacing_message_id,
+                    right_index,
+                    Some(left_index),
+                ));
+            } else if actual > expected {
+                pending.push((
+                    contract.extra_spacing_message_id,
+                    right_index,
+                    Some(left_index),
+                ));
+            }
+        }
+    }
+    if pending.is_empty() {
+        return;
+    }
+
+    let Some(fix) = build_fix(source_text, options, specifiers, &sorted_indices) else {
+        return;
+    };
+    for (message_id, right_index, left_index) in pending {
+        let right = &specifiers[right_index];
+        let left = left_index.map(|index| &specifiers[index]);
+        let is_group_error = message_id == contract.group_order_message_id;
+        diagnostics.push(RuleDiagnostic {
+            rule_name: contract.rule,
+            message_id,
+            data: RuleDiagnosticData {
+                left: left.map_or_else(|| CompactString::new(""), |node| node.name.clone()),
+                right: right.name.clone(),
+                left_group: is_group_error.then(|| {
+                    left.map_or_else(|| CompactString::new(""), |node| node.group.clone())
+                }),
+                right_group: is_group_error.then(|| right.group.clone()),
+            },
+            loc: lines.loc_for_span(source_text, right.span),
+            fix: fix.clone(),
+        });
+    }
 }
 
 impl RuleOptions {
@@ -285,7 +391,7 @@ impl RuleOptions {
     }
 }
 
-fn select_options(
+fn select_import_options(
     raw_options: &Value,
     declaration: &ImportDeclaration<'_>,
     specifiers: &[&ImportSpecifier<'_>],
@@ -324,6 +430,45 @@ fn select_options(
     Map::new()
 }
 
+fn select_export_options(
+    raw_options: &Value,
+    declaration: &ExportNamedDeclaration<'_>,
+    specifiers: &[&ExportSpecifier<'_>],
+) -> Map<String, Value> {
+    let candidates: Vec<&Map<String, Value>> = match raw_options {
+        Value::Array(values) => values.iter().filter_map(Value::as_object).collect(),
+        Value::Object(object) => vec![object],
+        _ => Vec::new(),
+    };
+    for candidate in candidates {
+        let Some(condition) = candidate
+            .get("useConfigurationIf")
+            .and_then(Value::as_object)
+        else {
+            return candidate.clone();
+        };
+        let ignore_alias = candidate
+            .get("ignoreAlias")
+            .and_then(Value::as_bool)
+            .unwrap_or(false);
+        if let Some(pattern) = condition.get("allNamesMatchPattern")
+            && !specifiers.iter().all(|specifier| {
+                let name = export_name(specifier, ignore_alias);
+                matches_regex(name.as_str(), pattern)
+            })
+        {
+            continue;
+        }
+        if let Some(selector) = condition.get("matchesAstSelector").and_then(Value::as_str)
+            && !matches_export_selector(selector, declaration)
+        {
+            continue;
+        }
+        return candidate.clone();
+    }
+    Map::new()
+}
+
 fn matches_import_selector(selector: &str, declaration: &ImportDeclaration<'_>) -> bool {
     let selector = selector.trim();
     if matches!(
@@ -344,6 +489,36 @@ fn matches_import_selector(selector: &str, declaration: &ImportDeclaration<'_>) 
                 let expected = expected.trim().trim_matches(['\'', '"']);
                 if matches!(field.trim(), "source.value" | "source.raw") {
                     return declaration.source.value.as_str() == expected;
+                }
+            }
+        }
+    }
+    false
+}
+
+fn matches_export_selector(selector: &str, declaration: &ExportNamedDeclaration<'_>) -> bool {
+    let selector = selector.trim();
+    if matches!(
+        selector,
+        "ExportNamedDeclaration"
+            | "* > ExportNamedDeclaration"
+            | "Program > ExportNamedDeclaration"
+            | "Program ExportNamedDeclaration"
+    ) {
+        return true;
+    }
+    if let Some(attribute) = selector
+        .strip_prefix("ExportNamedDeclaration[")
+        .and_then(|value| value.strip_suffix(']'))
+    {
+        for operator in ["=", "=="] {
+            if let Some((field, expected)) = attribute.split_once(operator) {
+                let expected = expected.trim().trim_matches(['\'', '"']);
+                if matches!(field.trim(), "source.value" | "source.raw") {
+                    return declaration
+                        .source
+                        .as_ref()
+                        .is_some_and(|source| source.value.as_str() == expected);
                 }
             }
         }
@@ -437,8 +612,10 @@ fn named_import<'a>(
     specifier: &ImportSpecifier<'_>,
     boundary: u32,
     options: &RuleOptions,
-) -> Option<NamedImport<'a>> {
-    let source_start = movable_leading_comment_start(source_text, comments, specifier, options);
+    contract: RuleContract,
+) -> Option<NamedSpecifier<'a>> {
+    let source_start =
+        movable_leading_comment_start(source_text, comments, specifier.span, options);
     let source_end = comments
         .iter()
         .filter(|comment| {
@@ -462,9 +639,58 @@ fn named_import<'a>(
     } else {
         "value"
     };
-    let group = compute_group(options, name.as_str(), modifier);
+    let group = compute_group(options, name.as_str(), modifier, contract.selector);
     let group_index = options.group_index(group.as_str());
-    Some(NamedImport {
+    Some(NamedSpecifier {
+        span: specifier.span,
+        name,
+        source,
+        source_start,
+        source_end,
+        size: node_source.encode_utf16().count(),
+        group,
+        group_index,
+        partition_id: 0,
+    })
+}
+
+fn named_export<'a>(
+    source_text: &'a str,
+    comments: &[Comment],
+    declaration: &ExportNamedDeclaration<'_>,
+    specifier: &ExportSpecifier<'_>,
+    boundary: u32,
+    options: &RuleOptions,
+    contract: RuleContract,
+) -> Option<NamedSpecifier<'a>> {
+    let source_start =
+        movable_leading_comment_start(source_text, comments, specifier.span, options);
+    let source_end = comments
+        .iter()
+        .filter(|comment| {
+            comment.span.start >= specifier.span.end
+                && comment.span.end <= boundary
+                && is_same_line(source_text, specifier.span.end, comment.span.start)
+        })
+        .map(|comment| comment.span.end)
+        .max()
+        .unwrap_or(specifier.span.end);
+    let source =
+        source_text.get(usize::try_from(source_start).ok()?..usize::try_from(source_end).ok()?)?;
+    let node_source = source_text.get(
+        usize::try_from(specifier.span.start).ok()?..usize::try_from(specifier.span.end).ok()?,
+    )?;
+    let name = export_name(specifier, options.sort.ignore_alias);
+    let modifier = if declaration.export_kind == ImportOrExportKind::Type
+        || specifier.export_kind == ImportOrExportKind::Type
+    {
+        "type"
+    } else {
+        "value"
+    };
+    let group = compute_group(options, name.as_str(), modifier, contract.selector);
+    let group_index = options.group_index(group.as_str());
+    Some(NamedSpecifier {
         span: specifier.span,
         name,
         source,
@@ -480,17 +706,17 @@ fn named_import<'a>(
 fn movable_leading_comment_start(
     source_text: &str,
     comments: &[Comment],
-    specifier: &ImportSpecifier<'_>,
+    specifier_span: Span,
     options: &RuleOptions,
 ) -> u32 {
     let mut leading: SmallVec<[&Comment; 4]> = comments
         .iter()
         .filter(|comment| {
-            comment.attached_to == specifier.span.start && comment.span.end <= specifier.span.start
+            comment.attached_to == specifier_span.start && comment.span.end <= specifier_span.start
         })
         .collect();
     leading.sort_by_key(|comment| comment.span.start);
-    let mut start = specifier.span.start;
+    let mut start = specifier_span.start;
     for comment in leading.into_iter().rev() {
         if is_partition_comment(source_text, comment, &options.partition_by_comment)
             || empty_lines_between(source_text, comment.span.end, start) > 0
@@ -502,7 +728,12 @@ fn movable_leading_comment_start(
     start
 }
 
-fn compute_group(options: &RuleOptions, name: &str, modifier: &str) -> CompactString {
+fn compute_group(
+    options: &RuleOptions,
+    name: &str,
+    modifier: &str,
+    selector: &str,
+) -> CompactString {
     let configured: SmallVec<[&str; 8]> = options.group_names().collect();
     for custom in &options.custom_groups {
         if !configured
@@ -514,12 +745,12 @@ fn compute_group(options: &RuleOptions, name: &str, modifier: &str) -> CompactSt
         if custom
             .matches
             .iter()
-            .any(|matcher| custom_match(matcher, name, modifier))
+            .any(|matcher| custom_match(matcher, name, modifier, selector))
         {
             return custom.group_name.clone();
         }
     }
-    for predefined in [format!("{modifier}-import"), "import".to_owned()] {
+    for predefined in [format!("{modifier}-{selector}"), selector.to_owned()] {
         if configured
             .iter()
             .any(|configured_name| *configured_name == predefined)
@@ -530,11 +761,11 @@ fn compute_group(options: &RuleOptions, name: &str, modifier: &str) -> CompactSt
     CompactString::new("unknown")
 }
 
-fn custom_match(matcher: &CustomMatch, name: &str, modifier: &str) -> bool {
+fn custom_match(matcher: &CustomMatch, name: &str, modifier: &str, selector: &str) -> bool {
     if matcher
         .selector
         .as_ref()
-        .is_some_and(|selector| selector.as_str() != "import")
+        .is_some_and(|candidate| candidate.as_str() != selector)
     {
         return false;
     }
@@ -556,45 +787,45 @@ fn assign_partitions(
     source_text: &str,
     comments: &[Comment],
     options: &RuleOptions,
-    imports: &mut [NamedImport<'_>],
+    specifiers: &mut [NamedSpecifier<'_>],
 ) {
     let mut partition_id = 1;
-    for index in 0..imports.len() {
+    for index in 0..specifiers.len() {
         if index > 0 {
             let has_partition_comment = comments.iter().any(|comment| {
-                comment.attached_to == imports[index].span.start
-                    && comment.span.end <= imports[index].span.start
+                comment.attached_to == specifiers[index].span.start
+                    && comment.span.end <= specifiers[index].span.start
                     && is_partition_comment(source_text, comment, &options.partition_by_comment)
             });
             let has_partition_newline = options.partition_by_new_line
                 && empty_lines_between(
                     source_text,
-                    imports[index - 1].source_end,
-                    imports[index].source_start,
+                    specifiers[index - 1].source_end,
+                    specifiers[index].source_start,
                 ) > 0;
             if has_partition_comment || has_partition_newline {
                 partition_id += 1;
             }
         }
-        imports[index].partition_id = partition_id;
+        specifiers[index].partition_id = partition_id;
     }
 }
 
-fn sort_imports(options: &RuleOptions, imports: &[NamedImport<'_>]) -> Vec<usize> {
-    let mut sorted = Vec::with_capacity(imports.len());
+fn sort_specifiers(options: &RuleOptions, specifiers: &[NamedSpecifier<'_>]) -> Vec<usize> {
+    let mut sorted = Vec::with_capacity(specifiers.len());
     let mut start = 0;
-    while start < imports.len() {
-        let partition = imports[start].partition_id;
+    while start < specifiers.len() {
+        let partition = specifiers[start].partition_id;
         let mut end = start + 1;
-        while end < imports.len() && imports[end].partition_id == partition {
+        while end < specifiers.len() && specifiers[end].partition_id == partition {
             end += 1;
         }
         let mut partition_indices: Vec<usize> = (start..end).collect();
         partition_indices.sort_by(|&left, &right| {
-            imports[left]
+            specifiers[left]
                 .group_index
-                .cmp(&imports[right].group_index)
-                .then_with(|| compare_in_group(options, &imports[left], &imports[right]))
+                .cmp(&specifiers[right].group_index)
+                .then_with(|| compare_in_group(options, &specifiers[left], &specifiers[right]))
                 .then_with(|| left.cmp(&right))
         });
         sorted.extend(partition_indices);
@@ -605,8 +836,8 @@ fn sort_imports(options: &RuleOptions, imports: &[NamedImport<'_>]) -> Vec<usize
 
 fn compare_in_group(
     options: &RuleOptions,
-    left: &NamedImport<'_>,
-    right: &NamedImport<'_>,
+    left: &NamedSpecifier<'_>,
+    right: &NamedSpecifier<'_>,
 ) -> Ordering {
     let (sort, raw) = options.sort_options_for_group(left.group_index);
     let object = raw.as_object();
@@ -646,8 +877,8 @@ fn compare_in_group(
 
 fn fallback_compare(
     options: &RuleOptions,
-    left: &NamedImport<'_>,
-    right: &NamedImport<'_>,
+    left: &NamedSpecifier<'_>,
+    right: &NamedSpecifier<'_>,
     raw: Option<&Map<String, Value>>,
 ) -> Ordering {
     let Some(fallback) = raw
@@ -677,8 +908,8 @@ fn fallback_compare(
 
 fn subgroup_compare(
     options: &RuleOptions,
-    left: &NamedImport<'_>,
-    right: &NamedImport<'_>,
+    left: &NamedSpecifier<'_>,
+    right: &NamedSpecifier<'_>,
     raw: Option<&Map<String, Value>>,
 ) -> Ordering {
     let Some(GroupEntry::Group { names, .. }) = options.groups.get(left.group_index) else {
@@ -704,8 +935,8 @@ fn subgroup_compare(
 
 fn newlines_between(
     options: &RuleOptions,
-    left: &NamedImport<'_>,
-    right: &NamedImport<'_>,
+    left: &NamedSpecifier<'_>,
+    right: &NamedSpecifier<'_>,
 ) -> Newlines {
     if left.group_index == right.group_index {
         if let Some(custom) = options
@@ -774,36 +1005,36 @@ fn newlines_between(
 fn build_fix(
     source_text: &str,
     options: &RuleOptions,
-    imports: &[NamedImport<'_>],
+    specifiers: &[NamedSpecifier<'_>],
     sorted_indices: &[usize],
 ) -> Option<RuleDiagnosticFix> {
     let mut replacement = CompactString::new("");
-    let mut desired_source_starts = Vec::with_capacity(imports.len());
-    let mut desired_source_ends = Vec::with_capacity(imports.len());
+    let mut desired_source_starts = Vec::with_capacity(specifiers.len());
+    let mut desired_source_ends = Vec::with_capacity(specifiers.len());
     let mut changed_start: Option<u32> = None;
     let mut changed_end: Option<u32> = None;
-    for position in 0..imports.len() {
+    for position in 0..specifiers.len() {
         desired_source_starts.push(replacement.len());
-        replacement.push_str(imports[*sorted_indices.get(position)?].source);
+        replacement.push_str(specifiers[*sorted_indices.get(position)?].source);
         desired_source_ends.push(replacement.len());
         if sorted_indices[position] != position {
             changed_start = Some(
-                changed_start.map_or(imports[position].source_start, |start| {
-                    start.min(imports[position].source_start)
+                changed_start.map_or(specifiers[position].source_start, |start| {
+                    start.min(specifiers[position].source_start)
                 }),
             );
-            changed_end = Some(changed_end.map_or(imports[position].source_end, |end| {
-                end.max(imports[position].source_end)
+            changed_end = Some(changed_end.map_or(specifiers[position].source_end, |end| {
+                end.max(specifiers[position].source_end)
             }));
         }
-        if position + 1 == imports.len() {
+        if position + 1 == specifiers.len() {
             continue;
         }
-        let separator_start = usize::try_from(imports[position].source_end).ok()?;
-        let separator_end = usize::try_from(imports[position + 1].source_start).ok()?;
+        let separator_start = usize::try_from(specifiers[position].source_end).ok()?;
+        let separator_end = usize::try_from(specifiers[position + 1].source_start).ok()?;
         let separator = source_text.get(separator_start..separator_end)?;
-        let sorted_left = &imports[*sorted_indices.get(position)?];
-        let sorted_right = &imports[*sorted_indices.get(position + 1)?];
+        let sorted_left = &specifiers[*sorted_indices.get(position)?];
+        let sorted_right = &specifiers[*sorted_indices.get(position + 1)?];
         let desired_separator = if sorted_left.partition_id == sorted_right.partition_id
             && sorted_left.group_index <= sorted_right.group_index
             && let Newlines::Count(expected) = newlines_between(options, sorted_left, sorted_right)
@@ -813,20 +1044,22 @@ fn build_fix(
                 expected,
                 is_same_line(
                     source_text,
-                    imports[position].span.end,
-                    imports[position + 1].span.start,
+                    specifiers[position].span.end,
+                    specifiers[position + 1].span.start,
                 ),
             )
         } else {
             CompactString::from(separator)
         };
         if desired_separator.as_str() != separator {
-            changed_start = Some(changed_start.map_or(imports[position].span.end, |start| {
-                start.min(imports[position].span.end)
-            }));
+            changed_start = Some(
+                changed_start.map_or(specifiers[position].span.end, |start| {
+                    start.min(specifiers[position].span.end)
+                }),
+            );
             changed_end = Some(
-                changed_end.map_or(imports[position + 1].source_start, |end| {
-                    end.max(imports[position + 1].source_start)
+                changed_end.map_or(specifiers[position + 1].source_start, |end| {
+                    end.max(specifiers[position + 1].source_start)
                 }),
             );
         }
@@ -836,13 +1069,13 @@ fn build_fix(
     let changed_end = changed_end?;
     let replacement_start = desired_offset_for_boundary(
         changed_start,
-        imports,
+        specifiers,
         &desired_source_starts,
         &desired_source_ends,
     )?;
     let replacement_end = desired_offset_for_boundary(
         changed_end,
-        imports,
+        specifiers,
         &desired_source_starts,
         &desired_source_ends,
     )?;
@@ -859,23 +1092,24 @@ fn build_fix(
 
 fn desired_offset_for_boundary(
     boundary: u32,
-    imports: &[NamedImport<'_>],
+    specifiers: &[NamedSpecifier<'_>],
     desired_source_starts: &[usize],
     desired_source_ends: &[usize],
 ) -> Option<usize> {
-    for (index, import) in imports.iter().enumerate() {
-        if boundary == import.source_start {
+    for (index, specifier) in specifiers.iter().enumerate() {
+        if boundary == specifier.source_start {
             return desired_source_starts.get(index).copied();
         }
-        if boundary == import.source_end {
+        if boundary == specifier.source_end {
             return desired_source_ends.get(index).copied();
         }
-        if boundary == import.span.end {
-            let offset = usize::try_from(import.span.end.checked_sub(import.source_start)?).ok()?;
+        if boundary == specifier.span.end {
+            let offset =
+                usize::try_from(specifier.span.end.checked_sub(specifier.source_start)?).ok()?;
             return desired_source_starts.get(index)?.checked_add(offset);
         }
     }
-    let first_start = imports.first()?.source_start;
+    let first_start = specifiers.first()?.source_start;
     usize::try_from(boundary.checked_sub(first_start)?).ok()
 }
 
@@ -946,6 +1180,14 @@ fn import_name(specifier: &ImportSpecifier<'_>, ignore_alias: bool) -> CompactSt
         module_export_name(&specifier.imported)
     } else {
         CompactString::from(specifier.local.name.as_str())
+    }
+}
+
+fn export_name(specifier: &ExportSpecifier<'_>, ignore_alias: bool) -> CompactString {
+    if ignore_alias {
+        module_export_name(&specifier.local)
+    } else {
+        module_export_name(&specifier.exported)
     }
 }
 
