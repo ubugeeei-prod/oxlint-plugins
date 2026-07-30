@@ -126,7 +126,7 @@ test("top level", () => {});
 test.describe("no callback");
 Promise.resolve().then(() => expect(value).toBe(1));
 expect(value);
-test("@bad tag", () => {});
+test("@bad tag", { tag: "bad" }, () => {});
 test("", () => {});
 `;
 

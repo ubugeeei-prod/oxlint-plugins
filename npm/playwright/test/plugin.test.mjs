@@ -138,13 +138,15 @@ const invalidCases = [
   ['valid-describe-callback', 'test.describe("no callback");\n'],
   ['valid-expect', 'expect(value);\n'],
   ['valid-expect-in-promise', 'Promise.resolve().then(() => expect(value).toBe(1));\n'],
-  ['valid-test-tags', 'test("@bad tag", () => {});\n'],
+  ['valid-test-tags', 'test("bad tag", { tag: "bad" }, () => {});\n'],
   ['valid-title', 'test("", () => {});\n'],
 ];
 const expectedRestrictedMessages = {
   'no-restricted-locators': 'Usage of `{{method}}` is disallowed',
   'no-restricted-matchers': 'Use of `{{restriction}}` is disallowed',
   'no-restricted-roles': 'Usage of role `{{role}}` in getByRole() is disallowed',
+  'valid-test-tags': 'Tag must start with @',
+  'valid-title': '{{ functionName }} should not have an empty title',
 };
 
 function runRule(ruleName, sourceText, options = [], filename = 'fixture.spec.ts') {

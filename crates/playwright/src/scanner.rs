@@ -153,11 +153,6 @@ impl<'a> Scanner<'a> {
         );
         self.check_regex("valid-expect-in-promise", r#"(?s)\.then\s*\(.*expect\s*\("#);
         self.check_regex("valid-expect", r#"expect\s*\([^)]*\)\s*;"#);
-        self.check_regex(
-            "valid-test-tags",
-            r#"test\s*\(\s*['"][^'"]*@bad tag[^'"]*['"]"#,
-        );
-        self.check_regex("valid-title", r#"(test|test\.describe)\s*\(\s*['"]\s*['"]"#);
     }
 
     fn check_regex(&mut self, rule_name: &'static str, pattern: &str) {
@@ -213,6 +208,7 @@ impl<'a> Scanner<'a> {
             message_id: "unexpected",
             data: DiagnosticData::default(),
             loc: self.line_index.loc_for_span(self.source_text, span),
+            fix: None,
         });
     }
 }

@@ -1,7 +1,8 @@
 use oxlint_plugins_carton::{CompactString, SmallVec};
 
 use crate::{
-    PlaywrightOptions, RULE_NAMES, Restriction, implemented_playwright_rule_names, scan_playwright,
+    PlaywrightOptions, RULE_NAMES, Restriction, TagPattern, TitlePattern, TitlePatternOptions,
+    ValidTestTagsOptions, ValidTitleOptions, implemented_playwright_rule_names, scan_playwright,
     scan_playwright_with_options,
 };
 
@@ -68,7 +69,7 @@ test("top level", () => {});
 test.describe("no callback");
 Promise.resolve().then(() => expect(value).toBe(1));
 expect(value);
-test("@bad tag", () => {});
+test("@bad tag", { tag: "bad" }, () => {});
 test("", () => {});
 "#;
 
@@ -122,6 +123,7 @@ fn restricted_rules_honor_lists_custom_messages_and_exact_utf16_ranges() {
         .into_iter()
         .collect(),
         expect_aliases: Default::default(),
+        ..PlaywrightOptions::default()
     };
 
     let diagnostics = scan_playwright_with_options(source, "fixture.ts", &options);
@@ -173,6 +175,7 @@ fn restricted_rules_support_computed_names_aliases_and_last_duplicate_wins() {
         .collect(),
         restricted_roles: [restriction("button", None)].into_iter().collect(),
         expect_aliases: Default::default(),
+        ..PlaywrightOptions::default()
     };
 
     let diagnostics = scan_playwright_with_options(source, "fixture.ts", &options);
@@ -210,12 +213,178 @@ fn restricted_rules_are_inert_without_options_and_on_parse_errors() {
     );
 }
 
+#[test]
+fn valid_title_reports_exact_data_utf16_ranges_and_byte_fixes() {
+    let source = concat!(
+        "const marker = \"🧪\";\n",
+        "test(\" test scenario \", () => {});\n",
+        "test(\"test duplicate\", () => {});\n",
+    );
+    let diagnostics = scan_playwright(source, "fixture.spec.ts")
+        .into_iter()
+        .filter(|diagnostic| diagnostic.rule_name == "valid-title")
+        .collect::<SmallVec<[_; 4]>>();
+
+    assert_eq!(
+        diagnostics
+            .iter()
+            .map(|diagnostic| diagnostic.message_id)
+            .collect::<SmallVec<[_; 4]>>()
+            .as_slice(),
+        ["accidentalSpace", "duplicatePrefix"]
+    );
+    assert_eq!(
+        (
+            diagnostics[0].loc.start_line,
+            diagnostics[0].loc.start_column,
+            diagnostics[0].loc.end_line,
+            diagnostics[0].loc.end_column,
+        ),
+        (2, 5, 2, 22)
+    );
+    let fix = diagnostics[0].fix.as_ref().expect("space fix");
+    assert_eq!(
+        &source[fix.start as usize..fix.end as usize],
+        "\" test scenario \""
+    );
+    assert_eq!(fix.replacement, "\"test scenario\"");
+    assert_eq!(
+        diagnostics[1]
+            .fix
+            .as_ref()
+            .map(|fix| fix.replacement.as_str()),
+        Some("\"duplicate\"")
+    );
+}
+
+#[test]
+fn valid_title_supports_lookahead_patterns_custom_messages_and_call_groups() {
+    let patterns = TitlePatternOptions {
+        describe: Some(title_pattern(
+            r"(?:#(?!unit|e2e))\w+",
+            Some("invalid describe kind"),
+        )),
+        step: Some(title_pattern(
+            r"(?:#(?!unit|e2e))\w+",
+            Some("invalid step kind"),
+        )),
+        test: Some(title_pattern(
+            r"(?:#(?!unit|e2e))\w+",
+            Some("invalid test kind"),
+        )),
+    };
+    let options = PlaywrightOptions {
+        valid_title: ValidTitleOptions {
+            must_not_match: patterns,
+            ..ValidTitleOptions::default()
+        },
+        ..PlaywrightOptions::default()
+    };
+    let source = concat!(
+        "test.describe(\"suite #wrong\", () => {});\n",
+        "test(\"case #wrong\", () => {});\n",
+        "test.step(\"action #wrong\", () => {});\n",
+    );
+    let diagnostics = scan_playwright_with_options(source, "fixture.spec.ts", &options)
+        .into_iter()
+        .filter(|diagnostic| diagnostic.rule_name == "valid-title")
+        .collect::<SmallVec<[_; 4]>>();
+
+    assert_eq!(diagnostics.len(), 3);
+    assert!(
+        diagnostics
+            .iter()
+            .all(|diagnostic| diagnostic.message_id == "mustNotMatchCustom")
+    );
+    assert_eq!(
+        diagnostics
+            .iter()
+            .map(|diagnostic| diagnostic.data.function_name.as_deref())
+            .collect::<SmallVec<[_; 4]>>()
+            .as_slice(),
+        [Some("describe"), Some("test"), Some("step")]
+    );
+    assert_eq!(
+        diagnostics[0].data.pattern.as_deref(),
+        Some(r"/(?:#(?!unit|e2e))\w+/u")
+    );
+}
+
+#[test]
+fn valid_test_tags_supports_exact_and_regex_lists_with_all_message_data() {
+    let options = PlaywrightOptions {
+        valid_test_tags: ValidTestTagsOptions {
+            allowed_tags: [
+                tag_pattern("@smoke", false),
+                tag_pattern(r"^@team-\d+$", true),
+            ]
+            .into_iter()
+            .collect(),
+            disallowed_tags: Default::default(),
+        },
+        ..PlaywrightOptions::default()
+    };
+    let source = concat!(
+        "test(\"@unknown title\", { tag: [\"@smoke\", \"@team-42\", \"bad\"] }, () => {});\n",
+        "test.step(\"@team-nope step\", () => {});\n",
+    );
+    let diagnostics = scan_playwright_with_options(source, "fixture.spec.ts", &options)
+        .into_iter()
+        .filter(|diagnostic| diagnostic.rule_name == "valid-test-tags")
+        .collect::<SmallVec<[_; 8]>>();
+
+    assert_eq!(
+        diagnostics
+            .iter()
+            .map(|diagnostic| diagnostic.message_id)
+            .collect::<SmallVec<[_; 8]>>()
+            .as_slice(),
+        ["unknownTag", "invalidTagFormat", "unknownTag"]
+    );
+    assert_eq!(
+        diagnostics
+            .iter()
+            .map(|diagnostic| diagnostic.data.tag.as_deref())
+            .collect::<SmallVec<[_; 8]>>()
+            .as_slice(),
+        [Some("@unknown"), None, Some("@team-nope")]
+    );
+}
+
+#[test]
+fn pattern_rules_resolve_every_test_alias_form_and_ignore_malformed_input() {
+    let source = concat!(
+        "import { test as scenario } from \"@playwright/test\";\n",
+        "const extended = scenario.extend({});\n",
+        "scenario(\"test imported\", () => {});\n",
+        "extended(\"test extended\", () => {});\n",
+        "it(\"test configured\", () => {});\n",
+    );
+    let options = PlaywrightOptions {
+        test_aliases: [CompactString::from("it")].into_iter().collect(),
+        ..PlaywrightOptions::default()
+    };
+    let diagnostics = scan_playwright_with_options(source, "fixture.spec.ts", &options)
+        .into_iter()
+        .filter(|diagnostic| diagnostic.rule_name == "valid-title")
+        .collect::<SmallVec<[_; 4]>>();
+
+    assert_eq!(diagnostics.len(), 3);
+    assert!(
+        diagnostics
+            .iter()
+            .all(|diagnostic| diagnostic.message_id == "duplicatePrefix")
+    );
+    assert!(scan_playwright_with_options("test(\"", "fixture.spec.ts", &options).is_empty());
+}
+
 fn representative_options() -> PlaywrightOptions {
     PlaywrightOptions {
         restricted_locators: [restriction("getByText", None)].into_iter().collect(),
         restricted_matchers: [restriction("toBeTruthy", None)].into_iter().collect(),
         restricted_roles: [restriction("button", None)].into_iter().collect(),
         expect_aliases: Default::default(),
+        ..PlaywrightOptions::default()
     }
 }
 
@@ -223,5 +392,20 @@ fn restriction(value: &str, message: Option<&str>) -> Restriction {
     Restriction {
         value: CompactString::from(value),
         message: message.map(CompactString::from),
+    }
+}
+
+fn title_pattern(source: &str, message: Option<&str>) -> TitlePattern {
+    TitlePattern {
+        source: CompactString::from(source),
+        message: message.map(CompactString::from),
+    }
+}
+
+fn tag_pattern(source: &str, is_regex: bool) -> TagPattern {
+    TagPattern {
+        source: CompactString::from(source),
+        flags: CompactString::from("u"),
+        is_regex,
     }
 }
