@@ -1,7 +1,11 @@
 export type AstroRuleName =
   | 'no-deprecated-astro-canonicalurl'
   | 'no-deprecated-astro-fetchcontent'
-  | 'no-deprecated-getentrybyslug';
+  | 'no-deprecated-astro-resolve'
+  | 'no-deprecated-getentrybyslug'
+  | 'no-set-html-directive'
+  | 'no-set-text-directive'
+  | 'prefer-class-list-directive';
 
 export type AstroDiagnosticLoc = {
   startLine: number;
@@ -20,7 +24,11 @@ export type AstroDiagnosticFix = {
 
 export type AstroDiagnostic = {
   ruleName: AstroRuleName;
-  messageId: 'deprecated';
+  messageId: 'deprecated' | 'disallow' | 'unexpected';
+  /** UTF-8 byte offset into the original source. */
+  start: number;
+  /** UTF-8 byte offset into the original source. */
+  end: number;
   loc: AstroDiagnosticLoc;
   fix?: AstroDiagnosticFix | null;
 };

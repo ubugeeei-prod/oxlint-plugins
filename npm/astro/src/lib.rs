@@ -44,6 +44,8 @@ mod napi_abi {
     pub struct Diagnostic {
         pub rule_name: String,
         pub message_id: String,
+        pub start: u32,
+        pub end: u32,
         pub loc: DiagnosticLoc,
         pub fix: Option<DiagnosticFix>,
     }
@@ -72,6 +74,8 @@ mod napi_abi {
             .map(|diagnostic| Diagnostic {
                 rule_name: diagnostic.rule_name.to_owned(),
                 message_id: diagnostic.message_id.to_owned(),
+                start: diagnostic.start,
+                end: diagnostic.end,
                 loc: DiagnosticLoc {
                     start_line: diagnostic.loc.start_line,
                     start_column: diagnostic.loc.start_column,
@@ -81,7 +85,7 @@ mod napi_abi {
                 fix: diagnostic.fix.map(|fix| DiagnosticFix {
                     start: fix.start,
                     end: fix.end,
-                    replacement: fix.replacement.to_owned(),
+                    replacement: fix.replacement.as_str().to_owned(),
                 }),
             })
             .collect()

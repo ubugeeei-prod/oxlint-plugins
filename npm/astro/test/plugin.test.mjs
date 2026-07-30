@@ -16,6 +16,16 @@ const fixture = JSON.parse(
 const expectedRuleNames = [
   'no-deprecated-astro-canonicalurl',
   'no-deprecated-astro-fetchcontent',
+  'no-deprecated-astro-resolve',
+  'no-deprecated-getentrybyslug',
+  'no-set-html-directive',
+  'no-set-text-directive',
+  'prefer-class-list-directive',
+];
+const recommendedRuleNames = [
+  'no-deprecated-astro-canonicalurl',
+  'no-deprecated-astro-fetchcontent',
+  'no-deprecated-astro-resolve',
   'no-deprecated-getentrybyslug',
 ];
 
@@ -113,22 +123,28 @@ describe('astro plugin shape', () => {
   it('enables all selected rules in recommended for Astro files', () => {
     expect(plugin.configs.recommended.files).toEqual(['**/*.astro']);
     expect(plugin.configs.recommended.rules).toEqual(
-      Object.fromEntries(expectedRuleNames.map((name) => [`astro/${name}`, 'error'])),
+      Object.fromEntries(recommendedRuleNames.map((name) => [`astro/${name}`, 'error'])),
     );
   });
 
-  it('keeps every schema empty and every rule recommended', () => {
-    for (const rule of Object.values(plugin.rules)) {
+  it('keeps every schema empty and matches upstream recommendation metadata', () => {
+    for (const [ruleName, rule] of Object.entries(plugin.rules)) {
       expect(rule.meta.schema).toEqual([]);
-      expect(rule.meta.docs.recommended).toBe(true);
-      expect(rule.meta.type).toBe('problem');
+      expect(rule.meta.docs.recommended).toBe(recommendedRuleNames.includes(ruleName));
+      expect(rule.meta.type).toBe(
+        recommendedRuleNames.includes(ruleName) ? 'problem' : 'suggestion',
+      );
     }
   });
 
-  it('marks only fetchContent as fixable', () => {
+  it('marks exactly the authored fixable rules as fixable', () => {
     expect(plugin.rules['no-deprecated-astro-fetchcontent'].meta.fixable).toBe('code');
+    expect(plugin.rules['no-set-text-directive'].meta.fixable).toBe('code');
+    expect(plugin.rules['prefer-class-list-directive'].meta.fixable).toBe('code');
     expect(plugin.rules['no-deprecated-astro-canonicalurl'].meta.fixable).toBeUndefined();
+    expect(plugin.rules['no-deprecated-astro-resolve'].meta.fixable).toBeUndefined();
     expect(plugin.rules['no-deprecated-getentrybyslug'].meta.fixable).toBeUndefined();
+    expect(plugin.rules['no-set-html-directive'].meta.fixable).toBeUndefined();
   });
 });
 
@@ -158,11 +174,14 @@ describe('authored eslint-plugin-astro v3.0.1 fixtures through the adapter', () 
     ).toEqual(testCase.errors.map((error) => ({ line: error.line, column: error.column })));
   });
 
-  it('matches the authored fetchContent output', () => {
-    const testCase = fixture.rules['no-deprecated-astro-fetchcontent'].invalid[0];
-    expect(
-      applyReports(testCase.code, runRule('no-deprecated-astro-fetchcontent', testCase.code)),
-    ).toBe(testCase.output);
+  it.each(
+    Object.entries(fixture.rules).flatMap(([ruleName, cases]) =>
+      cases.invalid
+        .filter((testCase) => testCase.output !== undefined)
+        .map((testCase) => [ruleName, testCase]),
+    ),
+  )('matches authored %s fixed output', (ruleName, testCase) => {
+    expect(applyReports(testCase.code, runRule(ruleName, testCase.code))).toBe(testCase.output);
   });
 });
 
@@ -173,18 +192,24 @@ describe('adapter regression coverage', () => {
     expect(applyReports(code, reports)).toBe('---\nconst emoji = "😀"; Astro.glob("*.md")\n---\n');
   });
 
+  it('maps template-body UTF-8 fix ranges to JavaScript UTF-16 ranges', () => {
+    const code = '<div title="日本語😀" class={klass}></div>';
+    const reports = runRule('prefer-class-list-directive', code);
+    expect(applyReports(code, reports)).toBe('<div title="日本語😀" class:list={klass}></div>');
+  });
+
   it('does not report a shadowed Astro binding', () => {
     const code = '---\nconst Astro = { canonicalURL: "local" };\nAstro.canonicalURL\n---\n';
     expect(runRule('no-deprecated-astro-canonicalurl', code)).toEqual([]);
   });
 
-  it('does not scan template expressions in the frontmatter slice', () => {
+  it('scans template expressions after the frontmatter slice', () => {
     expect(
       runRule(
         'no-deprecated-astro-canonicalurl',
         '---\nconst title = "page"\n---\n<p>{Astro.canonicalURL}</p>\n',
       ),
-    ).toEqual([]);
+    ).toHaveLength(1);
   });
 
   it('does not report malformed frontmatter', () => {
@@ -223,6 +248,40 @@ describe('astro rules through real Oxlint jsPlugins', () => {
     expect(rerun.stderr).toBe('');
     expect(rerun.diagnostics).toEqual([]);
     expect(rerun.output).toBe(result.output);
+  });
+
+  it('reports an authored template-body expression at its physical location', () => {
+    const testCase = fixture.rules['no-deprecated-astro-resolve'].invalid[0];
+    const result = runOxlint('no-deprecated-astro-resolve', testCase.code);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('astro(no-deprecated-astro-resolve)');
+    expect(result.diagnostics[0].labels[0].span.line).toBe(6);
+    expect(result.diagnostics[0].labels[0].span.column).toBe(11);
+  });
+
+  it('reports an authored template attribute after empty frontmatter', () => {
+    const testCase = fixture.rules['no-set-html-directive'].invalid.find((entry) =>
+      entry.filename.startsWith('template-attr-'),
+    );
+    const result = runOxlint('no-set-html-directive', `---\n---\n${testCase.code}`);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('astro(no-set-html-directive)');
+    expect(result.diagnostics[0].labels[0].span.line).toBe(3);
+    expect(result.diagnostics[0].labels[0].span.column).toBe(4);
+  });
+
+  it('reports a fixable body rule without returning an invalid virtual-source fix', () => {
+    const testCase = fixture.rules['prefer-class-list-directive'].invalid[0];
+    const result = runOxlint('prefer-class-list-directive', testCase.code, true);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe('');
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.diagnostics[0].code).toBe('astro(prefer-class-list-directive)');
+    expect(result.output).toBe(testCase.code);
   });
 
   it('keeps rule selection isolated through the CLI', () => {
