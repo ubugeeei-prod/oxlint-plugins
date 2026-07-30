@@ -66,7 +66,7 @@ const invalidCases = [
   ['sort-variable-declarations', 'const b = 1, a = 2;'],
 ];
 
-function runRule(ruleName, sourceText, filename = 'fixture.tsx', options = []) {
+function runRule(ruleName, sourceText, filename = 'fixture.tsx', options = [], settings) {
   const reports = [];
   const sourceCode = {
     text: sourceText,
@@ -78,6 +78,7 @@ function runRule(ruleName, sourceText, filename = 'fixture.tsx', options = []) {
   const visitor = rule.createOnce({
     filename,
     options,
+    settings,
     sourceCode,
     report(descriptor) {
       reports.push(descriptor);
@@ -120,7 +121,9 @@ describe('perfectionist plugin adapter', () => {
 
     expect(reports).toHaveLength(1);
     expect(plugin.rules[ruleName].meta.messages[reports[0].messageId]).toBe(
-      ['sort-exports', 'sort-named-exports', 'sort-named-imports'].includes(ruleName)
+      ['sort-exports', 'sort-imports', 'sort-named-exports', 'sort-named-imports'].includes(
+        ruleName,
+      )
         ? 'Expected "{{right}}" to come before "{{left}}".'
         : 'Expected sorted order.',
     );
@@ -152,6 +155,72 @@ describe('perfectionist plugin adapter', () => {
       'export',
     ]);
     expect(schema[0].additionalProperties).toBe(false);
+  });
+
+  it('declares every sort-imports option, selector, modifier, and message', () => {
+    const rule = plugin.rules['sort-imports'];
+    const [schema] = rule.meta.schema;
+
+    expect(Object.keys(schema.properties).sort()).toEqual([
+      'alphabet',
+      'customGroups',
+      'environment',
+      'fallbackSort',
+      'groups',
+      'ignoreCase',
+      'internalPattern',
+      'locales',
+      'maxLineLength',
+      'newlinesBetween',
+      'newlinesInside',
+      'order',
+      'partitionByComment',
+      'partitionByNewLine',
+      'sortBy',
+      'sortSideEffects',
+      'specialCharacters',
+      'tsconfig',
+      'type',
+      'useExperimentalDependencyDetection',
+    ]);
+    expect(schema.additionalProperties).toBe(false);
+    expect(schema.properties.type.enum).toContain('type-import-first');
+    expect(schema.properties.sortBy.enum).toEqual(['specifier', 'path']);
+    expect(schema.properties.customGroups.items.oneOf[0].properties.modifiers.items.enum).toEqual([
+      'default',
+      'multiline',
+      'named',
+      'require',
+      'side-effect',
+      'singleline',
+      'ts-equals',
+      'type',
+      'value',
+      'wildcard',
+    ]);
+    expect(schema.properties.customGroups.items.oneOf[0].properties.selector.enum).toEqual([
+      'side-effect-style',
+      'tsconfig-path',
+      'side-effect',
+      'external',
+      'internal',
+      'builtin',
+      'sibling',
+      'subpath',
+      'import',
+      'parent',
+      'index',
+      'style',
+      'type',
+    ]);
+    expect(Object.keys(rule.meta.messages).sort()).toEqual([
+      'extraSpacingBetweenImports',
+      'missedCommentAboveImport',
+      'missedSpacingBetweenImports',
+      'unexpectedImportsDependencyOrder',
+      'unexpectedImportsGroupOrder',
+      'unexpectedImportsOrder',
+    ]);
   });
 
   it.each([
@@ -208,7 +277,6 @@ describe('perfectionist plugin adapter', () => {
       minProperties: 1,
       additionalProperties: false,
     });
-    expect(plugin.rules['sort-imports'].meta.schema).toEqual([]);
   });
 
   it('threads recommended comparator options into every configured sorting rule', () => {
@@ -226,7 +294,29 @@ describe('perfectionist plugin adapter', () => {
       'error',
       { type: 'natural', order: 'asc' },
     ]);
-    expect(rules['perfectionist/sort-imports']).toBe('error');
+    expect(rules['perfectionist/sort-imports']).toEqual([
+      'error',
+      { type: 'natural', order: 'asc' },
+    ]);
+  });
+
+  it('merges global perfectionist settings with explicit sort-imports options', () => {
+    const source = `import item2 from "item2";\nimport item10 from "item10";`;
+    const settings = { perfectionist: { type: 'natural', order: 'desc' } };
+
+    expect(runRule('sort-imports', source, 'fixture.ts', [], settings)).toHaveLength(1);
+    expect(runRule('sort-imports', source, 'fixture.ts', [{ order: 'asc' }], settings)).toEqual([]);
+  });
+
+  it('keeps sort-imports createOnce caches isolated by options and source object', () => {
+    const source = `import item2 from "item2";\nimport item10 from "item10";`;
+
+    expect(
+      runRule('sort-imports', source, 'fixture.ts', [{ type: 'natural', order: 'desc' }]),
+    ).toHaveLength(1);
+    expect(
+      runRule('sort-imports', source, 'fixture.ts', [{ type: 'natural', order: 'asc' }]),
+    ).toEqual([]);
   });
 
   it('loads configured options and fixes through real oxlint jsPlugins', () => {
@@ -471,6 +561,81 @@ describe('perfectionist plugin adapter', () => {
       expect(fixed.stderr).toBe('');
       expect(readFileSync(fixturePath, 'utf8')).toBe(
         `// Values\nexport { value } from "./value";\n// Types\nexport type { Type } from "./types";\n`,
+      );
+    } finally {
+      rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('loads import groups, comments, dependencies, and iterative fixes through real oxlint', () => {
+    const tempDir = mkdtempSync(join(tmpdir(), 'oxlint-perfectionist-imports-'));
+    try {
+      const fixturePath = join(tempDir, 'fixture.ts');
+      writeFileSync(
+        fixturePath,
+        `import a = aImport.a1.a2;\nimport type { Type } from "./types";\nimport aImport from "b";\n`,
+      );
+      writeFileSync(
+        join(tempDir, 'oxlint.config.jsonc'),
+        JSON.stringify({
+          jsPlugins: [
+            {
+              name: 'perfectionist',
+              specifier: join(packageRoot, 'index.js'),
+            },
+          ],
+          rules: {
+            'perfectionist/sort-imports': [
+              'error',
+              {
+                groups: [
+                  { group: 'unknown', commentAbove: 'Runtime' },
+                  { group: 'type-import', commentAbove: 'Types' },
+                ],
+                useExperimentalDependencyDetection: true,
+              },
+            ],
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        findOxlintCli(),
+        ['--config', 'oxlint.config.jsonc', '--quiet', '--format', 'json', 'fixture.ts'],
+        {
+          cwd: tempDir,
+          encoding: 'utf8',
+        },
+      );
+      const payload = JSON.parse(result.stdout);
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      expect(payload.diagnostics.map((diagnostic) => diagnostic.message)).toContain(
+        'Expected dependency "b" to come before "aImport.a1.a2".',
+      );
+      expect(payload.diagnostics.map((diagnostic) => diagnostic.message)).toContain(
+        'Missed comment "Types" above "./types".',
+      );
+
+      let fixed;
+      for (let pass = 0; pass < 8; pass += 1) {
+        fixed = spawnSync(
+          findOxlintCli(),
+          ['--config', 'oxlint.config.jsonc', '--fix', 'fixture.ts'],
+          {
+            cwd: tempDir,
+            encoding: 'utf8',
+          },
+        );
+        if (fixed.status === 0) {
+          break;
+        }
+      }
+      expect(fixed.status).toBe(0);
+      expect(fixed.stderr).toBe('');
+      expect(readFileSync(fixturePath, 'utf8')).toBe(
+        `// Runtime\nimport aImport from "b";\nimport a = aImport.a1.a2;\n\n// Types\nimport type { Type } from "./types";\n`,
       );
     } finally {
       rmSync(tempDir, { recursive: true, force: true });

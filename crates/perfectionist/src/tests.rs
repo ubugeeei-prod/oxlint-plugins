@@ -72,6 +72,13 @@ fn configured_export_declarations(
     scan_perfectionist_rule(source, "fixture.ts", "sort-exports", &options)
 }
 
+fn configured_import_declarations(
+    source: &str,
+    options: serde_json::Value,
+) -> SmallVec<[RuleDiagnostic; 8]> {
+    scan_perfectionist_rule(source, "fixture.ts", "sort-imports", &options)
+}
+
 #[test]
 fn sorts_predefined_type_and_value_groups() {
     let diagnostics = configured(
@@ -622,5 +629,244 @@ fn export_declaration_rule_fails_closed_for_malformed_sources_and_options() {
         )
         .len()
             == 1
+    );
+}
+
+#[test]
+fn sorts_import_declarations_and_preserves_trailing_comments() {
+    let source = "import z from 'z'; // z docs\nimport a from 'a'; // a docs\n";
+    let diagnostics = configured_import_declarations(source, json!([]));
+
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "unexpectedImportsOrder");
+    assert_eq!(diagnostics[0].data.left, "z");
+    assert_eq!(diagnostics[0].data.right, "a");
+    assert_eq!(
+        diagnostics[0].fix.replacement,
+        "import a from 'a'; // a docs\nimport z from 'z'; // z docs"
+    );
+}
+
+#[test]
+fn sorts_import_declarations_by_predefined_modifiers_and_selectors() {
+    let diagnostics = configured_import_declarations(
+        "import value from './value';\nimport type { Type } from './types';\nimport * as fs from 'node:fs';",
+        json!([{
+            "groups": [
+                "type-named-singleline-import",
+                "value-wildcard-singleline-import",
+                "unknown"
+            ]
+        }]),
+    );
+
+    assert_eq!(diagnostics.len(), 2);
+    assert_eq!(diagnostics[0].message_id, "unexpectedImportsGroupOrder");
+    assert_eq!(diagnostics[0].data.left_group.as_deref(), Some("unknown"));
+    assert_eq!(
+        diagnostics[0].data.right_group.as_deref(),
+        Some("type-named-singleline-import")
+    );
+    assert_eq!(
+        diagnostics[0].fix.replacement,
+        "import type { Type } from './types';\n\nimport * as fs from 'node:fs';\n\nimport value from './value';"
+    );
+}
+
+#[test]
+fn matches_import_custom_groups_by_selector_modifier_and_regex() {
+    let diagnostics = configured_import_declarations(
+        "import other from 'other';\nimport api from '@api/client';",
+        json!([{
+            "customGroups": [{
+                "groupName": "api",
+                "selector": "external",
+                "modifiers": ["default", "value"],
+                "elementNamePattern": "^@api"
+            }],
+            "groups": ["api", "external"]
+        }]),
+    );
+
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "unexpectedImportsGroupOrder");
+    assert_eq!(diagnostics[0].data.right_group.as_deref(), Some("api"));
+    assert_eq!(
+        diagnostics[0].fix.replacement,
+        "import api from '@api/client';\n\nimport other from 'other';"
+    );
+}
+
+#[test]
+fn keeps_side_effect_imports_stable_unless_explicitly_sorted() {
+    assert!(configured_import_declarations("import 'z';\nimport 'a';", json!([])).is_empty());
+
+    let diagnostics = configured_import_declarations(
+        "import 'z';\nimport 'a';",
+        json!([{ "groups": ["side-effect"], "sortSideEffects": true }]),
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "unexpectedImportsOrder");
+    assert_eq!(diagnostics[0].fix.replacement, "import 'a';\nimport 'z';");
+}
+
+#[test]
+fn prioritizes_typescript_import_equals_dependencies() {
+    let diagnostics = configured_import_declarations(
+        "import a = aImport.a1.a2;\nimport aImport from \"b\";",
+        json!([{ "groups": ["unknown"], "useExperimentalDependencyDetection": true }]),
+    );
+
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(
+        diagnostics[0].message_id,
+        "unexpectedImportsDependencyOrder"
+    );
+    assert_eq!(diagnostics[0].data.right, "b");
+    assert_eq!(
+        diagnostics[0].data.node_dependent_on_right.as_deref(),
+        Some("aImport.a1.a2")
+    );
+    assert_eq!(
+        diagnostics[0].fix.replacement,
+        "import aImport from \"b\";\nimport a = aImport.a1.a2;"
+    );
+}
+
+#[test]
+fn applies_type_import_first_fallback_and_specifier_sorting() {
+    let type_first = configured_import_declarations(
+        "import z from 'z';\nimport type { A } from 'zz';\nimport a from 'a';",
+        json!([{
+            "type": "type-import-first",
+            "fallbackSort": { "type": "alphabetical", "order": "asc" },
+            "groups": ["unknown"]
+        }]),
+    );
+    assert_eq!(type_first.len(), 1);
+    assert_eq!(
+        type_first[0].fix.replacement,
+        "import type { A } from 'zz';\nimport z from 'z';"
+    );
+
+    let by_specifier = configured_import_declarations(
+        "import { z } from 'a';\nimport { a } from 'z';",
+        json!([{ "groups": ["unknown"], "sortBy": "specifier" }]),
+    );
+    assert_eq!(by_specifier.len(), 1);
+    assert_eq!(
+        by_specifier[0].fix.replacement,
+        "import { a } from 'z';\nimport { z } from 'a';"
+    );
+}
+
+#[test]
+fn partitions_imports_by_blank_lines_without_crossing_boundaries() {
+    let diagnostics = configured_import_declarations(
+        "import d from 'd';\nimport a from 'a';\n\nimport c from 'c';\nimport b from 'b';",
+        json!([{
+            "partitionByNewLine": true,
+            "newlinesBetween": "ignore",
+            "newlinesInside": "ignore"
+        }]),
+    );
+
+    assert_eq!(diagnostics.len(), 2);
+    assert_eq!(diagnostics[0].data.right, "a");
+    assert_eq!(diagnostics[1].data.right, "b");
+    assert_eq!(diagnostics[0].fix, diagnostics[1].fix);
+    assert_eq!(
+        diagnostics[0].fix.replacement,
+        "import a from 'a';\nimport d from 'd';\n\nimport b from 'b';\nimport c from 'c';"
+    );
+}
+
+#[test]
+fn keeps_disabled_imports_in_place_and_sorts_enabled_neighbors() {
+    let diagnostics = configured_import_declarations(
+        "import c from './c';\nimport b from './b';\n// eslint-disable-next-line perfectionist/sort-imports\nimport a from './a';",
+        json!([{}]),
+    );
+
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].data.left, "./c");
+    assert_eq!(diagnostics[0].data.right, "./b");
+    assert_eq!(diagnostics[0].fix.start, 0);
+    assert_eq!(diagnostics[0].fix.end, 41);
+    assert_eq!(
+        diagnostics[0].fix.replacement,
+        "import b from './b';\nimport c from './c';"
+    );
+}
+
+#[test]
+fn reports_missing_import_group_comments_without_placeholder_data() {
+    let diagnostics = configured_import_declarations(
+        "import type { Type } from './types';\nimport { value } from './value';",
+        json!([{
+            "groups": [
+                { "group": "value-import", "commentAbove": "Values" },
+                { "group": "type-import", "commentAbove": "Types" }
+            ]
+        }]),
+    );
+
+    assert_eq!(diagnostics.len(), 2);
+    assert_eq!(diagnostics[0].message_id, "missedCommentAboveImport");
+    assert_eq!(
+        diagnostics[0].data.missed_comment_above.as_deref(),
+        Some("Types")
+    );
+    assert!(diagnostics[0].data.left.is_empty());
+    assert_eq!(diagnostics[0].fix, diagnostics[1].fix);
+}
+
+#[test]
+fn keeps_utf16_offsets_and_crlf_text_for_unicode_import_fixes() {
+    let source = "'😀';\r\nimport 世界 from '世界';\r\nimport api from 'api';\r\n";
+    let diagnostics = configured_import_declarations(
+        source,
+        json!([{
+            "customGroups": [{ "groupName": "api", "elementNamePattern": "^api$" }],
+            "groups": ["api", "unknown"],
+            "locales": "zh-CN"
+        }]),
+    );
+
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].fix.start, 7);
+    assert_eq!(diagnostics[0].fix.end, 51);
+    assert_eq!(
+        diagnostics[0].fix.replacement,
+        "import api from 'api';\r\n\nimport 世界 from '世界';"
+    );
+}
+
+#[test]
+fn import_rule_isolated_blocks_and_malformed_inputs_fail_closed() {
+    assert!(
+        configured_import_declarations(
+            "import z from 'z';\nconst boundary = true;\nimport a from 'a';",
+            json!([])
+        )
+        .is_empty()
+    );
+    assert!(configured_import_declarations("import { a } from", json!([])).is_empty());
+    assert!(
+        configured_import_declarations(
+            "import z from 'z';\nimport a from 'a';",
+            json!("not-an-option-object")
+        )
+        .len()
+            == 1
+    );
+    assert!(
+        scan_perfectionist_rule(
+            "import z from 'z';\nimport a from 'a';",
+            "fixture.ts",
+            "sort-exports",
+            &json!([])
+        )
+        .is_empty()
     );
 }

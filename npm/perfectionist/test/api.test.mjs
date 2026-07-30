@@ -179,6 +179,85 @@ describe('perfectionist native API', () => {
     });
   });
 
+  it('returns exact import-declaration groups, CRLF locations, and UTF-16 fixes', () => {
+    const source = `'😀';\r\nimport 世界 from '世界';\r\nimport api from 'api';\r\n`;
+    const [diagnostic] = scanPerfectionistRule(source, 'fixture.ts', 'sort-imports', [
+      {
+        customGroups: [{ groupName: 'api', elementNamePattern: '^api$' }],
+        groups: ['api', 'unknown'],
+        locales: 'zh-CN',
+      },
+    ]);
+
+    expect(diagnostic).toEqual({
+      ruleName: 'sort-imports',
+      messageId: 'unexpectedImportsGroupOrder',
+      data: {
+        left: '世界',
+        right: 'api',
+        leftGroup: 'unknown',
+        rightGroup: 'api',
+      },
+      loc: {
+        startLine: 3,
+        startColumn: 0,
+        endLine: 3,
+        endColumn: 22,
+      },
+      fix: {
+        start: 7,
+        end: 51,
+        replacement: `import api from 'api';\r\n\nimport 世界 from '世界';`,
+      },
+    });
+  });
+
+  it('returns exact dependency data without unrelated placeholders', () => {
+    const [diagnostic] = scanPerfectionistRule(
+      `import a = aImport.a1.a2;\nimport aImport from "b";`,
+      'fixture.ts',
+      'sort-imports',
+      [{ groups: ['unknown'], useExperimentalDependencyDetection: true }],
+    );
+
+    expect(diagnostic).toEqual({
+      ruleName: 'sort-imports',
+      messageId: 'unexpectedImportsDependencyOrder',
+      data: {
+        right: 'b',
+        nodeDependentOnRight: 'aImport.a1.a2',
+      },
+      loc: {
+        startLine: 2,
+        startColumn: 0,
+        endLine: 2,
+        endColumn: 24,
+      },
+      fix: {
+        start: 0,
+        end: 50,
+        replacement: `import aImport from "b";\nimport a = aImport.a1.a2;`,
+      },
+    });
+  });
+
+  it('keeps side-effect imports stable unless sorting is explicitly enabled', () => {
+    const source = `import 'z';\nimport 'a';`;
+
+    expect(scanPerfectionistRule(source, 'fixture.ts', 'sort-imports', [])).toEqual([]);
+    expect(
+      scanPerfectionistRule(source, 'fixture.ts', 'sort-imports', [
+        { groups: ['side-effect'], sortSideEffects: true },
+      ]),
+    ).toMatchObject([
+      {
+        messageId: 'unexpectedImportsOrder',
+        data: { left: 'z', right: 'a' },
+        fix: { replacement: `import 'a';\nimport 'z';` },
+      },
+    ]);
+  });
+
   it('returns exact missing-comment data without unrelated placeholders', () => {
     const [diagnostic] = scanPerfectionistRule(
       `export type { value } from './types';`,
@@ -314,6 +393,28 @@ describe('perfectionist native API', () => {
         'export { b } from "b";\nexport { a } from "a";',
         'fixture.ts',
         'sort-exports',
+        [{ type: 'not-a-sort', groups: [null, false, 1] }],
+      ),
+    ).toHaveLength(1);
+  });
+
+  it('isolates import declarations and fails closed for malformed import syntax', () => {
+    expect(
+      scanPerfectionistRule(
+        `import z from "z";\nconst boundary = true;\nimport a from "a";`,
+        'fixture.ts',
+        'sort-imports',
+        [],
+      ),
+    ).toEqual([]);
+    expect(scanPerfectionistRule('import { a } from', 'fixture.ts', 'sort-imports', [])).toEqual(
+      [],
+    );
+    expect(
+      scanPerfectionistRule(
+        `import z from "z";\nimport a from "a";`,
+        'fixture.ts',
+        'sort-imports',
         [{ type: 'not-a-sort', groups: [null, false, 1] }],
       ),
     ).toHaveLength(1);
