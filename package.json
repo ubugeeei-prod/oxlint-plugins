@@ -71,6 +71,7 @@
     "port:tests:stylistic:jsx-child-element-spacing": "node tools/tasks/sync-stylistic-jsx-child-element-spacing-tests.ts",
     "port:tests:stylistic:jsx-closing-bracket-location": "node tools/tasks/sync-stylistic-jsx-closing-bracket-location-tests.ts",
     "port:tests:stylistic:jsx-closing-tag-location": "node tools/tasks/sync-stylistic-jsx-closing-tag-location-tests.ts",
+    "port:tests:stylistic:jsx-curly-brace-presence": "node tools/tasks/sync-stylistic-jsx-curly-brace-presence-tests.ts",
     "port:tests:stylistic:jsx-curly-newline": "node tools/tasks/sync-stylistic-jsx-curly-newline-tests.ts",
     "port:tests:stylistic:jsx-curly-spacing": "node tools/tasks/sync-stylistic-jsx-curly-spacing-tests.ts",
     "port:tests:stylistic:jsx-first-prop-new-line": "node tools/tasks/sync-stylistic-jsx-first-prop-new-line-tests.ts",

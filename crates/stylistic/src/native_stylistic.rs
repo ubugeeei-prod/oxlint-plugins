@@ -20,6 +20,7 @@ mod indent_binary_ops;
 mod jsx_child_element_spacing;
 mod jsx_closing_bracket_location;
 mod jsx_closing_tag_location;
+mod jsx_curly_brace_presence;
 mod jsx_curly_newline;
 mod jsx_curly_spacing;
 mod jsx_first_prop_new_line;
@@ -636,6 +637,13 @@ const JSX_CLOSING_TAG_LOCATION_MESSAGES: &[(&str, &str)] = &[
     (
         "alignWithOpening",
         "Expected closing tag to be aligned with the line containing the opening tag",
+    ),
+];
+const JSX_CURLY_BRACE_PRESENCE_MESSAGES: &[(&str, &str)] = &[
+    ("unnecessaryCurly", "Curly braces are unnecessary here."),
+    (
+        "missingCurly",
+        "Need to wrap this literal in a JSX expression.",
     ),
 ];
 const JSX_CURLY_NEWLINE_MESSAGES: &[(&str, &str)] = &[
@@ -1320,6 +1328,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         messages: JSX_CLOSING_TAG_LOCATION_MESSAGES,
     },
     StylisticRuleDefinition {
+        name: "jsx-curly-brace-presence",
+        docs_description: "Disallow unnecessary JSX expressions when literals alone are sufficient or enforce JSX expressions on literals in JSX children or attributes",
+        messages: JSX_CURLY_BRACE_PRESENCE_MESSAGES,
+    },
+    StylisticRuleDefinition {
         name: "jsx-curly-newline",
         docs_description: "Enforce consistent linebreaks in curly braces in JSX attributes and expressions",
         messages: JSX_CURLY_NEWLINE_MESSAGES,
@@ -1598,6 +1611,12 @@ pub fn run_stylistic_lint(
                 )
             }
             "jsx-closing-tag-location" => jsx_closing_tag_location::check_jsx_closing_tag_location(
+                source_text,
+                config.filename.as_deref(),
+                &rule.options,
+                &mut diagnostics,
+            ),
+            "jsx-curly-brace-presence" => jsx_curly_brace_presence::check_jsx_curly_brace_presence(
                 source_text,
                 config.filename.as_deref(),
                 &rule.options,
