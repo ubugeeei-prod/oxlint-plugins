@@ -52,6 +52,7 @@ describe('stylistic plugin meta contract', () => {
           'jsx-newline',
           'jsx-props-no-multi-spaces',
           'jsx-quotes',
+          'jsx-self-closing-comp',
           'no-confusing-arrow',
           'no-extra-parens',
           'wrap-iife',
@@ -293,6 +294,23 @@ describe('stylistic plugin meta contract', () => {
           },
         ],
       },
+    });
+  });
+
+  it('preserves the complete upstream jsx-self-closing-comp metadata contract', () => {
+    expect(plugin.rules['jsx-self-closing-comp'].meta).toMatchObject({
+      type: 'layout',
+      docs: {
+        description: 'Disallow extra closing tags for components without children',
+        recommended: false,
+        requiresTypeChecking: false,
+      },
+      fixable: 'code',
+      hasSuggestions: true,
+      messages: {
+        notSelfClosing: 'Empty components are self-closing',
+      },
+      schema: { type: 'array' },
     });
   });
 

@@ -41,6 +41,7 @@ describe('stylistic native API', () => {
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'jsx-one-expression-per-line',
     );
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('jsx-self-closing-comp');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('no-confusing-arrow');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'type-annotation-spacing',
@@ -417,6 +418,40 @@ describe('stylistic native API', () => {
     ]);
     expect(preferSingle[0].suggestions[0].fixes).toEqual([
       { range: { start: 25, end: 30 }, replacementText: "'two'" },
+    ]);
+  });
+
+  it('runs jsx-self-closing-comp with exact UTF-8 byte ranges and code fixes', () => {
+    const source = 'const marker = "😀"; const 日本語 = <Widget<Props> title="値">\r\n</Widget>;';
+    const openingStart = Buffer.byteLength(source.slice(0, source.indexOf('<Widget')));
+    const openingEnd = Buffer.byteLength(source.slice(0, source.indexOf('>\r\n') + 1));
+    const closingEnd = Buffer.byteLength(
+      source.slice(0, source.indexOf('</Widget>') + '</Widget>'.length),
+    );
+    const diagnostics = runNativeStylisticLint(source, {
+      filename: 'fixture.tsx',
+      rules: [{ name: 'jsx-self-closing-comp', options: [] }],
+    });
+
+    expect(diagnostics).toEqual([
+      {
+        ruleName: 'jsx-self-closing-comp',
+        messageId: 'notSelfClosing',
+        message: 'Empty components are self-closing',
+        range: { start: openingStart, end: openingEnd },
+        suggestions: [
+          {
+            messageId: 'notSelfClosing',
+            message: 'Empty components are self-closing',
+            fixes: [
+              {
+                range: { start: openingEnd - 1, end: closingEnd },
+                replacementText: ' />',
+              },
+            ],
+          },
+        ],
+      },
     ]);
   });
 

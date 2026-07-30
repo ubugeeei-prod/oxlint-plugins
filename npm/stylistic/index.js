@@ -61,6 +61,7 @@ function createStylisticRule(ruleName) {
               'jsx-newline',
               'jsx-props-no-multi-spaces',
               'jsx-quotes',
+              'jsx-self-closing-comp',
               'no-confusing-arrow',
               'no-extra-parens',
               'wrap-iife',

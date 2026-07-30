@@ -30,6 +30,7 @@ mod jsx_one_expression_per_line;
 mod jsx_props_no_multi_spaces;
 mod jsx_quotes;
 mod jsx_rules;
+mod jsx_self_closing_comp;
 mod lexer;
 mod line_index;
 mod line_rules;
@@ -710,6 +711,8 @@ const JSX_PROPS_NO_MULTI_SPACES_MESSAGES: &[(&str, &str)] = &[
         "Expected only one space between “{{prop1}}” and “{{prop2}}”",
     ),
 ];
+const JSX_SELF_CLOSING_COMP_MESSAGES: &[(&str, &str)] =
+    &[("notSelfClosing", "Empty components are self-closing")];
 const MULTILINE_COMMENT_STYLE_MESSAGES: &[(&str, &str)] = &[
     (
         "expectedBlock",
@@ -1261,6 +1264,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         messages: JSX_PROPS_NO_MULTI_SPACES_MESSAGES,
     },
     StylisticRuleDefinition {
+        name: "jsx-self-closing-comp",
+        docs_description: "Disallow extra closing tags for components without children",
+        messages: JSX_SELF_CLOSING_COMP_MESSAGES,
+    },
+    StylisticRuleDefinition {
         name: "one-var-declaration-per-line",
         docs_description: "Require or disallow newlines around variable declarations.",
         messages: ONE_VAR_DECLARATION_PER_LINE_MESSAGES,
@@ -1523,6 +1531,12 @@ pub fn run_stylistic_lint(
                     &mut diagnostics,
                 )
             }
+            "jsx-self-closing-comp" => jsx_self_closing_comp::check_jsx_self_closing_comp(
+                source_text,
+                config.filename.as_deref(),
+                &rule.options,
+                &mut diagnostics,
+            ),
             "unicode-bom" => {
                 unicode_bom::check_unicode_bom(source_text, &rule.options, &mut diagnostics)
             }
