@@ -212,7 +212,11 @@ const PACKAGE_MAP: Record<
     typeAware: true,
   },
   'postgresql-eslint-parser': { pkgName: null },
-  'eslint-plugin-astro': { pkgName: null },
+  'eslint-plugin-astro': {
+    pkgName: '@oxlint-plugins/oxlint-plugin-astro',
+    npmDir: 'npm/astro',
+    shortName: 'astro',
+  },
 };
 
 const manifest = JSON.parse(

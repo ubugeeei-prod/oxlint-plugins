@@ -8,6 +8,20 @@ export type Sample = {
 
 export const samples: Sample[] = [
   {
+    label: 'Astro',
+    filename: 'index.astro',
+    code: `---
+import { getEntryBySlug } from 'astro:content';
+
+const canonical = Astro.canonicalURL;
+const posts = await Astro.fetchContent('../pages/post/*.md');
+---
+
+<h1>{canonical.pathname}</h1>
+<p>{posts.length}</p>
+`,
+  },
+  {
     label: 'Security',
     filename: 'app.js',
     code: `const cp = require('child_process');

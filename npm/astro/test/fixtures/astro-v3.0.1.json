@@ -1,0 +1,88 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-astro",
+    "version": "3.0.1",
+    "ref": "v3.0.1",
+    "commit": "d887cce6ad7d2cacfde885b29acfe080a7be6a85",
+    "sourceFiles": [
+      "tests/fixtures/rules/no-deprecated-astro-canonicalurl/invalid/test01-errors.json",
+      "tests/fixtures/rules/no-deprecated-astro-canonicalurl/invalid/test01-input.astro",
+      "tests/fixtures/rules/no-deprecated-astro-canonicalurl/valid/test01-input.astro",
+      "tests/fixtures/rules/no-deprecated-astro-fetchcontent/invalid/test01-errors.json",
+      "tests/fixtures/rules/no-deprecated-astro-fetchcontent/invalid/test01-input.astro",
+      "tests/fixtures/rules/no-deprecated-astro-fetchcontent/invalid/test01-output.astro",
+      "tests/fixtures/rules/no-deprecated-astro-fetchcontent/valid/test01-input.astro",
+      "tests/fixtures/rules/no-deprecated-getentrybyslug/invalid/test01-errors.json",
+      "tests/fixtures/rules/no-deprecated-getentrybyslug/invalid/test01-input.astro",
+      "tests/fixtures/rules/no-deprecated-getentrybyslug/valid/test01-input.astro"
+    ],
+    "license": "MIT",
+    "tool": "tools/tasks/sync-astro-tests.ts"
+  },
+  "rules": {
+    "no-deprecated-astro-canonicalurl": {
+      "valid": [
+        {
+          "filename": "test01-input.astro",
+          "code": "---\n/* ✓ GOOD */\nconst canonicalURL = new URL(Astro.url.pathname, Astro.site)\nconsole.log(canonicalURL)\n---\n"
+        }
+      ],
+      "invalid": [
+        {
+          "filename": "test01-input.astro",
+          "code": "---\n/* ✗ BAD */\nconst canonicalURL = Astro.canonicalURL\nconsole.log(canonicalURL)\n---\n",
+          "errors": [
+            {
+              "message": "'Astro.canonicalURL' is deprecated. Use 'Astro.url' helper instead.",
+              "line": 3,
+              "column": 22
+            }
+          ]
+        }
+      ]
+    },
+    "no-deprecated-astro-fetchcontent": {
+      "valid": [
+        {
+          "filename": "test01-input.astro",
+          "code": "---\n/* ✓ GOOD */\nconst posts = await Astro.glob(\"../pages/post/*.md\")\n---\n\n<div>\n  {posts.slice(0, 3).map((post) => (\n    <article>\n      <h1>{post.frontmatter.title}</h1>\n      <p>{post.frontmatter.description}</p>\n      <a href={post.frontmatter.url}>Read more</a>\n    </article>\n  ))}\n</div>\n"
+        }
+      ],
+      "invalid": [
+        {
+          "filename": "test01-input.astro",
+          "code": "---\n/* ✗ BAD */\nconst posts = await Astro.fetchContent(\"../pages/post/*.md\")\n---\n\n<div>\n  {posts.slice(0, 3).map((post) => (\n    <article>\n      <h1>{post.frontmatter.title}</h1>\n      <p>{post.frontmatter.description}</p>\n      <a href={post.frontmatter.url}>Read more</a>\n    </article>\n  ))}\n</div>\n",
+          "errors": [
+            {
+              "message": "'Astro.fetchContent()' is deprecated. Use 'Astro.glob()' instead.",
+              "line": 3,
+              "column": 21
+            }
+          ],
+          "output": "---\n/* ✗ BAD */\nconst posts = await Astro.glob(\"../pages/post/*.md\")\n---\n\n<div>\n  {posts.slice(0, 3).map((post) => (\n    <article>\n      <h1>{post.frontmatter.title}</h1>\n      <p>{post.frontmatter.description}</p>\n      <a href={post.frontmatter.url}>Read more</a>\n    </article>\n  ))}\n</div>\n"
+        }
+      ]
+    },
+    "no-deprecated-getentrybyslug": {
+      "valid": [
+        {
+          "filename": "test01-input.astro",
+          "code": "---\n/* ✓ GOOD */\nimport { getEntry } from \"astro:content\"\n---\n"
+        }
+      ],
+      "invalid": [
+        {
+          "filename": "test01-input.astro",
+          "code": "---\n/* ✗ BAD */\nimport { getEntryBySlug } from \"astro:content\"\n---\n",
+          "errors": [
+            {
+              "message": "'getEntryBySlug()' is deprecated. Use 'getEntry()' instead.",
+              "line": 3,
+              "column": 10
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

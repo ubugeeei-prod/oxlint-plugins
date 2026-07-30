@@ -256,6 +256,7 @@ function languageExtension(name: string) {
   if (language === 'json') return json();
   if (language === 'markdown') return markdown();
   if (language === 'sql') return sql();
+  if (language === 'astro') return javascript({ jsx: true, typescript: true });
   const ext = name.includes('.') ? name.slice(name.lastIndexOf('.') + 1).toLowerCase() : '';
   return javascript({
     jsx: ext === 'jsx' || ext === 'tsx',
