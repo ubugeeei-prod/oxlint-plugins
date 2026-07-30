@@ -2605,7 +2605,7 @@
     "publishedVersion": null,
     "upstream": {
       "package": "@eslint/json",
-      "version": "2.0.0",
+      "version": "2.0.1",
       "repository": "https://github.com/eslint/json",
       "license": "Apache-2.0"
     },
