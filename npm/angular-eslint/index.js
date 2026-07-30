@@ -14,7 +14,12 @@ const diagnosticsCache = new WeakMap();
 const implementedRuleNames = Object.freeze(implementedAngularEslintRuleNames());
 const selectorRuleNames = new Set(['component-selector', 'directive-selector']);
 const classSuffixRuleNames = new Set(['component-class-suffix', 'directive-class-suffix']);
-const optionAwareRuleNames = new Set([...selectorRuleNames, ...classSuffixRuleNames]);
+const prefixRuleNames = new Set(['no-input-prefix', 'pipe-prefix']);
+const optionAwareRuleNames = new Set([
+  ...selectorRuleNames,
+  ...classSuffixRuleNames,
+  ...prefixRuleNames,
+]);
 
 const classSuffixSchema = [
   {
@@ -37,6 +42,45 @@ const classSuffixMessages = {
   'directive-class-suffix': {
     directiveClassSuffix:
       'Directive class names should end with one of these suffixes: {{suffixes}}',
+  },
+};
+
+const prefixSchemas = {
+  'no-input-prefix': [
+    {
+      type: 'object',
+      properties: {
+        prefixes: {
+          type: 'array',
+          items: { type: 'string' },
+        },
+      },
+      additionalProperties: false,
+    },
+  ],
+  'pipe-prefix': [
+    {
+      type: 'object',
+      properties: {
+        prefixes: {
+          type: 'array',
+          items: { type: 'string' },
+          uniqueItems: true,
+        },
+      },
+      additionalProperties: false,
+    },
+  ],
+};
+
+const prefixMessages = {
+  'no-input-prefix': {
+    noInputPrefix:
+      'Input bindings, including aliases, should not be named, nor prefixed by {{prefixes}}',
+  },
+  'pipe-prefix': {
+    pipePrefix: '@Pipes should be prefixed with {{prefixes}}',
+    selectorAfterPrefixFailure: '@Pipes should have a selector after the {{prefixes}} prefix',
   },
 };
 
@@ -151,6 +195,7 @@ plugin.scanAngularEslint = scanAngularEslint;
 function createAngularEslintRule(ruleName) {
   const isSelectorRule = selectorRuleNames.has(ruleName);
   const isClassSuffixRule = classSuffixRuleNames.has(ruleName);
+  const isPrefixRule = prefixRuleNames.has(ruleName);
   return {
     meta: {
       type: problemRules.has(ruleName) ? 'problem' : 'suggestion',
@@ -164,10 +209,18 @@ function createAngularEslintRule(ruleName) {
         ? selectorMessages[ruleName]
         : isClassSuffixRule
           ? classSuffixMessages[ruleName]
-          : {
-              unexpected: 'Unexpected Angular pattern.',
-            },
-      schema: isSelectorRule ? selectorSchema : isClassSuffixRule ? classSuffixSchema : [],
+          : isPrefixRule
+            ? prefixMessages[ruleName]
+            : {
+                unexpected: 'Unexpected Angular pattern.',
+              },
+      schema: isSelectorRule
+        ? selectorSchema
+        : isClassSuffixRule
+          ? classSuffixSchema
+          : isPrefixRule
+            ? prefixSchemas[ruleName]
+            : [],
     },
     createOnce(context) {
       return {

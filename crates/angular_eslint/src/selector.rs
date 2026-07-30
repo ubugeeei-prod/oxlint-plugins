@@ -73,6 +73,7 @@ struct ParsedSelector {
 impl Visit<'_> for Scanner<'_> {
     fn visit_class(&mut self, class: &Class<'_>) {
         self.check_class_suffix_decorators(class);
+        self.check_prefix_rules(class);
         self.check_selector_decorators(class);
         walk::walk_class(self, class);
     }
