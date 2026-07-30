@@ -12,12 +12,13 @@ This is unofficial community work. It is not an official Oxlint project, and bui
 
 <!-- This section is generated from `status.json` by `tools/tasks/generate-readme-coverage.ts`. Do not edit by hand; run `pnpm run docs:readme`. -->
 
-**25** ESLint plugins are being ported · **819 / 981** rules implemented (**83%**).
+**26** ESLint plugins are being ported · **822 / 1001** rules implemented (**82%**).
 
 | Plugin                                                     | Upstream                                                                                                               | Implemented | Total | Coverage |
 | ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ----------- | ----- | -------- |
 | [`angular-eslint`](npm/angular-eslint)                     | [`@angular-eslint/eslint-plugin`](https://github.com/angular-eslint/angular-eslint)                                    | 48          | 48    | 100%     |
 | [`angular-eslint-template`](npm/angular-eslint-template)   | [`@angular-eslint/eslint-plugin-template`](https://github.com/angular-eslint/angular-eslint)                           | 0           | 39    | 0%       |
+| [`astro`](npm/astro)                                       | [`eslint-plugin-astro`](https://github.com/ota-meshi/eslint-plugin-astro)                                              | 3           | 20    | 15%      |
 | [`cypress`](npm/cypress)                                   | [`eslint-plugin-cypress`](https://github.com/cypress-io/eslint-plugin-cypress)                                         | 13          | 13    | 100%     |
 | [`e18e`](npm/e18e)                                         | [`@e18e/eslint-plugin`](https://github.com/e18e/eslint-plugin)                                                         | 25          | 27    | 93%      |
 | [`eslint-comments`](npm/eslint-comments)                   | [`@eslint-community/eslint-plugin-eslint-comments`](https://github.com/eslint-community/eslint-plugin-eslint-comments) | 9           | 9     | 100%     |
@@ -52,6 +53,14 @@ This is unofficial community work. It is not an official Oxlint project, and bui
 <summary><code>angular-eslint-template</code> — 0/39 implemented</summary>
 
 **Not implemented (39):** `alt-text`, `attributes-order`, `banana-in-box`, `button-has-type`, `click-events-have-key-events`, `conditional-complexity`, `cyclomatic-complexity`, `elements-content`, `eqeqeq`, `i18n`, `interactive-supports-focus`, `label-has-associated-control`, `mouse-events-have-key-events`, `no-any`, `no-autofocus`, `no-call-expression`, `no-distracting-elements`, `no-duplicate-attributes`, `no-empty-control-flow`, `no-inline-styles`, `no-interpolation-in-attributes`, `no-negated-async`, `no-nested-tags`, `no-non-null-assertion`, `no-positive-tabindex`, `prefer-at-else`, `prefer-at-empty`, `prefer-built-in-pipes`, `prefer-class-binding`, `prefer-contextual-for-variables`, `prefer-control-flow`, `prefer-ngsrc`, `prefer-self-closing-tags`, `prefer-static-string-properties`, `prefer-template-literal`, `role-has-required-aria`, `table-scope`, `use-track-by-function`, `valid-aria`
+
+</details>
+<details>
+<summary><code>astro</code> — 3/20 implemented</summary>
+
+**Implemented (3):** `no-deprecated-astro-canonicalurl`, `no-deprecated-astro-fetchcontent`, `no-deprecated-getentrybyslug`
+
+**Not implemented (17):** `missing-client-only-directive-value`, `no-conflict-set-directives`, `no-deprecated-astro-resolve`, `no-exports-from-components`, `no-omitted-end-tags`, `no-prerender-export-outside-pages`, `no-set-html-directive`, `no-set-text-directive`, `no-unsafe-inline-scripts`, `no-unused-css-selector`, `no-unused-define-vars-in-style`, `prefer-class-list-directive`, `prefer-object-class-list`, `prefer-split-class-list`, `semi`, `sort-attributes`, `valid-compile`
 
 </details>
 <details>
