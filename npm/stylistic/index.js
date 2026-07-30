@@ -58,6 +58,7 @@ function createStylisticRule(ruleName) {
               'jsx-curly-brace-presence',
               'jsx-curly-spacing',
               'jsx-first-prop-new-line',
+              'jsx-indent-props',
               'jsx-max-props-per-line',
               'jsx-newline',
               'jsx-props-no-multi-spaces',

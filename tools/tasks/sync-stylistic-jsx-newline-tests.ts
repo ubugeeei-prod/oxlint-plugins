@@ -318,7 +318,7 @@ function offsetAt(line, column) {
   return offset + column - 1;
 }
 
-function diagnostic(message) {
+function diagnostic(message, data) {
   const start = offsetAt(message.line, message.column);
   const end = message.endLine === undefined || message.endColumn === undefined
     ? start
@@ -326,7 +326,7 @@ function diagnostic(message) {
   return {
     messageId: message.messageId,
     message: message.message,
-    data: {},
+    data,
     range: [start, end],
     loc: {
       line: message.line,
@@ -397,7 +397,9 @@ const invalid = captured.invalid.map((testCase, index) => {
     output,
     recursiveOutput: fixed.fixed ? fixed.output : null,
     upstreamErrors: testCase.upstreamErrors,
-    expectedDiagnostics: messages.map(diagnostic),
+    expectedDiagnostics: messages.map((message, messageIndex) =>
+      diagnostic(message, testCase.upstreamErrors[messageIndex]?.data ?? {})
+    ),
   };
 });
 

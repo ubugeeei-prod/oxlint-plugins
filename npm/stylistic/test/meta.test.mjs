@@ -49,6 +49,7 @@ describe('stylistic plugin meta contract', () => {
           'jsx-curly-brace-presence',
           'jsx-curly-spacing',
           'jsx-first-prop-new-line',
+          'jsx-indent-props',
           'jsx-max-props-per-line',
           'jsx-newline',
           'jsx-props-no-multi-spaces',
@@ -211,6 +212,24 @@ describe('stylistic plugin meta contract', () => {
       messages: {
         propOnNewLine: 'Property should be placed on a new line',
         propOnSameLine: 'Property should be placed on the same line as the component declaration',
+      },
+      schema: { type: 'array' },
+    });
+  });
+
+  it('preserves the complete stable jsx-indent-props metadata contract', () => {
+    expect(plugin.rules['jsx-indent-props'].meta).toMatchObject({
+      type: 'layout',
+      docs: {
+        description: 'Enforce props indentation in JSX',
+        recommended: false,
+        requiresTypeChecking: false,
+      },
+      fixable: 'code',
+      hasSuggestions: true,
+      messages: {
+        wrongIndent:
+          'Expected indentation of {{needed}} {{type}} {{characters}} but found {{gotten}}.',
       },
       schema: { type: 'array' },
     });

@@ -30,6 +30,7 @@ describe('stylistic native API', () => {
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'jsx-function-call-newline',
     );
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('jsx-indent-props');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'jsx-props-no-multi-spaces',
     );
@@ -227,6 +228,43 @@ describe('stylistic native API', () => {
               {
                 range: { start: missingStart, end: missingStart + 'text'.length },
                 replacementText: '{"text"}',
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+  });
+
+  it('runs jsx-indent-props with exact numeric data, UTF-8 byte ranges, and fixes', () => {
+    const source = 'const emoji = "😀"; const view = <Panel<型>\nprop />;';
+    const diagnostics = runNativeStylisticLint(source, {
+      filename: 'fixture.tsx',
+      rules: [{ name: 'jsx-indent-props', options: [2] }],
+    });
+    const propStart = Buffer.byteLength(source.slice(0, source.indexOf('prop')));
+    const propEnd = propStart + Buffer.byteLength('prop');
+
+    expect(diagnostics).toEqual([
+      {
+        ruleName: 'jsx-indent-props',
+        messageId: 'wrongIndent',
+        message: 'Expected indentation of 2 space characters but found 0.',
+        data: {
+          needed: 2,
+          type: 'space',
+          characters: 'characters',
+          gotten: 0,
+        },
+        range: { start: propStart, end: propEnd },
+        suggestions: [
+          {
+            messageId: 'wrongIndent',
+            message: 'Expected indentation of 2 space characters but found 0.',
+            fixes: [
+              {
+                range: { start: propStart, end: propStart },
+                replacementText: '  ',
               },
             ],
           },
