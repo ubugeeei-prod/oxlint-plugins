@@ -1,0 +1,1049 @@
+{
+  "__generated": {
+    "source": "@stylistic/eslint-plugin",
+    "version": "5.10.0",
+    "sourceCommit": "efbb1bc0e5aaedc4695c44a03f46f4fcbbe58712",
+    "sourceFile": "packages/eslint-plugin/rules/jsx-curly-newline/jsx-curly-newline.test.ts",
+    "license": "MIT",
+    "eslintVersion": "10.0.0",
+    "parserVersions": {
+      "espree": "10.4.0",
+      "typescriptEslint": "8.56.0"
+    },
+    "tool": "tools/tasks/sync-stylistic-jsx-curly-newline-tests.ts",
+    "inventory": {
+      "valid": 24,
+      "invalid": 24,
+      "diagnostics": 30,
+      "unfixableInvalid": 4,
+      "total": 48,
+      "fixableInvalid": 20
+    }
+  },
+  "valid": [
+    {
+      "code": "<div>{foo}</div>\n// features: [],parser: default,,options: [\"consistent\"],",
+      "options": ["consistent"],
+      "parser": "espree"
+    },
+    {
+      "code": "<div>{foo}</div>\n// features: [],parser: @typescript-eslint/parser,,options: [\"consistent\"],",
+      "options": ["consistent"],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <div>\n          {\n            foo\n          }\n        </div>\n      \n// features: [],parser: default,,options: [\"consistent\"],",
+      "options": ["consistent"],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <div>\n          {\n            foo\n          }\n        </div>\n      \n// features: [],parser: @typescript-eslint/parser,,options: [\"consistent\"],",
+      "options": ["consistent"],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <div>\n          { foo &&\n            foo.bar }\n        </div>\n      \n// features: [],parser: default,,options: [\"consistent\"],",
+      "options": ["consistent"],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <div>\n          { foo &&\n            foo.bar }\n        </div>\n      \n// features: [],parser: @typescript-eslint/parser,,options: [\"consistent\"],",
+      "options": ["consistent"],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <div>\n          {\n            foo &&\n            foo.bar\n          }\n        </div>\n      \n// features: [],parser: default,,options: [\"consistent\"],",
+      "options": ["consistent"],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <div>\n          {\n            foo &&\n            foo.bar\n          }\n        </div>\n      \n// features: [],parser: @typescript-eslint/parser,,options: [\"consistent\"],",
+      "options": ["consistent"],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <div foo={\n          bar\n        } />\n      \n// features: [],parser: default,,options: [\"consistent\"],",
+      "options": ["consistent"],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <div foo={\n          bar\n        } />\n      \n// features: [],parser: @typescript-eslint/parser,,options: [\"consistent\"],",
+      "options": ["consistent"],
+      "parser": "typescript"
+    },
+    {
+      "code": "<div>{foo}</div>\n// features: [],parser: default,,options: [{\"singleline\":\"consistent\",\"multiline\":\"require\"}],",
+      "options": [
+        {
+          "singleline": "consistent",
+          "multiline": "require"
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "<div>{foo}</div>\n// features: [],parser: @typescript-eslint/parser,,options: [{\"singleline\":\"consistent\",\"multiline\":\"require\"}],",
+      "options": [
+        {
+          "singleline": "consistent",
+          "multiline": "require"
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "<div foo={bar} />\n// features: [],parser: default,,options: [{\"singleline\":\"consistent\",\"multiline\":\"require\"}],",
+      "options": [
+        {
+          "singleline": "consistent",
+          "multiline": "require"
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "<div foo={bar} />\n// features: [],parser: @typescript-eslint/parser,,options: [{\"singleline\":\"consistent\",\"multiline\":\"require\"}],",
+      "options": [
+        {
+          "singleline": "consistent",
+          "multiline": "require"
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <div>\n          {\n            foo &&\n            foo.bar\n          }\n        </div>\n      \n// features: [],parser: default,,options: [{\"singleline\":\"consistent\",\"multiline\":\"require\"}],",
+      "options": [
+        {
+          "singleline": "consistent",
+          "multiline": "require"
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <div>\n          {\n            foo &&\n            foo.bar\n          }\n        </div>\n      \n// features: [],parser: @typescript-eslint/parser,,options: [{\"singleline\":\"consistent\",\"multiline\":\"require\"}],",
+      "options": [
+        {
+          "singleline": "consistent",
+          "multiline": "require"
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <div>\n          {\n            foo\n          }\n        </div>\n      \n// features: [],parser: default,,options: [{\"singleline\":\"consistent\",\"multiline\":\"require\"}],",
+      "options": [
+        {
+          "singleline": "consistent",
+          "multiline": "require"
+        }
+      ],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <div>\n          {\n            foo\n          }\n        </div>\n      \n// features: [],parser: @typescript-eslint/parser,,options: [{\"singleline\":\"consistent\",\"multiline\":\"require\"}],",
+      "options": [
+        {
+          "singleline": "consistent",
+          "multiline": "require"
+        }
+      ],
+      "parser": "typescript"
+    },
+    {
+      "code": "<div>{foo}</div>\n// features: [],parser: default,,options: [\"never\"],",
+      "options": ["never"],
+      "parser": "espree"
+    },
+    {
+      "code": "<div>{foo}</div>\n// features: [],parser: @typescript-eslint/parser,,options: [\"never\"],",
+      "options": ["never"],
+      "parser": "typescript"
+    },
+    {
+      "code": "<div foo={bar} />\n// features: [],parser: default,,options: [\"never\"],",
+      "options": ["never"],
+      "parser": "espree"
+    },
+    {
+      "code": "<div foo={bar} />\n// features: [],parser: @typescript-eslint/parser,,options: [\"never\"],",
+      "options": ["never"],
+      "parser": "typescript"
+    },
+    {
+      "code": "\n        <div>\n          { foo &&\n            foo.bar }\n        </div>\n      \n// features: [],parser: default,,options: [\"never\"],",
+      "options": ["never"],
+      "parser": "espree"
+    },
+    {
+      "code": "\n        <div>\n          { foo &&\n            foo.bar }\n        </div>\n      \n// features: [],parser: @typescript-eslint/parser,,options: [\"never\"],",
+      "options": ["never"],
+      "parser": "typescript"
+    }
+  ],
+  "invalid": [
+    {
+      "code": "\n        <div>\n          { foo \n}\n        </div>\n      \n// features: [],parser: default,,options: [\"consistent\"],",
+      "options": ["consistent"],
+      "parser": "espree",
+      "output": "\n        <div>\n          { foo}\n        </div>\n      \n// features: [],parser: default,,options: [\"consistent\"],",
+      "recursiveOutput": "\n        <div>\n          { foo}\n        </div>\n      \n// features: [],parser: default,,options: [\"consistent\"],",
+      "upstreamErrors": [
+        {
+          "messageId": "unexpectedBefore"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before '}'.",
+          "data": {},
+          "range": [32, 33],
+          "loc": {
+            "line": 4,
+            "column": 1,
+            "endLine": 4,
+            "endColumn": 2
+          },
+          "fix": {
+            "range": [30, 32],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          { foo \n}\n        </div>\n      \n// features: [],parser: @typescript-eslint/parser,,options: [\"consistent\"],",
+      "options": ["consistent"],
+      "parser": "typescript",
+      "output": "\n        <div>\n          { foo}\n        </div>\n      \n// features: [],parser: @typescript-eslint/parser,,options: [\"consistent\"],",
+      "recursiveOutput": "\n        <div>\n          { foo}\n        </div>\n      \n// features: [],parser: @typescript-eslint/parser,,options: [\"consistent\"],",
+      "upstreamErrors": [
+        {
+          "messageId": "unexpectedBefore"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before '}'.",
+          "data": {},
+          "range": [32, 33],
+          "loc": {
+            "line": 4,
+            "column": 1,
+            "endLine": 4,
+            "endColumn": 2
+          },
+          "fix": {
+            "range": [30, 32],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          { foo &&\n            foo.bar \n}\n        </div>\n      \n// features: [],parser: default,,options: [\"consistent\"],",
+      "options": ["consistent"],
+      "parser": "espree",
+      "output": "\n        <div>\n          { foo &&\n            foo.bar}\n        </div>\n      \n// features: [],parser: default,,options: [\"consistent\"],",
+      "recursiveOutput": "\n        <div>\n          { foo &&\n            foo.bar}\n        </div>\n      \n// features: [],parser: default,,options: [\"consistent\"],",
+      "upstreamErrors": [
+        {
+          "messageId": "unexpectedBefore"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before '}'.",
+          "data": {},
+          "range": [55, 56],
+          "loc": {
+            "line": 5,
+            "column": 1,
+            "endLine": 5,
+            "endColumn": 2
+          },
+          "fix": {
+            "range": [53, 55],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          { foo &&\n            foo.bar \n}\n        </div>\n      \n// features: [],parser: @typescript-eslint/parser,,options: [\"consistent\"],",
+      "options": ["consistent"],
+      "parser": "typescript",
+      "output": "\n        <div>\n          { foo &&\n            foo.bar}\n        </div>\n      \n// features: [],parser: @typescript-eslint/parser,,options: [\"consistent\"],",
+      "recursiveOutput": "\n        <div>\n          { foo &&\n            foo.bar}\n        </div>\n      \n// features: [],parser: @typescript-eslint/parser,,options: [\"consistent\"],",
+      "upstreamErrors": [
+        {
+          "messageId": "unexpectedBefore"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before '}'.",
+          "data": {},
+          "range": [55, 56],
+          "loc": {
+            "line": 5,
+            "column": 1,
+            "endLine": 5,
+            "endColumn": 2
+          },
+          "fix": {
+            "range": [53, 55],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          { foo &&\n            bar\n          }\n        </div>\n      \n// features: [],parser: default,,options: [\"consistent\"],",
+      "options": ["consistent"],
+      "parser": "espree",
+      "output": "\n        <div>\n          { foo &&\n            bar}\n        </div>\n      \n// features: [],parser: default,,options: [\"consistent\"],",
+      "recursiveOutput": "\n        <div>\n          { foo &&\n            bar}\n        </div>\n      \n// features: [],parser: default,,options: [\"consistent\"],",
+      "upstreamErrors": [
+        {
+          "messageId": "unexpectedBefore"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before '}'.",
+          "data": {},
+          "range": [60, 61],
+          "loc": {
+            "line": 5,
+            "column": 11,
+            "endLine": 5,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [49, 60],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          { foo &&\n            bar\n          }\n        </div>\n      \n// features: [],parser: @typescript-eslint/parser,,options: [\"consistent\"],",
+      "options": ["consistent"],
+      "parser": "typescript",
+      "output": "\n        <div>\n          { foo &&\n            bar}\n        </div>\n      \n// features: [],parser: @typescript-eslint/parser,,options: [\"consistent\"],",
+      "recursiveOutput": "\n        <div>\n          { foo &&\n            bar}\n        </div>\n      \n// features: [],parser: @typescript-eslint/parser,,options: [\"consistent\"],",
+      "upstreamErrors": [
+        {
+          "messageId": "unexpectedBefore"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before '}'.",
+          "data": {},
+          "range": [60, 61],
+          "loc": {
+            "line": 5,
+            "column": 11,
+            "endLine": 5,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [49, 60],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "<div>{foo\n}</div>\n// features: [],parser: default,,options: [{\"singleline\":\"consistent\",\"multiline\":\"require\"}],",
+      "options": [
+        {
+          "singleline": "consistent",
+          "multiline": "require"
+        }
+      ],
+      "parser": "espree",
+      "output": "<div>{foo}</div>\n// features: [],parser: default,,options: [{\"singleline\":\"consistent\",\"multiline\":\"require\"}],",
+      "recursiveOutput": "<div>{foo}</div>\n// features: [],parser: default,,options: [{\"singleline\":\"consistent\",\"multiline\":\"require\"}],",
+      "upstreamErrors": [
+        {
+          "messageId": "unexpectedBefore"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before '}'.",
+          "data": {},
+          "range": [10, 11],
+          "loc": {
+            "line": 2,
+            "column": 1,
+            "endLine": 2,
+            "endColumn": 2
+          },
+          "fix": {
+            "range": [9, 10],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "<div>{foo\n}</div>\n// features: [],parser: @typescript-eslint/parser,,options: [{\"singleline\":\"consistent\",\"multiline\":\"require\"}],",
+      "options": [
+        {
+          "singleline": "consistent",
+          "multiline": "require"
+        }
+      ],
+      "parser": "typescript",
+      "output": "<div>{foo}</div>\n// features: [],parser: @typescript-eslint/parser,,options: [{\"singleline\":\"consistent\",\"multiline\":\"require\"}],",
+      "recursiveOutput": "<div>{foo}</div>\n// features: [],parser: @typescript-eslint/parser,,options: [{\"singleline\":\"consistent\",\"multiline\":\"require\"}],",
+      "upstreamErrors": [
+        {
+          "messageId": "unexpectedBefore"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before '}'.",
+          "data": {},
+          "range": [10, 11],
+          "loc": {
+            "line": 2,
+            "column": 1,
+            "endLine": 2,
+            "endColumn": 2
+          },
+          "fix": {
+            "range": [9, 10],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "<div>{\nfoo}</div>\n// features: [],parser: default,,options: [{\"singleline\":\"consistent\",\"multiline\":\"require\"}],",
+      "options": [
+        {
+          "singleline": "consistent",
+          "multiline": "require"
+        }
+      ],
+      "parser": "espree",
+      "output": "<div>{\nfoo\n}</div>\n// features: [],parser: default,,options: [{\"singleline\":\"consistent\",\"multiline\":\"require\"}],",
+      "recursiveOutput": "<div>{\nfoo\n}</div>\n// features: [],parser: default,,options: [{\"singleline\":\"consistent\",\"multiline\":\"require\"}],",
+      "upstreamErrors": [
+        {
+          "messageId": "expectedBefore"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedBefore",
+          "message": "Expected newline before '}'.",
+          "data": {},
+          "range": [10, 11],
+          "loc": {
+            "line": 2,
+            "column": 4,
+            "endLine": 2,
+            "endColumn": 5
+          },
+          "fix": {
+            "range": [10, 10],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "<div>{\nfoo}</div>\n// features: [],parser: @typescript-eslint/parser,,options: [{\"singleline\":\"consistent\",\"multiline\":\"require\"}],",
+      "options": [
+        {
+          "singleline": "consistent",
+          "multiline": "require"
+        }
+      ],
+      "parser": "typescript",
+      "output": "<div>{\nfoo\n}</div>\n// features: [],parser: @typescript-eslint/parser,,options: [{\"singleline\":\"consistent\",\"multiline\":\"require\"}],",
+      "recursiveOutput": "<div>{\nfoo\n}</div>\n// features: [],parser: @typescript-eslint/parser,,options: [{\"singleline\":\"consistent\",\"multiline\":\"require\"}],",
+      "upstreamErrors": [
+        {
+          "messageId": "expectedBefore"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedBefore",
+          "message": "Expected newline before '}'.",
+          "data": {},
+          "range": [10, 11],
+          "loc": {
+            "line": 2,
+            "column": 4,
+            "endLine": 2,
+            "endColumn": 5
+          },
+          "fix": {
+            "range": [10, 10],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          { foo &&\n            bar }\n        </div>\n      \n// features: [],parser: default,,options: [{\"singleline\":\"consistent\",\"multiline\":\"require\"}],",
+      "options": [
+        {
+          "singleline": "consistent",
+          "multiline": "require"
+        }
+      ],
+      "parser": "espree",
+      "output": "\n        <div>\n          {\n foo &&\n            bar \n}\n        </div>\n      \n// features: [],parser: default,,options: [{\"singleline\":\"consistent\",\"multiline\":\"require\"}],",
+      "recursiveOutput": "\n        <div>\n          {\n foo &&\n            bar \n}\n        </div>\n      \n// features: [],parser: default,,options: [{\"singleline\":\"consistent\",\"multiline\":\"require\"}],",
+      "upstreamErrors": [
+        {
+          "messageId": "expectedAfter"
+        },
+        {
+          "messageId": "expectedBefore"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedAfter",
+          "message": "Expected newline after '{'.",
+          "data": {},
+          "range": [25, 26],
+          "loc": {
+            "line": 3,
+            "column": 11,
+            "endLine": 3,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [26, 26],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "expectedBefore",
+          "message": "Expected newline before '}'.",
+          "data": {},
+          "range": [50, 51],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [50, 50],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          { foo &&\n            bar }\n        </div>\n      \n// features: [],parser: @typescript-eslint/parser,,options: [{\"singleline\":\"consistent\",\"multiline\":\"require\"}],",
+      "options": [
+        {
+          "singleline": "consistent",
+          "multiline": "require"
+        }
+      ],
+      "parser": "typescript",
+      "output": "\n        <div>\n          {\n foo &&\n            bar \n}\n        </div>\n      \n// features: [],parser: @typescript-eslint/parser,,options: [{\"singleline\":\"consistent\",\"multiline\":\"require\"}],",
+      "recursiveOutput": "\n        <div>\n          {\n foo &&\n            bar \n}\n        </div>\n      \n// features: [],parser: @typescript-eslint/parser,,options: [{\"singleline\":\"consistent\",\"multiline\":\"require\"}],",
+      "upstreamErrors": [
+        {
+          "messageId": "expectedAfter"
+        },
+        {
+          "messageId": "expectedBefore"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedAfter",
+          "message": "Expected newline after '{'.",
+          "data": {},
+          "range": [25, 26],
+          "loc": {
+            "line": 3,
+            "column": 11,
+            "endLine": 3,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [26, 26],
+            "text": "\n"
+          }
+        },
+        {
+          "messageId": "expectedBefore",
+          "message": "Expected newline before '}'.",
+          "data": {},
+          "range": [50, 51],
+          "loc": {
+            "line": 4,
+            "column": 17,
+            "endLine": 4,
+            "endColumn": 18
+          },
+          "fix": {
+            "range": [50, 50],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div style={foo &&\n          foo.bar\n        } />\n      \n// features: [],parser: default,,options: [{\"singleline\":\"consistent\",\"multiline\":\"require\"}],",
+      "options": [
+        {
+          "singleline": "consistent",
+          "multiline": "require"
+        }
+      ],
+      "parser": "espree",
+      "output": "\n        <div style={\nfoo &&\n          foo.bar\n        } />\n      \n// features: [],parser: default,,options: [{\"singleline\":\"consistent\",\"multiline\":\"require\"}],",
+      "recursiveOutput": "\n        <div style={\nfoo &&\n          foo.bar\n        } />\n      \n// features: [],parser: default,,options: [{\"singleline\":\"consistent\",\"multiline\":\"require\"}],",
+      "upstreamErrors": [
+        {
+          "messageId": "expectedAfter"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedAfter",
+          "message": "Expected newline after '{'.",
+          "data": {},
+          "range": [20, 21],
+          "loc": {
+            "line": 2,
+            "column": 20,
+            "endLine": 2,
+            "endColumn": 21
+          },
+          "fix": {
+            "range": [21, 21],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div style={foo &&\n          foo.bar\n        } />\n      \n// features: [],parser: @typescript-eslint/parser,,options: [{\"singleline\":\"consistent\",\"multiline\":\"require\"}],",
+      "options": [
+        {
+          "singleline": "consistent",
+          "multiline": "require"
+        }
+      ],
+      "parser": "typescript",
+      "output": "\n        <div style={\nfoo &&\n          foo.bar\n        } />\n      \n// features: [],parser: @typescript-eslint/parser,,options: [{\"singleline\":\"consistent\",\"multiline\":\"require\"}],",
+      "recursiveOutput": "\n        <div style={\nfoo &&\n          foo.bar\n        } />\n      \n// features: [],parser: @typescript-eslint/parser,,options: [{\"singleline\":\"consistent\",\"multiline\":\"require\"}],",
+      "upstreamErrors": [
+        {
+          "messageId": "expectedAfter"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "expectedAfter",
+          "message": "Expected newline after '{'.",
+          "data": {},
+          "range": [20, 21],
+          "loc": {
+            "line": 2,
+            "column": 20,
+            "endLine": 2,
+            "endColumn": 21
+          },
+          "fix": {
+            "range": [21, 21],
+            "text": "\n"
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          {\nfoo\n}\n        </div>\n      \n// features: [],parser: default,,options: [\"never\"],",
+      "options": ["never"],
+      "parser": "espree",
+      "output": "\n        <div>\n          {foo}\n        </div>\n      \n// features: [],parser: default,,options: [\"never\"],",
+      "recursiveOutput": "\n        <div>\n          {foo}\n        </div>\n      \n// features: [],parser: default,,options: [\"never\"],",
+      "upstreamErrors": [
+        {
+          "messageId": "unexpectedAfter"
+        },
+        {
+          "messageId": "unexpectedBefore"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedAfter",
+          "message": "Unexpected newline after '{'.",
+          "data": {},
+          "range": [25, 26],
+          "loc": {
+            "line": 3,
+            "column": 11,
+            "endLine": 3,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [26, 27],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before '}'.",
+          "data": {},
+          "range": [31, 32],
+          "loc": {
+            "line": 5,
+            "column": 1,
+            "endLine": 5,
+            "endColumn": 2
+          },
+          "fix": {
+            "range": [30, 31],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          {\nfoo\n}\n        </div>\n      \n// features: [],parser: @typescript-eslint/parser,,options: [\"never\"],",
+      "options": ["never"],
+      "parser": "typescript",
+      "output": "\n        <div>\n          {foo}\n        </div>\n      \n// features: [],parser: @typescript-eslint/parser,,options: [\"never\"],",
+      "recursiveOutput": "\n        <div>\n          {foo}\n        </div>\n      \n// features: [],parser: @typescript-eslint/parser,,options: [\"never\"],",
+      "upstreamErrors": [
+        {
+          "messageId": "unexpectedAfter"
+        },
+        {
+          "messageId": "unexpectedBefore"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedAfter",
+          "message": "Unexpected newline after '{'.",
+          "data": {},
+          "range": [25, 26],
+          "loc": {
+            "line": 3,
+            "column": 11,
+            "endLine": 3,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [26, 27],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before '}'.",
+          "data": {},
+          "range": [31, 32],
+          "loc": {
+            "line": 5,
+            "column": 1,
+            "endLine": 5,
+            "endColumn": 2
+          },
+          "fix": {
+            "range": [30, 31],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          {\n            foo &&\n            foo.bar\n          }\n        </div>\n      \n// features: [],parser: default,,options: [\"never\"],",
+      "options": ["never"],
+      "parser": "espree",
+      "output": "\n        <div>\n          {foo &&\n            foo.bar}\n        </div>\n      \n// features: [],parser: default,,options: [\"never\"],",
+      "recursiveOutput": "\n        <div>\n          {foo &&\n            foo.bar}\n        </div>\n      \n// features: [],parser: default,,options: [\"never\"],",
+      "upstreamErrors": [
+        {
+          "messageId": "unexpectedAfter"
+        },
+        {
+          "messageId": "unexpectedBefore"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedAfter",
+          "message": "Unexpected newline after '{'.",
+          "data": {},
+          "range": [25, 26],
+          "loc": {
+            "line": 3,
+            "column": 11,
+            "endLine": 3,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [26, 39],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before '}'.",
+          "data": {},
+          "range": [76, 77],
+          "loc": {
+            "line": 6,
+            "column": 11,
+            "endLine": 6,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [65, 76],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          {\n            foo &&\n            foo.bar\n          }\n        </div>\n      \n// features: [],parser: @typescript-eslint/parser,,options: [\"never\"],",
+      "options": ["never"],
+      "parser": "typescript",
+      "output": "\n        <div>\n          {foo &&\n            foo.bar}\n        </div>\n      \n// features: [],parser: @typescript-eslint/parser,,options: [\"never\"],",
+      "recursiveOutput": "\n        <div>\n          {foo &&\n            foo.bar}\n        </div>\n      \n// features: [],parser: @typescript-eslint/parser,,options: [\"never\"],",
+      "upstreamErrors": [
+        {
+          "messageId": "unexpectedAfter"
+        },
+        {
+          "messageId": "unexpectedBefore"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedAfter",
+          "message": "Unexpected newline after '{'.",
+          "data": {},
+          "range": [25, 26],
+          "loc": {
+            "line": 3,
+            "column": 11,
+            "endLine": 3,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [26, 39],
+            "text": ""
+          }
+        },
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before '}'.",
+          "data": {},
+          "range": [76, 77],
+          "loc": {
+            "line": 6,
+            "column": 11,
+            "endLine": 6,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [65, 76],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          { foo &&\n            foo.bar\n          }\n        </div>\n      \n// features: [],parser: default,,options: [\"never\"],",
+      "options": ["never"],
+      "parser": "espree",
+      "output": "\n        <div>\n          { foo &&\n            foo.bar}\n        </div>\n      \n// features: [],parser: default,,options: [\"never\"],",
+      "recursiveOutput": "\n        <div>\n          { foo &&\n            foo.bar}\n        </div>\n      \n// features: [],parser: default,,options: [\"never\"],",
+      "upstreamErrors": [
+        {
+          "messageId": "unexpectedBefore"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before '}'.",
+          "data": {},
+          "range": [64, 65],
+          "loc": {
+            "line": 5,
+            "column": 11,
+            "endLine": 5,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [53, 64],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          { foo &&\n            foo.bar\n          }\n        </div>\n      \n// features: [],parser: @typescript-eslint/parser,,options: [\"never\"],",
+      "options": ["never"],
+      "parser": "typescript",
+      "output": "\n        <div>\n          { foo &&\n            foo.bar}\n        </div>\n      \n// features: [],parser: @typescript-eslint/parser,,options: [\"never\"],",
+      "recursiveOutput": "\n        <div>\n          { foo &&\n            foo.bar}\n        </div>\n      \n// features: [],parser: @typescript-eslint/parser,,options: [\"never\"],",
+      "upstreamErrors": [
+        {
+          "messageId": "unexpectedBefore"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before '}'.",
+          "data": {},
+          "range": [64, 65],
+          "loc": {
+            "line": 5,
+            "column": 11,
+            "endLine": 5,
+            "endColumn": 12
+          },
+          "fix": {
+            "range": [53, 64],
+            "text": ""
+          }
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          { /* not fixed due to comment */\n            foo }\n        </div>\n      \n// features: [],parser: default,,options: [\"never\"],",
+      "options": ["never"],
+      "parser": "espree",
+      "output": null,
+      "recursiveOutput": null,
+      "upstreamErrors": [
+        {
+          "messageId": "unexpectedAfter"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedAfter",
+          "message": "Unexpected newline after '{'.",
+          "data": {},
+          "range": [25, 26],
+          "loc": {
+            "line": 3,
+            "column": 11,
+            "endLine": 3,
+            "endColumn": 12
+          },
+          "fix": null
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          { /* not fixed due to comment */\n            foo }\n        </div>\n      \n// features: [],parser: @typescript-eslint/parser,,options: [\"never\"],",
+      "options": ["never"],
+      "parser": "typescript",
+      "output": null,
+      "recursiveOutput": null,
+      "upstreamErrors": [
+        {
+          "messageId": "unexpectedAfter"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedAfter",
+          "message": "Unexpected newline after '{'.",
+          "data": {},
+          "range": [25, 26],
+          "loc": {
+            "line": 3,
+            "column": 11,
+            "endLine": 3,
+            "endColumn": 12
+          },
+          "fix": null
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          { foo\n            /* not fixed due to comment */}\n        </div>\n      \n// features: [],parser: default,,options: [\"never\"],",
+      "options": ["never"],
+      "parser": "espree",
+      "output": null,
+      "recursiveOutput": null,
+      "upstreamErrors": [
+        {
+          "messageId": "unexpectedBefore"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before '}'.",
+          "data": {},
+          "range": [73, 74],
+          "loc": {
+            "line": 4,
+            "column": 43,
+            "endLine": 4,
+            "endColumn": 44
+          },
+          "fix": null
+        }
+      ]
+    },
+    {
+      "code": "\n        <div>\n          { foo\n            /* not fixed due to comment */}\n        </div>\n      \n// features: [],parser: @typescript-eslint/parser,,options: [\"never\"],",
+      "options": ["never"],
+      "parser": "typescript",
+      "output": null,
+      "recursiveOutput": null,
+      "upstreamErrors": [
+        {
+          "messageId": "unexpectedBefore"
+        }
+      ],
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedBefore",
+          "message": "Unexpected newline before '}'.",
+          "data": {},
+          "range": [73, 74],
+          "loc": {
+            "line": 4,
+            "column": 43,
+            "endLine": 4,
+            "endColumn": 44
+          },
+          "fix": null
+        }
+      ]
+    }
+  ]
+}

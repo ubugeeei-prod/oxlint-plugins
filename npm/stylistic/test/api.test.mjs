@@ -22,6 +22,7 @@ describe('stylistic native API', () => {
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'jsx-closing-tag-location',
     );
+    expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('jsx-curly-newline');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain('jsx-quotes');
     expect(nativeStylisticRuleMetas().map((meta) => meta.name)).toContain(
       'jsx-child-element-spacing',
@@ -1208,6 +1209,73 @@ describe('stylistic native API', () => {
       },
     ]);
     expect(diagnostics[0].suggestions).toBeUndefined();
+  });
+
+  it('runs jsx-curly-newline with exact native UTF-8 byte ranges and fixes', () => {
+    const source = 'const 日本語 = <div>{\r\n値\r\n}</div>;';
+    const opening = Buffer.byteLength('const 日本語 = <div>');
+    const expressionStart = Buffer.byteLength('const 日本語 = <div>{\r\n');
+    const expressionEnd = Buffer.byteLength('const 日本語 = <div>{\r\n値');
+    const closing = Buffer.byteLength('const 日本語 = <div>{\r\n値\r\n');
+    const diagnostics = runNativeStylisticLint(source, {
+      filename: 'fixture.tsx',
+      rules: [{ name: 'jsx-curly-newline', options: ['never'] }],
+    });
+
+    expect(diagnostics).toEqual([
+      {
+        ruleName: 'jsx-curly-newline',
+        messageId: 'unexpectedAfter',
+        message: "Unexpected newline after '{'.",
+        range: { start: opening, end: opening + 1 },
+        suggestions: [
+          {
+            messageId: 'unexpectedAfter',
+            message: "Unexpected newline after '{'.",
+            fixes: [
+              {
+                range: { start: opening + 1, end: expressionStart },
+                replacementText: '',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        ruleName: 'jsx-curly-newline',
+        messageId: 'unexpectedBefore',
+        message: "Unexpected newline before '}'.",
+        range: { start: closing, end: closing + 1 },
+        suggestions: [
+          {
+            messageId: 'unexpectedBefore',
+            message: "Unexpected newline before '}'.",
+            fixes: [
+              {
+                range: { start: expressionEnd, end: closing },
+                replacementText: '',
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+  });
+
+  it('keeps jsx-curly-newline comment-separated removals unfixable', () => {
+    const diagnostics = runNativeStylisticLint('<div>{ /* keep */\nfoo }</div>', {
+      filename: 'fixture.tsx',
+      rules: [{ name: 'jsx-curly-newline', options: ['never'] }],
+    });
+
+    expect(diagnostics).toEqual([
+      {
+        ruleName: 'jsx-curly-newline',
+        messageId: 'unexpectedAfter',
+        message: "Unexpected newline after '{'.",
+        range: { start: 5, end: 6 },
+      },
+    ]);
   });
 
   it('runs type-named-tuple-spacing with exact UTF-8 ranges and replacement fixes', () => {

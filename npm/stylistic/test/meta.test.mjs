@@ -126,6 +126,27 @@ describe('stylistic plugin meta contract', () => {
     });
   });
 
+  it('preserves the complete upstream jsx-curly-newline metadata contract', () => {
+    expect(plugin.rules['jsx-curly-newline'].meta).toMatchObject({
+      type: 'layout',
+      docs: {
+        description:
+          'Enforce consistent linebreaks in curly braces in JSX attributes and expressions',
+        recommended: false,
+        requiresTypeChecking: false,
+      },
+      fixable: 'whitespace',
+      hasSuggestions: true,
+      messages: {
+        expectedBefore: "Expected newline before '}'.",
+        expectedAfter: "Expected newline after '{'.",
+        unexpectedBefore: "Unexpected newline before '}'.",
+        unexpectedAfter: "Unexpected newline after '{'.",
+      },
+      schema: { type: 'array' },
+    });
+  });
+
   it('preserves the complete upstream jsx-child-element-spacing metadata contract', () => {
     expect(plugin.rules['jsx-child-element-spacing'].meta).toMatchObject({
       type: 'layout',

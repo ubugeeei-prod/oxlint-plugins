@@ -51,6 +51,11 @@ token fixes. TypeScript and TSX files use the same native Oxc-AST path.
 optional chains, and comment-preserving code fixes for JavaScript, TypeScript,
 and TSX.
 
+`jsx-curly-newline` is an Oxc JSX/TSX AST port of the stable v5.10.0 rule. It
+supports `consistent`, `never`, and the complete `singleline`/`multiline`
+object policy, with comment-safe whitespace fixes and exact UTF-16 locations
+through the JavaScript plugin.
+
 ## JS API
 
 ```js
@@ -71,6 +76,7 @@ bindings.
 
 Most rule scanning logic is derived from `corsa-oxlint/stylistic` in
 [`ubugeeei-prod/corsa-bind`](https://github.com/ubugeeei-prod/corsa-bind)
-v0.43.0 (MIT). Additional stable ports, including `jsx-quotes` and `semi`, follow
+v0.43.0 (MIT). Additional stable ports, including `jsx-quotes`, `jsx-curly-newline`,
+and `semi`, follow
 [`@stylistic/eslint-plugin`](https://github.com/eslint-stylistic/eslint-stylistic)
 v5.10.0 (MIT).

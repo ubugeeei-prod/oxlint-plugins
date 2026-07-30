@@ -14767,19 +14767,19 @@
       },
       {
         "name": "jsx-curly-newline",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule jsx-curly-newline."
+        "notes": "Native Oxc JSX/TSX AST port of stable @stylistic/jsx-curly-newline v5.10.0 with consistent/never and complete singleline/multiline object modes, exact messages/data/UTF-16 locations, comment-safe fixes, and pinned deterministic replay of all 24 valid and 24 invalid ESLint 10 parser-expanded upstream cases (30 ordered diagnostics, 20 fixable and 4 intentionally unfixable); additional Rust, native API, plugin metadata/settings, Unicode/CRLF/line-separator, invalid syntax/options, and real Oxlint JSX/TSX fix integration coverage."
       },
       {
         "name": "jsx-curly-spacing",
