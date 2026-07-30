@@ -18,10 +18,6 @@ impl<'a> Scanner<'a> {
             "consistent-spacing-between-blocks",
             r#"(?s)test\s*\(\s*['"]one['"].*?\);\s*\n\s*test\s*\(\s*['"]two['"]"#,
         );
-        self.check_regex("expect-expect", r#"test\s*\(\s*['"]without assertions['"]"#);
-        if self.source_text.contains("test(") && !self.source_text.contains("expect(") {
-            self.report_at_first("expect-expect", "test(");
-        }
         self.check_regex(
             "missing-playwright-await",
             r#"(?m)(^|[^\w.])page\.(click|dblclick|fill|goto|locator|press|selectOption|setInputFiles|tap|type|uncheck|waitForLoadState)\s*\("#,
@@ -166,18 +162,6 @@ impl<'a> Scanner<'a> {
         let first = self.source_text.find(needle);
         let second = first.and_then(|index| self.source_text[index + needle.len()..].find(needle));
         if let (Some(index), Some(_)) = (first, second) {
-            self.report(
-                rule_name,
-                Span::new(index as u32, (index + needle.len()) as u32),
-            );
-        }
-    }
-
-    fn report_at_first(&mut self, rule_name: &'static str, needle: &str) {
-        if self.has_reported(rule_name) {
-            return;
-        }
-        if let Some(index) = self.source_text.find(needle) {
             self.report(
                 rule_name,
                 Span::new(index as u32, (index + needle.len()) as u32),

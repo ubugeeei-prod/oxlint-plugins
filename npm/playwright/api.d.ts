@@ -46,6 +46,8 @@ export type PlaywrightRestrictedRole =
     };
 
 export type PlaywrightScanOptions = {
+  assertFunctionNames?: string[];
+  assertFunctionPatterns?: string[];
   noRestrictedLocators?: PlaywrightRestrictedLocator[];
   noRestrictedMatchers?: Record<string, string | null>;
   noRestrictedRoles?: PlaywrightRestrictedRole[];

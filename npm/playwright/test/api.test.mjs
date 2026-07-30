@@ -155,7 +155,7 @@ describe('playwright native API', () => {
 
     expect(diagnostic).toMatchObject({
       ruleName: 'expect-expect',
-      messageId: 'unexpected',
+      messageId: 'noAssertions',
       loc: {
         startLine: 1,
         startColumn: 0,
