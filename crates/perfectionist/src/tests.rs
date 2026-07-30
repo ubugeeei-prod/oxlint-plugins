@@ -86,6 +86,193 @@ fn configured_array_includes(
     scan_perfectionist_rule(source, "fixture.ts", "sort-array-includes", &options)
 }
 
+fn configured_sets(source: &str, options: serde_json::Value) -> SmallVec<[RuleDiagnostic; 8]> {
+    scan_perfectionist_rule(source, "fixture.ts", "sort-sets", &options)
+}
+
+#[test]
+fn sorts_sets_with_exact_data_and_fix() {
+    let diagnostics = configured_sets("new Set(['b', 'a'])", json!([]));
+
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].rule_name, "sort-sets");
+    assert_eq!(diagnostics[0].message_id, "unexpectedSetsOrder");
+    assert_eq!(diagnostics[0].data.left, "b");
+    assert_eq!(diagnostics[0].data.right, "a");
+    assert_eq!(diagnostics[0].fix.start, 9);
+    assert_eq!(diagnostics[0].fix.end, 17);
+    assert_eq!(diagnostics[0].fix.replacement, "'a', 'b'");
+}
+
+#[test]
+fn sorts_only_supported_first_set_array_arguments() {
+    let diagnostics = configured_sets(
+        "new Set(new Array('bb', 'a'))",
+        json!([{ "type": "line-length", "order": "asc" }]),
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].fix.replacement, "'a', 'bb'");
+
+    let generic = configured_sets("new Set<string>(['b', 'a'])", json!([]));
+    assert_eq!(generic.len(), 1);
+    assert_eq!(generic[0].fix.replacement, "'a', 'b'");
+
+    for source in [
+        "Set(['b', 'a'])",
+        "new Set()",
+        "new Set[0](['b', 'a'])",
+        "new NotASet(['b', 'a'])",
+        "new globalThis.Set(['b', 'a'])",
+        "new Set(new NotAnArray('b', 'a'))",
+        "new Set(value, ['b', 'a'])",
+        "new Set(value, new Array('b', 'a'))",
+        "['b', 'a']",
+        "new Array('b', 'a')",
+    ] {
+        assert!(configured_sets(source, json!([])).is_empty(), "{source}");
+    }
+}
+
+#[test]
+fn reports_multiple_sets_in_source_order() {
+    let diagnostics = configured_sets(
+        "new Set(['d', 'c']);\nnew Set(new Array('b', 'a'));",
+        json!([]),
+    );
+
+    assert_eq!(diagnostics.len(), 2);
+    assert_eq!(diagnostics[0].data.left, "d");
+    assert_eq!(diagnostics[0].data.right, "c");
+    assert_eq!(diagnostics[1].data.left, "b");
+    assert_eq!(diagnostics[1].data.right, "a");
+    assert_eq!(diagnostics[0].loc.start_line, 1);
+    assert_eq!(diagnostics[1].loc.start_line, 2);
+}
+
+#[test]
+fn keeps_set_spreads_and_elisions_as_hard_boundaries() {
+    assert!(configured_sets("new Set(['a', 'b', ...spread, 'c', 'd'])", json!([])).is_empty());
+    assert!(configured_sets("new Set(['a', 'b',, 'c', 'd'])", json!([])).is_empty());
+
+    let diagnostics = configured_sets("new Set(['b', 'a', ...spread, 'd', 'c'])", json!([]));
+    assert_eq!(diagnostics.len(), 2);
+    assert_eq!(diagnostics[0].fix.replacement, "'a', 'b'");
+    assert_eq!(diagnostics[1].fix.replacement, "'c', 'd'");
+}
+
+#[test]
+fn applies_set_groups_spacing_and_comment_partitions() {
+    let grouped = configured_sets(
+        "new Set(['b',\n'a'])",
+        json!([{
+            "customGroups": [{ "groupName": "a", "elementNamePattern": "^a$" }],
+            "groups": ["a", "literal"],
+            "newlinesBetween": 1
+        }]),
+    );
+    assert_eq!(grouped.len(), 1);
+    assert_eq!(grouped[0].message_id, "unexpectedSetsGroupOrder");
+    assert_eq!(grouped[0].data.left_group.as_deref(), Some("literal"));
+    assert_eq!(grouped[0].data.right_group.as_deref(), Some("a"));
+
+    let spacing = configured_sets(
+        "new Set(['a',\n'b'])",
+        json!([{
+            "customGroups": [{ "groupName": "a", "elementNamePattern": "^a$" }],
+            "groups": ["a", "literal"],
+            "newlinesBetween": 1
+        }]),
+    );
+    assert_eq!(spacing.len(), 1);
+    assert_eq!(spacing[0].message_id, "missedSpacingBetweenSetsMembers");
+
+    assert!(
+        configured_sets(
+            "new Set(['b',\n// Part\n'a'])",
+            json!([{ "partitionByComment": "^Part" }])
+        )
+        .is_empty()
+    );
+}
+
+#[test]
+fn selects_set_configuration_for_each_supported_ast_shape() {
+    let options = json!([
+        {
+            "type": "unsorted",
+            "useConfigurationIf": { "matchesAstSelector": "ArrayExpression" }
+        },
+        {
+            "type": "alphabetical",
+            "useConfigurationIf": { "matchesAstSelector": "NewExpression" }
+        }
+    ]);
+
+    assert!(configured_sets("new Set(['b', 'a'])", options.clone()).is_empty());
+    let diagnostics = configured_sets("new Set(new Array('b', 'a'))", options);
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].fix.replacement, "'a', 'b'");
+}
+
+#[test]
+fn preserves_set_inline_comments_and_disable_directives() {
+    let diagnostics = configured_sets(
+        "new Set([\n  'b',\n  'a', // Comment after\n\n  'c'\n])",
+        json!([{
+            "customGroups": [{ "groupName": "bc", "elementNamePattern": "b|c" }],
+            "groups": ["literal", "bc"],
+            "newlinesBetween": 1,
+            "newlinesInside": 0
+        }]),
+    );
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(
+        diagnostics[0].fix.replacement,
+        "'a', // Comment after\n  'b',"
+    );
+
+    let disabled = configured_sets(
+        "new Set([\n  'c',\n  'b',\n  // eslint-disable-next-line perfectionist/sort-sets\n  'a',\n])",
+        json!([]),
+    );
+    assert_eq!(disabled.len(), 1);
+    assert_eq!(disabled[0].fix.replacement, "'b',\n  'c'");
+}
+
+#[test]
+fn keeps_utf16_offsets_and_crlf_text_for_set_fixes() {
+    let source = "'😀';\r\nnew Set(['世界', 'api']);";
+    let diagnostics = configured_sets(
+        source,
+        json!([{
+            "customGroups": [{ "groupName": "api", "elementNamePattern": "^api$" }],
+            "groups": ["api", "unknown"],
+            "locales": "zh-CN"
+        }]),
+    );
+
+    assert_eq!(diagnostics.len(), 1);
+    assert_eq!(diagnostics[0].message_id, "unexpectedSetsGroupOrder");
+    assert_eq!(diagnostics[0].fix.start, 16);
+    assert_eq!(diagnostics[0].fix.end, 27);
+    assert_eq!(diagnostics[0].fix.replacement, "'api', '世界'");
+}
+
+#[test]
+fn set_rule_isolated_and_malformed_sources_fail_closed() {
+    assert!(
+        scan_perfectionist_rule(
+            "new Set(['b', 'a'])",
+            "fixture.ts",
+            "sort-array-includes",
+            &json!([])
+        )
+        .is_empty()
+    );
+    assert!(configured_sets("new Set(['b',", json!([])).is_empty());
+    assert!(configured_sets("new Set(['a', 'b'])", json!("bad")).is_empty());
+}
+
 #[test]
 fn sorts_array_includes_with_exact_data_and_fix() {
     let diagnostics = configured_array_includes("['b', 'a'].includes(value)", json!([]));

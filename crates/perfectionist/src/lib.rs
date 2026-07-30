@@ -5,6 +5,7 @@ mod scanner;
 mod sort_array_includes;
 mod sort_named_specifiers;
 mod sort_options;
+mod sort_sets;
 mod types;
 
 #[cfg(test)]
@@ -113,6 +114,12 @@ pub fn scan_perfectionist_rule(
         "sort-imports" => sort_named_specifiers::check_sort_imports(
             source_text,
             &parser_return.program.body,
+            &parser_return.program.comments,
+            options,
+        ),
+        "sort-sets" => sort_sets::check(
+            source_text,
+            &parser_return.program,
             &parser_return.program.comments,
             options,
         ),

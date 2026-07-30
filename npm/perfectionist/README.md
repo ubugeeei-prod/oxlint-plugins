@@ -21,3 +21,19 @@ spread boundaries, UTF-16 offsets, and CRLF text.
 
 React-specific behavior and JSX/TSX syntax are intentionally outside this
 rule's port.
+
+## `sort-sets`
+
+The rule implements the `eslint-plugin-perfectionist` v5.10.0 option contract
+for array literals and `new Array(...)` expressions used as the first argument
+of `new Set(...)`.
+
+It shares the complete comparator, grouping, custom-group, partition, newline,
+conditional-configuration, settings, diagnostic, and fixer engine with
+`sort-array-includes`. Set-specific AST matching ignores calls, non-`Set`
+constructors, non-array inputs, and arrays outside the first argument. Fixes
+preserve comments, sparse-array and spread boundaries, UTF-16 offsets, and
+CRLF text.
+
+React-specific behavior and JSX/TSX syntax are intentionally outside this
+rule's port.

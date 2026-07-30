@@ -1652,7 +1652,10 @@
           "description": "enforce sorted sets",
           "docsUrl": "https://perfectionist.dev/rules/sort-sets",
           "messages": {
-            "unexpected": "Expected sorted order."
+            "unexpectedSetsOrder": "Expected \"{{right}}\" to come before \"{{left}}\".",
+            "unexpectedSetsGroupOrder": "Expected \"{{right}}\" ({{rightGroup}}) to come before \"{{left}}\" ({{leftGroup}}).",
+            "extraSpacingBetweenSetsMembers": "Extra spacing between \"{{left}}\" and \"{{right}}\".",
+            "missedSpacingBetweenSetsMembers": "Missed spacing between \"{{left}}\" and \"{{right}}\"."
           }
         },
         {
