@@ -10,10 +10,12 @@ export type PerfectionistDiagnostic = {
   messageId: string;
   loc: PerfectionistDiagnosticLoc;
   data?: {
-    left: string;
+    left?: string;
     right: string;
     leftGroup?: string;
     rightGroup?: string;
+    missedCommentAbove?: string;
+    nodeDependentOnRight?: string;
   };
   fix?: {
     start: number;

@@ -38,16 +38,35 @@ type CapturedCase = {
 };
 
 const ROOT = process.cwd();
-const RULE = 'sort-imports';
-const PINNED_COMMIT = 'b35e8e4caf0c8d350cf386e504241f21827dd60b';
-const ESLINT_VERSION = '9.39.2';
-const TYPESCRIPT_ESLINT_VERSION = '8.60.0';
-const SOURCE_HASHES = {
-  'rules/sort-imports.ts': 'c5102c424e0364b0e9ce7681b41d9d3543d3a76b9227b3fea70371a4e83efa05',
-  'rules/sort-imports/types.ts': '81aa65e9d8f085fa7e8479ea9a5e98c1c2e180450632e484494a1d64395ebffe',
-  'test/rules/sort-imports.test.ts':
-    '8065552b1ccf4d8110524ee48cdc5ee4ab701302d5316a0e2eef9c55ada249ab',
-} as const;
+const capturesArrayIncludes = process.argv.includes('--sort-array-includes');
+const RULE = capturesArrayIncludes ? 'sort-array-includes' : 'sort-imports';
+const PINNED_COMMIT = capturesArrayIncludes
+  ? '84aa039c46522f82a61ad43cf676afc92dd64704'
+  : 'b35e8e4caf0c8d350cf386e504241f21827dd60b';
+const PINNED_REF = capturesArrayIncludes ? 'v5.10.0' : 'v5.9.1';
+const TARGET_VERSION = capturesArrayIncludes ? '5.10.0' : '5.9.1';
+const ESLINT_VERSION = capturesArrayIncludes ? '10.6.0' : '9.39.2';
+const TYPESCRIPT_ESLINT_VERSION = capturesArrayIncludes ? '8.62.1' : '8.60.0';
+const SOURCE_HASHES: Readonly<Record<string, string>> = capturesArrayIncludes
+  ? {
+      'rules/sort-array-includes.ts':
+        '3f43cb92d44f5cd60de7ec9de9b4b72be936d3f1bf410d21e325bf18400788b9',
+      'rules/sort-array-includes/types.ts':
+        '927bfce114499a6e224415245e952a6eaa43c052dfd78b827bd7d8d085e7a098',
+      'rules/sort-arrays/types.ts':
+        '9aa7faafdb1f2262aa32798623ebd6507b5a80f2ad6fa66446d66bb722bba582',
+      'rules/sort-arrays/sort-array.ts':
+        'c65199dd2f5b56ae5302368f3e4fda46849f98641415bd77cf8d56a36ab0d60a',
+      'test/rules/sort-array-includes.test.ts':
+        'c6f8a4dea072ce3d1fc2af72430e7247551bd81870077bde12d5ad7bbb67e534',
+    }
+  : {
+      'rules/sort-imports.ts': 'c5102c424e0364b0e9ce7681b41d9d3543d3a76b9227b3fea70371a4e83efa05',
+      'rules/sort-imports/types.ts':
+        '81aa65e9d8f085fa7e8479ea9a5e98c1c2e180450632e484494a1d64395ebffe',
+      'test/rules/sort-imports.test.ts':
+        '8065552b1ccf4d8110524ee48cdc5ee4ab701302d5316a0e2eef9c55ada249ab',
+    };
 
 const manifest = JSON.parse(
   readFileSync(join(ROOT, 'tools', 'port-targets.json'), 'utf8'),
@@ -69,12 +88,21 @@ if (!existsSync(join(submodule, '.git'))) {
 const actualCommit = execFileSync('git', ['-C', submodule, 'rev-parse', 'HEAD'], {
   encoding: 'utf8',
 }).trim();
-if (actualCommit !== PINNED_COMMIT) {
-  throw new Error(`Expected ${PINNED_COMMIT}, received ${actualCommit}`);
+const sourceCommit = capturesArrayIncludes
+  ? execFileSync('git', ['-C', submodule, 'rev-parse', PINNED_REF], {
+      encoding: 'utf8',
+    }).trim()
+  : actualCommit;
+if (sourceCommit !== PINNED_COMMIT) {
+  throw new Error(`Expected ${PINNED_COMMIT}, received ${sourceCommit}`);
 }
 for (const [sourceFile, expectedHash] of Object.entries(SOURCE_HASHES)) {
   const actualHash = createHash('sha256')
-    .update(readFileSync(join(submodule, sourceFile)))
+    .update(
+      capturesArrayIncludes
+        ? execFileSync('git', ['-C', submodule, 'show', `${PINNED_REF}:${sourceFile}`])
+        : readFileSync(join(submodule, sourceFile)),
+    )
     .digest('hex');
   if (actualHash !== expectedHash) {
     throw new Error(`Expected ${sourceFile} hash ${expectedHash}, received ${actualHash}`);
@@ -83,13 +111,15 @@ for (const [sourceFile, expectedHash] of Object.entries(SOURCE_HASHES)) {
 
 const runnerDirectory = mkdtempSync(join(tmpdir(), 'perfectionist-sort-imports-'));
 try {
-  const completeAuthoredSource = readFileSync(
-    join(submodule, 'test', 'rules', 'sort-imports.test.ts'),
-    'utf8',
-  );
-  const suiteStart = completeAuthoredSource.indexOf("describe('sort-imports'");
+  const authoredTestPath = `test/rules/${RULE}.test.ts`;
+  const completeAuthoredSource = capturesArrayIncludes
+    ? execFileSync('git', ['-C', submodule, 'show', `${PINNED_REF}:${authoredTestPath}`], {
+        encoding: 'utf8',
+      })
+    : readFileSync(join(submodule, authoredTestPath), 'utf8');
+  const suiteStart = completeAuthoredSource.indexOf(`describe('${RULE}'`);
   if (suiteStart === -1) {
-    throw new Error('Unable to locate the authored sort-imports suite.');
+    throw new Error(`Unable to locate the authored ${RULE} suite.`);
   }
   const authoredSource = completeAuthoredSource.slice(suiteStart);
   const captureSourcePath = join(runnerDirectory, 'capture.ts');
@@ -123,6 +153,20 @@ try {
   const authoredCases = JSON.parse(
     readFileSync(join(runnerDirectory, 'authored-cases.json'), 'utf8'),
   ) as CapturedCase[];
+  if (capturesArrayIncludes) {
+    const forbiddenCases = authoredCases.filter(
+      (testCase) =>
+        /\.(?:jsx|tsx)$/u.test(testCase.filename) ||
+        /<[A-Z][A-Za-z]*(?:\s|\/?>)/u.test(testCase.code),
+    );
+    if (forbiddenCases.length > 0) {
+      throw new Error(
+        `React/JSX/TSX cases are outside this port: ${forbiddenCases
+          .map((testCase) => testCase.name)
+          .join(', ')}`,
+      );
+    }
+  }
 
   writeFileSync(
     join(runnerDirectory, 'package.json'),
@@ -133,7 +177,7 @@ try {
         dependencies: {
           '@typescript-eslint/parser': TYPESCRIPT_ESLINT_VERSION,
           eslint: ESLINT_VERSION,
-          'eslint-plugin-perfectionist': plugin.baselineVersion,
+          'eslint-plugin-perfectionist': TARGET_VERSION,
         },
       },
       null,
@@ -163,16 +207,21 @@ try {
   const fixture = {
     __generated: {
       source: plugin.npm,
-      version: plugin.baselineVersion,
+      version: TARGET_VERSION,
       sourceCommit: PINNED_COMMIT,
       sourceHashes: SOURCE_HASHES,
       license: plugin.license,
       eslintVersion: ESLINT_VERSION,
       typescriptEslintParserVersion: TYPESCRIPT_ESLINT_VERSION,
-      capturePolicy:
-        'Every authored valid and invalid sort-imports case is captured; none exercises React-specific or JSX/TSX syntax. Authored valid cases remain diagnostic-free; invalid cases are replayed against the published v5.9.1 rule for exact diagnostics and fixes.',
-      authoredCases: 'upstream/eslint-plugin-perfectionist/test/rules/sort-imports.test.ts',
-      tool: basename(import.meta.filename),
+      capturePolicy: capturesArrayIncludes
+        ? `Every authored valid and invalid ${RULE} case is captured; React-specific and JSX/TSX syntax is rejected. Authored valid cases remain diagnostic-free; invalid cases are replayed against the published v${TARGET_VERSION} rule for exact diagnostics and fixes.`
+        : 'Every authored valid and invalid sort-imports case is captured; none exercises React-specific or JSX/TSX syntax. Authored valid cases remain diagnostic-free; invalid cases are replayed against the published v5.9.1 rule for exact diagnostics and fixes.',
+      authoredCases: capturesArrayIncludes
+        ? `upstream/eslint-plugin-perfectionist/${authoredTestPath}@${PINNED_REF}`
+        : `upstream/eslint-plugin-perfectionist/${authoredTestPath}`,
+      tool: capturesArrayIncludes
+        ? 'sync-perfectionist-sort-array-includes-options-tests.ts'
+        : basename(import.meta.filename),
       inventory: {
         valid,
         invalid,
@@ -184,14 +233,14 @@ try {
   };
   const fixturesDirectory = join(ROOT, 'npm', 'perfectionist', 'test', 'fixtures');
   mkdirSync(fixturesDirectory, { recursive: true });
-  const fixturePath = join(fixturesDirectory, `${RULE}-options-v${plugin.baselineVersion}.json`);
+  const fixturePath = join(fixturesDirectory, `${RULE}-options-v${TARGET_VERSION}.json`);
   writeFileSync(fixturePath, `${JSON.stringify(fixture, null, 2)}\n`);
   execFileSync('pnpm', ['exec', 'vp', 'fmt', fixturePath], {
     cwd: ROOT,
     stdio: 'inherit',
   });
   console.log(
-    `Captured ${RULE} v${plugin.baselineVersion}: ${valid} valid, ${invalid} invalid, ${diagnostics} diagnostics.`,
+    `Captured ${RULE} v${TARGET_VERSION}: ${valid} valid, ${invalid} invalid, ${diagnostics} diagnostics.`,
   );
 } finally {
   rmSync(runnerDirectory, { recursive: true, force: true });

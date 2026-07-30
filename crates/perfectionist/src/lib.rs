@@ -2,6 +2,7 @@
 
 mod helpers;
 mod scanner;
+mod sort_array_includes;
 mod sort_named_specifiers;
 mod sort_options;
 mod types;
@@ -85,6 +86,12 @@ pub fn scan_perfectionist_rule(
         return SmallVec::new();
     }
     match rule_name {
+        "sort-array-includes" => sort_array_includes::check(
+            source_text,
+            &parser_return.program,
+            &parser_return.program.comments,
+            options,
+        ),
         "sort-named-imports" => sort_named_specifiers::check(
             source_text,
             &parser_return.program.body,
