@@ -6,6 +6,7 @@ mod inline_declarations;
 mod input_rename;
 mod prefer_signals;
 mod prefix;
+mod require_localize_metadata;
 mod scanner;
 mod selector;
 mod types;
@@ -14,7 +15,7 @@ mod types;
 mod tests;
 
 use oxc_allocator::Allocator;
-use oxc_parser::Parser;
+use oxc_parser::{ParseOptions, Parser};
 use oxc_span::SourceType;
 use oxlint_plugins_carton::{CompactString, SmallVec};
 use serde_json::Value;
@@ -104,7 +105,14 @@ pub fn scan_angular_eslint_with_options(
     let source_type = SourceType::from_path(filename)
         .unwrap_or_else(|_| SourceType::tsx())
         .with_module(true);
-    let parser_return = Parser::new(&allocator, source_text, source_type).parse();
+    let parser_return = Parser::new(&allocator, source_text, source_type)
+        .with_options(ParseOptions {
+            // angular-eslint's RuleTester parser accepts authored top-level
+            // return-statement cases, so preserve that parse contract.
+            allow_return_outside_function: true,
+            ..ParseOptions::default()
+        })
+        .parse();
     if !parser_return.errors.is_empty() {
         return SmallVec::new();
     }

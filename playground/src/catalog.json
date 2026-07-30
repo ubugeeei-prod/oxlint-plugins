@@ -325,10 +325,12 @@
         },
         {
           "name": "require-localize-metadata",
-          "description": "enforce angular eslint require localize metadata",
+          "description": "Ensures that $localize tagged messages contain helpful metadata to aid with translations.",
           "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/require-localize-metadata.md",
           "messages": {
-            "unexpected": "Unexpected Angular pattern."
+            "requireLocalizeDescription": "$localize tagged messages should contain a description. See more at https://angular.dev/guide/i18n/prepare#i18n-metadata-for-translation",
+            "requireLocalizeMeaning": "$localize tagged messages should contain a meaning. See more at https://angular.dev/guide/i18n/prepare#i18n-metadata-for-translation",
+            "requireLocalizeCustomId": "$localize tagged messages should contain a custom id{{patternMessage}}. See more at https://angular.dev/guide/i18n/prepare#i18n-metadata-for-translation"
           }
         },
         {

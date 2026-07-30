@@ -1,6 +1,6 @@
 use oxc_ast::ast::{
     Class, Decorator, Expression, ObjectExpression, ObjectPropertyKind, PropertyDefinition,
-    PropertyKey,
+    PropertyKey, TaggedTemplateExpression,
 };
 use oxc_ast_visit::{Visit, walk};
 use oxc_span::Span;
@@ -92,6 +92,11 @@ impl Visit<'_> for Scanner<'_> {
     fn visit_decorator(&mut self, decorator: &Decorator<'_>) {
         self.check_prefer_signals_decorator(decorator);
         walk::walk_decorator(self, decorator);
+    }
+
+    fn visit_tagged_template_expression(&mut self, tagged_template: &TaggedTemplateExpression<'_>) {
+        self.check_require_localize_metadata(tagged_template);
+        walk::walk_tagged_template_expression(self, tagged_template);
     }
 }
 

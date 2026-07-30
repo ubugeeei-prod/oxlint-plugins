@@ -30,6 +30,14 @@ export type PreferSignalsOptions = [
   }?,
 ];
 
+export type RequireLocalizeMetadataOptions = [
+  {
+    readonly requireDescription?: boolean;
+    readonly requireMeaning?: boolean;
+    readonly requireCustomId?: boolean | string;
+  }?,
+];
+
 export function implementedAngularEslintRuleNames(): string[];
 export function scanAngularEslint(
   sourceText: string,

@@ -19,6 +19,7 @@ const inlineDeclarationRuleName = 'component-max-inline-declarations';
 const consistentComponentStylesRuleName = 'consistent-component-styles';
 const inputRenameRuleName = 'no-input-rename';
 const preferSignalsRuleName = 'prefer-signals';
+const requireLocalizeMetadataRuleName = 'require-localize-metadata';
 const optionAwareRuleNames = new Set([
   ...selectorRuleNames,
   ...classSuffixRuleNames,
@@ -27,6 +28,7 @@ const optionAwareRuleNames = new Set([
   consistentComponentStylesRuleName,
   inputRenameRuleName,
   preferSignalsRuleName,
+  requireLocalizeMetadataRuleName,
 ]);
 
 const consistentComponentStylesSchema = [
@@ -183,6 +185,36 @@ const preferSignalsMessages = {
     'Properties declared using signals should be marked as `readonly` since they should not be reassigned',
 };
 
+const requireLocalizeMetadataSchema = [
+  {
+    type: 'object',
+    properties: {
+      requireDescription: {
+        type: 'boolean',
+        default: false,
+      },
+      requireMeaning: {
+        type: 'boolean',
+        default: false,
+      },
+      requireCustomId: {
+        oneOf: [{ type: 'boolean' }, { type: 'string' }],
+        default: false,
+      },
+    },
+    additionalProperties: false,
+  },
+];
+
+const requireLocalizeMetadataMessages = {
+  requireLocalizeDescription:
+    '$localize tagged messages should contain a description. See more at https://angular.dev/guide/i18n/prepare#i18n-metadata-for-translation',
+  requireLocalizeMeaning:
+    '$localize tagged messages should contain a meaning. See more at https://angular.dev/guide/i18n/prepare#i18n-metadata-for-translation',
+  requireLocalizeCustomId:
+    '$localize tagged messages should contain a custom id{{patternMessage}}. See more at https://angular.dev/guide/i18n/prepare#i18n-metadata-for-translation',
+};
+
 const selectorConfigSchema = {
   type: 'object',
   properties: {
@@ -299,6 +331,7 @@ function createAngularEslintRule(ruleName) {
   const isConsistentComponentStylesRule = ruleName === consistentComponentStylesRuleName;
   const isInputRenameRule = ruleName === inputRenameRuleName;
   const isPreferSignalsRule = ruleName === preferSignalsRuleName;
+  const isRequireLocalizeMetadataRule = ruleName === requireLocalizeMetadataRuleName;
   return {
     meta: {
       type: problemRules.has(ruleName) ? 'problem' : 'suggestion',
@@ -307,7 +340,9 @@ function createAngularEslintRule(ruleName) {
           ? 'Ensures consistent usage of `styles`/`styleUrls`/`styleUrl` within Component metadata'
           : isPreferSignalsRule
             ? 'Use readonly signals instead of `@Input()`, `@ViewChild()` and other legacy decorators'
-            : `enforce angular eslint ${ruleName.replaceAll('-', ' ')}`,
+            : isRequireLocalizeMetadataRule
+              ? 'Ensures that $localize tagged messages contain helpful metadata to aid with translations.'
+              : `enforce angular eslint ${ruleName.replaceAll('-', ' ')}`,
         category: 'Best Practices',
         recommended: false,
         url: `${DOCS_BASE}/${ruleName}.md`,
@@ -326,9 +361,11 @@ function createAngularEslintRule(ruleName) {
                   ? inputRenameMessages
                   : isPreferSignalsRule
                     ? preferSignalsMessages
-                    : {
-                        unexpected: 'Unexpected Angular pattern.',
-                      },
+                    : isRequireLocalizeMetadataRule
+                      ? requireLocalizeMetadataMessages
+                      : {
+                          unexpected: 'Unexpected Angular pattern.',
+                        },
       schema: isSelectorRule
         ? selectorSchema
         : isClassSuffixRule
@@ -343,7 +380,9 @@ function createAngularEslintRule(ruleName) {
                   ? inputRenameSchema
                   : isPreferSignalsRule
                     ? preferSignalsSchema
-                    : [],
+                    : isRequireLocalizeMetadataRule
+                      ? requireLocalizeMetadataSchema
+                      : [],
       ...(isConsistentComponentStylesRule ? { fixable: 'code' } : {}),
       ...(isInputRenameRule ? { fixable: 'code', hasSuggestions: true } : {}),
       ...(isPreferSignalsRule ? { fixable: 'code' } : {}),
