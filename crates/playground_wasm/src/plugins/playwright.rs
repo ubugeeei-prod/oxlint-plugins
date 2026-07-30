@@ -36,6 +36,7 @@ pub fn scan(
         push(&mut data, "amount", diagnostic.data.amount);
         push(&mut data, "count", diagnostic.data.count);
         push(&mut data, "depth", diagnostic.data.depth);
+        push(&mut data, "hookName", diagnostic.data.hook_name);
         push(&mut data, "max", diagnostic.data.max);
         push(&mut data, "method", diagnostic.data.method);
         push(&mut data, "restriction", diagnostic.data.restriction);
@@ -210,6 +211,35 @@ mod tests {
                 diagnostics[0].end_column,
             ),
             (1, 5, 1, 13)
+        );
+    }
+
+    #[test]
+    fn preserves_no_hooks_message_data_utf16_location_and_rule_selection() {
+        let filter = EnabledFilter::parse(r#"{"playwright":["no-hooks"]}"#);
+        let mut diagnostics = Vec::new();
+        scan(
+            "\"🧪\"; test.beforeEach(() => {});\n",
+            "fixture.spec.ts",
+            &filter,
+            &mut diagnostics,
+        );
+
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].rule, "no-hooks");
+        assert_eq!(diagnostics[0].message_id, "unexpectedHook");
+        assert_eq!(
+            diagnostics[0].data.get("hookName").map(String::as_str),
+            Some("beforeEach")
+        );
+        assert_eq!(
+            (
+                diagnostics[0].start_line,
+                diagnostics[0].start_column,
+                diagnostics[0].end_line,
+                diagnostics[0].end_column,
+            ),
+            (1, 6, 1, 31)
         );
     }
 }

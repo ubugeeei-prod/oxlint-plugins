@@ -13,6 +13,7 @@ export type PlaywrightDiagnostic = {
     amount?: string;
     count?: string;
     depth?: string;
+    hookName?: string;
     max?: string;
     method?: string;
     restriction?: string;
@@ -45,12 +46,16 @@ export type PlaywrightRestrictedRole =
       message?: string;
     };
 
+export type PlaywrightHookName = 'beforeAll' | 'beforeEach' | 'afterAll' | 'afterEach';
+
 export type PlaywrightScanOptions = {
+  allowedHooks?: PlaywrightHookName[];
   allowedPrefixes?: string[];
   assertFunctionNames?: string[];
   assertFunctionPatterns?: string[];
   ignore?: Array<'test.describe' | 'test'>;
   ignoreTopLevelDescribe?: boolean;
+  hookAliases?: Partial<Record<PlaywrightHookName, string[]>>;
   noRestrictedLocators?: PlaywrightRestrictedLocator[];
   noRestrictedMatchers?: Record<string, string | null>;
   noRestrictedRoles?: PlaywrightRestrictedRole[];

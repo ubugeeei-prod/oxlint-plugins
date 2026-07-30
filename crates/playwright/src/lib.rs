@@ -1,10 +1,12 @@
 #![doc = "Rust implementation of eslint-plugin-playwright rule logic."]
 
 mod expect_expect;
+mod no_hooks;
 mod patterns;
 mod prefer_lowercase_title;
 mod restricted;
 mod scanner;
+mod test_names;
 mod thresholds;
 mod types;
 
@@ -17,6 +19,7 @@ use oxc_span::SourceType;
 use oxlint_plugins_carton::SmallVec;
 
 use crate::expect_expect::scan_expect_expect;
+use crate::no_hooks::scan_no_hooks;
 use crate::patterns::scan_pattern_rules;
 use crate::prefer_lowercase_title::scan_prefer_lowercase_title;
 use crate::restricted::scan_restricted_rules;
@@ -25,8 +28,9 @@ use crate::thresholds::scan_threshold_rules;
 use crate::types::LineIndex;
 
 pub use crate::types::{
-    Diagnostic, DiagnosticData, DiagnosticFix, DiagnosticLoc, PlaywrightOptions, Restriction,
-    TagPattern, TitlePattern, TitlePatternOptions, ValidTestTagsOptions, ValidTitleOptions,
+    Diagnostic, DiagnosticData, DiagnosticFix, DiagnosticLoc, HookAlias, PlaywrightOptions,
+    Restriction, TagPattern, TitlePattern, TitlePatternOptions, ValidTestTagsOptions,
+    ValidTitleOptions,
 };
 
 pub const RULE_NAMES: [&str; 58] = [
@@ -125,6 +129,13 @@ pub fn scan_playwright_with_options(
         &mut scanner.diagnostics,
     );
     scan_prefer_lowercase_title(
+        &parser_return.program,
+        source_text,
+        &scanner.line_index,
+        options,
+        &mut scanner.diagnostics,
+    );
+    scan_no_hooks(
         &parser_return.program,
         source_text,
         &scanner.line_index,

@@ -9,13 +9,21 @@ pub struct Restriction {
     pub message: Option<CompactString>,
 }
 
+#[derive(Clone, Debug, Default, Eq, PartialEq)]
+pub struct HookAlias {
+    pub name: CompactString,
+    pub hook_name: CompactString,
+}
+
 #[derive(Clone, Debug, PartialEq)]
 pub struct PlaywrightOptions {
+    pub allowed_hooks: SmallVec<[CompactString; 4]>,
     pub allowed_title_prefixes: SmallVec<[CompactString; 4]>,
     pub assert_function_names: SmallVec<[CompactString; 4]>,
     pub assert_function_patterns: SmallVec<[CompactString; 4]>,
     pub lowercase_title_ignored_methods: SmallVec<[CompactString; 4]>,
     pub ignore_top_level_describe: bool,
+    pub hook_aliases: SmallVec<[HookAlias; 8]>,
     pub restricted_locators: SmallVec<[Restriction; 8]>,
     pub restricted_matchers: SmallVec<[Restriction; 8]>,
     pub restricted_roles: SmallVec<[Restriction; 8]>,
@@ -82,11 +90,13 @@ pub struct TagPattern {
 impl Default for PlaywrightOptions {
     fn default() -> Self {
         Self {
+            allowed_hooks: SmallVec::new(),
             allowed_title_prefixes: SmallVec::new(),
             assert_function_names: SmallVec::new(),
             assert_function_patterns: SmallVec::new(),
             lowercase_title_ignored_methods: SmallVec::new(),
             ignore_top_level_describe: false,
+            hook_aliases: SmallVec::new(),
             restricted_locators: SmallVec::new(),
             restricted_matchers: SmallVec::new(),
             restricted_roles: SmallVec::new(),
@@ -133,6 +143,7 @@ pub struct DiagnosticData {
     pub amount: Option<CompactString>,
     pub count: Option<CompactString>,
     pub depth: Option<CompactString>,
+    pub hook_name: Option<CompactString>,
     pub max: Option<CompactString>,
     pub method: Option<CompactString>,
     pub restriction: Option<CompactString>,

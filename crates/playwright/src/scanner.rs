@@ -42,10 +42,6 @@ impl<'a> Scanner<'a> {
         self.check_regex("no-force-option", r#"\bforce\s*:\s*true\b"#);
         self.check_regex("no-get-by-title", r#"\.getByTitle\s*\("#);
         self.check_regex(
-            "no-hooks",
-            r#"\btest\.(beforeAll|beforeEach|afterAll|afterEach)\s*\("#,
-        );
-        self.check_regex(
             "no-nested-step",
             r#"(?s)test\.step\s*\(.*?\{.*test\.step\s*\("#,
         );

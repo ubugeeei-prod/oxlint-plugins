@@ -22,6 +22,7 @@ const thresholdRules = new Set([
   'max-nested-describe',
   'require-top-level-describe',
 ]);
+const optionAwareHookRules = new Set(['no-hooks']);
 const optionAwareTitleRules = new Set(['prefer-lowercase-title']);
 
 const sharedGlobals = Object.freeze({
@@ -142,6 +143,7 @@ function createLegacyRecommendedConfig() {
 function createPlaywrightRule(ruleName) {
   const specializedMeta =
     expectExpectRuleMeta(ruleName) ??
+    noHooksRuleMeta(ruleName) ??
     preferLowercaseTitleRuleMeta(ruleName) ??
     restrictedRuleMeta(ruleName) ??
     patternRuleMeta(ruleName) ??
@@ -200,9 +202,11 @@ function diagnosticsForRule(context, ruleName) {
         ? ruleScanOptions(context, ruleName)
         : thresholdRules.has(ruleName)
           ? thresholdScanOptions(context, ruleName)
-          : optionAwareTitleRules.has(ruleName)
-            ? preferLowercaseTitleScanOptions(context)
-            : undefined;
+          : optionAwareHookRules.has(ruleName)
+            ? noHooksScanOptions(context)
+            : optionAwareTitleRules.has(ruleName)
+              ? preferLowercaseTitleScanOptions(context)
+              : undefined;
   return diagnosticsForContext(context, options).filter(
     (diagnostic) => diagnostic.ruleName === ruleName,
   );
@@ -288,6 +292,26 @@ function preferLowercaseTitleScanOptions(context) {
     allowedPrefixes: configured.allowedPrefixes,
     ignore: configured.ignore,
     ignoreTopLevelDescribe: configured.ignoreTopLevelDescribe,
+    ...(Array.isArray(testAliases) ? { testAliases } : {}),
+  };
+}
+
+function noHooksScanOptions(context) {
+  const options = Array.isArray(context.options) ? context.options : [];
+  const configured = options[0] && typeof options[0] === 'object' ? options[0] : {};
+  const globalAliases = context.settings?.playwright?.globalAliases;
+  const hookAliases =
+    globalAliases && typeof globalAliases === 'object'
+      ? Object.fromEntries(
+          Object.entries(globalAliases).filter(([name]) =>
+            ['afterAll', 'afterEach', 'beforeAll', 'beforeEach'].includes(name),
+          ),
+        )
+      : undefined;
+  const testAliases = globalAliases?.test;
+  return {
+    allowedHooks: configured.allow,
+    hookAliases,
     ...(Array.isArray(testAliases) ? { testAliases } : {}),
   };
 }
@@ -478,6 +502,31 @@ function preferLowercaseTitleRuleMeta(ruleName) {
       },
     ],
     url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/prefer-lowercase-title.md',
+  };
+}
+
+function noHooksRuleMeta(ruleName) {
+  if (ruleName !== 'no-hooks') {
+    return null;
+  }
+  return {
+    description: 'Disallow setup and teardown hooks',
+    messages: {
+      unexpectedHook: "Unexpected '{{ hookName }}' hook",
+    },
+    schema: [
+      {
+        additionalProperties: false,
+        properties: {
+          allow: {
+            contains: ['beforeAll', 'beforeEach', 'afterAll', 'afterEach'],
+            type: 'array',
+          },
+        },
+        type: 'object',
+      },
+    ],
+    url: 'https://github.com/mskelton/eslint-plugin-playwright/tree/main/docs/rules/no-hooks.md',
   };
 }
 

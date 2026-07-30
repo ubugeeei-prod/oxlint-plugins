@@ -1,0 +1,163 @@
+{
+  "__generated": {
+    "source": "eslint-plugin-playwright",
+    "version": "2.11.0",
+    "sourceCommit": "b6d3e5dac73c8aad4d5e62a933105579c319655f",
+    "license": "MIT",
+    "tool": "tools/tasks/sync-playwright-no-hooks-tests.ts",
+    "sourceFiles": [
+      "src/rules/no-hooks.ts",
+      "src/rules/no-hooks.test.ts",
+      "docs/rules/no-hooks.md"
+    ],
+    "sourceHashes": {
+      "src/rules/no-hooks.ts": "bfa7ad98ee3e395919654904c5eaf1dc64c0dfb24ebd07321d9247a9d7a98c57",
+      "src/rules/no-hooks.test.ts": "94d9bc99d3db616b81d8dff8355bf2bb23a4a69262b3a2806819e744868b9a07",
+      "docs/rules/no-hooks.md": "aef2a1119c63d0469fd99b98882b2953ee450a8c63c6de5b99ca0bfeb01d3e7e"
+    },
+    "previousVersionAudit": {
+      "version": "2.10.4",
+      "sourceCommit": "894c0ec261763bb1e073b276c70bbf88b4ebad39",
+      "changedFiles": []
+    },
+    "inventory": {
+      "suites": 1,
+      "valid": 5,
+      "invalid": 6,
+      "diagnostics": 6,
+      "fixable": 0
+    }
+  },
+  "rule": "no-hooks",
+  "valid": [
+    {
+      "code": "test(\"foo\")",
+      "options": [],
+      "settings": null,
+      "expectedDiagnostics": [],
+      "expectedOutput": null
+    },
+    {
+      "code": "test.describe(\"foo\", () => { test(\"bar\") })",
+      "options": [],
+      "settings": null,
+      "expectedDiagnostics": [],
+      "expectedOutput": null
+    },
+    {
+      "code": "test(\"foo\", () => { expect(subject.beforeEach()).toBe(true) })",
+      "options": [],
+      "settings": null,
+      "expectedDiagnostics": [],
+      "expectedOutput": null
+    },
+    {
+      "code": "test.afterEach(() => {}); afterAll(() => {});",
+      "options": [
+        {
+          "allow": ["afterEach", "afterAll"]
+        }
+      ],
+      "settings": null,
+      "expectedDiagnostics": [],
+      "expectedOutput": null
+    },
+    {
+      "code": "test(\"foo\")",
+      "options": [{}],
+      "settings": null,
+      "expectedDiagnostics": [],
+      "expectedOutput": null
+    }
+  ],
+  "invalid": [
+    {
+      "code": "test.beforeAll(() => {})",
+      "options": [],
+      "settings": null,
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedHook",
+          "data": {
+            "hookName": "beforeAll"
+          }
+        }
+      ],
+      "expectedOutput": null
+    },
+    {
+      "code": "test.beforeEach(() => {})",
+      "options": [],
+      "settings": null,
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedHook",
+          "data": {
+            "hookName": "beforeEach"
+          }
+        }
+      ],
+      "expectedOutput": null
+    },
+    {
+      "code": "test.afterAll(() => {})",
+      "options": [],
+      "settings": null,
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedHook",
+          "data": {
+            "hookName": "afterAll"
+          }
+        }
+      ],
+      "expectedOutput": null
+    },
+    {
+      "code": "test.afterEach(() => {})",
+      "options": [],
+      "settings": null,
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedHook",
+          "data": {
+            "hookName": "afterEach"
+          }
+        }
+      ],
+      "expectedOutput": null
+    },
+    {
+      "code": "test.beforeEach(() => {}); afterEach(() => { doStuff() });",
+      "options": [
+        {
+          "allow": ["afterEach"]
+        }
+      ],
+      "settings": null,
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedHook",
+          "data": {
+            "hookName": "beforeEach"
+          }
+        }
+      ],
+      "expectedOutput": null
+    },
+    {
+      "code": "test.describe(\"outer\", () => {\n  test.describe(\"inner\", () => {\n    test.beforeEach(() => {})\n  })\n})",
+      "options": [],
+      "settings": null,
+      "expectedDiagnostics": [
+        {
+          "messageId": "unexpectedHook",
+          "data": {
+            "hookName": "beforeEach"
+          }
+        }
+      ],
+      "expectedOutput": null
+    }
+  ]
+}

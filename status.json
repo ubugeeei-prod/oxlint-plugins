@@ -4483,7 +4483,7 @@
           "lsp": false,
           "oxlintIntegration": true
         },
-        "notes": "Rust/Oxc syntax-pattern port of eslint-plugin-playwright/no-hooks; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+        "notes": "Native Oxc AST port of eslint-plugin-playwright no-hooks v2.11.0 with the complete allow option, exact messages/data/UTF-16 call locations, bare/member/computed hooks, global/import/test.extend aliases, deterministic authored fixture replay, direct API/plugin/playground coverage, and real Oxlint TypeScript integration; upstream defines no autofix."
       },
       {
         "name": "no-nested-step",
