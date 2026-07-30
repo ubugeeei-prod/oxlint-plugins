@@ -1,7 +1,7 @@
 {
   "__generated": {
     "source": "eslint-plugin-regexp",
-    "version": "3.1.0",
+    "version": "3.1.1",
     "sourceFile": "tests/lib/rules/prefer-escape-replacement-dollar-char.ts",
     "snapshotFile": "tests/lib/rules/__snapshots__/prefer-escape-replacement-dollar-char.ts.eslintsnap",
     "license": "MIT",

@@ -1,7 +1,7 @@
 {
   "__generated": {
     "source": "eslint-plugin-regexp",
-    "version": "3.1.0",
+    "version": "3.1.1",
     "sourceFile": "tests/lib/rules/simplify-set-operations.ts",
     "snapshotFile": "tests/lib/rules/__snapshots__/simplify-set-operations.ts.eslintsnap",
     "license": "MIT",

@@ -170,7 +170,7 @@
       "id": "eslint-plugin-regexp",
       "npm": "eslint-plugin-regexp",
       "repo": "https://github.com/ota-meshi/eslint-plugin-regexp",
-      "baselineVersion": "3.1.0",
+      "baselineVersion": "3.1.1",
       "license": "MIT",
       "ruleCount": 82,
       "rules": [
