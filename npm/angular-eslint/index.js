@@ -18,6 +18,7 @@ const prefixRuleNames = new Set(['no-input-prefix', 'pipe-prefix']);
 const inlineDeclarationRuleName = 'component-max-inline-declarations';
 const consistentComponentStylesRuleName = 'consistent-component-styles';
 const inputRenameRuleName = 'no-input-rename';
+const preferSignalsRuleName = 'prefer-signals';
 const optionAwareRuleNames = new Set([
   ...selectorRuleNames,
   ...classSuffixRuleNames,
@@ -25,6 +26,7 @@ const optionAwareRuleNames = new Set([
   inlineDeclarationRuleName,
   consistentComponentStylesRuleName,
   inputRenameRuleName,
+  preferSignalsRuleName,
 ]);
 
 const consistentComponentStylesSchema = [
@@ -143,6 +145,44 @@ const inputRenameMessages = {
   suggestReplaceOriginalNameWithAliasName: 'Remove alias name and use it as the original name',
 };
 
+const preferSignalsSchema = [
+  {
+    type: 'object',
+    properties: {
+      preferReadonlySignalProperties: {
+        type: 'boolean',
+        default: true,
+      },
+      preferInputSignals: {
+        type: 'boolean',
+        default: true,
+      },
+      preferQuerySignals: {
+        type: 'boolean',
+        default: true,
+      },
+      useTypeChecking: {
+        type: 'boolean',
+        default: false,
+      },
+      additionalSignalCreationFunctions: {
+        type: 'array',
+        items: { type: 'string' },
+        default: [],
+      },
+    },
+    additionalProperties: false,
+  },
+];
+
+const preferSignalsMessages = {
+  preferInputSignals:
+    'Use `InputSignal`s (e.g. via `input()`) for Component input properties rather than the legacy `@Input()` decorator',
+  preferQuerySignals: 'Use the `{{function}}` function instead of the `{{decorator}}` decorator',
+  preferReadonlySignalProperties:
+    'Properties declared using signals should be marked as `readonly` since they should not be reassigned',
+};
+
 const selectorConfigSchema = {
   type: 'object',
   properties: {
@@ -258,13 +298,16 @@ function createAngularEslintRule(ruleName) {
   const isInlineDeclarationRule = ruleName === inlineDeclarationRuleName;
   const isConsistentComponentStylesRule = ruleName === consistentComponentStylesRuleName;
   const isInputRenameRule = ruleName === inputRenameRuleName;
+  const isPreferSignalsRule = ruleName === preferSignalsRuleName;
   return {
     meta: {
       type: problemRules.has(ruleName) ? 'problem' : 'suggestion',
       docs: {
         description: isConsistentComponentStylesRule
           ? 'Ensures consistent usage of `styles`/`styleUrls`/`styleUrl` within Component metadata'
-          : `enforce angular eslint ${ruleName.replaceAll('-', ' ')}`,
+          : isPreferSignalsRule
+            ? 'Use readonly signals instead of `@Input()`, `@ViewChild()` and other legacy decorators'
+            : `enforce angular eslint ${ruleName.replaceAll('-', ' ')}`,
         category: 'Best Practices',
         recommended: false,
         url: `${DOCS_BASE}/${ruleName}.md`,
@@ -281,9 +324,11 @@ function createAngularEslintRule(ruleName) {
                 ? consistentComponentStylesMessages
                 : isInputRenameRule
                   ? inputRenameMessages
-                  : {
-                      unexpected: 'Unexpected Angular pattern.',
-                    },
+                  : isPreferSignalsRule
+                    ? preferSignalsMessages
+                    : {
+                        unexpected: 'Unexpected Angular pattern.',
+                      },
       schema: isSelectorRule
         ? selectorSchema
         : isClassSuffixRule
@@ -296,9 +341,12 @@ function createAngularEslintRule(ruleName) {
                 ? consistentComponentStylesSchema
                 : isInputRenameRule
                   ? inputRenameSchema
-                  : [],
+                  : isPreferSignalsRule
+                    ? preferSignalsSchema
+                    : [],
       ...(isConsistentComponentStylesRule ? { fixable: 'code' } : {}),
       ...(isInputRenameRule ? { fixable: 'code', hasSuggestions: true } : {}),
+      ...(isPreferSignalsRule ? { fixable: 'code' } : {}),
     },
     createOnce(context) {
       return {

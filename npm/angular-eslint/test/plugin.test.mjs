@@ -19,6 +19,9 @@ const consistentComponentStylesFixture = JSON.parse(
 const noInputRenameFixture = JSON.parse(
   readFileSync(new URL('./fixtures/no-input-rename-v22.0.0.json', import.meta.url), 'utf8'),
 );
+const preferSignalsFixture = JSON.parse(
+  readFileSync(new URL('./fixtures/prefer-signals-v22.1.0.json', import.meta.url), 'utf8'),
+);
 const playgroundCatalog = JSON.parse(
   readFileSync(resolve(workspaceRoot, 'playground/src/catalog.json'), 'utf8'),
 );
@@ -201,6 +204,8 @@ describe('angular-eslint plugin adapter', () => {
         'Directive class names should end with one of these suffixes: {{suffixes}}',
       'no-input-rename':
         'Input bindings should not be aliased (https://angular.dev/guide/components/inputs#choosing-input-names)',
+      'prefer-signals':
+        'Use `InputSignal`s (e.g. via `input()`) for Component input properties rather than the legacy `@Input()` decorator',
     };
     expect(plugin.rules[ruleName].meta.messages[reports[0].messageId]).toBe(
       expectedMessages[ruleName] || 'Unexpected Angular pattern.',
@@ -302,6 +307,49 @@ describe('angular-eslint plugin adapter', () => {
     });
     expect(meta.fixable).toBe('code');
     expect(meta.hasSuggestions).toBe(true);
+  });
+
+  it('exposes the exact upstream prefer-signals contract and playground metadata', () => {
+    const { meta } = plugin.rules['prefer-signals'];
+    expect(meta.type).toBe('suggestion');
+    expect(meta.docs.description).toBe(
+      'Use readonly signals instead of `@Input()`, `@ViewChild()` and other legacy decorators',
+    );
+    expect(meta.schema).toEqual([
+      {
+        type: 'object',
+        properties: {
+          preferReadonlySignalProperties: { type: 'boolean', default: true },
+          preferInputSignals: { type: 'boolean', default: true },
+          preferQuerySignals: { type: 'boolean', default: true },
+          useTypeChecking: { type: 'boolean', default: false },
+          additionalSignalCreationFunctions: {
+            type: 'array',
+            items: { type: 'string' },
+            default: [],
+          },
+        },
+        additionalProperties: false,
+      },
+    ]);
+    expect(meta.messages).toEqual({
+      preferInputSignals:
+        'Use `InputSignal`s (e.g. via `input()`) for Component input properties rather than the legacy `@Input()` decorator',
+      preferQuerySignals:
+        'Use the `{{function}}` function instead of the `{{decorator}}` decorator',
+      preferReadonlySignalProperties:
+        'Properties declared using signals should be marked as `readonly` since they should not be reassigned',
+    });
+    expect(meta.fixable).toBe('code');
+    expect(meta.hasSuggestions).toBeUndefined();
+
+    const playgroundRule = playgroundCatalog.plugins
+      .find(({ plugin: pluginName }) => pluginName === '@angular-eslint')
+      .rules.find(({ name }) => name === 'prefer-signals');
+    expect(playgroundRule).toMatchObject({
+      description: meta.docs.description,
+      messages: meta.messages,
+    });
   });
 
   it('exposes the complete component inline declaration contract', () => {
@@ -995,6 +1043,135 @@ class Test {
         'Input bindings should not be aliased (https://angular.dev/guide/components/inputs#choosing-input-names)',
       ]);
       expect(payload.diagnostics.map(({ labels }) => labels[0].span.line)).toEqual([4, 5]);
+    } finally {
+      rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it.each(preferSignalsFixture.valid)(
+    'accepts upstream prefer-signals valid case through createOnce: $name',
+    ({ code, options }) => {
+      expect(runRule('prefer-signals', code, options)).toEqual([]);
+    },
+  );
+
+  it.each(preferSignalsFixture.invalid)(
+    'matches upstream prefer-signals invalid diagnostic through createOnce: $name',
+    ({ code, errors, options }) => {
+      expect(runRule('prefer-signals', code, options)).toEqual(
+        errors.map((error) => ({
+          messageId: error.messageId,
+          data: error.data,
+          loc: {
+            start: {
+              line: error.line,
+              column: error.column - 1,
+            },
+            end: {
+              line: error.endLine,
+              column: error.endColumn - 1,
+            },
+          },
+        })),
+      );
+    },
+  );
+
+  it('forwards every prefer-signals option independently through createOnce', () => {
+    const code = `
+class Test {
+  @Input() custom = createCustomSignal();
+  @ViewChildren('item') items: QueryList<Item>;
+  typed = createTypedSignal();
+}
+declare function createTypedSignal(): Signal<boolean>;
+`;
+    expect(
+      runRule('prefer-signals', code, [
+        {
+          preferInputSignals: false,
+          preferQuerySignals: false,
+          additionalSignalCreationFunctions: ['createCustomSignal'],
+          useTypeChecking: true,
+        },
+      ]).map(({ messageId, loc }) => ({ messageId, line: loc.start.line })),
+    ).toEqual([
+      { messageId: 'preferReadonlySignalProperties', line: 3 },
+      { messageId: 'preferReadonlySignalProperties', line: 5 },
+    ]);
+  });
+
+  it('does not invent prefer-signals fixes outside the diagnostic ABI', () => {
+    const reports = runRule(
+      'prefer-signals',
+      `class Test { @Input() value = signal(1); @ViewChild('x') child: Widget; }`,
+    );
+    expect(reports).toHaveLength(3);
+    for (const report of reports) {
+      expect(report).not.toHaveProperty('fix');
+      expect(report).not.toHaveProperty('suggest');
+    }
+  });
+
+  it('honors prefer-signals options through real oxlint jsPlugins', () => {
+    const tempDir = mkdtempSync(join(tmpdir(), 'oxlint-angular-prefer-signals-'));
+    try {
+      writeFileSync(
+        join(tempDir, 'fixture.ts'),
+        'class Test {\n' +
+          '  custom = createCustomSignal();\n' +
+          '  typed = createTypedSignal();\n' +
+          '  @Input() legacy = 1;\n' +
+          '  @ViewChildren("item") items: QueryList<Item>;\n' +
+          '}\n' +
+          'declare function createTypedSignal(): Signal<boolean>;\n',
+      );
+      writeFileSync(
+        join(tempDir, 'oxlint.config.jsonc'),
+        JSON.stringify({
+          jsPlugins: [
+            {
+              name: '@angular-eslint',
+              specifier: join(packageRoot, 'index.js'),
+            },
+          ],
+          rules: {
+            '@angular-eslint/prefer-signals': [
+              'error',
+              {
+                preferInputSignals: false,
+                additionalSignalCreationFunctions: ['createCustomSignal'],
+                useTypeChecking: true,
+              },
+            ],
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        findOxlintCli(),
+        ['--config', 'oxlint.config.jsonc', '--quiet', '--format', 'json', 'fixture.ts'],
+        {
+          cwd: tempDir,
+          encoding: 'utf8',
+        },
+      );
+      const payload = JSON.parse(result.stdout);
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      expect(payload.diagnostics).toHaveLength(3);
+      expect(payload.diagnostics.map(({ code }) => code)).toEqual([
+        '@angular-eslint(prefer-signals)',
+        '@angular-eslint(prefer-signals)',
+        '@angular-eslint(prefer-signals)',
+      ]);
+      expect(payload.diagnostics.map(({ message }) => message)).toEqual([
+        'Properties declared using signals should be marked as `readonly` since they should not be reassigned',
+        'Properties declared using signals should be marked as `readonly` since they should not be reassigned',
+        'Use the `viewChildren` function instead of the `ViewChildren` decorator',
+      ]);
+      expect(payload.diagnostics.map(({ labels }) => labels[0].span.line)).toEqual([2, 3, 5]);
     } finally {
       rmSync(tempDir, { recursive: true, force: true });
     }

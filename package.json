@@ -56,6 +56,7 @@
     "port:tests:astro": "node tools/tasks/sync-astro-tests.ts",
     "port:tests:angular:consistent-component-styles": "node tools/tasks/sync-angular-consistent-component-styles-tests.ts",
     "port:tests:angular:no-input-rename": "node tools/tasks/sync-angular-no-input-rename-tests.ts",
+    "port:tests:angular:prefer-signals": "node tools/tasks/sync-angular-prefer-signals-tests.ts",
     "port:tests:eslint-comments": "node tools/tasks/sync-eslint-comments-tests.ts",
     "port:tests:eslint-json": "node tools/tasks/sync-eslint-json-tests.ts",
     "port:tests:eslint-markdown": "node tools/tasks/sync-eslint-markdown-tests.ts",

@@ -3,7 +3,7 @@
 use oxc_ast::ast::Program;
 use oxc_ast_visit::Visit;
 use oxc_span::Span;
-use oxlint_plugins_carton::SmallVec;
+use oxlint_plugins_carton::{CompactString, SmallVec};
 use regex::Regex;
 
 use crate::ScanOptions;
@@ -13,11 +13,13 @@ pub(crate) struct Scanner<'a> {
     pub(crate) source_text: &'a str,
     pub(crate) line_index: LineIndex,
     pub(crate) options: &'a ScanOptions,
+    pub(crate) signal_returning_functions: SmallVec<[CompactString; 4]>,
     pub(crate) diagnostics: SmallVec<[Diagnostic; 64]>,
 }
 
 impl<'a> Scanner<'a> {
     pub(crate) fn scan(&mut self, program: &Program<'a>) {
+        self.collect_signal_returning_functions(program);
         self.check_regex(
             "computed-must-return",
             r#"computed\s*\(\s*\(\s*\)\s*=>\s*\{"#,
@@ -83,7 +85,6 @@ impl<'a> Scanner<'a> {
             "prefer-signal-model",
             r#"@Input\s*\([^)]*\)\s+value\b[\s\S]*@Output\s*\([^)]*\)\s+valueChange\b"#,
         );
-        self.check_regex("prefer-signals", r#"@Input\s*\([^)]*\)\s+\w+"#);
         self.check_regex("prefer-standalone", r#"standalone\s*:\s*false"#);
         self.check_regex(
             "relative-url-prefix",

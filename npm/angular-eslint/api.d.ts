@@ -20,6 +20,16 @@ export type NoInputRenameOptions = [
 
 export type ConsistentComponentStylesOptions = [mode: 'array' | 'string'];
 
+export type PreferSignalsOptions = [
+  {
+    readonly preferReadonlySignalProperties?: boolean;
+    readonly preferInputSignals?: boolean;
+    readonly preferQuerySignals?: boolean;
+    readonly useTypeChecking?: boolean;
+    readonly additionalSignalCreationFunctions?: readonly string[];
+  }?,
+];
+
 export function implementedAngularEslintRuleNames(): string[];
 export function scanAngularEslint(
   sourceText: string,

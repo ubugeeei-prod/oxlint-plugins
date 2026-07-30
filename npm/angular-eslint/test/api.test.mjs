@@ -13,6 +13,9 @@ const consistentComponentStylesFixture = JSON.parse(
 const noInputRenameFixture = JSON.parse(
   readFileSync(new URL('./fixtures/no-input-rename-v22.0.0.json', import.meta.url), 'utf8'),
 );
+const preferSignalsFixture = JSON.parse(
+  readFileSync(new URL('./fixtures/prefer-signals-v22.1.0.json', import.meta.url), 'utf8'),
+);
 
 const expectedRuleNames = [
   'component-class-suffix',
@@ -111,7 +114,7 @@ describe('angular-eslint native API', () => {
   it('scans representative Angular patterns for every rule', () => {
     const diagnostics = scanAngularEslint(representativeSource, 'fixture.ts');
 
-    expect(diagnostics.map((diagnostic) => diagnostic.ruleName).sort()).toEqual(
+    expect([...new Set(diagnostics.map((diagnostic) => diagnostic.ruleName))].sort()).toEqual(
       expectedRuleNames
         .filter(
           (ruleName) =>
@@ -669,5 +672,170 @@ class Test { @Input('publicName') internal: string; }
         endLine: 1,
       },
     });
+  });
+
+  it('pins every authored prefer-signals case from angular-eslint v22.1.0', () => {
+    expect(preferSignalsFixture.metadata).toEqual({
+      package: '@angular-eslint/eslint-plugin',
+      version: '22.1.0',
+      sourceCommit: 'a666e1b45c9782d1ac2066fd55ec0127d0580950',
+      sourceTag: 'v22.1.0',
+      sourcePath: 'packages/eslint-plugin/tests/rules/prefer-signals/cases.ts',
+      sourceSha256: '33cae0732a9d9a41e1dd943ee8a19e282e240a06a247a31a0dac942fcec96cae',
+      capture: 'every authored valid and invalid semantic case exactly once',
+      counts: {
+        valid: 39,
+        invalid: 26,
+        diagnostics: 26,
+      },
+    });
+  });
+
+  it.each(preferSignalsFixture.valid)(
+    'accepts upstream prefer-signals valid case: $name',
+    ({ code, options }) => {
+      expect(
+        scanAngularEslint(code, 'fixture.ts', {
+          ruleNames: ['prefer-signals'],
+          options,
+        }),
+      ).toEqual([]);
+    },
+  );
+
+  it.each(preferSignalsFixture.invalid)(
+    'matches upstream prefer-signals invalid diagnostic: $name',
+    ({ code, errors, options }) => {
+      expect(
+        scanAngularEslint(code, 'fixture.ts', {
+          ruleNames: ['prefer-signals'],
+          options,
+        }),
+      ).toEqual(
+        errors.map((error) => ({
+          ruleName: 'prefer-signals',
+          messageId: error.messageId,
+          data: Object.entries(error.data).map(([key, value]) => ({ key, value })),
+          loc: {
+            startLine: error.line,
+            startColumn: error.column - 1,
+            endLine: error.endLine,
+            endColumn: error.endColumn - 1,
+          },
+        })),
+      );
+    },
+  );
+
+  it('reports readonly, input, and query branches in upstream traversal order', () => {
+    const diagnostics = scanAngularEslint(
+      `class Test {
+  @Input() signalValue = signal(1);
+  @ViewChild('child') child: Widget;
+  plain = contentChildren('items');
+}`,
+      'fixture.ts',
+      { ruleNames: ['prefer-signals'], options: [] },
+    );
+
+    expect(
+      diagnostics.map(({ messageId, data, loc }) => ({
+        messageId,
+        data,
+        line: loc.startLine,
+      })),
+    ).toEqual([
+      { messageId: 'preferReadonlySignalProperties', data: [], line: 2 },
+      { messageId: 'preferInputSignals', data: [], line: 2 },
+      {
+        messageId: 'preferQuerySignals',
+        data: [
+          { key: 'function', value: 'viewChild' },
+          { key: 'decorator', value: 'ViewChild' },
+        ],
+        line: 3,
+      },
+      { messageId: 'preferReadonlySignalProperties', data: [], line: 4 },
+    ]);
+  });
+
+  it.each([
+    [[{ preferReadonlySignalProperties: false }], ['preferInputSignals', 'preferQuerySignals']],
+    [[{ preferInputSignals: false }], ['preferReadonlySignalProperties', 'preferQuerySignals']],
+    [[{ preferQuerySignals: false }], ['preferReadonlySignalProperties', 'preferInputSignals']],
+    [
+      [
+        {
+          preferReadonlySignalProperties: false,
+          preferInputSignals: false,
+          preferQuerySignals: false,
+        },
+      ],
+      [],
+    ],
+  ])('isolates prefer-signals option branches for %j', (options, messageIds) => {
+    const diagnostics = scanAngularEslint(
+      `class Test {
+  @Input() value = signal(1);
+  @ContentChild('child') child: Widget;
+}`,
+      'fixture.ts',
+      { ruleNames: ['prefer-signals'], options },
+    );
+    expect(diagnostics.map(({ messageId }) => messageId)).toEqual(messageIds);
+  });
+
+  it('supports additional factories and source-local type checking independently', () => {
+    const source = `
+class Test {
+  custom = createCustomSignal();
+  typed = createTypedSignal();
+}
+declare function createTypedSignal(): Signal<boolean>;
+`;
+    expect(
+      scanAngularEslint(source, 'fixture.ts', {
+        ruleNames: ['prefer-signals'],
+        options: [{ additionalSignalCreationFunctions: ['createCustomSignal'] }],
+      }).map(({ loc }) => loc.startLine),
+    ).toEqual([3]);
+    expect(
+      scanAngularEslint(source, 'fixture.ts', {
+        ruleNames: ['prefer-signals'],
+        options: [{ useTypeChecking: true }],
+      }).map(({ loc }) => loc.startLine),
+    ).toEqual([4]);
+  });
+
+  it('preserves UTF-16 columns and ignores non-Angular state factories', () => {
+    const [diagnostic] = scanAngularEslint(
+      `class Test { marker = '😀'; signalValue = signal(1); state = useState(0); }`,
+      'fixture.ts',
+      { ruleNames: ['prefer-signals'], options: [] },
+    );
+    expect(diagnostic).toMatchObject({
+      messageId: 'preferReadonlySignalProperties',
+      loc: {
+        startLine: 1,
+        startColumn: 28,
+        endLine: 1,
+        endColumn: 39,
+      },
+    });
+  });
+
+  it('keeps prefer-signals isolated and fails closed on malformed TypeScript', () => {
+    expect(
+      scanAngularEslint(`class Test { value = signal(1); }`, 'fixture.ts', {
+        ruleNames: ['no-output-rename'],
+        options: [],
+      }).some(({ ruleName }) => ruleName === 'prefer-signals'),
+    ).toBe(false);
+    expect(
+      scanAngularEslint(`class Test { value = signal(`, 'fixture.ts', {
+        ruleNames: ['prefer-signals'],
+        options: [],
+      }),
+    ).toEqual([]);
   });
 });

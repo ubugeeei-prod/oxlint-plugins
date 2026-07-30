@@ -291,10 +291,12 @@
         },
         {
           "name": "prefer-signals",
-          "description": "enforce angular eslint prefer signals",
+          "description": "Use readonly signals instead of `@Input()`, `@ViewChild()` and other legacy decorators",
           "docsUrl": "https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules/prefer-signals.md",
           "messages": {
-            "unexpected": "Unexpected Angular pattern."
+            "preferInputSignals": "Use `InputSignal`s (e.g. via `input()`) for Component input properties rather than the legacy `@Input()` decorator",
+            "preferQuerySignals": "Use the `{{function}}` function instead of the `{{decorator}}` decorator",
+            "preferReadonlySignalProperties": "Properties declared using signals should be marked as `readonly` since they should not be reassigned"
           }
         },
         {

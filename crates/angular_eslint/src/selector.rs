@@ -1,4 +1,7 @@
-use oxc_ast::ast::{Class, Expression, ObjectExpression, ObjectPropertyKind, PropertyKey};
+use oxc_ast::ast::{
+    Class, Decorator, Expression, ObjectExpression, ObjectPropertyKind, PropertyDefinition,
+    PropertyKey,
+};
 use oxc_ast_visit::{Visit, walk};
 use oxc_span::Span;
 use oxlint_plugins_carton::{CompactString, SmallVec};
@@ -79,6 +82,16 @@ impl Visit<'_> for Scanner<'_> {
         self.check_prefix_rules(class);
         self.check_selector_decorators(class);
         walk::walk_class(self, class);
+    }
+
+    fn visit_property_definition(&mut self, property: &PropertyDefinition<'_>) {
+        self.check_prefer_signals_property(property);
+        walk::walk_property_definition(self, property);
+    }
+
+    fn visit_decorator(&mut self, decorator: &Decorator<'_>) {
+        self.check_prefer_signals_decorator(decorator);
+        walk::walk_decorator(self, decorator);
     }
 }
 

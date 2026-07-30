@@ -588,7 +588,7 @@
           "lsp": false,
           "oxlintIntegration": true
         },
-        "notes": "Rust/Oxc syntax-pattern port of @angular-eslint/eslint-plugin/prefer-signals; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+        "notes": "Full Rust/Oxc AST port of the angular-eslint v22.1.0 prefer-signals contract, including five independent options, pinned authored-fixture replay, exact diagnostics, NAPI/API/plugin coverage, and real Oxlint jsPlugins integration."
       },
       {
         "name": "prefer-standalone",

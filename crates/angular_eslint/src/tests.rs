@@ -70,6 +70,7 @@ fn scans_representative_rules() {
         })
         .collect();
     actual.sort_unstable();
+    actual.dedup();
     expected.sort_unstable();
     assert_eq!(actual, expected);
 }
