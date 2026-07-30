@@ -19,10 +19,6 @@ pub(crate) struct Scanner<'a> {
 impl<'a> Scanner<'a> {
     pub(crate) fn scan(&mut self, program: &Program<'a>) {
         self.check_regex(
-            "component-max-inline-declarations",
-            r#"(?s)template\s*:\s*`[^`]*\n[^`]*\n[^`]*`"#,
-        );
-        self.check_regex(
             "computed-must-return",
             r#"computed\s*\(\s*\(\s*\)\s*=>\s*\{"#,
         );

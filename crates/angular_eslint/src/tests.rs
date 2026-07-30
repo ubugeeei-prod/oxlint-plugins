@@ -5,7 +5,8 @@ use crate::{RULE_NAMES, implemented_angular_eslint_rule_names, scan_angular_esli
 const REPRESENTATIVE_SOURCE: &str = r#"
 @Component({ selector: "BadSelector", template: `a
 b
-c` }) class App {}
+c
+d` }) class App {}
 const total = computed(() => { totalSignal(); });
 @Component({ styleUrls: ["./x.css"] }) class StyleComponent {}
 @Input() class WrongContext {}

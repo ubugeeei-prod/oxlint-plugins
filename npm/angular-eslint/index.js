@@ -15,11 +15,30 @@ const implementedRuleNames = Object.freeze(implementedAngularEslintRuleNames());
 const selectorRuleNames = new Set(['component-selector', 'directive-selector']);
 const classSuffixRuleNames = new Set(['component-class-suffix', 'directive-class-suffix']);
 const prefixRuleNames = new Set(['no-input-prefix', 'pipe-prefix']);
+const inlineDeclarationRuleName = 'component-max-inline-declarations';
 const optionAwareRuleNames = new Set([
   ...selectorRuleNames,
   ...classSuffixRuleNames,
   ...prefixRuleNames,
+  inlineDeclarationRuleName,
 ]);
+
+const inlineDeclarationSchema = [
+  {
+    type: 'object',
+    properties: {
+      template: { minimum: 0, type: 'number' },
+      styles: { minimum: 0, type: 'number' },
+      animations: { minimum: 0, type: 'number' },
+    },
+    additionalProperties: false,
+  },
+];
+
+const inlineDeclarationMessages = {
+  componentMaxInlineDeclarations:
+    '`{{propertyType}}` has too many lines ({{lineCount}}). Maximum allowed is {{max}}',
+};
 
 const classSuffixSchema = [
   {
@@ -196,6 +215,7 @@ function createAngularEslintRule(ruleName) {
   const isSelectorRule = selectorRuleNames.has(ruleName);
   const isClassSuffixRule = classSuffixRuleNames.has(ruleName);
   const isPrefixRule = prefixRuleNames.has(ruleName);
+  const isInlineDeclarationRule = ruleName === inlineDeclarationRuleName;
   return {
     meta: {
       type: problemRules.has(ruleName) ? 'problem' : 'suggestion',
@@ -211,16 +231,20 @@ function createAngularEslintRule(ruleName) {
           ? classSuffixMessages[ruleName]
           : isPrefixRule
             ? prefixMessages[ruleName]
-            : {
-                unexpected: 'Unexpected Angular pattern.',
-              },
+            : isInlineDeclarationRule
+              ? inlineDeclarationMessages
+              : {
+                  unexpected: 'Unexpected Angular pattern.',
+                },
       schema: isSelectorRule
         ? selectorSchema
         : isClassSuffixRule
           ? classSuffixSchema
           : isPrefixRule
             ? prefixSchemas[ruleName]
-            : [],
+            : isInlineDeclarationRule
+              ? inlineDeclarationSchema
+              : [],
     },
     createOnce(context) {
       return {

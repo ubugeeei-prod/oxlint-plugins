@@ -66,7 +66,7 @@ const invalidCases = [
   ['component-class-suffix', '@Component({ selector: "app-x" }) class App {}\n'],
   [
     'component-max-inline-declarations',
-    '@Component({ template: `a\nb\nc` }) class AppComponent {}\n',
+    '@Component({ template: `a\nb\nc\nd` }) class AppComponent {}\n',
   ],
   ['computed-must-return', 'const total = computed(() => { totalSignal(); });\n'],
   ['consistent-component-styles', '@Component({ styleUrls: ["./x.css"] }) class AppComponent {}\n'],
@@ -181,6 +181,8 @@ describe('angular-eslint plugin adapter', () => {
     const expectedMessages = {
       'component-class-suffix':
         'Component class names should end with one of these suffixes: {{suffixes}}',
+      'component-max-inline-declarations':
+        '`{{propertyType}}` has too many lines ({{lineCount}}). Maximum allowed is {{max}}',
       'directive-class-suffix':
         'Directive class names should end with one of these suffixes: {{suffixes}}',
     };
@@ -229,6 +231,83 @@ describe('angular-eslint plugin adapter', () => {
       undefined,
     );
   });
+
+  it('exposes the complete component inline declaration contract', () => {
+    const { meta } = plugin.rules['component-max-inline-declarations'];
+    expect(meta.schema).toEqual([
+      {
+        type: 'object',
+        properties: {
+          template: { minimum: 0, type: 'number' },
+          styles: { minimum: 0, type: 'number' },
+          animations: { minimum: 0, type: 'number' },
+        },
+        additionalProperties: false,
+      },
+    ]);
+    expect(meta.messages).toEqual({
+      componentMaxInlineDeclarations:
+        '`{{propertyType}}` has too many lines ({{lineCount}}). Maximum allowed is {{max}}',
+    });
+  });
+
+  it.each([
+    [
+      '@Component({ template: `one\ntwo\nthree\nfour` }) class Test {}',
+      [],
+      [
+        {
+          messageId: 'componentMaxInlineDeclarations',
+          data: { propertyType: 'template', lineCount: '4', max: '3' },
+        },
+      ],
+    ],
+    ['@Component({ template: `one\ntwo\nthree` }) class Test {}', [], []],
+    [
+      '@Component({ styles: [`one\ntwo`, `three\nfour`] }) class Test {}',
+      [{ styles: 3 }],
+      [
+        {
+          messageId: 'componentMaxInlineDeclarations',
+          data: { propertyType: 'styles', lineCount: '4', max: '3' },
+        },
+      ],
+    ],
+    [
+      '@Component({ animations: [one()] }) class Test {}',
+      [{ animations: 0 }],
+      [
+        {
+          messageId: 'componentMaxInlineDeclarations',
+          data: { propertyType: 'animations', lineCount: '1', max: '0' },
+        },
+      ],
+    ],
+    [
+      '@Component({ template: "one", styles: ["two"], animations: [three()] }) class Test {}',
+      [{ template: 0, styles: 0, animations: 0 }],
+      [
+        {
+          messageId: 'componentMaxInlineDeclarations',
+          data: { propertyType: 'template', lineCount: '1', max: '0' },
+        },
+        {
+          messageId: 'componentMaxInlineDeclarations',
+          data: { propertyType: 'styles', lineCount: '1', max: '0' },
+        },
+        {
+          messageId: 'componentMaxInlineDeclarations',
+          data: { propertyType: 'animations', lineCount: '1', max: '0' },
+        },
+      ],
+    ],
+    ['@Directive({ template: `one\ntwo` }) class Test {}', [{ template: 0 }], []],
+  ])(
+    'honors component inline declaration options through createOnce',
+    (code, options, expected) => {
+      expect(runRule('component-max-inline-declarations', code, options)).toMatchObject(expected);
+    },
+  );
 
   it.each([
     [
@@ -516,6 +595,63 @@ describe('angular-eslint plugin adapter', () => {
           code: '@angular-eslint(component-class-suffix)',
           message: 'Component class names should end with one of these suffixes: "Page" or "View"',
         },
+      ]);
+    } finally {
+      rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('honors component inline declaration limits through real oxlint jsPlugins', () => {
+    const tempDir = mkdtempSync(join(tmpdir(), 'oxlint-angular-inline-declarations-'));
+    try {
+      writeFileSync(
+        join(tempDir, 'fixture.ts'),
+        '@Component({\n' +
+          '  template: `one\ntwo`,\n' +
+          '  styles: [`one\ntwo`],\n' +
+          '  animations: [one()],\n' +
+          '}) class Test {}\n',
+      );
+      writeFileSync(
+        join(tempDir, 'oxlint.config.jsonc'),
+        JSON.stringify({
+          jsPlugins: [
+            {
+              name: '@angular-eslint',
+              specifier: join(packageRoot, 'index.js'),
+            },
+          ],
+          rules: {
+            '@angular-eslint/component-max-inline-declarations': [
+              'error',
+              { template: 1, styles: 1, animations: 0 },
+            ],
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        findOxlintCli(),
+        ['--config', 'oxlint.config.jsonc', '--quiet', '--format', 'json', 'fixture.ts'],
+        {
+          cwd: tempDir,
+          encoding: 'utf8',
+        },
+      );
+      const payload = JSON.parse(result.stdout);
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      expect(payload.diagnostics).toHaveLength(3);
+      expect(payload.diagnostics.map(({ code }) => code)).toEqual([
+        '@angular-eslint(component-max-inline-declarations)',
+        '@angular-eslint(component-max-inline-declarations)',
+        '@angular-eslint(component-max-inline-declarations)',
+      ]);
+      expect(payload.diagnostics.map(({ message }) => message)).toEqual([
+        '`template` has too many lines (2). Maximum allowed is 1',
+        '`styles` has too many lines (2). Maximum allowed is 1',
+        '`animations` has too many lines (1). Maximum allowed is 0',
       ]);
     } finally {
       rmSync(tempDir, { recursive: true, force: true });
