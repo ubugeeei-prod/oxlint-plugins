@@ -1,7 +1,13 @@
 //! Diagnostic types and line indexing for the angular-eslint port.
 
 use oxc_span::Span;
-use oxlint_plugins_carton::SmallVec;
+use oxlint_plugins_carton::{CompactString, SmallVec};
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct DiagnosticDatum {
+    pub key: CompactString,
+    pub value: CompactString,
+}
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct DiagnosticLoc {
@@ -15,6 +21,7 @@ pub struct DiagnosticLoc {
 pub struct Diagnostic {
     pub rule_name: &'static str,
     pub message_id: &'static str,
+    pub data: SmallVec<[DiagnosticDatum; 2]>,
     pub loc: DiagnosticLoc,
 }
 

@@ -8,8 +8,16 @@ export type AngularEslintDiagnosticLoc = {
 export type AngularEslintDiagnostic = {
   ruleName: string;
   messageId: string;
+  data: Array<{ key: string; value: string }>;
   loc: AngularEslintDiagnosticLoc;
 };
 
 export function implementedAngularEslintRuleNames(): string[];
-export function scanAngularEslint(sourceText: string, filename?: string): AngularEslintDiagnostic[];
+export function scanAngularEslint(
+  sourceText: string,
+  filename?: string,
+  options?: {
+    ruleNames?: string[];
+    options?: unknown[];
+  },
+): AngularEslintDiagnostic[];

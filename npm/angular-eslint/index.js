@@ -12,6 +12,72 @@ const DOCS_BASE =
   'https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/docs/rules';
 const diagnosticsCache = new WeakMap();
 const implementedRuleNames = Object.freeze(implementedAngularEslintRuleNames());
+const selectorRuleNames = new Set(['component-selector', 'directive-selector']);
+
+const selectorConfigSchema = {
+  type: 'object',
+  properties: {
+    type: {
+      oneOf: [
+        { type: 'string', enum: ['element', 'attribute'] },
+        {
+          type: 'array',
+          items: { type: 'string', enum: ['element', 'attribute'] },
+          minItems: 1,
+          uniqueItems: true,
+        },
+      ],
+    },
+    prefix: {
+      oneOf: [{ type: 'string' }, { type: 'array', items: { type: 'string' } }],
+    },
+    style: { type: 'string', enum: ['camelCase', 'kebab-case'] },
+  },
+  required: ['type', 'style'],
+  additionalProperties: false,
+};
+
+const selectorSchema = [
+  {
+    oneOf: [
+      selectorConfigSchema,
+      {
+        type: 'array',
+        items: {
+          ...selectorConfigSchema,
+          properties: {
+            ...selectorConfigSchema.properties,
+            type: { type: 'string', enum: ['element', 'attribute'] },
+          },
+        },
+        minItems: 1,
+        maxItems: 2,
+      },
+    ],
+  },
+];
+
+const selectorMessages = {
+  'component-selector': {
+    prefixFailure:
+      'The selector should start with one of these prefixes: {{prefix}} (https://angular.dev/style-guide#choosing-component-selectors)',
+    styleFailure:
+      'The selector should be {{style}} (https://angular.dev/style-guide#choosing-component-selectors)',
+    styleAndPrefixFailure:
+      'The selector should be {{style}} and start with one of these prefixes: {{prefix}} (https://angular.dev/style-guide#choosing-component-selectors and https://angular.dev/style-guide#choosing-component-selectors)',
+    typeFailure:
+      'The selector should be used as an {{type}} (https://angular.dev/style-guide#choosing-component-selectors)',
+    shadowDomEncapsulatedStyleFailure:
+      'The selector of a ShadowDom-encapsulated component should be `kebab-case` (https://github.com/angular-eslint/angular-eslint/issues/534)',
+    selectorAfterPrefixFailure: 'There should be a selector after the {{prefix}} prefix',
+  },
+  'directive-selector': {
+    prefixFailure: 'The selector should start with one of these prefixes: {{prefix}}',
+    styleFailure: 'The selector should be {{style}}',
+    typeFailure: 'The selector should be used as an {{type}}',
+    selectorAfterPrefixFailure: 'There should be a selector after the {{prefix}} prefix',
+  },
+};
 
 const problemRules = new Set([
   'computed-must-return',
@@ -57,6 +123,7 @@ plugin.implementedAngularEslintRuleNames = implementedRuleNames;
 plugin.scanAngularEslint = scanAngularEslint;
 
 function createAngularEslintRule(ruleName) {
+  const isSelectorRule = selectorRuleNames.has(ruleName);
   return {
     meta: {
       type: problemRules.has(ruleName) ? 'problem' : 'suggestion',
@@ -66,13 +133,12 @@ function createAngularEslintRule(ruleName) {
         recommended: false,
         url: `${DOCS_BASE}/${ruleName}.md`,
       },
-      messages: {
-        unexpected: 'Unexpected Angular pattern.',
-      },
-      // These rules do not yet honor upstream options (the core is a heuristic
-      // scanner). Declare no schema so configured options are surfaced as an
-      // error rather than silently ignored. Tracked for real implementation.
-      schema: [],
+      messages: isSelectorRule
+        ? selectorMessages[ruleName]
+        : {
+            unexpected: 'Unexpected Angular pattern.',
+          },
+      schema: isSelectorRule ? selectorSchema : [],
     },
     createOnce(context) {
       return {
@@ -87,6 +153,14 @@ function createAngularEslintRule(ruleName) {
 }
 
 function diagnosticsForRule(context, ruleName) {
+  if (selectorRuleNames.has(ruleName)) {
+    const sourceText = sourceTextForContext(context);
+    const filename = typeof context.filename === 'string' ? context.filename : 'file.ts';
+    return scanAngularEslint(sourceText, filename, {
+      ruleNames: [ruleName],
+      options: context.options || [],
+    });
+  }
   return diagnosticsForContext(context).filter((diagnostic) => diagnostic.ruleName === ruleName);
 }
 
@@ -109,6 +183,7 @@ function diagnosticsForContext(context) {
 function reportDiagnostic(context, diagnostic) {
   context.report({
     messageId: diagnostic.messageId,
+    data: Object.fromEntries(diagnostic.data.map(({ key, value }) => [key, value])),
     loc: {
       start: {
         line: diagnostic.loc.startLine,

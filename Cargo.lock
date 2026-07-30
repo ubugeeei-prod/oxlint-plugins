@@ -1095,6 +1095,7 @@ dependencies = [
  "napi-build",
  "napi-derive",
  "oxlint-plugins-angular-eslint",
+ "serde_json",
 ]
 
 [[package]]
@@ -1332,10 +1333,13 @@ name = "oxlint-plugins-angular-eslint"
 version = "0.0.0"
 dependencies = [
  "oxc_allocator",
+ "oxc_ast",
+ "oxc_ast_visit",
  "oxc_parser",
  "oxc_span",
  "oxlint-plugins-_carton",
  "regex",
+ "serde_json",
 ]
 
 [[package]]

@@ -99,8 +99,93 @@ describe('angular-eslint native API', () => {
     const diagnostics = scanAngularEslint(representativeSource, 'fixture.ts');
 
     expect(diagnostics.map((diagnostic) => diagnostic.ruleName).sort()).toEqual(
-      [...expectedRuleNames].sort(),
+      expectedRuleNames
+        .filter((ruleName) => !['component-selector', 'directive-selector'].includes(ruleName))
+        .sort(),
     );
+  });
+
+  it.each([
+    [
+      'component-selector',
+      '@Component({ selector: "app-user-card" }) class UserCard {}',
+      { type: 'element', prefix: 'app', style: 'kebab-case' },
+      [],
+    ],
+    [
+      'component-selector',
+      '@Component({ selector: "wrong-name" }) class UserCard {}',
+      { type: 'element', prefix: ['app', 'lib'], style: 'kebab-case' },
+      [{ messageId: 'prefixFailure', data: [{ key: 'prefix', value: '"app" or "lib"' }] }],
+    ],
+    [
+      'component-selector',
+      '@Component({ selector: "appUserCard" }) class UserCard {}',
+      { type: 'element', prefix: 'app', style: 'kebab-case' },
+      [
+        {
+          messageId: 'styleAndPrefixFailure',
+          data: [
+            { key: 'style', value: 'kebab-case' },
+            { key: 'prefix', value: '"app"' },
+          ],
+        },
+      ],
+    ],
+    [
+      'component-selector',
+      '@Component({ selector: "[appUserCard]" }) class UserCard {}',
+      { type: 'element', prefix: 'app', style: 'camelCase' },
+      [{ messageId: 'typeFailure', data: [{ key: 'type', value: 'element' }] }],
+    ],
+    [
+      'component-selector',
+      '@Component({ selector: "appUserCard", encapsulation: ViewEncapsulation.ShadowDom }) class UserCard {}',
+      { type: 'element', prefix: 'app', style: 'camelCase' },
+      [{ messageId: 'shadowDomEncapsulatedStyleFailure', data: [] }],
+    ],
+    [
+      'directive-selector',
+      '@Directive({ selector: "[appHighlight]" }) class HighlightDirective {}',
+      { type: 'attribute', prefix: 'app', style: 'camelCase' },
+      [],
+    ],
+    [
+      'directive-selector',
+      '@Directive({ selector: "[app-highlight]" }) class HighlightDirective {}',
+      { type: 'attribute', prefix: 'app', style: 'camelCase' },
+      [{ messageId: 'styleFailure', data: [{ key: 'style', value: 'camelCase' }] }],
+    ],
+  ])('honors %s native options and data', (ruleName, source, option, expected) => {
+    const diagnostics = scanAngularEslint(source, 'fixture.ts', {
+      ruleNames: [ruleName],
+      options: [option],
+    });
+
+    expect(diagnostics).toMatchObject(expected);
+  });
+
+  it('supports separate element and attribute selector configs', () => {
+    const options = [
+      [
+        { type: 'element', prefix: 'app', style: 'kebab-case' },
+        { type: 'attribute', prefix: 'lib', style: 'camelCase' },
+      ],
+    ];
+    expect(
+      scanAngularEslint(
+        '@Component({ selector: "app-user-card" }) class UserCard {}',
+        'fixture.ts',
+        { ruleNames: ['component-selector'], options },
+      ),
+    ).toEqual([]);
+    expect(
+      scanAngularEslint(
+        '@Component({ selector: "[libUserCard]" }) class UserCard {}',
+        'fixture.ts',
+        { ruleNames: ['component-selector'], options },
+      ),
+    ).toEqual([]);
   });
 
   it('returns LSP-shaped locations', () => {
