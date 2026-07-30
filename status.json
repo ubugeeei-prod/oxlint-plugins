@@ -316,7 +316,7 @@
           "lsp": false,
           "oxlintIntegration": true
         },
-        "notes": "Rust/Oxc syntax-pattern port of @angular-eslint/eslint-plugin/no-input-rename; focused invalid coverage is included in Vitest, with plugin loading covered through Oxlint jsPlugins."
+        "notes": "Oxc AST port of @angular-eslint/eslint-plugin v22.0.0 no-input-rename. Covers decorator, input()/input.required(), and metadata aliases with allowedNames forwarding plus selector/composed-name, ARIA, and hostDirectives semantics. All 46 authored valid and 35 authored invalid upstream cases are pinned and replayed through Rust/NAPI/adapter tests, with real Oxlint option coverage. The current diagnostic ABI does not transport fix/suggestion edits, so upstream fix/suggestion metadata is exposed but reports remain location-only."
       },
       {
         "name": "no-inputs-metadata-property",

@@ -1,4 +1,4 @@
-import { existsSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -10,6 +10,9 @@ import plugin from '../index.js';
 
 const packageRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 const workspaceRoot = resolve(packageRoot, '../..');
+const noInputRenameFixture = JSON.parse(
+  readFileSync(new URL('./fixtures/no-input-rename-v22.0.0.json', import.meta.url), 'utf8'),
+);
 
 const expectedRuleNames = [
   'component-class-suffix',
@@ -185,6 +188,8 @@ describe('angular-eslint plugin adapter', () => {
         '`{{propertyType}}` has too many lines ({{lineCount}}). Maximum allowed is {{max}}',
       'directive-class-suffix':
         'Directive class names should end with one of these suffixes: {{suffixes}}',
+      'no-input-rename':
+        'Input bindings should not be aliased (https://angular.dev/guide/components/inputs#choosing-input-names)',
     };
     expect(plugin.rules[ruleName].meta.messages[reports[0].messageId]).toBe(
       expectedMessages[ruleName] || 'Unexpected Angular pattern.',
@@ -230,6 +235,32 @@ describe('angular-eslint plugin adapter', () => {
     expect(plugin.rules['no-input-prefix'].meta.schema[0].properties.prefixes.uniqueItems).toBe(
       undefined,
     );
+  });
+
+  it('exposes the exact upstream no-input-rename contract', () => {
+    const { meta } = plugin.rules['no-input-rename'];
+    expect(meta.schema).toEqual([
+      {
+        type: 'object',
+        properties: {
+          allowedNames: {
+            type: 'array',
+            items: { type: 'string' },
+            description: 'A list with allowed input names',
+            uniqueItems: true,
+          },
+        },
+        additionalProperties: false,
+      },
+    ]);
+    expect(meta.messages).toEqual({
+      noInputRename:
+        'Input bindings should not be aliased (https://angular.dev/guide/components/inputs#choosing-input-names)',
+      suggestRemoveAliasName: 'Remove alias name',
+      suggestReplaceOriginalNameWithAliasName: 'Remove alias name and use it as the original name',
+    });
+    expect(meta.fixable).toBe('code');
+    expect(meta.hasSuggestions).toBe(true);
   });
 
   it('exposes the complete component inline declaration contract', () => {
@@ -346,6 +377,59 @@ describe('angular-eslint plugin adapter', () => {
     ['pipe-prefix', '@Pipe({ name: "ngTitle" }) class Test {}', [{ prefixes: ['ng'] }], []],
   ])('honors configured %s prefixes through createOnce', (ruleName, code, options, expected) => {
     expect(runRule(ruleName, code, options)).toMatchObject(expected);
+  });
+
+  it.each(noInputRenameFixture.valid)(
+    'accepts upstream no-input-rename valid case through createOnce: $name',
+    ({ code, options }) => {
+      expect(runRule('no-input-rename', code, options)).toEqual([]);
+    },
+  );
+
+  it.each(noInputRenameFixture.invalid)(
+    'matches upstream no-input-rename invalid location through createOnce: $name',
+    ({ code, errors, options }) => {
+      expect(runRule('no-input-rename', code, options)).toEqual(
+        errors.map((error) => ({
+          messageId: 'noInputRename',
+          data: {},
+          loc: {
+            start: {
+              line: error.line,
+              column: error.column - 1,
+            },
+            end: {
+              line: error.endLine,
+              column: error.endColumn - 1,
+            },
+          },
+        })),
+      );
+    },
+  );
+
+  it('forwards allowedNames independently for metadata, decorators, and signal inputs', () => {
+    const code = `
+@Component({ inputs: ['metadata: allowed'] })
+class Test {
+  @Input('allowed') decorated: string;
+  signal = input(0, { alias: 'allowed' });
+  required = input.required<string>({ alias: 'blocked' });
+}
+`;
+    expect(runRule('no-input-rename', code, [{ allowedNames: ['allowed'] }])).toMatchObject([
+      { messageId: 'noInputRename' },
+    ]);
+  });
+
+  it('documents the adapter payload boundary without inventing fixes or suggestions', () => {
+    const reports = runRule(
+      'no-input-rename',
+      `class Test { @Input('external') internal: string; }`,
+    );
+    expect(reports).toHaveLength(1);
+    expect(reports[0]).not.toHaveProperty('fix');
+    expect(reports[0]).not.toHaveProperty('suggest');
   });
 
   it.each([
@@ -706,6 +790,60 @@ describe('angular-eslint plugin adapter', () => {
           '@Pipes should be prefixed with "app"',
         ]),
       );
+    } finally {
+      rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('honors no-input-rename allowedNames through real oxlint jsPlugins', () => {
+    const tempDir = mkdtempSync(join(tmpdir(), 'oxlint-angular-no-input-rename-'));
+    try {
+      writeFileSync(
+        join(tempDir, 'fixture.ts'),
+        '@Component({ inputs: ["metadata: allowed"] })\n' +
+          'class Test {\n' +
+          '  @Input("allowed") decorated: string;\n' +
+          '  signal = input(0, { alias: "blockedSignal" });\n' +
+          '  required = input.required<string>({ alias: "blockedRequired" });\n' +
+          '}\n',
+      );
+      writeFileSync(
+        join(tempDir, 'oxlint.config.jsonc'),
+        JSON.stringify({
+          jsPlugins: [
+            {
+              name: '@angular-eslint',
+              specifier: join(packageRoot, 'index.js'),
+            },
+          ],
+          rules: {
+            '@angular-eslint/no-input-rename': ['error', { allowedNames: ['allowed'] }],
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        findOxlintCli(),
+        ['--config', 'oxlint.config.jsonc', '--quiet', '--format', 'json', 'fixture.ts'],
+        {
+          cwd: tempDir,
+          encoding: 'utf8',
+        },
+      );
+      const payload = JSON.parse(result.stdout);
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      expect(payload.diagnostics).toHaveLength(2);
+      expect(payload.diagnostics.map(({ code }) => code)).toEqual([
+        '@angular-eslint(no-input-rename)',
+        '@angular-eslint(no-input-rename)',
+      ]);
+      expect(payload.diagnostics.map(({ message }) => message)).toEqual([
+        'Input bindings should not be aliased (https://angular.dev/guide/components/inputs#choosing-input-names)',
+        'Input bindings should not be aliased (https://angular.dev/guide/components/inputs#choosing-input-names)',
+      ]);
+      expect(payload.diagnostics.map(({ labels }) => labels[0].span.line)).toEqual([4, 5]);
     } finally {
       rmSync(tempDir, { recursive: true, force: true });
     }

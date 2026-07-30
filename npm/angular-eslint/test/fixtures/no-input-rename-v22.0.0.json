@@ -1,0 +1,1080 @@
+{
+  "metadata": {
+    "package": "@angular-eslint/eslint-plugin",
+    "version": "22.0.0",
+    "sourceCommit": "7ee4556badebf8c140ffdefdd0b07b02820d5e96",
+    "sourcePath": "packages/eslint-plugin/tests/rules/no-input-rename/cases.ts",
+    "sourceSha256": "37870441d37d73170c907562e06edc2b8c4039f0dee10a7b3fa5995a15bc2ca6",
+    "capture": "every authored valid and invalid semantic case exactly once",
+    "counts": {
+      "valid": 46,
+      "invalid": 35,
+      "diagnostics": 35
+    }
+  },
+  "valid": [
+    {
+      "name": "valid-1",
+      "code": "class Test {}",
+      "options": []
+    },
+    {
+      "name": "valid-2",
+      "code": "\n    @Page({\n      inputs: ['play', popstate, `online`, 'obsolete: obsol', 'store: storage'],\n    })\n    class Test {}\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-3",
+      "code": "\n    @Component()\n    class Test {\n      change = new EventEmitter();\n    }\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-4",
+      "code": "\n    @Directive()\n    class Test {\n      @Input() buttonChange = new EventEmitter<'change'>();\n    }\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-5",
+      "code": "\n    @Directive()\n    class Test {\n      buttonChange = input(1);\n    }\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-6",
+      "code": "\n    @Directive()\n    class Test {\n      buttonChange = input.required<number>();\n    }\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-7",
+      "code": "\n    @Component({\n      inputs,\n    })\n    class Test {}\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-8",
+      "code": "\n    @Directive({\n      inputs: [...test],\n    })\n    class Test {}\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-9",
+      "code": "\n    @Component({\n      inputs: func(),\n    })\n    class Test {}\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-10",
+      "code": "\n    @Directive({\n      inputs: [func(), 'a'],\n    })\n    class Test {}\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-11",
+      "code": "\n    @Component({\n      selector: 'qx-menuitem',\n      hostDirectives: [{\n        directive: CdkMenuItem,\n        inputs: ['cdkMenuItemDisabled: disabled'],\n      }]\n    })\n    class Test {}\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-12",
+      "code": "\n    @Component({\n      selector: 'qx-menuitem',\n      'hostDirectives': [{\n        directive: CdkMenuItem,\n        inputs: ['cdkMenuItemDisabled: disabled'],\n      }]\n    })\n    class Test {}\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-13",
+      "code": "\n    @Component({\n      selector: 'qx-menuitem',\n      ['hostDirectives']: [{\n        directive: CdkMenuItem,\n        inputs: ['cdkMenuItemDisabled: disabled'],\n      }]\n    })\n    class Test {}\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-14",
+      "code": "\n    @Component({})\n    class Test {\n      @Input() set setter(setter: string) {}\n    }\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-15",
+      "code": "\n      @Component({\n        inputs: ['foo: aria-wrong']\n      })\n      class Test {\n        @Input('aria-wrong') set setter(setter: string) {}\n        func = input(1, { alias: 'aria-wrong' });\n        required = input.required<number>({ alias: 'aria-wrong' });\n      }\n      ",
+      "options": [
+        {
+          "allowedNames": ["aria-wrong"]
+        }
+      ]
+    },
+    {
+      "name": "valid-16",
+      "code": "\n    const change = 'change';\n    @Component()\n    class Test {\n      @Input(change) touchMove: EventEmitter<{ action: 'click' | 'close' }> = new EventEmitter<{ action: 'click' | 'close' }>();\n    }\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-17",
+      "code": "\n    const change = 'change';\n    @Component()\n    class Test {\n      touchMove = input(1, { alias: change });\n    }\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-18",
+      "code": "\n    const change = 'change';\n    @Component()\n    class Test {\n      touchMove = input.required<number>({ alias: change });\n    }\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-19",
+      "code": "\n    const blur = 'blur';\n    const click = 'click';\n    @Directive()\n    class Test {\n      @Input(blur) [click]: EventEmitter<Blur>;\n    }\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-20",
+      "code": "\n    const blur = 'blur';\n    const click = 'click';\n    @Directive()\n    class Test {\n      [click] = input(1, { alias: blur });\n    }\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-21",
+      "code": "\n    const blur = 'blur';\n    const click = 'click';\n    @Directive()\n    class Test {\n      [click] = input.required<number>({ alias: blur });\n    }\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-22",
+      "code": "\n    @Component({\n      selector: 'foo[bar]'\n    })\n    class Test {\n      @Input() bar: string;\n    }\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-23",
+      "code": "\n    @Component({\n      selector: 'foo[bar]'\n    })\n    class Test {\n      bar = input(1);\n    }\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-24",
+      "code": "\n    @Component({\n      selector: 'foo[bar]'\n    })\n    class Test {\n      bar = input.required<number>();\n    }\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-25",
+      "code": "\n    @Directive({\n      'selector': 'foo',\n      'inputs': [`test: foo`]\n    })\n    class Test {}\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-26",
+      "code": "\n    @Component({\n      'selector': 'foo',\n      ['inputs']: [`test: foo`]\n    })\n    class Test {}\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-27",
+      "code": "\n    @Directive({\n      'selector': 'foo',\n      [`inputs`]: [`test: foo`]\n    })\n    class Test {}\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-28",
+      "code": "\n    @Component({\n      selector: '[foo], test',\n    })\n    class Test {\n      @Input('foo') label: string;\n    }\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-29",
+      "code": "\n    @Component({\n      selector: '[foo], test',\n    })\n    class Test {\n      label = input(1, { alias: 'foo' });\n    }\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-30",
+      "code": "\n    @Component({\n      selector: '[foo], test',\n    })\n    class Test {\n      label = input.required<number>(1, { alias: 'foo' });\n    }\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-31",
+      "code": "\n    @Directive({\n      selector: 'foo'\n    })\n    class Test {\n      @Input('aria-label') ariaLabel: string;\n    }\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-32",
+      "code": "\n    @Directive({\n      selector: 'foo'\n    })\n    class Test {\n      ariaLabel = input(1, { alias: 'aria-label' });\n    }\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-33",
+      "code": "\n    @Directive({\n      selector: 'foo'\n    })\n    class Test {\n      ariaLabel = input.required<number>('aria-label');\n    }\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-34",
+      "code": "\n      @Component({\n        inputs: ['foo: allowedName']\n      })\n      class Test {\n        @Input() bar: string;\n      }\n      ",
+      "options": [
+        {
+          "allowedNames": ["allowedName"]
+        }
+      ]
+    },
+    {
+      "name": "valid-35",
+      "code": "\n    @Directive({\n      selector: 'foo'\n    })\n    class Test {\n      @Input('fooMyColor') myColor: string;\n    }\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-36",
+      "code": "\n    @Directive({\n      selector: 'foo'\n    })\n    class Test {\n      myColor = input(1, { alias: 'fooMyColor' });\n    }\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-37",
+      "code": "\n    @Directive({\n      selector: 'foo'\n    })\n    class Test {\n      myColor = input.required<number>('fooMyColor');\n    }\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-38",
+      "code": "\n    @Directive({\n      selector: 'img[fooDirective]'\n    })\n    class Test {\n      @Input foo: Foo;\n    }\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-39",
+      "code": "\n    @Directive({\n      selector: 'img[fooDirective]'\n    })\n    class Test {\n      foo = input(1);\n    }\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-40",
+      "code": "\n    @Directive({\n      selector: 'img[fooDirective]'\n    })\n    class Test {\n      foo = input.required<number>();\n    }\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-41",
+      "code": "\n    @Directive({\n      selector: 'img[fooDirective]'\n    })\n    class Test {\n      @Input('fooDirective') foo: Foo;\n    }\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-42",
+      "code": "\n    @Directive({\n      selector: 'img[fooDirective]'\n    })\n    class Test {\n      foo = input(1, { alias: 'fooDirective' });\n    }\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-43",
+      "code": "\n    @Directive({\n      selector: 'img[fooDirective]'\n    })\n    class Test {\n      foo = input.required<number>({ alias: 'fooDirective' });\n    }\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-44",
+      "code": "\n    @Component({\n      selector: 'foo'\n    })\n    class Test {\n      @Input({ required: true }) name: string;\n    }\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-45",
+      "code": "\n    @Component({\n      selector: 'foo'\n    })\n    class Test {\n      @Input({ transform: (val) => val ?? '', required: true }) foo!: string;\n    }\n  ",
+      "options": []
+    },
+    {
+      "name": "valid-46",
+      "code": "\n    @Component({\n      selector: 'foo'\n    })\n    class Test {\n      foo = input.required<string>({ transform: (val) => val ?? '' });\n    }\n  ",
+      "options": []
+    }
+  ],
+  "invalid": [
+    {
+      "name": "should fail if `inputs` metadata property is aliased in `@Component`",
+      "code": "\n      @Component({\n        inputs: ['a: b']\n                 \n      })\n      class Test {}\n    ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "noInputRename",
+          "line": 3,
+          "column": 18,
+          "endLine": 3,
+          "endColumn": 24,
+          "suggestions": [
+            {
+              "messageId": "suggestRemoveAliasName",
+              "output": "\n      @Component({\n        inputs: ['a']\n                 \n      })\n      class Test {}\n    "
+            },
+            {
+              "messageId": "suggestReplaceOriginalNameWithAliasName",
+              "output": "\n      @Component({\n        inputs: ['b']\n                 \n      })\n      class Test {}\n    "
+            }
+          ]
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "should fail if `inputs` metadata property is literal and aliased in `@Directive`",
+      "code": "\n      @Directive({\n        outputs: ['abort'],\n        'inputs': [boundary, `test: copy`, 'check: check'],\n                             \n      })\n      class Test {}\n    ",
+      "options": [
+        {
+          "allowedNames": ["check", "test"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noInputRename",
+          "line": 4,
+          "column": 30,
+          "endLine": 4,
+          "endColumn": 42,
+          "suggestions": [
+            {
+              "messageId": "suggestRemoveAliasName",
+              "output": "\n      @Directive({\n        outputs: ['abort'],\n        'inputs': [boundary, `test`, 'check: check'],\n                             \n      })\n      class Test {}\n    "
+            },
+            {
+              "messageId": "suggestReplaceOriginalNameWithAliasName",
+              "output": "\n      @Directive({\n        outputs: ['abort'],\n        'inputs': [boundary, `copy`, 'check: check'],\n                             \n      })\n      class Test {}\n    "
+            }
+          ]
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "should fail if `inputs` metadata property is computed `Literal` and aliased with the same name in `@Component`",
+      "code": "\n      @Component({\n        ['inputs']: ['orientation: orientation'],\n                     \n      })\n      class Test {}\n    ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "noInputRename",
+          "line": 3,
+          "column": 22,
+          "endLine": 3,
+          "endColumn": 48
+        }
+      ],
+      "output": "\n      @Component({\n        ['inputs']: ['orientation'],\n                     \n      })\n      class Test {}\n    "
+    },
+    {
+      "name": "should fail if `inputs` metadata property is computed `TemplateLiteral` and aliased with the same name in `@Directive`",
+      "code": "\n      @Directive({\n        [`inputs`]: ['orientation: orientation'],\n                     \n      })\n      class Test {}\n    ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "noInputRename",
+          "line": 3,
+          "column": 22,
+          "endLine": 3,
+          "endColumn": 48
+        }
+      ],
+      "output": "\n      @Directive({\n        [`inputs`]: ['orientation'],\n                     \n      })\n      class Test {}\n    "
+    },
+    {
+      "name": "should fail if input decorator property is aliased with backticks",
+      "code": "\n      @Component()\n      class Test {\n        @Custom() @Input(`change`) _change = getInput();\n                         \n      }\n    ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "noInputRename",
+          "line": 4,
+          "column": 26,
+          "endLine": 4,
+          "endColumn": 34,
+          "suggestions": [
+            {
+              "messageId": "suggestRemoveAliasName",
+              "output": "\n      @Component()\n      class Test {\n        @Custom() @Input() _change = getInput();\n                         \n      }\n    "
+            },
+            {
+              "messageId": "suggestReplaceOriginalNameWithAliasName",
+              "output": "\n      @Component()\n      class Test {\n        @Custom() @Input() change = getInput();\n                         \n      }\n    "
+            }
+          ]
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "should fail if input function property is aliased with backticks",
+      "code": "\n      @Component()\n      class Test {\n        _change = input(1, { alias: `change` });\n                                    \n      }\n    ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "noInputRename",
+          "line": 4,
+          "column": 37,
+          "endLine": 4,
+          "endColumn": 45,
+          "suggestions": [
+            {
+              "messageId": "suggestRemoveAliasName",
+              "output": "\n      @Component()\n      class Test {\n        _change = input(1);\n                                    \n      }\n    "
+            },
+            {
+              "messageId": "suggestReplaceOriginalNameWithAliasName",
+              "output": "\n      @Component()\n      class Test {\n        change = input(1);\n                                    \n      }\n    "
+            }
+          ]
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "should fail if required input function property is aliased with backticks",
+      "code": "\n      @Component()\n      class Test {\n        _change = input.required<number>({ alias: `change` });\n                                                  \n      }\n    ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "noInputRename",
+          "line": 4,
+          "column": 51,
+          "endLine": 4,
+          "endColumn": 59,
+          "suggestions": [
+            {
+              "messageId": "suggestRemoveAliasName",
+              "output": "\n      @Component()\n      class Test {\n        _change = input.required<number>();\n                                                  \n      }\n    "
+            },
+            {
+              "messageId": "suggestReplaceOriginalNameWithAliasName",
+              "output": "\n      @Component()\n      class Test {\n        change = input.required<number>();\n                                                  \n      }\n    "
+            }
+          ]
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "should fail if input decorator property is aliased",
+      "code": "\n      @Directive()\n      class Test {\n        @Input('change') change = (this.subject$ as Subject<{blur: boolean}>).pipe();\n               \n      }\n    ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "noInputRename",
+          "line": 4,
+          "column": 16,
+          "endLine": 4,
+          "endColumn": 24
+        }
+      ],
+      "output": "\n      @Directive()\n      class Test {\n        @Input() change = (this.subject$ as Subject<{blur: boolean}>).pipe();\n               \n      }\n    "
+    },
+    {
+      "name": "should fail if input function property is aliased",
+      "code": "\n      @Directive()\n      class Test {\n        change = input(1, { alias: 'change' });\n                                   \n      }\n    ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "noInputRename",
+          "line": 4,
+          "column": 36,
+          "endLine": 4,
+          "endColumn": 44
+        }
+      ],
+      "output": "\n      @Directive()\n      class Test {\n        change = input(1);\n                                   \n      }\n    "
+    },
+    {
+      "name": "should fail if required input function property is aliased",
+      "code": "\n      @Directive()\n      class Test {\n        change = input.required<number>({ alias: 'change' });\n                                                 \n      }\n    ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "noInputRename",
+          "line": 4,
+          "column": 50,
+          "endLine": 4,
+          "endColumn": 58
+        }
+      ],
+      "output": "\n      @Directive()\n      class Test {\n        change = input.required<number>();\n                                                 \n      }\n    "
+    },
+    {
+      "name": "should fail if input decorator property is aliased (using metadata)",
+      "code": "\n      @Directive()\n      class Test {\n        @Input({ alias: 'change' }) change = (this.subject$ as Subject<{blur: boolean}>).pipe();\n                        \n      }\n    ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "noInputRename",
+          "line": 4,
+          "column": 25,
+          "endLine": 4,
+          "endColumn": 33
+        }
+      ],
+      "output": "\n      @Directive()\n      class Test {\n        @Input() change = (this.subject$ as Subject<{blur: boolean}>).pipe();\n                        \n      }\n    "
+    },
+    {
+      "name": "should fail if input decorator setter is aliased",
+      "code": "\n      @Component()\n      class Test {\n        @Input(`devicechange`) set setter(setter: string) {}\n               \n\n        @Input('allowedName') test: string;\n      }\n    ",
+      "options": [
+        {
+          "allowedNames": ["allowedName"]
+        }
+      ],
+      "errors": [
+        {
+          "messageId": "noInputRename",
+          "line": 4,
+          "column": 16,
+          "endLine": 4,
+          "endColumn": 30,
+          "suggestions": [
+            {
+              "messageId": "suggestRemoveAliasName",
+              "output": "\n      @Component()\n      class Test {\n        @Input() set setter(setter: string) {}\n               \n\n        @Input('allowedName') test: string;\n      }\n    "
+            },
+            {
+              "messageId": "suggestReplaceOriginalNameWithAliasName",
+              "output": "\n      @Component()\n      class Test {\n        @Input() set devicechange(setter: string) {}\n               \n\n        @Input('allowedName') test: string;\n      }\n    "
+            }
+          ]
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "should fail if an input decorator 'aria-*' alias name does not match the property name",
+      "code": "\n      @Directive({\n        selector: 'foo'\n      })\n      class Test {\n        @Input('aria-invalid') ariaBusy: string;\n               \n      }\n    ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "noInputRename",
+          "line": 6,
+          "column": 16,
+          "endLine": 6,
+          "endColumn": 30,
+          "suggestions": [
+            {
+              "messageId": "suggestRemoveAliasName",
+              "output": "\n      @Directive({\n        selector: 'foo'\n      })\n      class Test {\n        @Input() ariaBusy: string;\n               \n      }\n    "
+            },
+            {
+              "messageId": "suggestReplaceOriginalNameWithAliasName",
+              "output": "\n      @Directive({\n        selector: 'foo'\n      })\n      class Test {\n        @Input() 'aria-invalid': string;\n               \n      }\n    "
+            }
+          ]
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "should fail if an input function 'aria-*' alias name does not match the property name",
+      "code": "\n      @Directive({\n        selector: 'foo'\n      })\n      class Test {\n        ariaBusy = input(1, { alias: 'aria-invalid' });\n                                     \n      }\n    ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "noInputRename",
+          "line": 6,
+          "column": 38,
+          "endLine": 6,
+          "endColumn": 52,
+          "suggestions": [
+            {
+              "messageId": "suggestRemoveAliasName",
+              "output": "\n      @Directive({\n        selector: 'foo'\n      })\n      class Test {\n        ariaBusy = input(1);\n                                     \n      }\n    "
+            },
+            {
+              "messageId": "suggestReplaceOriginalNameWithAliasName",
+              "output": "\n      @Directive({\n        selector: 'foo'\n      })\n      class Test {\n        'aria-invalid' = input(1);\n                                     \n      }\n    "
+            }
+          ]
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "should fail if a required input function 'aria-*' alias name does not match the property name",
+      "code": "\n      @Directive({\n        selector: 'foo'\n      })\n      class Test {\n        ariaBusy = input.required<number>({ alias: 'aria-invalid' });\n                                                   \n      }\n    ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "noInputRename",
+          "line": 6,
+          "column": 52,
+          "endLine": 6,
+          "endColumn": 66,
+          "suggestions": [
+            {
+              "messageId": "suggestRemoveAliasName",
+              "output": "\n      @Directive({\n        selector: 'foo'\n      })\n      class Test {\n        ariaBusy = input.required<number>();\n                                                   \n      }\n    "
+            },
+            {
+              "messageId": "suggestReplaceOriginalNameWithAliasName",
+              "output": "\n      @Directive({\n        selector: 'foo'\n      })\n      class Test {\n        'aria-invalid' = input.required<number>();\n                                                   \n      }\n    "
+            }
+          ]
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "should fail if input decorator alias is prefixed by component's selector, but the suffix does not match the property name",
+      "code": "\n      @Component({\n        selector: 'foo'\n      })\n      class Test {\n        @Input('fooColor') colors: string;\n               \n      }\n    ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "noInputRename",
+          "line": 6,
+          "column": 16,
+          "endLine": 6,
+          "endColumn": 26,
+          "suggestions": [
+            {
+              "messageId": "suggestRemoveAliasName",
+              "output": "\n      @Component({\n        selector: 'foo'\n      })\n      class Test {\n        @Input() colors: string;\n               \n      }\n    "
+            },
+            {
+              "messageId": "suggestReplaceOriginalNameWithAliasName",
+              "output": "\n      @Component({\n        selector: 'foo'\n      })\n      class Test {\n        @Input() fooColor: string;\n               \n      }\n    "
+            }
+          ]
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "should fail if input function alias is prefixed by component's selector, but the suffix does not match the property name",
+      "code": "\n      @Component({\n        selector: 'foo'\n      })\n      class Test {\n        colors = input(1, { alias: 'fooColor' });\n                                   \n      }\n    ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "noInputRename",
+          "line": 6,
+          "column": 36,
+          "endLine": 6,
+          "endColumn": 46,
+          "suggestions": [
+            {
+              "messageId": "suggestRemoveAliasName",
+              "output": "\n      @Component({\n        selector: 'foo'\n      })\n      class Test {\n        colors = input(1);\n                                   \n      }\n    "
+            },
+            {
+              "messageId": "suggestReplaceOriginalNameWithAliasName",
+              "output": "\n      @Component({\n        selector: 'foo'\n      })\n      class Test {\n        fooColor = input(1);\n                                   \n      }\n    "
+            }
+          ]
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "should fail if required input function alias is prefixed by component's selector, but the suffix does not match the property name",
+      "code": "\n      @Component({\n        selector: 'foo'\n      })\n      class Test {\n        colors = input.required<number>({ alias: 'fooColor' });\n                                                 \n      }\n    ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "noInputRename",
+          "line": 6,
+          "column": 50,
+          "endLine": 6,
+          "endColumn": 60,
+          "suggestions": [
+            {
+              "messageId": "suggestRemoveAliasName",
+              "output": "\n      @Component({\n        selector: 'foo'\n      })\n      class Test {\n        colors = input.required<number>();\n                                                 \n      }\n    "
+            },
+            {
+              "messageId": "suggestReplaceOriginalNameWithAliasName",
+              "output": "\n      @Component({\n        selector: 'foo'\n      })\n      class Test {\n        fooColor = input.required<number>();\n                                                 \n      }\n    "
+            }
+          ]
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "should fail if input decorator alias is not strictly equal to the selector plus the property name in `camelCase` form",
+      "code": "\n      @Directive({\n        'selector': 'foo'\n      })\n      class Test {\n        @Input('foocolor') color: string;\n               \n      }\n    ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "noInputRename",
+          "line": 6,
+          "column": 16,
+          "endLine": 6,
+          "endColumn": 26,
+          "suggestions": [
+            {
+              "messageId": "suggestRemoveAliasName",
+              "output": "\n      @Directive({\n        'selector': 'foo'\n      })\n      class Test {\n        @Input() color: string;\n               \n      }\n    "
+            },
+            {
+              "messageId": "suggestReplaceOriginalNameWithAliasName",
+              "output": "\n      @Directive({\n        'selector': 'foo'\n      })\n      class Test {\n        @Input() foocolor: string;\n               \n      }\n    "
+            }
+          ]
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "should fail if input function alias is not strictly equal to the selector plus the property name in `camelCase` form",
+      "code": "\n      @Directive({\n        'selector': 'foo'\n      })\n      class Test {\n        color = input(1, { alias: 'foocolor' });\n                                  \n      }\n    ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "noInputRename",
+          "line": 6,
+          "column": 35,
+          "endLine": 6,
+          "endColumn": 45,
+          "suggestions": [
+            {
+              "messageId": "suggestRemoveAliasName",
+              "output": "\n      @Directive({\n        'selector': 'foo'\n      })\n      class Test {\n        color = input(1);\n                                  \n      }\n    "
+            },
+            {
+              "messageId": "suggestReplaceOriginalNameWithAliasName",
+              "output": "\n      @Directive({\n        'selector': 'foo'\n      })\n      class Test {\n        foocolor = input(1);\n                                  \n      }\n    "
+            }
+          ]
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "should fail if required input function alias is not strictly equal to the selector plus the property name in `camelCase` form",
+      "code": "\n      @Directive({\n        'selector': 'foo'\n      })\n      class Test {\n        color = input.required<number>({ alias: 'foocolor' });\n                                                \n      }\n    ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "noInputRename",
+          "line": 6,
+          "column": 49,
+          "endLine": 6,
+          "endColumn": 59,
+          "suggestions": [
+            {
+              "messageId": "suggestRemoveAliasName",
+              "output": "\n      @Directive({\n        'selector': 'foo'\n      })\n      class Test {\n        color = input.required<number>();\n                                                \n      }\n    "
+            },
+            {
+              "messageId": "suggestReplaceOriginalNameWithAliasName",
+              "output": "\n      @Directive({\n        'selector': 'foo'\n      })\n      class Test {\n        foocolor = input.required<number>();\n                                                \n      }\n    "
+            }
+          ]
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "should fail if input decorator property is aliased without `@Component` or `@Directive` decorator",
+      "code": "\n      @Component({\n        selector: 'click',\n      })\n      class Test {}\n\n      @Injectable()\n      class Test {\n        @Input('click') blur = this.getInput();\n               \n      }\n    ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "noInputRename",
+          "line": 9,
+          "column": 16,
+          "endLine": 9,
+          "endColumn": 23,
+          "suggestions": [
+            {
+              "messageId": "suggestRemoveAliasName",
+              "output": "\n      @Component({\n        selector: 'click',\n      })\n      class Test {}\n\n      @Injectable()\n      class Test {\n        @Input() blur = this.getInput();\n               \n      }\n    "
+            },
+            {
+              "messageId": "suggestReplaceOriginalNameWithAliasName",
+              "output": "\n      @Component({\n        selector: 'click',\n      })\n      class Test {}\n\n      @Injectable()\n      class Test {\n        @Input() click = this.getInput();\n               \n      }\n    "
+            }
+          ]
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "should fail if input function property is aliased without `@Component` or `@Directive` decorator",
+      "code": "\n      @Component({\n        selector: 'click',\n      })\n      class Test {}\n\n      @Injectable()\n      class Test {\n        blur = input(1, { alias: 'click' });\n                                 \n      }\n    ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "noInputRename",
+          "line": 9,
+          "column": 34,
+          "endLine": 9,
+          "endColumn": 41,
+          "suggestions": [
+            {
+              "messageId": "suggestRemoveAliasName",
+              "output": "\n      @Component({\n        selector: 'click',\n      })\n      class Test {}\n\n      @Injectable()\n      class Test {\n        blur = input(1);\n                                 \n      }\n    "
+            },
+            {
+              "messageId": "suggestReplaceOriginalNameWithAliasName",
+              "output": "\n      @Component({\n        selector: 'click',\n      })\n      class Test {}\n\n      @Injectable()\n      class Test {\n        click = input(1);\n                                 \n      }\n    "
+            }
+          ]
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "should fail if required input function property is aliased without `@Component` or `@Directive` decorator",
+      "code": "\n      @Component({\n        selector: 'click',\n      })\n      class Test {}\n\n      @Injectable()\n      class Test {\n        blur = input.required<number>({ alias: 'click' });\n                                               \n      }\n    ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "noInputRename",
+          "line": 9,
+          "column": 48,
+          "endLine": 9,
+          "endColumn": 55,
+          "suggestions": [
+            {
+              "messageId": "suggestRemoveAliasName",
+              "output": "\n      @Component({\n        selector: 'click',\n      })\n      class Test {}\n\n      @Injectable()\n      class Test {\n        blur = input.required<number>();\n                                               \n      }\n    "
+            },
+            {
+              "messageId": "suggestReplaceOriginalNameWithAliasName",
+              "output": "\n      @Component({\n        selector: 'click',\n      })\n      class Test {}\n\n      @Injectable()\n      class Test {\n        click = input.required<number>();\n                                               \n      }\n    "
+            }
+          ]
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "should fail if input decorator property alias does not match the directive name when applied to an element in the selector",
+      "code": "\n      @Directive({\n        selector: 'img[fooDirective]',\n      })\n      class Test {\n        @Input('notFooDirective') foo: Foo;\n               \n      }\n    ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "noInputRename",
+          "line": 6,
+          "column": 16,
+          "endLine": 6,
+          "endColumn": 33,
+          "suggestions": [
+            {
+              "messageId": "suggestRemoveAliasName",
+              "output": "\n      @Directive({\n        selector: 'img[fooDirective]',\n      })\n      class Test {\n        @Input() foo: Foo;\n               \n      }\n    "
+            },
+            {
+              "messageId": "suggestReplaceOriginalNameWithAliasName",
+              "output": "\n      @Directive({\n        selector: 'img[fooDirective]',\n      })\n      class Test {\n        @Input() notFooDirective: Foo;\n               \n      }\n    "
+            }
+          ]
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "should fail if input function property alias does not match the directive name when applied to an element in the selector",
+      "code": "\n      @Directive({\n        selector: 'img[fooDirective]',\n      })\n      class Test {\n        foo = input({ alias: 'notFooDirective' });\n                             \n      }\n    ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "noInputRename",
+          "line": 6,
+          "column": 30,
+          "endLine": 6,
+          "endColumn": 47,
+          "suggestions": [
+            {
+              "messageId": "suggestRemoveAliasName",
+              "output": "\n      @Directive({\n        selector: 'img[fooDirective]',\n      })\n      class Test {\n        foo = input();\n                             \n      }\n    "
+            },
+            {
+              "messageId": "suggestReplaceOriginalNameWithAliasName",
+              "output": "\n      @Directive({\n        selector: 'img[fooDirective]',\n      })\n      class Test {\n        notFooDirective = input();\n                             \n      }\n    "
+            }
+          ]
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "should fail if required input function property alias does not match the directive name when applied to an element in the selector",
+      "code": "\n      @Directive({\n        selector: 'img[fooDirective]',\n      })\n      class Test {\n        foo = input.required<number>({ alias: 'notFooDirective' });\n                                              \n      }\n    ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "noInputRename",
+          "line": 6,
+          "column": 47,
+          "endLine": 6,
+          "endColumn": 64,
+          "suggestions": [
+            {
+              "messageId": "suggestRemoveAliasName",
+              "output": "\n      @Directive({\n        selector: 'img[fooDirective]',\n      })\n      class Test {\n        foo = input.required<number>();\n                                              \n      }\n    "
+            },
+            {
+              "messageId": "suggestReplaceOriginalNameWithAliasName",
+              "output": "\n      @Directive({\n        selector: 'img[fooDirective]',\n      })\n      class Test {\n        notFooDirective = input.required<number>();\n                                              \n      }\n    "
+            }
+          ]
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "should fail if input function property is aliased and alias has properties after it",
+      "code": "\n        @Component({\n          'selector': 'foo'\n        })\n        class Test {\n          color = input(1, { alias: 'test', after: 'it' });\n                                    \n        }\n      ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "noInputRename",
+          "line": 6,
+          "column": 37,
+          "endLine": 6,
+          "endColumn": 43,
+          "suggestions": [
+            {
+              "messageId": "suggestRemoveAliasName",
+              "output": "\n        @Component({\n          'selector': 'foo'\n        })\n        class Test {\n          color = input(1, { after: 'it' });\n                                    \n        }\n      "
+            },
+            {
+              "messageId": "suggestReplaceOriginalNameWithAliasName",
+              "output": "\n        @Component({\n          'selector': 'foo'\n        })\n        class Test {\n          test = input(1, { after: 'it' });\n                                    \n        }\n      "
+            }
+          ]
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "should fail if required input function property is aliased and alias has properties after it",
+      "code": "\n        @Component({\n          'selector': 'foo'\n        })\n        class Test {\n          color = input.required<number>({ alias: 'test', after: 'it' });\n                                                  \n        }\n      ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "noInputRename",
+          "line": 6,
+          "column": 51,
+          "endLine": 6,
+          "endColumn": 57,
+          "suggestions": [
+            {
+              "messageId": "suggestRemoveAliasName",
+              "output": "\n        @Component({\n          'selector': 'foo'\n        })\n        class Test {\n          color = input.required<number>({ after: 'it' });\n                                                  \n        }\n      "
+            },
+            {
+              "messageId": "suggestReplaceOriginalNameWithAliasName",
+              "output": "\n        @Component({\n          'selector': 'foo'\n        })\n        class Test {\n          test = input.required<number>({ after: 'it' });\n                                                  \n        }\n      "
+            }
+          ]
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "should fail if input function property is aliased and alias has properties before it with trailing comma",
+      "code": "\n        @Component({\n          'selector': 'foo'\n        })\n        class Test {\n          color = input(1, { before: 'it', alias: 'test', });\n                                                  \n        }\n      ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "noInputRename",
+          "line": 6,
+          "column": 51,
+          "endLine": 6,
+          "endColumn": 57,
+          "suggestions": [
+            {
+              "messageId": "suggestRemoveAliasName",
+              "output": "\n        @Component({\n          'selector': 'foo'\n        })\n        class Test {\n          color = input(1, { before: 'it', });\n                                                  \n        }\n      "
+            },
+            {
+              "messageId": "suggestReplaceOriginalNameWithAliasName",
+              "output": "\n        @Component({\n          'selector': 'foo'\n        })\n        class Test {\n          test = input(1, { before: 'it', });\n                                                  \n        }\n      "
+            }
+          ]
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "should fail if required input function property is aliased and alias has properties before it with trailing comma",
+      "code": "\n        @Component({\n          'selector': 'foo'\n        })\n        class Test {\n          color = input.required<number>({ before: 'it', alias: 'test', });\n                                                                \n        }\n      ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "noInputRename",
+          "line": 6,
+          "column": 65,
+          "endLine": 6,
+          "endColumn": 71,
+          "suggestions": [
+            {
+              "messageId": "suggestRemoveAliasName",
+              "output": "\n        @Component({\n          'selector': 'foo'\n        })\n        class Test {\n          color = input.required<number>({ before: 'it', });\n                                                                \n        }\n      "
+            },
+            {
+              "messageId": "suggestReplaceOriginalNameWithAliasName",
+              "output": "\n        @Component({\n          'selector': 'foo'\n        })\n        class Test {\n          test = input.required<number>({ before: 'it', });\n                                                                \n        }\n      "
+            }
+          ]
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "should fail if input function property is aliased and alias has properties before it without trailing comma",
+      "code": "\n        @Component({\n          'selector': 'foo'\n        })\n        class Test {\n          color = input(1, { before: 'it', alias: 'test' });\n                                                  \n        }\n      ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "noInputRename",
+          "line": 6,
+          "column": 51,
+          "endLine": 6,
+          "endColumn": 57,
+          "suggestions": [
+            {
+              "messageId": "suggestRemoveAliasName",
+              "output": "\n        @Component({\n          'selector': 'foo'\n        })\n        class Test {\n          color = input(1, { before: 'it' });\n                                                  \n        }\n      "
+            },
+            {
+              "messageId": "suggestReplaceOriginalNameWithAliasName",
+              "output": "\n        @Component({\n          'selector': 'foo'\n        })\n        class Test {\n          test = input(1, { before: 'it' });\n                                                  \n        }\n      "
+            }
+          ]
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "should fail if required input function property is aliased and alias has properties before it without trailing comma",
+      "code": "\n        @Component({\n          'selector': 'foo'\n        })\n        class Test {\n          color = input.required<number>({ before: 'it', alias: 'test' });\n                                                                \n        }\n      ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "noInputRename",
+          "line": 6,
+          "column": 65,
+          "endLine": 6,
+          "endColumn": 71,
+          "suggestions": [
+            {
+              "messageId": "suggestRemoveAliasName",
+              "output": "\n        @Component({\n          'selector': 'foo'\n        })\n        class Test {\n          color = input.required<number>({ before: 'it' });\n                                                                \n        }\n      "
+            },
+            {
+              "messageId": "suggestReplaceOriginalNameWithAliasName",
+              "output": "\n        @Component({\n          'selector': 'foo'\n        })\n        class Test {\n          test = input.required<number>({ before: 'it' });\n                                                                \n        }\n      "
+            }
+          ]
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "should fail if input function property is aliased and alias has properties before and after it",
+      "code": "\n        @Component({\n          'selector': 'foo'\n        })\n        class Test {\n          color = input(1, { before: 'it', alias: 'test', after: 'it' });\n                                                  \n        }\n      ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "noInputRename",
+          "line": 6,
+          "column": 51,
+          "endLine": 6,
+          "endColumn": 57,
+          "suggestions": [
+            {
+              "messageId": "suggestRemoveAliasName",
+              "output": "\n        @Component({\n          'selector': 'foo'\n        })\n        class Test {\n          color = input(1, { before: 'it', after: 'it' });\n                                                  \n        }\n      "
+            },
+            {
+              "messageId": "suggestReplaceOriginalNameWithAliasName",
+              "output": "\n        @Component({\n          'selector': 'foo'\n        })\n        class Test {\n          test = input(1, { before: 'it', after: 'it' });\n                                                  \n        }\n      "
+            }
+          ]
+        }
+      ],
+      "output": null
+    },
+    {
+      "name": "should fail if required input function property is aliased and alias has properties before and after it",
+      "code": "\n        @Component({\n          'selector': 'foo'\n        })\n        class Test {\n          color = input.required<number>({ before: 'it', alias: 'test', after: 'it' });\n                                                                \n        }\n      ",
+      "options": [],
+      "errors": [
+        {
+          "messageId": "noInputRename",
+          "line": 6,
+          "column": 65,
+          "endLine": 6,
+          "endColumn": 71,
+          "suggestions": [
+            {
+              "messageId": "suggestRemoveAliasName",
+              "output": "\n        @Component({\n          'selector': 'foo'\n        })\n        class Test {\n          color = input.required<number>({ before: 'it', after: 'it' });\n                                                                \n        }\n      "
+            },
+            {
+              "messageId": "suggestReplaceOriginalNameWithAliasName",
+              "output": "\n        @Component({\n          'selector': 'foo'\n        })\n        class Test {\n          test = input.required<number>({ before: 'it', after: 'it' });\n                                                                \n        }\n      "
+            }
+          ]
+        }
+      ],
+      "output": null
+    }
+  ]
+}

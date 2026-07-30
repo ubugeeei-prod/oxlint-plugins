@@ -12,6 +12,12 @@ export type AngularEslintDiagnostic = {
   loc: AngularEslintDiagnosticLoc;
 };
 
+export type NoInputRenameOptions = [
+  {
+    readonly allowedNames?: readonly string[];
+  }?,
+];
+
 export function implementedAngularEslintRuleNames(): string[];
 export function scanAngularEslint(
   sourceText: string,

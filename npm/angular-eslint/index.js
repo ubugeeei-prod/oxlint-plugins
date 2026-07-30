@@ -16,11 +16,13 @@ const selectorRuleNames = new Set(['component-selector', 'directive-selector']);
 const classSuffixRuleNames = new Set(['component-class-suffix', 'directive-class-suffix']);
 const prefixRuleNames = new Set(['no-input-prefix', 'pipe-prefix']);
 const inlineDeclarationRuleName = 'component-max-inline-declarations';
+const inputRenameRuleName = 'no-input-rename';
 const optionAwareRuleNames = new Set([
   ...selectorRuleNames,
   ...classSuffixRuleNames,
   ...prefixRuleNames,
   inlineDeclarationRuleName,
+  inputRenameRuleName,
 ]);
 
 const inlineDeclarationSchema = [
@@ -101,6 +103,28 @@ const prefixMessages = {
     pipePrefix: '@Pipes should be prefixed with {{prefixes}}',
     selectorAfterPrefixFailure: '@Pipes should have a selector after the {{prefixes}} prefix',
   },
+};
+
+const inputRenameSchema = [
+  {
+    type: 'object',
+    properties: {
+      allowedNames: {
+        type: 'array',
+        items: { type: 'string' },
+        description: 'A list with allowed input names',
+        uniqueItems: true,
+      },
+    },
+    additionalProperties: false,
+  },
+];
+
+const inputRenameMessages = {
+  noInputRename:
+    'Input bindings should not be aliased (https://angular.dev/guide/components/inputs#choosing-input-names)',
+  suggestRemoveAliasName: 'Remove alias name',
+  suggestReplaceOriginalNameWithAliasName: 'Remove alias name and use it as the original name',
 };
 
 const selectorConfigSchema = {
@@ -216,6 +240,7 @@ function createAngularEslintRule(ruleName) {
   const isClassSuffixRule = classSuffixRuleNames.has(ruleName);
   const isPrefixRule = prefixRuleNames.has(ruleName);
   const isInlineDeclarationRule = ruleName === inlineDeclarationRuleName;
+  const isInputRenameRule = ruleName === inputRenameRuleName;
   return {
     meta: {
       type: problemRules.has(ruleName) ? 'problem' : 'suggestion',
@@ -233,9 +258,11 @@ function createAngularEslintRule(ruleName) {
             ? prefixMessages[ruleName]
             : isInlineDeclarationRule
               ? inlineDeclarationMessages
-              : {
-                  unexpected: 'Unexpected Angular pattern.',
-                },
+              : isInputRenameRule
+                ? inputRenameMessages
+                : {
+                    unexpected: 'Unexpected Angular pattern.',
+                  },
       schema: isSelectorRule
         ? selectorSchema
         : isClassSuffixRule
@@ -244,7 +271,10 @@ function createAngularEslintRule(ruleName) {
             ? prefixSchemas[ruleName]
             : isInlineDeclarationRule
               ? inlineDeclarationSchema
-              : [],
+              : isInputRenameRule
+                ? inputRenameSchema
+                : [],
+      ...(isInputRenameRule ? { fixable: 'code', hasSuggestions: true } : {}),
     },
     createOnce(context) {
       return {
