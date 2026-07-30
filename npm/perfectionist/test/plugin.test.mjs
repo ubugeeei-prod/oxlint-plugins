@@ -126,19 +126,26 @@ describe('perfectionist plugin adapter', () => {
     );
   });
 
-  it('declares only the implemented scalar option schema', () => {
+  it('declares the complete implemented option schema', () => {
     const schema = plugin.rules['sort-named-imports'].meta.schema;
 
     expect(schema).toHaveLength(1);
     expect(Object.keys(schema[0].properties).sort()).toEqual([
       'alphabet',
+      'customGroups',
       'fallbackSort',
+      'groups',
       'ignoreAlias',
       'ignoreCase',
       'locales',
+      'newlinesBetween',
+      'newlinesInside',
       'order',
+      'partitionByComment',
+      'partitionByNewLine',
       'specialCharacters',
       'type',
+      'useConfigurationIf',
     ]);
     expect(schema[0].additionalProperties).toBe(false);
     expect(schema[0].properties.locales).toEqual({
@@ -152,6 +159,19 @@ describe('perfectionist plugin adapter', () => {
     });
     expect(schema[0].properties.fallbackSort).toMatchObject({
       required: ['type'],
+      additionalProperties: false,
+    });
+    expect(schema[0].properties.groups).toMatchObject({
+      type: 'array',
+      items: { oneOf: expect.any(Array) },
+    });
+    expect(schema[0].properties.customGroups).toMatchObject({
+      type: 'array',
+      items: { oneOf: expect.any(Array) },
+    });
+    expect(schema[0].properties.partitionByComment.oneOf).toHaveLength(5);
+    expect(schema[0].properties.useConfigurationIf).toMatchObject({
+      minProperties: 1,
       additionalProperties: false,
     });
     expect(plugin.rules['sort-imports'].meta.schema).toEqual([]);
@@ -216,6 +236,66 @@ describe('perfectionist plugin adapter', () => {
       expect(fixed.status).toBe(0);
       expect(fixed.stderr).toBe('');
       expect(readFileSync(fixturePath, 'utf8')).toBe('import { item10, item2 } from "pkg";\n');
+    } finally {
+      rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('loads grouping and newline options through real oxlint jsPlugins', () => {
+    const tempDir = mkdtempSync(join(tmpdir(), 'oxlint-perfectionist-groups-'));
+    try {
+      const fixturePath = join(tempDir, 'fixture.ts');
+      writeFileSync(fixturePath, 'import {\n  value,\n  type Type,\n} from "pkg";\n');
+      writeFileSync(
+        join(tempDir, 'oxlint.config.jsonc'),
+        JSON.stringify({
+          jsPlugins: [
+            {
+              name: 'perfectionist',
+              specifier: join(packageRoot, 'index.js'),
+            },
+          ],
+          rules: {
+            'perfectionist/sort-named-imports': [
+              'error',
+              {
+                groups: ['type-import', 'unknown'],
+                newlinesBetween: 1,
+              },
+            ],
+          },
+        }),
+      );
+
+      const result = spawnSync(
+        findOxlintCli(),
+        ['--config', 'oxlint.config.jsonc', '--quiet', '--format', 'json', 'fixture.ts'],
+        {
+          cwd: tempDir,
+          encoding: 'utf8',
+        },
+      );
+      const payload = JSON.parse(result.stdout);
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).toBe('');
+      expect(payload.diagnostics.map((diagnostic) => diagnostic.message)).toEqual([
+        'Expected "Type" (type-import) to come before "value" (unknown).',
+      ]);
+
+      const fixed = spawnSync(
+        findOxlintCli(),
+        ['--config', 'oxlint.config.jsonc', '--fix', 'fixture.ts'],
+        {
+          cwd: tempDir,
+          encoding: 'utf8',
+        },
+      );
+      expect(fixed.status).toBe(0);
+      expect(fixed.stderr).toBe('');
+      expect(readFileSync(fixturePath, 'utf8')).toBe(
+        'import {\n  type Type,\n\n  value,\n} from "pkg";\n',
+      );
     } finally {
       rmSync(tempDir, { recursive: true, force: true });
     }

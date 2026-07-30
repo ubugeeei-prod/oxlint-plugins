@@ -22,6 +22,8 @@ pub struct Diagnostic {
 pub struct RuleDiagnosticData {
     pub left: CompactString,
     pub right: CompactString,
+    pub left_group: Option<CompactString>,
+    pub right_group: Option<CompactString>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]

@@ -12,6 +12,8 @@ export type PerfectionistDiagnostic = {
   data?: {
     left: string;
     right: string;
+    leftGroup?: string;
+    rightGroup?: string;
   };
   fix?: {
     start: number;

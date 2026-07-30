@@ -12,7 +12,7 @@ const fixture = JSON.parse(
 );
 const rule = plugin.rules['sort-named-imports'];
 
-describe('perfectionist/sort-named-imports v5.9.1 scalar option parity', () => {
+describe('perfectionist/sort-named-imports v5.9.1 option parity', () => {
   it('pins the reviewed upstream source and exact fixture inventory', () => {
     expect(fixture.__generated).toMatchObject({
       source: 'eslint-plugin-perfectionist',
@@ -27,10 +27,10 @@ describe('perfectionist/sort-named-imports v5.9.1 scalar option parity', () => {
           'a5fe43752e460a2d29432e01e01a21aaa92bf9bc6d5193840dc593c6767ddeee',
       },
       inventory: {
-        valid: 23,
-        invalid: 28,
-        diagnostics: 41,
-        total: 51,
+        valid: 30,
+        invalid: 65,
+        diagnostics: 95,
+        total: 95,
       },
     });
     expect(fixture.cases).toHaveLength(fixture.__generated.inventory.total);
@@ -89,9 +89,10 @@ function exactDiagnostic(report) {
   });
   return {
     messageId: report.messageId,
-    message: rule.meta.messages[report.messageId]
-      .replace('{{right}}', report.data.right)
-      .replace('{{left}}', report.data.left),
+    message: Object.entries(report.data).reduce(
+      (message, [key, value]) => message.replace(`{{${key}}}`, value),
+      rule.meta.messages[report.messageId],
+    ),
     data: report.data,
     loc: {
       startLine: report.loc.start.line,

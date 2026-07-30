@@ -1,8 +1,8 @@
-//! Truthful supported option subset for the first configurable sort engine.
+//! Shared scalar comparator for the configurable `sort-named-imports` engine.
 //!
-//! Upstream exposes additional grouping, partition, conditional-configuration,
-//! and locale options. They remain rejected by the adapter schema until the
-//! corresponding core semantics exist.
+//! Group selection, partitioning, newline policies, and conditional
+//! configuration live in the rule module and reuse this comparator after
+//! applying their per-group overrides.
 
 use std::cmp::Ordering;
 
@@ -13,6 +13,7 @@ use serde_json::Value;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub(crate) enum SortType {
+    SubgroupOrder,
     Alphabetical,
     Natural,
     LineLength,
@@ -134,7 +135,7 @@ impl SortOptions {
     ) -> Ordering {
         // Upstream deliberately ignores `fallbackSort` when the primary sorter
         // is `unsorted`.
-        if self.kind == SortType::Unsorted {
+        if matches!(self.kind, SortType::Unsorted | SortType::SubgroupOrder) {
             return Ordering::Equal;
         }
         let primary = self.compare_with(
@@ -182,7 +183,7 @@ impl SortOptions {
                 let right = self.normalize(right_name);
                 custom_compare(left.as_str(), right.as_str(), self.alphabet.as_str())
             }
-            SortType::Unsorted => Ordering::Equal,
+            SortType::SubgroupOrder | SortType::Unsorted => Ordering::Equal,
         };
         match order {
             SortOrder::Ascending => ordering,
@@ -300,6 +301,7 @@ fn ascii_case_rank(character: char) -> u8 {
 
 fn parse_sort_type(value: &str) -> Option<SortType> {
     match value {
+        "subgroup-order" => Some(SortType::SubgroupOrder),
         "alphabetical" => Some(SortType::Alphabetical),
         "natural" => Some(SortType::Natural),
         "line-length" => Some(SortType::LineLength),

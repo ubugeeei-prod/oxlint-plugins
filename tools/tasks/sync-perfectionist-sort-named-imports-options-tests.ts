@@ -290,6 +290,437 @@ const cases: TestCase[] = [
     name: 'trailing comments stay attached to slots',
     code: `import {\n  B, // first\n  A, // second\n} from 'module';`,
   },
+  {
+    name: 'predefined type group before unknown',
+    code: `import {\n  value,\n  type Type,\n} from 'module';`,
+    options: [{ groups: ['type-import', 'unknown'] }],
+    filename: 'fixture.ts',
+  },
+  {
+    name: 'predefined unknown before type group',
+    code: `import {\n  type Type,\n  value,\n} from 'module';`,
+    options: [{ groups: ['unknown', 'type-import'] }],
+    filename: 'fixture.ts',
+  },
+  {
+    name: 'declaration type imports use type group',
+    code: `import type {\n  B,\n  A,\n} from 'module';`,
+    options: [{ groups: ['type-import', 'unknown'] }],
+    filename: 'fixture.ts',
+  },
+  {
+    name: 'custom element pattern orders matching group first',
+    code: `import { zebra, alpha, apiClient } from 'module';`,
+    options: [
+      {
+        customGroups: [{ groupName: 'api', elementNamePattern: '^api' }],
+        groups: ['api', 'unknown'],
+      },
+    ],
+  },
+  {
+    name: 'custom regex flags and alias name',
+    code: `import { zed, source as APIClient } from 'module';`,
+    options: [
+      {
+        customGroups: [
+          {
+            groupName: 'api',
+            elementNamePattern: { pattern: '^api', flags: 'i' },
+          },
+        ],
+        groups: ['api', 'unknown'],
+      },
+    ],
+  },
+  {
+    name: 'custom regex pattern array',
+    code: `import { zebra, beta, alpha } from 'module';`,
+    options: [
+      {
+        customGroups: [{ groupName: 'letters', elementNamePattern: ['^alpha$', '^beta$'] }],
+        groups: ['letters', 'unknown'],
+      },
+    ],
+  },
+  {
+    name: 'custom type modifier',
+    code: `import { value, type Zebra, type Alpha } from 'module';`,
+    options: [
+      {
+        customGroups: [{ groupName: 'types', modifiers: ['type'] }],
+        groups: ['types', 'unknown'],
+      },
+    ],
+    filename: 'fixture.ts',
+  },
+  {
+    name: 'custom value modifier',
+    code: `import { type Type, zebra, alpha } from 'module';`,
+    options: [
+      {
+        customGroups: [{ groupName: 'values', modifiers: ['value'] }],
+        groups: ['values', 'unknown'],
+      },
+    ],
+    filename: 'fixture.ts',
+  },
+  {
+    name: 'custom selector import',
+    code: `import { zebra, alpha } from 'module';`,
+    options: [
+      {
+        customGroups: [{ groupName: 'imports', selector: 'import' }],
+        groups: ['imports', 'unknown'],
+        order: 'desc',
+      },
+    ],
+  },
+  {
+    name: 'custom anyOf match',
+    code: `import { type other, type FooType, fooValue } from 'module';`,
+    options: [
+      {
+        customGroups: [
+          {
+            groupName: 'foo',
+            anyOf: [
+              { modifiers: ['type'], elementNamePattern: 'Foo' },
+              { elementNamePattern: '^foo' },
+            ],
+          },
+        ],
+        groups: ['foo', 'unknown'],
+      },
+    ],
+    filename: 'fixture.ts',
+  },
+  {
+    name: 'custom groups ignore names absent from groups',
+    code: `import { zebra, apiClient, alpha } from 'module';`,
+    options: [
+      {
+        customGroups: [{ groupName: 'api', elementNamePattern: '^api' }],
+        groups: ['unknown'],
+      },
+    ],
+  },
+  {
+    name: 'custom group line length override',
+    code: `import { type a, type bb, type cccc, value } from 'module';`,
+    options: [
+      {
+        customGroups: [
+          {
+            groupName: 'types',
+            modifiers: ['type'],
+            type: 'line-length',
+            order: 'desc',
+          },
+        ],
+        groups: ['types', 'unknown'],
+      },
+    ],
+    filename: 'fixture.ts',
+  },
+  {
+    name: 'custom group unsorted preserves member order',
+    code: `import { value, type Zebra, type Alpha } from 'module';`,
+    options: [
+      {
+        customGroups: [{ groupName: 'types', modifiers: ['type'], type: 'unsorted' }],
+        groups: ['types', 'unknown'],
+      },
+    ],
+    filename: 'fixture.ts',
+  },
+  {
+    name: 'group object alphabetical descending override',
+    code: `import { alpha, beta } from 'module';`,
+    options: [
+      {
+        type: 'unsorted',
+        groups: [{ group: 'unknown', type: 'alphabetical', order: 'desc' }],
+      },
+    ],
+  },
+  {
+    name: 'subgroup declaration order fallback',
+    code: `import { beta, alpha } from 'module';`,
+    options: [
+      {
+        customGroups: [
+          { groupName: 'a', elementNamePattern: '^alpha$' },
+          { groupName: 'b', elementNamePattern: '^beta$' },
+        ],
+        groups: [['a', 'b'], 'unknown'],
+        fallbackSort: { type: 'subgroup-order' },
+      },
+    ],
+  },
+  {
+    name: 'partition by newline sorts sections independently',
+    code: `import {\n  D,\n  A,\n\n  C,\n\n  E,\n  B,\n} from 'module';`,
+    options: [{ partitionByNewLine: true }],
+  },
+  {
+    name: 'partition by any comment',
+    code: `import {\n  B,\n  // section\n  A,\n} from 'module';`,
+    options: [{ partitionByComment: true }],
+  },
+  {
+    name: 'partition by string comment',
+    code: `import {\n  C,\n  // Part: one\n  B,\n  // note\n  A,\n} from 'module';`,
+    options: [{ partitionByComment: '^Part' }],
+  },
+  {
+    name: 'partition by comment pattern array',
+    code: `import {\n  D,\n  /* Section */\n  C,\n  // Part: one\n  B,\n  A,\n} from 'module';`,
+    options: [{ partitionByComment: ['Section', '^Part'] }],
+  },
+  {
+    name: 'partition by line comments only',
+    code: `import {\n  C,\n  /* block */\n  B,\n  // line\n  A,\n} from 'module';`,
+    options: [{ partitionByComment: { line: true } }],
+  },
+  {
+    name: 'partition by block comments only',
+    code: `import {\n  C,\n  // line\n  B,\n  /* block */\n  A,\n} from 'module';`,
+    options: [{ partitionByComment: { block: true } }],
+  },
+  {
+    name: 'partition line and block patterns',
+    code: `import {\n  D,\n  // LINE A\n  C,\n  /* BLOCK B */\n  B,\n  A,\n} from 'module';`,
+    options: [
+      {
+        partitionByComment: {
+          line: { pattern: '^ LINE', flags: 'i' },
+          block: ['BLOCK'],
+        },
+      },
+    ],
+  },
+  {
+    name: 'partition preserves comments with group ordering',
+    code: `import {\n  // Part: A\n  value,\n  type Type,\n  // Part: B\n  Zebra,\n  Alpha,\n} from 'module';`,
+    options: [
+      {
+        partitionByComment: '^Part',
+        groups: ['type-import', 'unknown'],
+      },
+    ],
+    filename: 'fixture.ts',
+  },
+  {
+    name: 'zero newlines inside and between groups',
+    code: `import {\n  api,\n\n  zebra,\n\n  alpha,\n} from 'module';`,
+    options: [
+      {
+        customGroups: [{ groupName: 'api', elementNamePattern: '^api$' }],
+        groups: ['api', 'unknown'],
+        newlinesBetween: 0,
+      },
+    ],
+  },
+  {
+    name: 'one newline between groups',
+    code: `import {\n  api,\n  alpha,\n  beta,\n} from 'module';`,
+    options: [
+      {
+        customGroups: [{ groupName: 'api', elementNamePattern: '^api$' }],
+        groups: ['api', 'unknown'],
+        newlinesBetween: 1,
+      },
+    ],
+  },
+  {
+    name: 'two newlines between groups',
+    code: `import {\n  api,\n  alpha,\n} from 'module';`,
+    options: [
+      {
+        customGroups: [{ groupName: 'api', elementNamePattern: '^api$' }],
+        groups: ['api', 'unknown'],
+        newlinesBetween: 2,
+      },
+    ],
+  },
+  {
+    name: 'zero newlines inside group',
+    code: `import {\n  beta,\n\n  alpha,\n} from 'module';`,
+    options: [{ newlinesInside: 0 }],
+  },
+  {
+    name: 'one newline inside custom group',
+    code: `import {\n  alpha,\n  beta,\n} from 'module';`,
+    options: [
+      {
+        customGroups: [{ groupName: 'letters', elementNamePattern: '.*', newlinesInside: 1 }],
+        groups: ['letters'],
+      },
+    ],
+  },
+  {
+    name: 'group object newlinesInside override',
+    code: `import {\n  alpha,\n  beta,\n} from 'module';`,
+    options: [{ groups: [{ group: 'unknown', newlinesInside: 1 }] }],
+  },
+  {
+    name: 'inline newlinesBetween override',
+    code: `import {\n  alpha,\n\n  beta,\n  charlie,\n} from 'module';`,
+    options: [
+      {
+        customGroups: [
+          { groupName: 'a', elementNamePattern: '^alpha$' },
+          { groupName: 'b', elementNamePattern: '^beta$' },
+          { groupName: 'c', elementNamePattern: '^charlie$' },
+        ],
+        groups: ['a', { newlinesBetween: 0 }, 'b', { newlinesBetween: 1 }, 'c'],
+        newlinesBetween: 2,
+      },
+    ],
+  },
+  {
+    name: 'newlines ignore preserves spacing',
+    code: `import {\n  alpha,\n\n\n  beta,\n} from 'module';`,
+    options: [{ newlinesInside: 'ignore', newlinesBetween: 'ignore' }],
+  },
+  {
+    name: 'partition newline suppresses spacing diagnostic',
+    code: `import {\n  beta,\n\n  alpha,\n} from 'module';`,
+    options: [{ partitionByNewLine: true }],
+  },
+  {
+    name: 'spacing and ordering diagnostics combine',
+    code: `import {\n  beta,\n\n  alpha,\n} from 'module';`,
+    options: [{ newlinesInside: 0 }],
+  },
+  {
+    name: 'conditional names picks first matching option',
+    code: `import { b, g, r } from 'module';`,
+    options: [
+      {
+        type: 'unsorted',
+        useConfigurationIf: { allNamesMatchPattern: '^foo' },
+      },
+      {
+        customGroups: [
+          { groupName: 'r', elementNamePattern: '^r$' },
+          { groupName: 'g', elementNamePattern: '^g$' },
+          { groupName: 'b', elementNamePattern: '^b$' },
+        ],
+        groups: ['r', 'g', 'b'],
+        useConfigurationIf: { allNamesMatchPattern: '^[rgb]$' },
+      },
+    ],
+  },
+  {
+    name: 'conditional names regex object and alias',
+    code: `import { first as B, second as A } from 'module';`,
+    options: [
+      {
+        ignoreAlias: false,
+        useConfigurationIf: {
+          allNamesMatchPattern: { pattern: '^[ab]$', flags: 'i' },
+        },
+      },
+      { type: 'unsorted' },
+    ],
+  },
+  {
+    name: 'conditional names ignore alias',
+    code: `import { b as y, a as z } from 'module';`,
+    options: [
+      {
+        ignoreAlias: true,
+        useConfigurationIf: { allNamesMatchPattern: '^[ab]$' },
+      },
+      { type: 'unsorted' },
+    ],
+  },
+  {
+    name: 'conditional import selector match',
+    code: `import { beta, alpha } from 'module';`,
+    options: [
+      {
+        type: 'unsorted',
+        useConfigurationIf: { matchesAstSelector: 'ImportDeclaration' },
+      },
+    ],
+  },
+  {
+    name: 'conditional import selector child match',
+    code: `import { beta, alpha } from 'module';`,
+    options: [
+      {
+        type: 'unsorted',
+        useConfigurationIf: { matchesAstSelector: '* > ImportDeclaration' },
+      },
+    ],
+  },
+  {
+    name: 'conditional nonmatching selector falls through',
+    code: `import { beta, alpha } from 'module';`,
+    options: [
+      {
+        type: 'unsorted',
+        useConfigurationIf: { matchesAstSelector: 'VariableDeclaration' },
+      },
+      { type: 'alphabetical' },
+    ],
+  },
+  {
+    name: 'conditional selector and names both required',
+    code: `import { beta, alpha } from 'module';`,
+    options: [
+      {
+        type: 'unsorted',
+        useConfigurationIf: {
+          matchesAstSelector: 'ImportDeclaration',
+          allNamesMatchPattern: '^[ac]$',
+        },
+      },
+      { type: 'alphabetical', order: 'desc' },
+    ],
+  },
+  {
+    name: 'no conditional match uses defaults',
+    code: `import { beta, alpha } from 'module';`,
+    options: [
+      {
+        type: 'unsorted',
+        useConfigurationIf: { allNamesMatchPattern: '^never$' },
+      },
+    ],
+  },
+  {
+    name: 'unicode custom group and utf16 prefix',
+    code: `'😀';\nimport { 世界, 你好, api } from '模块';`,
+    options: [
+      {
+        locales: 'zh-CN',
+        customGroups: [{ groupName: 'api', elementNamePattern: '^api$' }],
+        groups: ['api', 'unknown'],
+      },
+    ],
+  },
+  {
+    name: 'comments move with group members',
+    code: `import {\n  // value docs\n  value,\n  // type docs\n  type Type,\n} from 'module';`,
+    options: [{ groups: ['type-import', 'unknown'] }],
+    filename: 'fixture.ts',
+  },
+  {
+    name: 'inline comment survives group movement and spacing',
+    code: `import {\n  beta,\n  alpha, // alpha docs\n  type Type,\n} from 'module';`,
+    options: [
+      {
+        groups: ['type-import', 'unknown'],
+        newlinesBetween: 1,
+        newlinesInside: 0,
+      },
+    ],
+    filename: 'fixture.ts',
+  },
 ];
 
 const manifest = JSON.parse(
@@ -369,7 +800,7 @@ try {
       eslintVersion: ESLINT_VERSION,
       typescriptEslintParserVersion: TYPESCRIPT_ESLINT_VERSION,
       capturePolicy:
-        'Curated exact parity for the supported scalar comparator option subset; grouping, partition, newline, and conditional options are intentionally excluded.',
+        'Curated exact parity for scalar comparators, groups, custom groups, partitions, newline policies, and conditional configuration.',
       tool: 'tools/tasks/sync-perfectionist-sort-named-imports-options-tests.ts',
       inventory: {
         valid,
@@ -467,7 +898,23 @@ writeFileSync(join(here, 'captured.json'), JSON.stringify(captured));
 
 function dataFromMessage(message) {
   const match = /^Expected "(.+)" to come before "(.+)"\\.$/u.exec(message);
-  return match ? { right: match[1], left: match[2] } : {};
+  if (match) {
+    return { right: match[1], left: match[2] };
+  }
+  const groupMatch = /^Expected "(.+)" \\((.+)\\) to come before "(.+)" \\((.+)\\)\\.$/u.exec(message);
+  if (groupMatch) {
+    return {
+      right: groupMatch[1],
+      rightGroup: groupMatch[2],
+      left: groupMatch[3],
+      leftGroup: groupMatch[4],
+    };
+  }
+  const spacingMatch = /^(?:Extra|Missed) spacing between "(.+)" and "(.+)"\\.$/u.exec(message);
+  if (spacingMatch) {
+    return { left: spacingMatch[1], right: spacingMatch[2] };
+  }
+  return {};
 }
 `;
 }
