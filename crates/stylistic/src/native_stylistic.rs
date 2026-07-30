@@ -18,6 +18,7 @@ mod expression_rules;
 mod function_call_argument_newline;
 mod function_paren_newline;
 mod helpers;
+mod indent;
 mod indent_binary_ops;
 mod jsx_child_element_spacing;
 mod jsx_closing_bracket_location;
@@ -912,6 +913,10 @@ const EXP_LIST_STYLE_MESSAGES: &[(&str, &str)] = &[
 ];
 const INDENT_BINARY_OPS_MESSAGES: &[(&str, &str)] =
     &[("wrongIndentation", "Expected indentation of {{expected}}")];
+const INDENT_MESSAGES: &[(&str, &str)] = &[(
+    "wrongIndentation",
+    "Expected indentation of {{expected}} but found {{actual}}.",
+)];
 const ARRAY_ELEMENT_NEWLINE_MESSAGES: &[(&str, &str)] = &[
     ("unexpectedLineBreak", "There should be no linebreak here."),
     (
@@ -1485,6 +1490,11 @@ const STYLISTIC_RULES: &[StylisticRuleDefinition] = &[
         messages: FUNCTION_CALL_ARGUMENT_NEWLINE_MESSAGES,
     },
     StylisticRuleDefinition {
+        name: "indent",
+        docs_description: "Enforce consistent indentation.",
+        messages: INDENT_MESSAGES,
+    },
+    StylisticRuleDefinition {
         name: "indent-binary-ops",
         docs_description: "Indentation for binary operators",
         messages: INDENT_BINARY_OPS_MESSAGES,
@@ -1552,6 +1562,7 @@ const TOKEN_RULE_NAMES: &[&str] = &[
     "one-var-declaration-per-line",
     "lines-between-class-members",
     "no-mixed-operators",
+    "indent",
     "indent-binary-ops",
 ];
 
@@ -2023,6 +2034,7 @@ fn run_token_rule(
         "indent-binary-ops" => {
             indent_binary_ops::check_indent_binary_ops(scan, filename, options, diagnostics)
         }
+        "indent" => indent::check_indent(scan, options, diagnostics),
         _ => {}
     }
 }

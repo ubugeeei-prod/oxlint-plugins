@@ -70,6 +70,7 @@
     "port:tests:stylistic:exp-jsx-props-style": "node tools/tasks/sync-stylistic-exp-jsx-props-style-tests.ts",
     "port:tests:stylistic:member-delimiter-style": "node tools/tasks/sync-stylistic-member-delimiter-style-tests.ts",
     "port:tests:stylistic:indent-binary-ops": "node tools/tasks/sync-stylistic-indent-binary-ops-tests.ts",
+    "port:tests:stylistic:indent": "node tools/tasks/sync-stylistic-indent-tests.ts",
     "port:tests:stylistic:jsx-child-element-spacing": "node tools/tasks/sync-stylistic-jsx-child-element-spacing-tests.ts",
     "port:tests:stylistic:jsx-closing-bracket-location": "node tools/tasks/sync-stylistic-jsx-closing-bracket-location-tests.ts",
     "port:tests:stylistic:jsx-closing-tag-location": "node tools/tasks/sync-stylistic-jsx-closing-tag-location-tests.ts",
@@ -120,7 +121,9 @@
   "devDependencies": {
     "@napi-rs/cli": "catalog:",
     "@types/node": "catalog:",
+    "@typescript-eslint/parser": "8.56.0",
     "@typescript/native-preview": "catalog:",
+    "eslint": "10.0.0",
     "vite-plus": "catalog:",
     "vitest": "catalog:",
     "yaml": "catalog:"

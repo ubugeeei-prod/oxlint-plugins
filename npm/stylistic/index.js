@@ -1,6 +1,7 @@
 'use strict';
 
 const { eslintCompatPlugin } = require('@oxlint/plugins');
+const { t: upstreamIndentRule } = require('@stylistic/eslint-plugin/rules/indent');
 const { nativeStylisticRuleMetas, runNativeStylisticLint } = require('./api.js');
 
 const PLUGIN_NAME = 'stylistic';
@@ -13,7 +14,10 @@ const diagnosticsCache = new WeakMap();
 
 const stylisticRules = Object.freeze(
   Object.fromEntries(
-    implementedStylisticRuleNames.map((ruleName) => [ruleName, createStylisticRule(ruleName)]),
+    implementedStylisticRuleNames.map((ruleName) => [
+      ruleName,
+      ruleName === 'indent' ? createUpstreamIndentRule() : createStylisticRule(ruleName),
+    ]),
   ),
 );
 
@@ -124,6 +128,48 @@ function createStylisticRule(ruleName) {
           );
         },
       };
+    },
+  };
+}
+
+function createUpstreamIndentRule() {
+  const meta = {
+    ...upstreamIndentRule.meta,
+    docs: {
+      ...upstreamIndentRule.meta.docs,
+      recommended: false,
+      requiresTypeChecking: false,
+      url: SOURCE_URL,
+    },
+    hasSuggestions: false,
+  };
+
+  return {
+    ...upstreamIndentRule,
+    meta,
+    create(context) {
+      const settingsOptions = context.settings?.corsaStylistic?.rules?.indent;
+      const currentOptions = currentRuleOptions(context);
+      const defaultOptions = upstreamIndentRule.meta.defaultOptions ?? [];
+      const hasOnlyInjectedDefaults =
+        currentOptions.length === defaultOptions.length &&
+        JSON.stringify(currentOptions) === JSON.stringify(defaultOptions);
+      const options =
+        settingsOptions !== undefined && hasOnlyInjectedDefaults
+          ? normalizeOptions(settingsOptions)
+          : currentOptions;
+      if (options === context.options) {
+        return upstreamIndentRule.create(context);
+      }
+      const contextWithOptions = Object.create(context, {
+        options: {
+          configurable: false,
+          enumerable: true,
+          value: options,
+          writable: false,
+        },
+      });
+      return upstreamIndentRule.create(contextWithOptions);
     },
   };
 }

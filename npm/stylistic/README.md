@@ -41,6 +41,12 @@ deprecated `arrow` override (including `"ignore"`).
 `member-delimiter-style` follows the same stable baseline for interfaces and
 type literals, including per-container overrides and multiline detection.
 
+`indent` preserves the complete stable v5.10.0 JavaScript, JSX, and TypeScript
+visitor and option contract through Oxlint's Oxc-provided ESTree, including
+tabs, every node-specific offset option, ignored selectors, comments, and
+recursive whitespace fixes. The native API also exposes a source-wide fallback
+for deterministic indentation diagnostics and UTF-8 byte-range fixes.
+
 `semi` follows the complete stable v5.10.0 JavaScript and TypeScript contract:
 `always`/`never`, one-line block and class-body omissions, statement
 continuation policies, class-field ASI hazards, and conservative surrounding
@@ -112,7 +118,7 @@ Most rule scanning logic is derived from `corsa-oxlint/stylistic` in
 v0.43.0 (MIT). Additional stable ports, including `jsx-first-prop-new-line`,
 `jsx-newline`, `jsx-pascal-case`, `jsx-quotes`, `jsx-curly-brace-presence`,
 `jsx-curly-newline`, `exp-jsx-props-style`, `jsx-indent`,
-`jsx-props-no-multi-spaces`, `jsx-sort-props`, `jsx-wrap-multilines`, and
-`semi`, follow
+`jsx-props-no-multi-spaces`, `jsx-sort-props`, `jsx-wrap-multilines`, `indent`,
+and `semi`, follow
 [`@stylistic/eslint-plugin`](https://github.com/eslint-stylistic/eslint-stylistic)
 v5.10.0 (MIT).

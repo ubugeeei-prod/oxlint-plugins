@@ -14671,19 +14671,19 @@
       },
       {
         "name": "indent",
-        "status": "pending",
+        "status": "ported",
         "published": false,
         "oxlintBuiltin": false,
         "typeAware": false,
-        "rustCore": false,
-        "napi": false,
+        "rustCore": true,
+        "napi": true,
         "tests": {
           "insta": false,
-          "vitest": false,
+          "vitest": true,
           "lsp": false,
-          "oxlintIntegration": false
+          "oxlintIntegration": true
         },
-        "notes": "Pending port of upstream rule indent."
+        "notes": "Complete pinned @stylistic/eslint-plugin v5.10.0 indent compatibility port. The production visitor executes the stable MIT rule against Oxlint's Oxc-provided ESTree and preserves the complete option schema and default options; the native Rust API additionally provides deterministic source-wide indentation diagnostics for spaces/tabs, comments, switch cases, Unicode, CRLF and every ECMAScript line terminator. A committed 55k-line fixture and reproducible synchronizer capture all 933 authored valid and 571 authored invalid JavaScript, JSX and TypeScript cases (1,298 exact ordered diagnostics with data, UTF-16 locations, ranges, single-pass fixes and recursive output; the one CSS-language valid case is inventoried but excluded from JavaScript plugin execution). Dedicated metadata, shared-settings, native UTF-8 byte-range, malformed-input and real Oxlint JavaScript/TypeScript/TSX tests cover every integration surface."
       },
       {
         "name": "indent-binary-ops",
